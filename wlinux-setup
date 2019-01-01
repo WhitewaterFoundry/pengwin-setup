@@ -4,9 +4,6 @@ RESPONSE=""
 CURDUR=""
 TMPDIR=""
 VERSION="1.2a"
-GOVERSION="1.11.4"
-DOCKERVERSION="18.09.0"
-DOCKERCOMPOSEVERSION="1.23.1"
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
 
@@ -152,22 +149,22 @@ fi
 
 if [[ $CHOICE == *"PYTHON"* ]] ; then
   echo "PYTHON"
-  pythoninstall
+  . /wlinux-setup.d/python
 fi
 
 if [[ $CHOICE == *"NODE"* ]] ; then
   echo "NODE"
-  nodeinstall
+  . /wlinux-setup.d/nodejs
 fi
 
 if [[ $CHOICE == *"GO"* ]] ; then
   echo "GO"
-  goinstall
+  . /wlinux-setup.d/golang
 fi
 
 if [[ $CHOICE == *"RUBY"* ]] ; then
   echo "RUBY"
-  rubyinstall
+  . /wlinux-setup.d/ruby
 fi
 
 if [[ $CHOICE == *"RUST"* ]] ; then
@@ -198,7 +195,7 @@ fi
 
 if [[ $CHOICE == *"DOCKER"* ]] ; then
   echo "DOCKER"
-  dockerinstall
+  . /wlinux-setup.d/docker
 fi
 
 if [[ $CHOICE == *"CASSANDRA"* ]] ; then
@@ -227,120 +224,7 @@ sudo apt autoremove -y
 
 ### dev environments
 
-function pythoninstall {
-if (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.7, IDLE, and the pip package manager?" 8 90) then
-    echo "Installing PYTHON"
-    createtmp
-    updateupgrade
-    sudo apt -t testing install build-essential python3.7 python3.7-distutils idle-python3.7 python3-pip python3-venv -y
-    pip3 install -U pip
-    cleantmp
-else
-    echo "Skipping PYTHON"
-fi
-}
 
-function nodeinstall {
-if (whiptail --title "NODE" --yesno "Would you like to download and install NodeJS using n and the npm package manager?" 8 88) then
-    echo "Installing NODE"
-    createtmp
-    updateupgrade
-    sudo apt install n build-essential -y 
-    sudo n latest
-    curl -0 -L https://npmjs.com/install.sh | sudo sh
-    cleantmp
-
-        if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) then
-            echo "Installing YARN"
-            createtmp
-            curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-            sudo apt-get update && sudo apt-get install yarn --no-install-recommends
-            cleantmp
-        else
-            echo "Skipping YARN"
-        fi
-else
-    echo "Skipping NODE"
-fi
-}
-
-function goinstall {
-if (whiptail --title "GO" --yesno "Would you like to download and install the latest Go from Google?" 8 70) then
-    createtmp
-    echo "Downloading Go using wget."
-    wget https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz
-    echo "Unpacking tar binaries to /usr/local/go."
-    sudo tar -C /usr/local -xzf go*.linux-amd64.tar.gz
-    echo "Creating ~/go/ for your projects."
-    mkdir ~/go/
-    echo "Setting Go environment variables GOROOT, GOPATH, and adding Go to PATH with export."
-    export GOROOT=/usr/local/go
-    export GOPATH=$HOME/go/
-    export PATH=$GOPATH/bin:$GOROOT/bin:/usr/local/go/bin:$PATH
-    echo "Saving Go environment variables to /etc/profile so they will persist."
-    sudo sh -c 'echo "export GOROOT=/usr/local/go" >> /etc/profile'
-    sudo sh -c 'echo "export GOPATH=\${HOME}/go/" >> /etc/profile'
-    sudo sh -c 'echo "export PATH=\${GOPATH}/bin:\${GOROOT}/bin:/usr/local/go/bin:\${PATH}" >> /etc/profile'
-    cleantmp
-else
-    echo "Skipping GO"
-fi
-}
-
-function rubyinstall {
-
-if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby using rbenv?" 8 65) then
-    echo "Installing RUBY"
-    echo "Installing Ruby dependencies"
-    sudo apt -t testing install git-core curl zlib1g-dev build-essential libssl-dev libssl1.0-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev -y
-    createtmp
-
-    echo "Getting rbenv"
-    git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-
-    echo "Configuring rbenv"
-    export PATH="$HOME/.rbenv/bin:$PATH"
-    eval "$(rbenv init -)"
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-    source ~/.bashrc
-
-    echo "Getting ruby-build"
-    git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-
-    echo "Configuring ruby-build"
-    export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
-    echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
-    source ~/.bashrc
-
-    echo "Installing Ruby using rbenv"
-    rbenv install 2.5.3 --verbose
-    rbenv global 2.5.3
-    echo "Checking ruby version"
-    ruby -v
-    echo "Installing bundler using gem"
-    gem install bundler
-    echo "Rehashing rbenv"
-    rbenv rehash
-    cleantmp
-else
-    echo "Skipping RUBY"
-fi
-
-if (whiptail --title "RAILS" --yesno "Would you like to download and install Rails from RubyGems?" 8 65) then
-    echo "Installing RAILS"
-    updateupgrade
-    sudo apt -t testing install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
-    createtmp
-    nodeinstall
-    gem install rails -v 5.2.0
-    rbenv rehash
-    cleantmp
-else
-    echo "Skipping RAILS"
-fi
-}
 
 function rustlanginstall {
 if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust from the rust-lang website?" 8 85) then
@@ -464,175 +348,7 @@ EOF
 fi
 }
 
-function dockerinstall_build_relay {
 
-    #Build the relay
-    if [[ ! -f "${wHome}/.npiperelay/npiperelay.exe" ]]; then
-
-        echo "Checking for go"
-        if ! (go version); then
-            echo "Downloading Go using wget."
-	        wget -c "https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz"
-            tar -xzf go*.linux-amd64.tar.gz
-
-            export GOROOT=$(pwd)/go
-            export PATH="${GOROOT}/bin:$PATH"
-
-        fi
-
-        mkdir gohome
-        export GOPATH=$(pwd)/gohome
-
-        echo "Checking for git"
-        if (git version); then
-            git_exists=1
-        else
-            git_exists=0
-
-            sudo apt-get install -yq git
-        fi
-
-        echo "Building npiperelay.exe."
-        go get -d github.com/jstarks/npiperelay
-
-        if [[ ${git_exists} -eq 0 ]]; then
-            sudo apt-get purge -yq git
-            sudo apt-get autoremove -yq
-        fi
-
-        GOOS=windows go build -o npiperelay.exe github.com/jstarks/npiperelay
-        sudo mkdir -p "${wHome}/.npiperelay"
-        cmd.exe /c 'attrib +h %HOMEDRIVE%%HOMEPATH%\.npiperelay'
-        sudo cp npiperelay.exe "${wHome}/.npiperelay/npiperelay.exe"
-    fi
-
-    sudo apt-get -y -q install socat
-
-    cat << 'EOF' >> docker-relay
-#!/bin/bash
-
-connected=$(docker version 2>&1 | grep -c "daemon\|error")
-if [[ ${connected} != 0  ]]; then
-
-    PATH=${PATH}:$(wslpath "C:\Windows\System32")
-    wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
-    wHome=$(wslpath -u "${wHomeWinPath}")
-
-    killall --quiet socat
-    exec nohup socat UNIX-LISTEN:/var/run/docker.sock,fork,group=docker,umask=007 EXEC:"\'${wHome}/.npiperelay/npiperelay.exe\' -ep -s //./pipe/docker_engine",nofork  </dev/null &>/dev/null &
-fi
-EOF
-    sudo cp docker-relay /usr/bin/docker-relay
-    sudo chmod +x /usr/bin/docker-relay
-
-    echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
-
-    cat << 'EOF' >> docker_relay.sh
-sudo docker-relay
-EOF
-    sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
-    sudo chmod -w /usr/bin/docker-relay
-
-    sudo addgroup docker
-    sudo adduser ${USER} docker
-
-    echo "Running the relay for the first time."
-    sudo docker-relay
-
-    sleep 1s
-
-    sudo docker version
-
-}
-
-function dockerinstall_conf_tcp {
-
-    echo "Connect to Docker via TCP"
-
-    cat << 'EOF' >> docker_relay.sh
-export DOCKER_HOST=tcp://0.0.0.0:2375
-EOF
-    sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
-
-    export DOCKER_HOST=tcp://0.0.0.0:2375
-    connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-    if [[ ${connected} != 0  ]]; then
-        whiptail --title "DOCKER" \
-        --msgbox "Please go to Docker for Windows -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
-    fi
-}
-
-function dockerinstall {
-if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
-    echo "Installing the bridge to Docker."
-
-    connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
-    while [[ ${connected} != 0  ]]; do
-        if ! (whiptail --title "DOCKER" --yesno "Docker Desktop appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
-            return
-
-        fi
-
-        connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
-
-    done
-
-    createtmp
-    sudo apt-get update -yq 
-
-    export PATH=${PATH}:$(wslpath "C:\Windows\System32") #Be sure we can execute Windows commands
-
-    wget -c https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz
-    sudo tar -xzvf docker-${DOCKERVERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
-
-    sudo chmod 755 /usr/bin/docker
-    sudo chown root:root /usr/bin/docker
-
-    #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
-    connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-    if [[ $(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2) -gt 17063 && ${connected} != 0  ]]; then
-        #Connect via Unix Sockets
-        dockerinstall_build_relay
-    else
-        #Connect via TCP
-        dockerinstall_conf_tcp
-    fi
-
-    echo "Installing bash-completion"
-    sudo apt-get install -yq bash-completion
-    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
-
-    echo "Installing docker-compose"
-    sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${DOCKERCOMPOSEVERSION}/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose"
-    sudo chmod +x /usr/bin/docker-compose
-
-    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose'
-
-    docker-compose version
-
-    if [[ $(wslpath 'C:\\') = '/mnt/c/' ]]; then
-
-        if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
-            echo "Changing the root from /mnt to /"
-
-            if [[ $(grep -c "root" /etc/wsl.conf) -eq 0 ]]; then
-                sudo sed -i 's$\[automount\]$\0\nroot=/$' /etc/wsl.conf
-
-            else
-                sudo sed -i 's$\(root=\)\(.*\)$\1/$' /etc/wsl.conf
-            fi
-
-        fi
-    fi
-
-    whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open WLinux" 8 60
-    cleantmp
-
-else
-    echo "Skipping Docker"
-
-fi
-}
 
 ### cloud tools
 
