@@ -1,0 +1,1153 @@
+#!/bin/bash
+
+RESPONSE=""
+CURDUR=""
+TMPDIR=""
+VERSION="1.1.28a"
+GOVERSION="1.11.4"
+DOCKERVERSION="18.09.0"
+DOCKERCOMPOSEVERSION="1.23.1"
+wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
+wHome=$(wslpath -u "${wHomeWinPath}")
+
+# functions
+
+## core functions
+
+function processarguments {
+
+while [[ $# -gt 0 ]]
+do
+  case "$1" in
+    --debug|-d|--verbose|-v)
+      echo "Running in Debug mode"
+      set -x
+      shift
+    ;;
+    *)
+      shift
+    esac
+done
+
+}
+
+function welcomeprompt {
+whiptail --title "Welcome to WLinux" --msgbox "Thank you for supporting sustainable independent open source development.\n
+WLinux comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
+wlinux-setup allows you to install additional hand-curated selections for WLinux and configure optional WSL-specific settings. \n
+Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
+" 15 96
+}
+
+function continueprompt {
+if (whiptail --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45) then
+    echo "Starting wlinux-setup."
+else
+    echo "Exiting wlinux-setup."
+    echo "You may run the script again any time by running: $ wlinux-setup"
+    exit 0
+fi
+}
+
+function updatescriptprompt {
+if (whiptail --title "Upgrade setup?" --yesno "Would you like to download and restart with the most recent version of wlinux-setup?\n\nThis is recommended periodically to get new features and fixes." 9 90) then
+    createtmp
+    echo "Backing up old /etc/setup to /etc/setup.old"
+    sudo cp /etc/setup /etc/setup.old
+    echo "Getting fresh wlinux-setup from GitHub"
+    wget https://github.com/WhitewaterFoundry/WLinux/raw/master/linux_files/setup
+    sudo cp setup /etc/setup
+    echo "Running updated wlinux-setup"
+    touch ~/.updated
+    bash /etc/setup
+    exit 0
+else
+    whiptail --title "Release setup" --msgbox "Continuing with built-in wlinux-setup.\n\nIf you encounter problems, please try updating wlinux-setup." 9 90
+fi
+}
+
+function securitypatches {
+echo "Applying Hotpatches"
+
+echo "1: Applying temporary workaround for bug #199"
+alias clear="clear -x"
+echo 'alias clear="clear -x"' | sudo tee -a /etc/profile
+
+}
+
+function createtmp {
+    echo "Saving current directory as \$CURDIR"
+    CURDIR=$(pwd)
+    TMPDIR=$(mktemp -d)
+    echo "Going to \$TMPDIR: $TMPDIR"
+    cd $TMPDIR
+}
+
+function cleantmp {
+    echo "Returning to $CURDIR"
+    cd $CURDIR
+    echo "Cleaning up $TMPDIR"
+    sudo rm -r $TMPDIR  # need to add sudo here because git clones leave behind write-protected files
+}
+
+function byemessage {
+    whiptail --title "Setup is complete." --msgbox "You may run wlinux-setup again any time by typing $ wlinux-setup\n\nYou may open a browser link to get help any time by typing: $ wlinux-help" 8 80
+    exit 0
+}
+
+## internationalization
+
+function languageprompt {
+if (whiptail --title "Language" --yesno "Would you like to configure default keyboard input/language?" 8 65) then
+    echo "Running $ dpkg-reconfigure locales"
+    sudo dpkg-reconfigure locales
+fi
+}
+
+## package index
+
+function installmenu {
+
+CHOICE=$(
+whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
+    "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
+    "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
+    "SHELLS" "Install and configure zsh, csh, and fish" off \
+    "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
+    "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
+    "NODEJS" "Install Node.js and npm" off \
+    "GO" "Install the latest Go from Google" off \
+    "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
+    "RUST" "Install latest version of Rust via rustup installer" off \
+    "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
+    "JAVA" "Install the Java OpenJDK and JRE" off \
+    "POWERSHELL" "Install PowerShell for Linux and/or Azure CLI tools" off \
+    "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
+    "DOCKER" "Install a secure bridge to Docker for Windows" off \
+    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
+    "NONE" "" on 3>&1 1>&2 2>&3
+)
+
+echo "Selected:" $CHOICE
+
+if [[ $CHOICE == *"LANGUAGE"* ]] ; then
+    echo "LANGUAGE"
+    languageprompt
+fi
+
+if [[ $CHOICE == *"EXPLORER"* ]] ; then
+  echo "EXPLORER"
+  explorerintegration
+fi
+
+if [[ $CHOICE == *"SHELLS"* ]] ; then
+  echo "SHELLS"
+  installandsetshell
+fi
+
+if [[ $CHOICE == *"EDITORS"* ]] ; then
+  echo "EDITORS"
+  editormenu
+fi 
+
+if [[ $CHOICE == *"PYTHON"* ]] ; then
+  echo "PYTHON"
+  pythoninstall
+fi
+
+if [[ $CHOICE == *"NODE"* ]] ; then
+  echo "NODE"
+  nodeinstall
+fi
+
+if [[ $CHOICE == *"GO"* ]] ; then
+  echo "GO"
+  goinstall
+fi
+
+if [[ $CHOICE == *"RUBY"* ]] ; then
+  echo "RUBY"
+  rubyinstall
+fi
+
+if [[ $CHOICE == *"RUST"* ]] ; then
+    echo "RUST"
+    rustlanginstall
+fi
+
+if [[ $CHOICE == *"DOTNET"* ]] ; then
+  echo "DOTNET"
+  dotnetinstall
+fi
+
+if [[ $CHOICE == *"JAVA"* ]] ; then
+  echo "JAVA"
+  javainstall
+fi
+
+if [[ $CHOICE == *"POWERSHELL"* ]] ; then
+  echo "POWERSHELL"
+  powershellinstall
+  azurecliinstall
+fi
+
+if [[ $CHOICE == *"GUI"* ]] ; then
+    echo "GUI"
+    basicguiinstall
+fi
+
+if [[ $CHOICE == *"DOCKER"* ]] ; then
+    echo "DOCKER"
+    dockerinstall
+fi
+
+if [[ $CHOICE == *"CASSANDRA"* ]] ; then
+    echo "CASSANDRA"
+    cassandrainstall
+fi
+
+if [[ $CHOICE == "NONE" ]] ; then
+    echo "NONE"
+    whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
+    installmenu
+fi
+}
+
+function updateupgrade {
+echo "Updating apt package index from repositories: $ sudo apt update"
+sudo apt update
+echo "Applying available package upgrades from repositories: $ sudo apt upgrade -y"
+sudo apt upgrade -y
+echo "Removing unnecessary packages: $ sudo apt autoremove -y"
+sudo apt autoremove -y
+}
+
+
+## submenus
+
+function editormenu {
+
+EDITORCHOICE=$(
+whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+    "NEOVIM" "Neovim" off \
+    "EMACS" "Emacs" off \
+    "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
+)
+
+if [[ $EDITORCHOICE == *"NEOVIM"* ]] ; then
+    neoviminstall
+fi
+
+if [[ $EDITORCHOICE == *"EMACS"* ]] ; then
+  emacsinstall
+fi
+
+if [[ $EDITORCHOICE == *"CODE"* ]] ; then
+  codeinstall
+fi
+
+}
+
+
+## package sets
+
+### shells
+
+function installandsetshell {
+    
+EDITORCHOICE=$(
+whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+    "ZSH" "zsh" off \
+    "FISH" "fish" off \
+    "CSH" "csh" off 3>&1 1>&2 2>&3
+)
+
+if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
+    echo "Installing zsh..."
+    sudo apt install zsh -y
+    zshinstall
+fi
+
+if [[ $EDITORCHOICE == *"FISH"* ]] ; then
+    echo "Installing fish..."
+    sudo apt install fish -y
+    fishinstall
+fi
+
+if [[ $EDITORCHOICE == *"CSH"* ]] ; then
+    echo "Installing csh..."
+    sudo apt install csh -y
+    cshinstall
+fi
+}
+
+function zshinstall {
+ZSH_SETUP=".zsh_wlinux"
+
+# Backup old zshrc if existent (e.g. wlinux-setup being re-run)
+if [ -f "/etc/zsh/zshrc" ] ; then
+    if [ -f "/etc/zsh/"$ZSH_SETUP ] ; then
+        echo "wlinux-setup has already modified zshrc"
+        echo "run 'sudo rm /etc/zsh/$ZSH_INSTALLED && wlinux-setup' to re-create config file"
+    else
+        echo "Old zshrc found & not edited before --> backing up"
+                 
+        # Get current date-time
+        dt=$(date '+%d%m%Y-%H%M')
+        # Save backup with date-time
+        sudo cp /etc/zsh/zshrc /etc/zsh/zshrc_$dt.old
+        # Delete old  zshrc so we can start fresh
+        sudo rm /etc/zsh/zshrc
+
+        # Need to "unsetopt no_match" to stop line31 in /etc/profile failing on not finding anything under /etc/profile.d/*
+        # Reset after to prevent any unforeseen consequences.
+        # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
+        # This would prevent issues in other shell alternatives if they appear.
+        echo "Creating fresh zshrc and modifying to source /etc/profile"
+        sudo touch /etc/zsh/zshrc
+        echo "unsetopt no_match" | sudo tee -a /etc/zsh/zshrc
+        echo "source /etc/profile" | sudo tee -a /etc/zsh/zshrc
+        echo "setopt no_match" | sudo tee -a /etc/zsh/zshrc
+        # Create .zsh_wlinux file to let future runs know zshrc has been modified by wlinux-setup
+        sudo touch /etc/zsh/$ZSH_SETUP
+    fi
+fi
+
+if (whiptail --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95) then
+    createtmp
+    whiptail --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to wlinux-setup" 8 95
+    mkdir "Type exit to return to wlinux-setup" 
+    cd "Type exit to return to wlinux-setup" 
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    cd ..
+    cleantmp
+else
+    echo "Skipping oh-my-zsh"
+fi
+
+if (whiptail --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55) then
+    chsh -s $(which zsh)
+fi
+}
+
+function fishinstall {
+if (whiptail --title "fish" --yesno "Would you like to download and install oh-my-fish?" 8 55) then
+    createtmp
+    whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to wlinux-setup" 8 95
+    mkdir "Type exit to return to wlinux-setup" 
+    cd "Type exit to return to wlinux-setup" 
+    curl -L https://get.oh-my.fish | fish
+    cd ..
+    cleantmp
+else
+    echo "Skipping Oh My Fish"
+fi
+
+if (whiptail --title "fish" --yesno "Would you like to set fish as the default shell?" 8 55) then
+    chsh -s $(which fish)
+fi
+}
+
+function cshinstall {
+if (whiptail --title "csh" --yesno "Would you like to set csh as the default shell?" 8 55) then
+    chsh -s $(which csh)
+fi
+}
+
+### editors
+
+function neoviminstall {
+if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) then
+    echo "Installing neovim and building tools from Debian: $ sudo apt install neovim build-essential"
+    updateupgrade
+    sudo apt -t testing install neovim build-essential -y
+else
+    echo "Skipping NEOVIM"
+fi
+}
+
+function emacsinstall {
+if (whiptail --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) then
+    echo "Installing emacs: $ sudo apt install emacs -y"
+    updateupgrade
+    sudo apt install emacs -y
+else
+    echo "Skipping EMACS"
+fi
+}
+
+function codeinstall {
+if (whiptail --title "CODE" --yesno "Would you like to download and install Code from Microsoft?" 8 65) then
+    echo "Installing CODE"
+    createtmp
+    echo "Downloading and unpacking Microsoft's apt repo key with curl and gpg"
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg 
+    echo "Moving Microsoft's apt repo key into place with mv"
+    sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg 
+    echo "Adding Microsoft apt repo to /etc/apt/sources.list.d/vscode.list with echo"
+    sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' 
+    updateupgrade
+    echo "Installing code with dependencies: $ sudo apt install code libxss1 libasound2 -y"
+    sudo apt install code libxss1 libasound2 libx11-xcb-dev -y
+    cleantmp
+else
+    echo "Skipping CODE"
+fi  
+}
+
+### gui apps and related
+
+function basicguiinstall {
+
+whiptail --title "Note about GUI Apps" --msgbox "Use of GUI applications on WLinux requires an X server running on Windows 10.\n\nExamples include:\n\nX410\nVcXsrv\nXming" 15 60
+
+if (whiptail --title "X410" --yesno "Would you like to view a link to X410 (recommended) on the Microsoft Store?" 8 80) then
+    echo "Running $ wslview <link>"
+    wslview https://afflnk.microsoft.com/c/1291904/433017/7593?u=https%3A%2F%2Fwww.microsoft.com%2Fen-us%2Fp%2Fx410%2F9nlp712zmn9q%23activetab%3Dpivot%3Aoverviewtab
+else
+    echo "Skipping X410"
+fi
+
+if (whiptail --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75) then
+    echo "Installing GUILIB"
+    echo "$ apt install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y"
+    updateupgrade
+    sudo apt install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y
+    echo "Configuring dbus if you already had it installed. If not, you might see some errors, and that is okay."
+    #stretch
+    sudo touch /etc/dbus-1/session.conf
+    sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
+    sudo sed -i 's$<auth>EXTERNAL</auth>$<auth>ANONYMOUS</auth>$' /etc/dbus-1/session.conf
+    sudo sed -i 's$</busconfig>$<allow_anonymous/></busconfig>$' /etc/dbus-1/session.conf
+    #sid
+    sudo touch /usr/share/dbus-1/session.conf
+    sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /usr/share/dbus-1/session.conf
+    sudo sed -i 's$<auth>EXTERNAL</auth>$<auth>ANONYMOUS</auth>$' /usr/share/dbus-1/session.conf
+    sudo sed -i 's$</busconfig>$<allow_anonymous/></busconfig>$' /usr/share/dbus-1/session.conf
+else
+    echo "Skipping GUILIB"
+fi
+
+
+if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (Experimental)" 8 70) then
+	echo "Installing Windows 10 theme"
+    # Source files locations
+    W10LIGHT_URL="https://github.com/B00merang-Project/Windows-10/archive/master.zip"
+    W10DARK_URL="https://github.com/B00merang-Project/Windows-10-Dark/archive/master.zip"
+    INSTALLDIR="/usr/share/themes"
+    LIGHTDIR="windows-10-light"
+    DARKDIR="windows-10-dark"
+
+    updateupgrade
+
+    echo "$ sudo apt install unzip -y"
+    sudo apt install unzip -y
+
+    # Download themes to temporary folder (sub folders for light & dark) then unzip
+    echo "Downloading themes to temporary folder"
+    createtmp
+
+    wget ${W10LIGHT_URL} -O master-light.zip -q --show-progress
+    echo "Unzipping master-light.zip..."
+    unzip -qq master-light.zip
+
+    wget ${W10DARK_URL} -O master-dark.zip -q --show-progress
+    echo "Unzipping master-dark.zip..."
+    unzip -qq master-dark.zip
+
+    if [[ ! -d "${INSTALLDIR}" ]] ; then
+    	echo "${INSTALLDIR} does not exist, creating"
+    	sudo mkdir -p $INSTALLDIR
+    fi
+
+    if [[ -d "${INSTALLDIR}/${LIGHTDIR}" ]] ; then
+    	echo "${INSTALLDIR}/${LIGHTDIR} already exists, removing old"
+    	sudo rm -r $INSTALLDIR/$LIGHTDIR
+    fi
+
+    if [[ -d "${INSTALLDIR}/${DARKDIR}" ]] ; then
+    	echo "${INSTALLDIR}/${DARKDIR} already exists, removing old"
+    	sudo rm -r $INSTALLDIR/$DARKDIR
+    fi
+
+    # Move to themes folder
+    echo "Moving themes to ${INSTALLDIR}"
+    sudo mv Windows-10-master "${INSTALLDIR}/${LIGHTDIR}"
+    sudo mv Windows-10-Dark-master "${INSTALLDIR}/${DARKDIR}"
+
+    # Set correct permissions
+    echo "Setting correct theme folder permissions"
+    sudo chown -R root:root ${INSTALLDIR}/windows-10-light
+    sudo chown -R root:root ${INSTALLDIR}/windows-10-dark
+    sudo chmod -R 0755 ${INSTALLDIR}/windows-10-light
+    sudo chmod -R 0755 ${INSTALLDIR}/windows-10-dark
+
+    # Cleanup
+    cleantmp
+
+    whiptail --title "How to set Windows 10 theme" --msgbox "Download a Linux desktop environment of your choice and these themes will show up under themes / appearance settings. In the future we plan on setting this theme for Linux GUI applications even without a full desktop environment installed" 9 90
+else
+    echo "Skipping Windows 10 theme install"
+fi
+
+if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improved non-Latin input?" 8 65) then
+    echo "Installing fcitx"
+
+    echo "sudo apt install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
+    updateupgrade
+    sudo apt install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
+
+    FCCHOICE=$(whiptail --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 15 65 8 \
+    "sunpinyin" "Chinese sunpinyin" off \
+    "libpinyin" "Chinese libpinyin" off \
+    "rime" "Chinese rime" off \
+    "googlepinyin" "Chinese googlepinyin" off \
+    "chewing" "Chinese chewing" off \
+    "mozc" "Japanese mozc" on \
+    "kkc" "Japanese kkc" off \
+    "hangul" "Korean hangul" off \
+    "unikey" "Vietnamese unikey" off \
+    "sayura" "Sinhalese sayura" off \
+    "table" "Tables (Includes all available tables)" off 3>&1 1>&2 2>&3
+)
+
+    if [[ $FCCHOICE == *"sunpinyin"* ]] ; then
+        sudo apt install fcitx-sunpinyin -y
+    fi
+
+    if [[ $FCCHOICE == *"libpinyin"* ]] ; then
+        sudo apt install fcitx-libpinyin -y
+    fi
+
+    if [[ $FCCHOICE == *"rime"* ]] ; then
+        sudo apt install fcitx-rime -y
+    fi
+
+    if [[ $FCCHOICE == *"googlepinyin"* ]] ; then
+        sudo apt install fcitx-googlepinyin -y
+    fi
+
+    if [[ $FCCHOICE == *"chewing"* ]] ; then
+        sudo apt install fcitx-chewing -y
+    fi
+
+    if [[ $FCCHOICE == *"mozc"* ]] ; then
+        sudo apt install fcitx-mozc -y
+    fi
+
+    if [[ $FCCHOICE == *"kkc"* ]] ; then
+        sudo apt install fcitx-kkc fcitx-kkc-dev -y
+    fi
+
+    if [[ $FCCHOICE == *"hangul"* ]] ; then
+        sudo apt install fcitx-hangul -y
+    fi
+
+    if [[ $FCCHOICE == *"unikey"* ]] ; then
+        sudo apt install fcitx-unikey -y
+    fi
+
+    if [[ $FCCHOICE == *"sayura"* ]] ; then
+        sudo apt install fcitx-sayura -y
+    fi
+
+    if [[ $FCCHOICE == *"tables"* ]] ; then
+        sudo apt install fcitx-table fcitx-table-all -y
+    fi
+
+    echo "Setting environmental variables"
+    export GTK_IM_MODULE=fcitx
+    export QT_IM_MODULE=fcitx
+    export XMODIFIERS=@im=fcitx
+    export DefaultIMModule=fcitx
+
+    echo "Saving environmental variables to /etc/profile.d/fcitx"
+    sudo sh -c 'echo "export QT_IM_MODULE=fcitx" >> /etc/profile.d/fcitx'
+    sudo sh -c 'echo "export GTK_IM_MODULE=fcitx" >> /etc/profile.d/fcitx'
+    sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx'
+    sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx'
+
+    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open WLinux? WARNING: Requires an X server to be running or it will generate errors." 8 70) then
+        echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
+        sudo sh -c 'echo "fcitx-autostart &>/dev/null" >> /etc/profile.d/fcitx'
+    else
+        echo "Skipping fcitx-autostart"
+        whiptail --title "Note about fcitx-autostart" --msgbox "You will need to run $ fcitx-autostart to enable fcitx before running GUI apps." 8 85
+    fi
+
+    echo "Configuring dbus machine id"
+    sudo sh -c "dbus-uuidgen > /var/lib/dbus/machine-id"
+
+    if (whiptail --title "fcitx-autostart" --yesno "Would you like to run fcitx-autostart now? Requires an X server to be running." 8 85) then
+        echo "Starting fcitx-autostart"
+        fcitx-autostart
+    else
+        echo "Skipping fcitx-config-gtk3"
+    fi
+   
+    if (whiptail --title "fcitx-config-gtk3" --yesno "Would you like to configure fcitx now? Requires an X server to be running." 8 80) then
+        echo "Running fcitx-config-gtk3"
+        fcitx-config-gtk3
+    else
+        echo "Skipping fcitx-config-gtk3"
+    fi
+
+    whiptail --title "Note about fcitx-config-gtk3" --msgbox "You can configure fcitx later by running $ fcitx-config-gtk3" 8 70
+
+else
+    echo "Skipping fcitx"
+fi
+
+if (whiptail --title "HiDPI" --yesno "Would you like to configure Qt and GDK for HiDPI displays? (Experimental)" 8 85) then
+    echo "Installing HiDPI"
+    export QT_SCALE_FACTOR=2
+    export GDK_SCALE=2
+    sudo sh -c 'echo "export QT_SCALE_FACTOR=2" >> /etc/profile.d/hidpi'
+    sudo sh -c 'echo "export GDK_SCALE=2" >> /etc/profile.d/hidpi'
+else
+    echo "Skipping HiDPI"
+fi
+}
+
+### dev environments
+
+function pythoninstall {
+if (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.7, IDLE, and the pip package manager?" 8 90) then
+    echo "Installing PYTHON"
+    createtmp
+    updateupgrade
+    sudo apt -t testing install build-essential python3.7 python3.7-distutils idle-python3.7 python3-pip python3-venv -y
+    pip3 install -U pip
+    cleantmp
+else
+    echo "Skipping PYTHON"
+fi
+}
+
+function nodeinstall {
+if (whiptail --title "NODE" --yesno "Would you like to download and install NodeJS using n and the npm package manager?" 8 88) then
+    echo "Installing NODE"
+    createtmp
+    updateupgrade
+    sudo apt install n build-essential -y 
+    sudo n latest
+    curl -0 -L https://npmjs.com/install.sh | sudo sh
+    cleantmp
+
+        if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) then
+            echo "Installing YARN"
+            createtmp
+            curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt-get update && sudo apt-get install yarn --no-install-recommends
+            cleantmp
+        else
+            echo "Skipping YARN"
+        fi
+else
+    echo "Skipping NODE"
+fi
+}
+
+function goinstall {
+if (whiptail --title "GO" --yesno "Would you like to download and install the latest Go from Google?" 8 70) then
+    createtmp
+    echo "Downloading Go using wget."
+    wget https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz
+    echo "Unpacking tar binaries to /usr/local/go."
+    sudo tar -C /usr/local -xzf go*.linux-amd64.tar.gz
+    echo "Creating ~/go/ for your projects."
+    mkdir ~/go/
+    echo "Setting Go environment variables GOROOT, GOPATH, and adding Go to PATH with export."
+    export GOROOT=/usr/local/go
+    export GOPATH=$HOME/go/
+    export PATH=$GOPATH/bin:$GOROOT/bin:/usr/local/go/bin:$PATH
+    echo "Saving Go environment variables to /etc/profile so they will persist."
+    sudo sh -c 'echo "export GOROOT=/usr/local/go" >> /etc/profile'
+    sudo sh -c 'echo "export GOPATH=\${HOME}/go/" >> /etc/profile'
+    sudo sh -c 'echo "export PATH=\${GOPATH}/bin:\${GOROOT}/bin:/usr/local/go/bin:\${PATH}" >> /etc/profile'
+    cleantmp
+else
+    echo "Skipping GO"
+fi
+}
+
+function rubyinstall {
+
+if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby using rbenv?" 8 65) then
+    echo "Installing RUBY"
+    echo "Installing Ruby dependencies"
+    sudo apt -t testing install git-core curl zlib1g-dev build-essential libssl-dev libssl1.0-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev -y
+    createtmp
+
+    echo "Getting rbenv"
+    git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+
+    echo "Configuring rbenv"
+    export PATH="$HOME/.rbenv/bin:$PATH"
+    eval "$(rbenv init -)"
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+    source ~/.bashrc
+
+    echo "Getting ruby-build"
+    git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+    echo "Configuring ruby-build"
+    export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+    echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+    source ~/.bashrc
+
+    echo "Installing Ruby using rbenv"
+    rbenv install 2.5.3 --verbose
+    rbenv global 2.5.3
+    echo "Checking ruby version"
+    ruby -v
+    echo "Installing bundler using gem"
+    gem install bundler
+    echo "Rehashing rbenv"
+    rbenv rehash
+    cleantmp
+else
+    echo "Skipping RUBY"
+fi
+
+if (whiptail --title "RAILS" --yesno "Would you like to download and install Rails from RubyGems?" 8 65) then
+    echo "Installing RAILS"
+    updateupgrade
+    sudo apt -t testing install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
+    createtmp
+    nodeinstall
+    gem install rails -v 5.2.0
+    rbenv rehash
+    cleantmp
+else
+    echo "Skipping RAILS"
+fi
+}
+
+function rustlanginstall {
+if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust from the rust-lang website?" 8 85) then
+    echo "Installing rust"
+
+    # Create temp directory and download rustup installer here
+    createtmp
+    echo "Downloading and latest version of rustup installer"
+    wget https://sh.rustup.rs -O rustup.rs
+
+    echo "Executing..."
+    chmod +x rustup.rs
+    sh rustup.rs -y
+
+    # Cleanup
+    echo "Cleaning up rustup temporary folder"
+    cleantmp
+fi
+}
+
+function dotnetinstall {
+
+if (whiptail --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) then
+    echo "Installing DOTNET"
+    createtmp
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+    sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+    rm microsoft.gpg
+    sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' 
+    updateupgrade
+    sudo apt install dotnet-sdk-2.1 -y
+    cleantmp
+
+    if (whiptail --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) then
+        echo "Installing NuGet"
+        sudo apt install nuget -y
+    else
+        echo "Skipping NUGET"
+    fi
+
+else
+    echo "Skipping DOTNET"
+fi
+}
+
+function javainstall {
+
+if (whiptail --title "OpenJDK" --yesno "Would you like to Install OpenJDK 8?" 8 42) then
+    echo "$ apt install openjdk-8-jre openjdk-8-jdk -y"
+    updateupgrade
+    sudo apt install openjdk-8-jre openjdk-8-jdk -y
+else
+    echo "Skipping OpenJDK"
+fi
+}
+
+function powershellinstall {
+
+if (whiptail --title "POWERSHELL" --yesno "Would you like to download and install Powershell?" 8 55) then
+    echo "Installing POWERSHELL"
+    createtmp
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+    sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+    rm microsoft.gpg
+    sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' 
+    updateupgrade
+    sudo apt -t unstable install liblttng-ust0 libssl1.0.2 libicu57 liburcu6 liblttng-ust-ctl4
+    sudo apt install powershell -y
+    cleantmp
+else
+    echo "Skipping POWERSHELL"
+fi
+}
+
+### enhancements
+
+function fzfinstall {
+
+if (whiptail --title "FZF" --yesno "Would you like to download and install command line finder fzf?" 8 80) then
+    echo "Installing FZF"
+    cd ~
+    git clone --depth 1 https://github.com/junegunn/fzf.git
+    cd fzf
+    ./install
+else
+    echo "Skipping FZF"
+fi
+}
+
+function explorerintegration {
+if (whiptail --title "EXPLORER" --yesno "Would you like to enable Windows Explorer shell integration?" 8 65); then
+    echo "Enabling Windows Explorer shell integration."
+    createtmp
+    cat << 'EOF' >> Install.reg
+    Windows Registry Editor Version 5.00
+    [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\WLinux]
+    @="Open with WLinux"
+    [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\WLinux\command]
+    @="_wlinuxPath_ run \"cd \\\"$(wslpath \\\"%V\\\")\\\" && $(getent passwd $LOGNAME | cut -d: -f7)\""
+    [HKEY_CURRENT_USER\Software\Classes\Directory\shell\WLinux]
+    @="Open with WLinux"
+    [HKEY_CURRENT_USER\Software\Classes\Directory\shell\WLinux\command]
+    @="_wlinuxPath_ run \"cd \\\"$(wslpath \\\"%V\\\")\\\" && $(getent passwd $LOGNAME | cut -d: -f7)\""
+EOF
+    wlinuxPath=$(wslpath -m "$(whereis wlinux.exe | cut --delimiter=' ' -f2)" | sed 's$/$\\\\\\\\$g')
+    sed -i "s/_wlinuxPath_/${wlinuxPath}/g" Install.reg
+    cp Install.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Install.reg
+    cmd.exe /C "Reg import %TEMP%\Install.reg"
+    cleantmp
+ else
+    echo "Disabling Windows Explorer shell integration."
+    createtmp
+    cat << 'EOF' >> Uninstall.reg
+    Windows Registry Editor Version 5.00
+    [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\WLinux]
+    [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\WLinux]
+EOF
+    cp Uninstall.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Uninstall.reg
+    cmd.exe /C "Reg import %TEMP%\Uninstall.reg"
+    cleantmp
+fi
+}
+
+function dockerinstall_build_relay {
+
+    #Build the relay
+    if [[ ! -f "${wHome}/.npiperelay/npiperelay.exe" ]]; then
+
+        echo "Checking for go"
+        if ! (go version); then
+            echo "Downloading Go using wget."
+	        wget -c "https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz"
+            tar -xzf go*.linux-amd64.tar.gz
+
+            export GOROOT=$(pwd)/go
+            export PATH="${GOROOT}/bin:$PATH"
+
+        fi
+
+        mkdir gohome
+        export GOPATH=$(pwd)/gohome
+
+        echo "Checking for git"
+        if (git version); then
+            git_exists=1
+        else
+            git_exists=0
+
+            sudo apt-get install -yq git
+        fi
+
+        echo "Building npiperelay.exe."
+        go get -d github.com/jstarks/npiperelay
+
+        if [[ ${git_exists} -eq 0 ]]; then
+            sudo apt-get purge -yq git
+            sudo apt-get autoremove -yq
+        fi
+
+        GOOS=windows go build -o npiperelay.exe github.com/jstarks/npiperelay
+        sudo mkdir -p "${wHome}/.npiperelay"
+        cmd.exe /c 'attrib +h %HOMEDRIVE%%HOMEPATH%\.npiperelay'
+        sudo cp npiperelay.exe "${wHome}/.npiperelay/npiperelay.exe"
+    fi
+
+    sudo apt-get -y -q install socat
+
+    cat << 'EOF' >> docker-relay
+#!/bin/bash
+
+connected=$(docker version 2>&1 | grep -c "daemon\|error")
+if [[ ${connected} != 0  ]]; then
+
+    PATH=${PATH}:$(wslpath "C:\Windows\System32")
+    wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
+    wHome=$(wslpath -u "${wHomeWinPath}")
+
+    killall --quiet socat
+    exec nohup socat UNIX-LISTEN:/var/run/docker.sock,fork,group=docker,umask=007 EXEC:"\'${wHome}/.npiperelay/npiperelay.exe\' -ep -s //./pipe/docker_engine",nofork  </dev/null &>/dev/null &
+fi
+EOF
+    sudo cp docker-relay /usr/bin/docker-relay
+    sudo chmod +x /usr/bin/docker-relay
+
+    echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
+
+    cat << 'EOF' >> docker_relay.sh
+sudo docker-relay
+EOF
+    sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
+    sudo chmod -w /usr/bin/docker-relay
+
+    sudo addgroup docker
+    sudo adduser ${USER} docker
+
+    echo "Running the relay for the first time."
+    sudo docker-relay
+
+    sleep 1s
+
+    sudo docker version
+
+}
+
+function dockerinstall_conf_tcp {
+
+    echo "Connect to Docker via TCP"
+
+    cat << 'EOF' >> docker_relay.sh
+export DOCKER_HOST=tcp://0.0.0.0:2375
+EOF
+    sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
+
+    export DOCKER_HOST=tcp://0.0.0.0:2375
+    connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+    if [[ ${connected} != 0  ]]; then
+        whiptail --title "DOCKER" \
+        --msgbox "Please go to Docker for Windows -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
+    fi
+}
+
+function dockerinstall {
+if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
+    echo "Installing the bridge to Docker."
+
+    connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+    while [[ ${connected} != 0  ]]; do
+        if ! (whiptail --title "DOCKER" --yesno "Docker Desktop appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
+            return
+
+        fi
+
+        connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+
+    done
+
+    createtmp
+    sudo apt-get update -yq 
+
+    export PATH=${PATH}:$(wslpath "C:\Windows\System32") #Be sure we can execute Windows commands
+
+    wget -c https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz
+    sudo tar -xzvf docker-${DOCKERVERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
+
+    sudo chmod 755 /usr/bin/docker
+    sudo chown root:root /usr/bin/docker
+
+    #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
+    connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+    if [[ $(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2) -gt 17063 && ${connected} != 0  ]]; then
+        #Connect via Unix Sockets
+        dockerinstall_build_relay
+    else
+        #Connect via TCP
+        dockerinstall_conf_tcp
+    fi
+
+    echo "Installing bash-completion"
+    sudo apt-get install -yq bash-completion
+    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
+
+    echo "Installing docker-compose"
+    sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${DOCKERCOMPOSEVERSION}/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose"
+    sudo chmod +x /usr/bin/docker-compose
+
+    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose'
+
+    docker-compose version
+
+    if [[ $(wslpath 'C:\\') = '/mnt/c/' ]]; then
+
+        if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
+            echo "Changing the root from /mnt to /"
+
+            if [[ $(grep -c "root" /etc/wsl.conf) -eq 0 ]]; then
+                sudo sed -i 's$\[automount\]$\0\nroot=/$' /etc/wsl.conf
+
+            else
+                sudo sed -i 's$\(root=\)\(.*\)$\1/$' /etc/wsl.conf
+            fi
+
+        fi
+    fi
+
+    whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open WLinux" 8 60
+    cleantmp
+
+else
+    echo "Skipping Docker"
+
+fi
+}
+
+### cloud tools
+
+function azurecliinstall {
+if (whiptail --title "AZURECLI" --yesno "Would you like to download and install Azure command line tools?" 8 70) then
+    echo "Installing AZURECLI"
+    createtmp
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+    sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+    sudo chmod 644 /etc/apt/trusted.gpg.d/microsoft.gpg
+    sudo bash -c "echo 'deb https://packages.microsoft.com/repos/azure-cli/ stretch main' >> /etc/apt/sources.list.d/azurecli.list"
+    updateupgrade
+    echo "Note: azure-cli install can appear to 'stall' at 16%, it is usually not broken, just taking a long time."
+    sudo apt install azure-cli -y
+    cleantmp
+else
+    echo "Skipping AZURECLI"
+fi
+}
+
+### databases
+
+function cassandrainstall {
+if (whiptail --title "CASSANDRA" --yesno "Would you like to download and install Apache Cassandra?" 8 60) then
+    echo "Installing CASSANDRA"
+    createtmp
+    curl https://dist.apache.org/repos/dist/release/cassandra/KEYS | gpg --dearmor > cassandra.gpg
+    sudo cp cassandra.gpg /etc/apt/trusted.gpg.d/cassandra.gpg
+    sudo chmod 644 /etc/apt/trusted.gpg.d/cassandra.gpg
+    sudo bash -c "echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' > /etc/apt/sources.list.d/cassandra.list"
+    sudo su -c "echo '${USER} ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
+    updateupgrade
+    sudo mount -t proc proc /proc
+    sudo apt install cassandra -y
+    sudo su -c "echo 'cassandra ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
+    sudo su -c "echo 'sudo mount -t proc proc /proc' >> /etc/profile"
+
+    whiptail --title "CASSANDRA" --msgbox "Cassandra must be run as user cassandra, $ sudo -u cassandra /usr/sbin/cassandra -f " 8 90
+
+    if (whiptail --title "CASSANDRA" --yesno "Would you like to store Cassandra configuration and logs in your Windows user home folder?" 8 95) then
+
+        if [ -d "${wHome}/cassandra" ]; then
+            echo "Backing up existing Cassandra directony"
+            sudo cp -r "${wHome}/cassandra" "${wHome}/cassandra.old"
+        fi
+
+        echo "Moving Cassandra configuration directory"
+        sudo unlink /etc/cassandra # these clean up from previous installs
+        sudo mkdir /etc/cassandra
+        sudo cp -r /etc/cassandra/ "${wHome}"
+        sudo rm -r /etc/cassandra
+        sudo ln -s "${wHome}/cassandra" /etc/cassandra
+
+        echo "Moving Cassandra log directory"
+        sudo mkdir "${wHome}/cassandra/logs"
+        sudo rm -r /var/log/cassandra
+        sudo ln -s "${wHome}/cassandra/logs" /var/log/cassandra
+
+        echo "Setting permissions"
+        sudo chown -R cassandra:cassandra /etc/cassandra
+        sudo chown -R cassandra:cassandra /var/lib/cassandra/
+        sudo chown -R cassandra:cassandra /var/log/cassandra/
+    fi
+
+    if (whiptail --title "CASSANDRA" --yesno "Would you like to create .bat files to run and update Cassandra in your Windows user home folder?" 8 102) then
+
+        echo "Enter your UNIX password below."
+        passvar=0
+        read -s -p "[sudo] password for $USER: " passvar
+        until (echo $sudo_pwd | sudo -S echo '' 2>/dev/null)
+        do
+            echo -e '\nSorry, try again.'
+            read -s -p "[sudo] password for $USER: " passvar
+        done
+
+        sudo mkdir "${wHome}/cassandra/" # in case user opted to keep config on WSL
+
+        echo "Creating autorun.bat file in home folder"
+        phrase1='wlinux.exe run "echo '
+        phrase2=" | sudo -Su root mount -t proc proc /proc"
+        phrase3=" | sudo -Su cassandra /usr/sbin/cassandra -f"
+        write1="$phrase1$passvar$phrase2"
+        write2="$phrase1$passvar$phrase3"
+        cat << EOF > autorun.bat
+@echo off
+$write1"
+$write2"
+EOF
+        sudo cp autorun.bat "${wHome}/cassandra/"
+
+        echo "Creating update.bat file on Windows Desktop"
+        phrase1='wlinux.exe run "echo '
+        phrase2=' | sudo -S apt update ; sudo -S apt upgrade -y ; sudo -S apt autoclean -y"'
+        write="$phrase1$passvar$phrase2"
+        sudo cat << EOF > update.bat
+@echo off
+$write
+EOF
+        sudo cp update.bat "${wHome}/cassandra/"
+
+        echo "Creating installservice .bat file on Windows Desktop"
+        phrase1='sc create NewService binpath= '
+        phrase2='/cassandra/autorun.bat type= share start= auto displayname= Cassandra'
+        write="$phrase1${wHome}$phrase2"
+        sudo cat << EOF > installservice.bat
+@echo off
+$write
+EOF
+        sudo cp installservice.bat "${wHome}/cassandra/"
+
+    fi
+
+    cleantmp
+else
+    echo "Skipping CASSANDRA"
+fi
+}
+
+# main
+processarguments  "$@"
+
+if [ ! -f ~/.updated ]; then
+    welcomeprompt
+    continueprompt
+    updatescriptprompt
+else
+    rm ~/.updated
+fi
+
+securitypatches
+installmenu
+byemessage
+
+exit 0
