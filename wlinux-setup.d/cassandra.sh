@@ -1,6 +1,7 @@
 #!/bin/bash
 
-function cassandrainstall {
+source "/etc/wlinux-setup.d/common.sh"
+
 if (whiptail --title "CASSANDRA" --yesno "Would you like to download and install Apache Cassandra?" 8 60) then
     echo "Installing CASSANDRA"
     createtmp
@@ -94,6 +95,3 @@ EOF
 else
     echo "Skipping CASSANDRA"
 fi
-}
-
-cassandrainstall {}

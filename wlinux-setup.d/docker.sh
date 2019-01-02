@@ -1,22 +1,22 @@
 #!/bin/bash
 
+source "/etc/wlinux-setup.d/common.sh"
+
 DOCKERVERSION="18.09.0"
 DOCKERCOMPOSEVERSION="1.23.1"
 
 function dockerinstall_build_relay {
-
     #Build the relay
     if [[ ! -f "${wHome}/.npiperelay/npiperelay.exe" ]]; then
 
         echo "Checking for go"
         if ! (go version); then
             echo "Downloading Go using wget."
-	        wget -c "https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz"
+            wget -c "https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz"
             tar -xzf go*.linux-amd64.tar.gz
 
             export GOROOT=$(pwd)/go
             export PATH="${GOROOT}/bin:$PATH"
-
         fi
 
         mkdir gohome
@@ -81,11 +81,9 @@ EOF
     sleep 1s
 
     sudo docker version
-
 }
 
 function dockerinstall_conf_tcp {
-
     echo "Connect to Docker via TCP"
 
     cat << 'EOF' >> docker_relay.sh
@@ -101,7 +99,6 @@ EOF
     fi
 }
 
-function dockerinstall {
 if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
 
@@ -166,11 +163,6 @@ if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to D
 
     whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open WLinux" 8 60
     cleantmp
-
 else
     echo "Skipping Docker"
-
 fi
-}
-
-dockerinstall {}

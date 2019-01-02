@@ -1,7 +1,8 @@
 #!/bin/bash
 
-function rustlanginstall {
-if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust from the rust-lang website?" 8 85) then
+source "/etc/wlinux-setup.d/common.sh"
+
+if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust via rustup?" 8 85) then
     echo "Installing rust"
 
     # Create temp directory and download rustup installer here
@@ -16,7 +17,6 @@ if (whiptail --title "RUST" --yesno "Would you like to download and install the 
     # Cleanup
     echo "Cleaning up rustup temporary folder"
     cleantmp
+else
+	echo "Skipping rust"
 fi
-}
-
-rustlanginstall {}

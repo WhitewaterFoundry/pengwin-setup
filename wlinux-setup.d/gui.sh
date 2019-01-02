@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function basicguiinstall {
+source "/etc/wlinux-setup.d/common.sh"
 
 whiptail --title "Note about GUI Apps" --msgbox "Use of GUI applications on WLinux requires an X server running on Windows 10.\n\nExamples include:\n\nX410\nVcXsrv\nXming" 15 60
 
@@ -210,6 +210,3 @@ if (whiptail --title "HiDPI" --yesno "Would you like to configure Qt and GDK for
 else
     echo "Skipping HiDPI"
 fi
-}
-
-basicguiinstall {}

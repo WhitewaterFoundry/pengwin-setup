@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function dotnetinstall {
+source "/etc/wlinux-setup.d/common.sh"
 
 if (whiptail --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) then
     echo "Installing DOTNET"
@@ -23,6 +23,3 @@ if (whiptail --title "DOTNET" --yesno "Would you like to download and install th
 else
     echo "Skipping DOTNET"
 fi
-}
-
-dotnetinstall {}
