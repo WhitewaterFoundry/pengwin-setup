@@ -1,1 +1,37 @@
-# placeholder for cicleci yaml
+
+# note: $PACKAGECLOUD_TOKEN is set in circleci settings
+
+version: 2
+
+jobs:
+  builddeb:
+    docker:
+    - image: patrick330602/fake_wsl_env
+    environment:
+      DEBEMAIL "contact@whitewaterfoundry.com" # possibly configure in circleci settings?
+      DEBFULLNAME "Whitewater Foundry, Ltd. Co."
+    steps:
+      - checkout
+      - run:
+          name: Build the package
+          command: dpkg-deb --build wlinux-base-$CIRCLE_BUILD_NUM.deb
+  deploy:
+    steps:
+      - run:
+          name: Install packagecloud CLI
+          command: gem install package_cloud
+      - run:
+          name: Push binary deb package
+          command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch debs/packagecloud
+      - run:
+          name: Push source deb package
+          command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch debs/packagecloud
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - builddeb
+      - deploy:
+          requires:
+            - buildddeb
