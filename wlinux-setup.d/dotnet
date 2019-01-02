@@ -25,4 +25,4 @@ else
 fi
 }
 
-dotnetinstall{}
+dotnetinstall {}
