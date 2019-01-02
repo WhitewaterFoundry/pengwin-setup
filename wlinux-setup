@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# environment
+# define variables
 
-RESPONSE=""
-CURDUR=""
-TMPDIR=""
-VERSION="1.2a"
+MenuChoice=""
+CurrentDirectory=""
+TemporaryDirectory=""
+WorkingDirectory=$(pwd)
+Version="1.2a"
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
 
@@ -53,17 +54,17 @@ sudo apt autoremove -y
 
 function createtmp {
     echo "Saving current directory as \$CURDIR"
-    CURDIR=$(pwd)
+    CurrentDirectory=$(pwd)
     TMPDIR=$(mktemp -d)
-    echo "Going to \$TMPDIR: $TMPDIR"
-    cd $TMPDIR
+    echo "Going to \$TMPDIR: $TemporaryDirectory"
+    cd $TemporaryDirectory
 }
 
 function cleantmp {
-    echo "Returning to $CURDIR"
-    cd $CURDIR
-    echo "Cleaning up $TMPDIR"
-    sudo rm -r $TMPDIR  # need to add sudo here because git clones leave behind write-protected files
+    echo "Returning to $CurrentDirectory"
+    cd $CurrentDirectory
+    echo "Cleaning up $TemporaryDirectory"
+    sudo rm -r $TemporaryDirectory  # need to add sudo here because git clones leave behind write-protected files
 }
 
 function byemessage {
@@ -75,7 +76,7 @@ function byemessage {
 
 function installmenu {
 
-CHOICE=$(
+MenuChoice=$(
 whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
     "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
     "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
@@ -95,85 +96,85 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
     "NONE" "" on 3>&1 1>&2 2>&3
 )
 
-echo "Selected:" $CHOICE
+echo "Selected:" $MenuChoice
 
-if [[ $CHOICE == *"LANGUAGE"* ]] ; then
+if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
   echo "LANGUAGE"
-  . /wlinux-setup.d/language
+  . $WorkingDirectory/wlinux-setup.d/language
 fi
 
-if [[ $CHOICE == *"EXPLORER"* ]] ; then
+if [[ $MenuChoice == *"EXPLORER"* ]] ; then
   echo "EXPLORER"
-  . /wlinux-setup.d/explorer
+  . $WorkingDirectory/wlinux-setup.d/explorer
 fi
 
-if [[ $CHOICE == *"SHELLS"* ]] ; then
+if [[ $MenuChoice == *"SHELLS"* ]] ; then
   echo "SHELLS"
-  . /wlinux-setup.d/shells
+  . $WorkingDirectory/wlinux-setup.d/shells
 fi
 
-if [[ $CHOICE == *"EDITORS"* ]] ; then
+if [[ $MenuChoice == *"EDITORS"* ]] ; then
   echo "EDITORS"
-  . /wlinux-setup.d/editors
+  . $WorkingDirectory/wlinux-setup.d/editors
 fi 
 
-if [[ $CHOICE == *"PYTHON"* ]] ; then
+if [[ $MenuChoice == *"PYTHON"* ]] ; then
   echo "PYTHON"
-  . /wlinux-setup.d/python
+  . $WorkingDirectory/wlinux-setup.d/python
 fi
 
-if [[ $CHOICE == *"NODE"* ]] ; then
+if [[ $MenuChoice == *"NODE"* ]] ; then
   echo "NODE"
-  . /wlinux-setup.d/nodejs
+  . $WorkingDirectory/wlinux-setup.d/nodejs
 fi
 
-if [[ $CHOICE == *"GO"* ]] ; then
+if [[ $MenuChoice == *"GO"* ]] ; then
   echo "GO"
-  . /wlinux-setup.d/golang
+  . $WorkingDirectory/wlinux-setup.d/golang
 fi
 
-if [[ $CHOICE == *"RUBY"* ]] ; then
+if [[ $MenuChoice == *"RUBY"* ]] ; then
   echo "RUBY"
-  . /wlinux-setup.d/ruby
+  . $WorkingDirectory/wlinux-setup.d/ruby
 fi
 
-if [[ $CHOICE == *"RUST"* ]] ; then
+if [[ $MenuChoice == *"RUST"* ]] ; then
   echo "RUST"
-  . /wlinux-setup.d/rust
+  . $WorkingDirectory/wlinux-setup.d/rust
 fi
 
-if [[ $CHOICE == *"DOTNET"* ]] ; then
+if [[ $MenuChoice == *"DOTNET"* ]] ; then
   echo "DOTNET"
-  . /wlinux-setup.d/dotnet
+  . $WorkingDirectory/wlinux-setup.d/dotnet
 fi
 
-if [[ $CHOICE == *"JAVA"* ]] ; then
+if [[ $MenuChoice == *"JAVA"* ]] ; then
   echo "JAVA"
-  . /wlinux-setup.d/java
+  . $WorkingDirectory/wlinux-setup.d/java
 fi
 
-if [[ $CHOICE == *"POWERSHELL"* ]] ; then
+if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
-  . /wlinux-setup.d/powershell
-  . /wlinux-setup.d/azurecli
+  . $WorkingDirectory/wlinux-setup.d/powershell
+  . $WorkingDirectory/wlinux-setup.d/azurecli
 fi
 
-if [[ $CHOICE == *"GUI"* ]] ; then
+if [[ $MenuChoice == *"GUI"* ]] ; then
   echo "GUI"
-  . /wlinux-setup.d/gui
+  . $WorkingDirectory/wlinux-setup.d/gui
 fi
 
-if [[ $CHOICE == *"DOCKER"* ]] ; then
+if [[ $MenuChoice == *"DOCKER"* ]] ; then
   echo "DOCKER"
-  . /wlinux-setup.d/docker
+  . $WorkingDirectory/wlinux-setup.d/docker
 fi
 
-if [[ $CHOICE == *"CASSANDRA"* ]] ; then
+if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
-  . /wlinux-setup.d/cassandra
+  . $WorkingDirectory/wlinux-setup.d/cassandra
 fi
 
-if [[ $CHOICE == "NONE" ]] ; then
+if [[ $MenuChoice == "NONE" ]] ; then
     echo "NONE"
     whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
     installmenu
