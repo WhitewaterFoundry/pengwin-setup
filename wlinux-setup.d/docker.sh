@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common.sh
+source "/etc/wlinux-setup.d/common.sh"
 
 DOCKERVERSION="18.09.0"
 DOCKERCOMPOSEVERSION="1.23.1"

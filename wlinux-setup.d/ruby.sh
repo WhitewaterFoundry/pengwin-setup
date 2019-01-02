@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common.sh
+source "/etc/wlinux-setup.d/common.sh"
 
 if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby using rbenv?" 8 65) then
     echo "Installing RUBY"
