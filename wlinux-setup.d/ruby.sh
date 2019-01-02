@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function rubyinstall {
+source "/etc/wlinux-setup.d/common.sh"
 
 if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby using rbenv?" 8 65) then
     echo "Installing RUBY"
@@ -52,6 +52,3 @@ if (whiptail --title "RAILS" --yesno "Would you like to download and install Rai
 else
     echo "Skipping RAILS"
 fi
-}
-
-rubyinstall {}

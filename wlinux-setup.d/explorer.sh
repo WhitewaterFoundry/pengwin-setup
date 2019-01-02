@@ -1,6 +1,7 @@
 #!/bin/bash
 
-function explorerintegration {
+source "/etc/wlinux-setup.d/common.sh"
+
 if (whiptail --title "EXPLORER" --yesno "Would you like to enable Windows Explorer shell integration?" 8 65); then
     echo "Enabling Windows Explorer shell integration."
     createtmp
@@ -32,6 +33,3 @@ EOF
     cmd.exe /C "Reg import %TEMP%\Uninstall.reg"
     cleantmp
 fi
-}
-
-explorerintegration {}

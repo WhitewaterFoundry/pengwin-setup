@@ -1,8 +1,9 @@
 #!/bin/bash
 
+source "/etc/wlinux-setup.d/common.sh"
+
 GOVERSION="1.11.4"
 
-function goinstall {
 if (whiptail --title "GO" --yesno "Would you like to download and install the latest Go from Google?" 8 70) then
     createtmp
     echo "Downloading Go using wget."
@@ -23,6 +24,3 @@ if (whiptail --title "GO" --yesno "Would you like to download and install the la
 else
     echo "Skipping GO"
 fi
-}
-
-goinstall {}

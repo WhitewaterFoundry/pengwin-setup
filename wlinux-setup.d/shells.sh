@@ -1,4 +1,5 @@
 #!/bin/bash
+<<<<<<< HEAD:wlinux-setup.d/shells
 
 function installandsetshell {
     
@@ -14,19 +15,10 @@ if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     sudo apt install zsh -y
     zshinstall
 fi
+=======
+>>>>>>> 2a77e4c5e1382ef7ef2e8ad7bdac180ec6e8745b:wlinux-setup.d/shells.sh
 
-if [[ $EDITORCHOICE == *"FISH"* ]] ; then
-    echo "Installing fish..."
-    sudo apt install fish -y
-    fishinstall
-fi
-
-if [[ $EDITORCHOICE == *"CSH"* ]] ; then
-    echo "Installing csh..."
-    sudo apt install csh -y
-    cshinstall
-fi
-}
+source "/etc/wlinux-setup.d/common.sh"
 
 function zshinstall {
 ZSH_SETUP=".zsh_wlinux"
@@ -101,5 +93,31 @@ if (whiptail --title "csh" --yesno "Would you like to set csh as the default she
 fi
 }
 
+EDITORCHOICE=$(
+whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+    "ZSH" "zsh" off \
+    "FISH" "fish" off \
+    "CSH" "csh" off 3>&1 1>&2 2>&3
+)
 
+if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
+    echo "Installing zsh..."
+    sudo apt install zsh -y
+    zshinstall
+fi
+
+<<<<<<< HEAD:wlinux-setup.d/shells
 installandsetshell {}
+=======
+if [[ $EDITORCHOICE == *"FISH"* ]] ; then
+    echo "Installing fish..."
+    sudo apt install fish -y
+    fishinstall
+fi
+
+if [[ $EDITORCHOICE == *"CSH"* ]] ; then
+    echo "Installing csh..."
+    sudo apt install csh -y
+    cshinstall
+fi
+>>>>>>> 2a77e4c5e1382ef7ef2e8ad7bdac180ec6e8745b:wlinux-setup.d/shells.sh
