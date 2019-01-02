@@ -35,5 +35,5 @@ else
 fi
 }
 
-powershellinstall{}
-azurecliinstall{}
+powershellinstall {}
+azurecliinstall {}

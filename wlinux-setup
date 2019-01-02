@@ -53,10 +53,10 @@ sudo apt autoremove -y
 }
 
 function createtmp {
-    echo "Saving current directory as \$CURDIR"
+    echo "Saving current directory $(pwd)"
     CurrentDirectory=$(pwd)
-    TMPDIR=$(mktemp -d)
-    echo "Going to \$TMPDIR: $TemporaryDirectory"
+    TemporaryDirectory=$(mktemp -d)
+    echo "Going to $TemporaryDirectory"
     cd $TemporaryDirectory
 }
 
@@ -64,7 +64,7 @@ function cleantmp {
     echo "Returning to $CurrentDirectory"
     cd $CurrentDirectory
     echo "Cleaning up $TemporaryDirectory"
-    sudo rm -r $TemporaryDirectory  # need to add sudo here because git clones leave behind write-protected files
+    sudo rm -r $TemporaryDirectory
 }
 
 function byemessage {
