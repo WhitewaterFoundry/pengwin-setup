@@ -1,14 +1,7 @@
 #!/bin/bash
 
-# define variables
-
-MenuChoice=""
-CurrentDirectory=""
-TemporaryDirectory=""
-WorkingDirectory=$(pwd)
-Version="1.2a"
-wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
-wHome=$(wslpath -u "${wHomeWinPath}")
+SETUPDIR="/etc/wlinux-setup.d"
+VERSION="1.2a"
 
 # define functions
 
@@ -52,21 +45,6 @@ sudo apt upgrade -y
 sudo apt autoremove -y
 }
 
-function createtmp {
-    echo "Saving current directory $(pwd)"
-    CurrentDirectory=$(pwd)
-    TemporaryDirectory=$(mktemp -d)
-    echo "Going to $TemporaryDirectory"
-    cd $TemporaryDirectory
-}
-
-function cleantmp {
-    echo "Returning to $CurrentDirectory"
-    cd $CurrentDirectory
-    echo "Cleaning up $TemporaryDirectory"
-    sudo rm -r $TemporaryDirectory
-}
-
 function byemessage {
     whiptail --title "Setup is complete." --msgbox "You may run wlinux-setup again any time by typing $ wlinux-setup\n\nYou may open a browser link to get help any time by typing: $ wlinux-help" 8 80
     exit 0
@@ -98,86 +76,86 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
 
 echo "Selected:" $MenuChoice
 
-if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
+if [[ $CHOICE == *"LANGUAGE"* ]] ; then
   echo "LANGUAGE"
-  . $WorkingDirectory/wlinux-setup.d/language
+  bash ${SETUPDIR}/language.sh
 fi
 
 if [[ $MenuChoice == *"EXPLORER"* ]] ; then
   echo "EXPLORER"
-  . $WorkingDirectory/wlinux-setup.d/explorer
+  bash ${SETUPDIR}/explorer.sh
 fi
 
 if [[ $MenuChoice == *"SHELLS"* ]] ; then
   echo "SHELLS"
-  . $WorkingDirectory/wlinux-setup.d/shells
+  bash ${SETUPDIR}/shells.sh
 fi
 
 if [[ $MenuChoice == *"EDITORS"* ]] ; then
   echo "EDITORS"
-  . $WorkingDirectory/wlinux-setup.d/editors
+  bash ${SETUPDIR}/editors.sh
 fi 
 
 if [[ $MenuChoice == *"PYTHON"* ]] ; then
   echo "PYTHON"
-  . $WorkingDirectory/wlinux-setup.d/python
+  bash ${SETUPDIR}/python.sh
 fi
 
 if [[ $MenuChoice == *"NODE"* ]] ; then
   echo "NODE"
-  . $WorkingDirectory/wlinux-setup.d/nodejs
+  bash ${SETUPDIR}/nodejs.sh
 fi
 
 if [[ $MenuChoice == *"GO"* ]] ; then
   echo "GO"
-  . $WorkingDirectory/wlinux-setup.d/golang
+  bash ${SETUPDIR}/go.sh
 fi
 
 if [[ $MenuChoice == *"RUBY"* ]] ; then
   echo "RUBY"
-  . $WorkingDirectory/wlinux-setup.d/ruby
+  bash ${SETUPDIR}/ruby.sh
 fi
 
-if [[ $MenuChoice == *"RUST"* ]] ; then
+if [[ $CHOICE == *"RUST"* ]] ; then
   echo "RUST"
-  . $WorkingDirectory/wlinux-setup.d/rust
+  bash ${SETUPDIR}/rust.sh
 fi
 
 if [[ $MenuChoice == *"DOTNET"* ]] ; then
   echo "DOTNET"
-  . $WorkingDirectory/wlinux-setup.d/dotnet
+  bash ${SETUPDIR}/dotnet.sh
 fi
 
 if [[ $MenuChoice == *"JAVA"* ]] ; then
   echo "JAVA"
-  . $WorkingDirectory/wlinux-setup.d/java
+  bash ${SETUPDIR}/java.sh
 fi
 
 if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
-  . $WorkingDirectory/wlinux-setup.d/powershell
-  . $WorkingDirectory/wlinux-setup.d/azurecli
+  bash ${SETUPDIR}/powershell.sh
+  bash ${SETUPDIR}/axurecli.sh
 fi
 
-if [[ $MenuChoice == *"GUI"* ]] ; then
+if [[ $CHOICE == *"GUI"* ]] ; then
   echo "GUI"
-  . $WorkingDirectory/wlinux-setup.d/gui
+  bash ${SETUPDIR}/gui.sh
 fi
 
-if [[ $MenuChoice == *"DOCKER"* ]] ; then
+if [[ $CHOICE == *"DOCKER"* ]] ; then
   echo "DOCKER"
-  . $WorkingDirectory/wlinux-setup.d/docker
+  bash ${SETUPDIR}/docker.sh
 fi
 
-if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
+if [[ $CHOICE == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
-  . $WorkingDirectory/wlinux-setup.d/cassandra
+  bash ${SETUPDIR}/cassandra.sh
 fi
 
-if [[ $MenuChoice == "NONE" ]] ; then
-    echo "NONE"
-    whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
-    installmenu
+if [[ $CHOICE == "NONE" ]] ; then
+  echo "NONE"
+  whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
+  installmenu
 fi
 }
 
