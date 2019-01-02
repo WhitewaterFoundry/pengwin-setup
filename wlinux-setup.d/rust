@@ -19,4 +19,4 @@ if (whiptail --title "RUST" --yesno "Would you like to download and install the 
 fi
 }
 
-rustlanginstall{}
+rustlanginstall {}
