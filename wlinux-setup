@@ -1,11 +1,11 @@
 #!/bin/bash
 
-SETUPDIR="/etc/wlinux-setup.d"
+SetupDir="/etc/wlinux-setup.d"
 VERSION="1.2a"
 
 # define functions
 
-function processarguments {
+function ProcessArguments {
 while [[ $# -gt 0 ]]
 do
   case "$1" in
@@ -20,7 +20,7 @@ do
 done
 }
 
-function welcomeprompt {
+function WelcomePrompt {
 whiptail --title "Welcome to WLinux" --msgbox "Thank you for supporting sustainable independent open source development.\n
 WLinux comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
 wlinux-setup allows you to install additional hand-curated selections for WLinux and configure optional WSL-specific settings. \n
@@ -28,7 +28,7 @@ Many more packages are available via the apt package manager and optional pip, n
 " 15 96
 }
 
-function continueprompt {
+function ContinuePrompt {
 if (whiptail --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45) then
     echo "Starting wlinux-setup."
 else
@@ -38,21 +38,21 @@ else
 fi
 }
 
-function updateupgrade {
+function UpdateUpgrade {
 echo "Updating WLinux..."
 sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
 }
 
-function byemessage {
+function ByeMessage {
     whiptail --title "Setup is complete." --msgbox "You may run wlinux-setup again any time by typing $ wlinux-setup\n\nYou may open a browser link to get help any time by typing: $ wlinux-help" 8 80
     exit 0
 }
 
 # main menu
 
-function installmenu {
+function InstallMenu {
 
 MenuChoice=$(
 whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
@@ -76,83 +76,83 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
 
 echo "Selected:" $MenuChoice
 
-if [[ $CHOICE == *"LANGUAGE"* ]] ; then
+if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
   echo "LANGUAGE"
-  bash ${SETUPDIR}/language.sh
+  bash ${SetupDir}/language.sh
 fi
 
 if [[ $MenuChoice == *"EXPLORER"* ]] ; then
   echo "EXPLORER"
-  bash ${SETUPDIR}/explorer.sh
+  bash ${SetupDir}/explorer.sh
 fi
 
 if [[ $MenuChoice == *"SHELLS"* ]] ; then
   echo "SHELLS"
-  bash ${SETUPDIR}/shells.sh
+  bash ${SetupDir}/shells.sh
 fi
 
 if [[ $MenuChoice == *"EDITORS"* ]] ; then
   echo "EDITORS"
-  bash ${SETUPDIR}/editors.sh
+  bash ${SetupDir}/editors.sh
 fi 
 
 if [[ $MenuChoice == *"PYTHON"* ]] ; then
   echo "PYTHON"
-  bash ${SETUPDIR}/python.sh
+  bash ${SetupDir}/python.sh
 fi
 
 if [[ $MenuChoice == *"NODE"* ]] ; then
   echo "NODE"
-  bash ${SETUPDIR}/nodejs.sh
+  bash ${SetupDir}/nodejs.sh
 fi
 
 if [[ $MenuChoice == *"GO"* ]] ; then
   echo "GO"
-  bash ${SETUPDIR}/go.sh
+  bash ${SetupDir}/go.sh
 fi
 
 if [[ $MenuChoice == *"RUBY"* ]] ; then
   echo "RUBY"
-  bash ${SETUPDIR}/ruby.sh
+  bash ${SetupDir}/ruby.sh
 fi
 
-if [[ $CHOICE == *"RUST"* ]] ; then
+if [[ $MenuChoice == *"RUST"* ]] ; then
   echo "RUST"
-  bash ${SETUPDIR}/rust.sh
+  bash ${SetupDir}/rust.sh
 fi
 
 if [[ $MenuChoice == *"DOTNET"* ]] ; then
   echo "DOTNET"
-  bash ${SETUPDIR}/dotnet.sh
+  bash ${SetupDir}/dotnet.sh
 fi
 
 if [[ $MenuChoice == *"JAVA"* ]] ; then
   echo "JAVA"
-  bash ${SETUPDIR}/java.sh
+  bash ${SetupDir}/java.sh
 fi
 
 if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
-  bash ${SETUPDIR}/powershell.sh
-  bash ${SETUPDIR}/axurecli.sh
+  bash ${SetupDir}/powershell.sh
+  bash ${SetupDir}/axurecli.sh
 fi
 
-if [[ $CHOICE == *"GUI"* ]] ; then
+if [[ $MenuChoice == *"GUI"* ]] ; then
   echo "GUI"
-  bash ${SETUPDIR}/gui.sh
+  bash ${SetupDir}/gui.sh
 fi
 
-if [[ $CHOICE == *"DOCKER"* ]] ; then
+if [[ $MenuChoice == *"DOCKER"* ]] ; then
   echo "DOCKER"
-  bash ${SETUPDIR}/docker.sh
+  bash ${SetupDir}/docker.sh
 fi
 
-if [[ $CHOICE == *"CASSANDRA"* ]] ; then
+if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
-  bash ${SETUPDIR}/cassandra.sh
+  bash ${SetupDir}/cassandra.sh
 fi
 
-if [[ $CHOICE == "NONE" ]] ; then
+if [[ $MenuChoice == "NONE" ]] ; then
   echo "NONE"
   whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
   installmenu
@@ -161,11 +161,11 @@ fi
 
 # main
 
-processarguments  "$@"
-welcomeprompt
-continueprompt
-updateupgrade
-installmenu
-byemessage
+ProcessArguments  "$@"
+WelcomePrompt
+ContinuePrompt
+UpdateUpgrade
+InstallMenu
+ByeMessage
 
 exit 0
