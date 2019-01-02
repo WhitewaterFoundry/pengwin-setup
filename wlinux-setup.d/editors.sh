@@ -1,33 +1,12 @@
 #!/bin/bash
 
-function editormenu {
-
-EDITORCHOICE=$(
-whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
-    "NEOVIM" "Neovim" off \
-    "EMACS" "Emacs" off \
-    "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
-)
-
-if [[ $EDITORCHOICE == *"NEOVIM"* ]] ; then
-  neoviminstall
-fi
-
-if [[ $EDITORCHOICE == *"EMACS"* ]] ; then
-  emacsinstall
-fi
-
-if [[ $EDITORCHOICE == *"CODE"* ]] ; then
-  codeinstall
-fi
-
-}
+source "/etc/wlinux-setup.d/common.sh"
 
 function neoviminstall {
 if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) then
     echo "Installing neovim and building tools from Debian: $ sudo apt install neovim build-essential"
     updateupgrade
-    sudo apt install neovim build-essential -y
+    sudo apt -t testing install neovim build-essential -y
 else
     echo "Skipping NEOVIM"
 fi
@@ -62,4 +41,25 @@ else
 fi  
 }
 
-editormenu {}
+function editormenu {
+EDITORCHOICE=$(
+whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+    "NEOVIM" "Neovim" off \
+    "EMACS" "Emacs" off \
+    "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
+)
+
+if [[ $EDITORCHOICE == *"NEOVIM"* ]] ; then
+    neoviminstall
+fi
+
+if [[ $EDITORCHOICE == *"EMACS"* ]] ; then
+  emacsinstall
+fi
+
+if [[ $EDITORCHOICE == *"CODE"* ]] ; then
+  codeinstall
+fi
+}
+
+editormenu()
