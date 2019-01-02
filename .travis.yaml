@@ -15,8 +15,17 @@ after_success:
 - md5sum $PACKAGE_NAME_VERSION
 - dpkg --contents $PACKAGE_NAME_VERSION
 
-after_script:
-- |
-  echo "Uploading package(s) to $FTP_URL ..."
-  curl -u $FTP_USER:$FTP_PASSWORD --ftp-create-dirs -T $PACKAGE_NAME_VERSION ftp://$FTP_URL/repos/$PACKAGE_NAME_VERSION || DEPLOY_FAILURE=true ;
-  if [[ $DEPLOY_FAILURE == 'true' ]]; then echo "Uploading package(s) failed!"; travis_terminate 1; fi;
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: "FILE TO UPLOAD"
+  skip_cleanup: true
+  on:
+    tags: true
+
+deploy:
+  provider: packagecloud
+  repository: "YOUR REPO"
+  username: "YOUR USERNAME"
+  token: "YOUR TOKEN"
+  dist: debian/buster

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# environment
+
 RESPONSE=""
 CURDUR=""
 TMPDIR=""
@@ -7,12 +9,9 @@ VERSION="1.2a"
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
 
-# functions
-
-## core functions
+# define functions
 
 function processarguments {
-
 while [[ $# -gt 0 ]]
 do
   case "$1" in
@@ -25,7 +24,6 @@ do
       shift
     esac
 done
-
 }
 
 function welcomeprompt {
@@ -46,30 +44,11 @@ else
 fi
 }
 
-function updatescriptprompt {
-if (whiptail --title "Upgrade setup?" --yesno "Would you like to download and restart with the most recent version of wlinux-setup?\n\nThis is recommended periodically to get new features and fixes." 9 90) then
-    createtmp
-    echo "Backing up old /etc/setup to /etc/setup.old"
-    sudo cp /etc/setup /etc/setup.old
-    echo "Getting fresh wlinux-setup from GitHub"
-    wget https://github.com/WhitewaterFoundry/WLinux/raw/master/linux_files/setup
-    sudo cp setup /etc/setup
-    echo "Running updated wlinux-setup"
-    touch ~/.updated
-    bash /etc/setup
-    exit 0
-else
-    whiptail --title "Release setup" --msgbox "Continuing with built-in wlinux-setup.\n\nIf you encounter problems, please try updating wlinux-setup." 9 90
-fi
-}
-
-function securitypatches {
-echo "Applying Hotpatches"
-
-echo "1: Applying temporary workaround for bug #199"
-alias clear="clear -x"
-echo 'alias clear="clear -x"' | sudo tee -a /etc/profile
-
+function updateupgrade {
+echo "Updating WLinux..."
+sudo apt update
+sudo apt upgrade -y
+sudo apt autoremove -y
 }
 
 function createtmp {
@@ -92,16 +71,7 @@ function byemessage {
     exit 0
 }
 
-## internationalization
-
-function languageprompt {
-if (whiptail --title "Language" --yesno "Would you like to configure default keyboard input/language?" 8 65) then
-    echo "Running $ dpkg-reconfigure locales"
-    sudo dpkg-reconfigure locales
-fi
-}
-
-## package index
+# main menu
 
 function installmenu {
 
@@ -129,12 +99,12 @@ echo "Selected:" $CHOICE
 
 if [[ $CHOICE == *"LANGUAGE"* ]] ; then
   echo "LANGUAGE"
-  languageprompt
+  . /wlinux-setup.d/language
 fi
 
 if [[ $CHOICE == *"EXPLORER"* ]] ; then
   echo "EXPLORER"
-  explorerintegration
+  . /wlinux-setup.d/explorer
 fi
 
 if [[ $CHOICE == *"SHELLS"* ]] ; then
@@ -169,23 +139,23 @@ fi
 
 if [[ $CHOICE == *"RUST"* ]] ; then
   echo "RUST"
-  rustlanginstall
+  . /wlinux-setup.d/rust
 fi
 
 if [[ $CHOICE == *"DOTNET"* ]] ; then
   echo "DOTNET"
-  dotnetinstall
+  . /wlinux-setup.d/dotnet
 fi
 
 if [[ $CHOICE == *"JAVA"* ]] ; then
   echo "JAVA"
-  javainstall
+  . /wlinux-setup.d/java
 fi
 
 if [[ $CHOICE == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
-  powershellinstall
-  azurecliinstall
+  . /wlinux-setup.d/powershell
+  . /wlinux-setup.d/azurecli
 fi
 
 if [[ $CHOICE == *"GUI"* ]] ; then
@@ -200,7 +170,7 @@ fi
 
 if [[ $CHOICE == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
-  cassandrainstall
+  . /wlinux-setup.d/cassandra
 fi
 
 if [[ $CHOICE == "NONE" ]] ; then
@@ -210,275 +180,12 @@ if [[ $CHOICE == "NONE" ]] ; then
 fi
 }
 
-function updateupgrade {
-echo "Updating apt package index from repositories: $ sudo apt update"
-sudo apt update
-echo "Applying available package upgrades from repositories: $ sudo apt upgrade -y"
-sudo apt upgrade -y
-echo "Removing unnecessary packages: $ sudo apt autoremove -y"
-sudo apt autoremove -y
-}
-
-
-## submenus
-
-### dev environments
-
-
-
-function rustlanginstall {
-if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust from the rust-lang website?" 8 85) then
-    echo "Installing rust"
-
-    # Create temp directory and download rustup installer here
-    createtmp
-    echo "Downloading and latest version of rustup installer"
-    wget https://sh.rustup.rs -O rustup.rs
-
-    echo "Executing..."
-    chmod +x rustup.rs
-    sh rustup.rs -y
-
-    # Cleanup
-    echo "Cleaning up rustup temporary folder"
-    cleantmp
-fi
-}
-
-function dotnetinstall {
-
-if (whiptail --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) then
-    echo "Installing DOTNET"
-    createtmp
-    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-    sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-    rm microsoft.gpg
-    sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' 
-    updateupgrade
-    sudo apt install dotnet-sdk-2.1 -y
-    cleantmp
-
-    if (whiptail --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) then
-        echo "Installing NuGet"
-        sudo apt install nuget -y
-    else
-        echo "Skipping NUGET"
-    fi
-
-else
-    echo "Skipping DOTNET"
-fi
-}
-
-function javainstall {
-
-if (whiptail --title "OpenJDK" --yesno "Would you like to Install OpenJDK 8?" 8 42) then
-    echo "$ apt install openjdk-8-jre openjdk-8-jdk -y"
-    updateupgrade
-    sudo apt install openjdk-8-jre openjdk-8-jdk -y
-else
-    echo "Skipping OpenJDK"
-fi
-}
-
-function powershellinstall {
-
-if (whiptail --title "POWERSHELL" --yesno "Would you like to download and install Powershell?" 8 55) then
-    echo "Installing POWERSHELL"
-    createtmp
-    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-    sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-    rm microsoft.gpg
-    sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' 
-    updateupgrade
-    sudo apt -t unstable install liblttng-ust0 libssl1.0.2 libicu57 liburcu6 liblttng-ust-ctl4
-    sudo apt install powershell -y
-    cleantmp
-else
-    echo "Skipping POWERSHELL"
-fi
-}
-
-### enhancements
-
-function fzfinstall {
-
-if (whiptail --title "FZF" --yesno "Would you like to download and install command line finder fzf?" 8 80) then
-    echo "Installing FZF"
-    cd ~
-    git clone --depth 1 https://github.com/junegunn/fzf.git
-    cd fzf
-    ./install
-else
-    echo "Skipping FZF"
-fi
-}
-
-function explorerintegration {
-if (whiptail --title "EXPLORER" --yesno "Would you like to enable Windows Explorer shell integration?" 8 65); then
-    echo "Enabling Windows Explorer shell integration."
-    createtmp
-    cat << 'EOF' >> Install.reg
-    Windows Registry Editor Version 5.00
-    [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\WLinux]
-    @="Open with WLinux"
-    [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\WLinux\command]
-    @="_wlinuxPath_ run \"cd \\\"$(wslpath \\\"%V\\\")\\\" && $(getent passwd $LOGNAME | cut -d: -f7)\""
-    [HKEY_CURRENT_USER\Software\Classes\Directory\shell\WLinux]
-    @="Open with WLinux"
-    [HKEY_CURRENT_USER\Software\Classes\Directory\shell\WLinux\command]
-    @="_wlinuxPath_ run \"cd \\\"$(wslpath \\\"%V\\\")\\\" && $(getent passwd $LOGNAME | cut -d: -f7)\""
-EOF
-    wlinuxPath=$(wslpath -m "$(whereis wlinux.exe | cut --delimiter=' ' -f2)" | sed 's$/$\\\\\\\\$g')
-    sed -i "s/_wlinuxPath_/${wlinuxPath}/g" Install.reg
-    cp Install.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Install.reg
-    cmd.exe /C "Reg import %TEMP%\Install.reg"
-    cleantmp
- else
-    echo "Disabling Windows Explorer shell integration."
-    createtmp
-    cat << 'EOF' >> Uninstall.reg
-    Windows Registry Editor Version 5.00
-    [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\WLinux]
-    [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\WLinux]
-EOF
-    cp Uninstall.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Uninstall.reg
-    cmd.exe /C "Reg import %TEMP%\Uninstall.reg"
-    cleantmp
-fi
-}
-
-
-
-### cloud tools
-
-function azurecliinstall {
-if (whiptail --title "AZURECLI" --yesno "Would you like to download and install Azure command line tools?" 8 70) then
-    echo "Installing AZURECLI"
-    createtmp
-    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-    sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-    sudo chmod 644 /etc/apt/trusted.gpg.d/microsoft.gpg
-    sudo bash -c "echo 'deb https://packages.microsoft.com/repos/azure-cli/ stretch main' >> /etc/apt/sources.list.d/azurecli.list"
-    updateupgrade
-    echo "Note: azure-cli install can appear to 'stall' at 16%, it is usually not broken, just taking a long time."
-    sudo apt install azure-cli -y
-    cleantmp
-else
-    echo "Skipping AZURECLI"
-fi
-}
-
-### databases
-
-function cassandrainstall {
-if (whiptail --title "CASSANDRA" --yesno "Would you like to download and install Apache Cassandra?" 8 60) then
-    echo "Installing CASSANDRA"
-    createtmp
-    curl https://dist.apache.org/repos/dist/release/cassandra/KEYS | gpg --dearmor > cassandra.gpg
-    sudo cp cassandra.gpg /etc/apt/trusted.gpg.d/cassandra.gpg
-    sudo chmod 644 /etc/apt/trusted.gpg.d/cassandra.gpg
-    sudo bash -c "echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' > /etc/apt/sources.list.d/cassandra.list"
-    sudo su -c "echo '${USER} ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
-    updateupgrade
-    sudo mount -t proc proc /proc
-    sudo apt install cassandra -y
-    sudo su -c "echo 'cassandra ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
-    sudo su -c "echo 'sudo mount -t proc proc /proc' >> /etc/profile"
-
-    whiptail --title "CASSANDRA" --msgbox "Cassandra must be run as user cassandra, $ sudo -u cassandra /usr/sbin/cassandra -f " 8 90
-
-    if (whiptail --title "CASSANDRA" --yesno "Would you like to store Cassandra configuration and logs in your Windows user home folder?" 8 95) then
-
-        if [ -d "${wHome}/cassandra" ]; then
-            echo "Backing up existing Cassandra directony"
-            sudo cp -r "${wHome}/cassandra" "${wHome}/cassandra.old"
-        fi
-
-        echo "Moving Cassandra configuration directory"
-        sudo unlink /etc/cassandra # these clean up from previous installs
-        sudo mkdir /etc/cassandra
-        sudo cp -r /etc/cassandra/ "${wHome}"
-        sudo rm -r /etc/cassandra
-        sudo ln -s "${wHome}/cassandra" /etc/cassandra
-
-        echo "Moving Cassandra log directory"
-        sudo mkdir "${wHome}/cassandra/logs"
-        sudo rm -r /var/log/cassandra
-        sudo ln -s "${wHome}/cassandra/logs" /var/log/cassandra
-
-        echo "Setting permissions"
-        sudo chown -R cassandra:cassandra /etc/cassandra
-        sudo chown -R cassandra:cassandra /var/lib/cassandra/
-        sudo chown -R cassandra:cassandra /var/log/cassandra/
-    fi
-
-    if (whiptail --title "CASSANDRA" --yesno "Would you like to create .bat files to run and update Cassandra in your Windows user home folder?" 8 102) then
-
-        echo "Enter your UNIX password below."
-        passvar=0
-        read -s -p "[sudo] password for $USER: " passvar
-        until (echo $sudo_pwd | sudo -S echo '' 2>/dev/null)
-        do
-            echo -e '\nSorry, try again.'
-            read -s -p "[sudo] password for $USER: " passvar
-        done
-
-        sudo mkdir "${wHome}/cassandra/" # in case user opted to keep config on WSL
-
-        echo "Creating autorun.bat file in home folder"
-        phrase1='wlinux.exe run "echo '
-        phrase2=" | sudo -Su root mount -t proc proc /proc"
-        phrase3=" | sudo -Su cassandra /usr/sbin/cassandra -f"
-        write1="$phrase1$passvar$phrase2"
-        write2="$phrase1$passvar$phrase3"
-        cat << EOF > autorun.bat
-@echo off
-$write1"
-$write2"
-EOF
-        sudo cp autorun.bat "${wHome}/cassandra/"
-
-        echo "Creating update.bat file on Windows Desktop"
-        phrase1='wlinux.exe run "echo '
-        phrase2=' | sudo -S apt update ; sudo -S apt upgrade -y ; sudo -S apt autoclean -y"'
-        write="$phrase1$passvar$phrase2"
-        sudo cat << EOF > update.bat
-@echo off
-$write
-EOF
-        sudo cp update.bat "${wHome}/cassandra/"
-
-        echo "Creating installservice .bat file on Windows Desktop"
-        phrase1='sc create NewService binpath= '
-        phrase2='/cassandra/autorun.bat type= share start= auto displayname= Cassandra'
-        write="$phrase1${wHome}$phrase2"
-        sudo cat << EOF > installservice.bat
-@echo off
-$write
-EOF
-        sudo cp installservice.bat "${wHome}/cassandra/"
-
-    fi
-
-    cleantmp
-else
-    echo "Skipping CASSANDRA"
-fi
-}
-
 # main
+
 processarguments  "$@"
-
-if [ ! -f ~/.updated ]; then
-    welcomeprompt
-    continueprompt
-    updatescriptprompt
-else
-    rm ~/.updated
-fi
-
-securitypatches
+welcomeprompt
+continueprompt
+updateupgrade
 installmenu
 byemessage
 
