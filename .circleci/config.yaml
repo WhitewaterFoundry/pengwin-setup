@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Build the package
-          command: dpkg-deb --build wlinux-base-$CIRCLE_BUILD_NUM.deb
+          command: dpkg-deb --build 
   deploy:
     steps:
       - run:
@@ -22,10 +22,10 @@ jobs:
           command: gem install package_cloud
       - run:
           name: Push binary deb package
-          command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch debs/packagecloud
+          command: package_cloud push whitewaterfoundry/wlinux-setup/debian/testing wlinux-base-$CIRCLE_BUILD_NUM.deb
       - run:
           name: Push source deb package
-          command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch debs/packagecloud
+          command: package_cloud push whitewaterfoundry/wlinux-setup/debian/testing wlinux-base-$CIRCLE_BUILD_NUM.dsc
 
 workflows:
   version: 2
