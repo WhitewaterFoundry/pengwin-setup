@@ -71,17 +71,6 @@ function byemessage {
     exit 0
 }
 
-## internationalization
-
-function languageprompt {
-if (whiptail --title "Language" --yesno "Would you like to configure default keyboard input/language?" 8 65) then
-    echo "Running $ dpkg-reconfigure locales"
-    sudo dpkg-reconfigure locales
-fi
-}
-
-## package index
-
 function installmenu {
 
 CHOICE=$(
