@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SetupDir="/etc/wlinux-setup.d"
+SetupDir=${pwd}
 VERSION="1.2a"
 
 # define functions
@@ -10,7 +10,7 @@ while [[ $# -gt 0 ]]
 do
   case "$1" in
     --debug|-d|--verbose|-v)
-      echo "Running in Debug mode"
+      echo "Running in debug/verbose mode"
       set -x
       shift
     ;;
@@ -36,13 +36,6 @@ else
     echo "You may run the script again any time by running: $ wlinux-setup"
     exit 0
 fi
-}
-
-function UpdateUpgrade {
-echo "Updating WLinux..."
-sudo apt update
-sudo apt upgrade -y
-sudo apt autoremove -y
 }
 
 function ByeMessage {
@@ -164,7 +157,6 @@ fi
 ProcessArguments  "$@"
 WelcomePrompt
 ContinuePrompt
-UpdateUpgrade
 InstallMenu
 ByeMessage
 
