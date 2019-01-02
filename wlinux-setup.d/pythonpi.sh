@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common.sh
+source "/etc/wlinux-setup.d/common.sh"
 
 if (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.7, IDLE, and the pip package manager?" 8 90) then
     echo "Installing PYTHON"

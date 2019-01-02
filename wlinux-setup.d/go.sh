@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common.sh
+source "/etc/wlinux-setup.d/common.sh"
 
 GOVERSION="1.11.4"
 

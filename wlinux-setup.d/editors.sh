@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common.sh
+source "/etc/wlinux-setup.d/common.sh"
 
 function neoviminstall {
 if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) then
