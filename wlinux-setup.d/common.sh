@@ -2,6 +2,7 @@
 
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
+SetupDir="/etc/wlinux-setup.d"
 
 function ProcessArguments {
     while [[ $# -gt 0 ]]
