@@ -1,24 +1,11 @@
 #!/bin/bash
 
-SetupDir=${pwd}
+SetupDir=$(pwd)
 VERSION="1.2a"
 
-# define functions
+source "${SetupDir}/common.sh" "$@"
 
-function ProcessArguments {
-while [[ $# -gt 0 ]]
-do
-  case "$1" in
-    --debug|-d|--verbose|-v)
-      echo "Running in debug/verbose mode"
-      set -x
-      shift
-    ;;
-    *)
-      shift
-    esac
-done
-}
+# define functions
 
 function WelcomePrompt {
 whiptail --title "Welcome to WLinux" --msgbox "Thank you for supporting sustainable independent open source development.\n
@@ -71,78 +58,78 @@ echo "Selected:" $MenuChoice
 
 if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
   echo "LANGUAGE"
-  bash ${SetupDir}/language.sh
+  bash ${SetupDir}/language.sh "$@"
 fi
 
 if [[ $MenuChoice == *"EXPLORER"* ]] ; then
   echo "EXPLORER"
-  bash ${SetupDir}/explorer.sh
+  bash ${SetupDir}/explorer.sh "$@"
 fi
 
 if [[ $MenuChoice == *"SHELLS"* ]] ; then
   echo "SHELLS"
-  bash ${SetupDir}/shells.sh
+  bash ${SetupDir}/shells.sh "$@"
 fi
 
 if [[ $MenuChoice == *"EDITORS"* ]] ; then
   echo "EDITORS"
-  bash ${SetupDir}/editors.sh
+  bash ${SetupDir}/editors.sh "$@"
 fi 
 
 if [[ $MenuChoice == *"PYTHON"* ]] ; then
   echo "PYTHON"
-  bash ${SetupDir}/python.sh
+  bash ${SetupDir}/python.sh "$@"
 fi
 
 if [[ $MenuChoice == *"NODE"* ]] ; then
   echo "NODE"
-  bash ${SetupDir}/nodejs.sh
+  bash ${SetupDir}/nodejs.sh "$@"
 fi
 
 if [[ $MenuChoice == *"GO"* ]] ; then
   echo "GO"
-  bash ${SetupDir}/go.sh
+  bash ${SetupDir}/go.sh "$@"
 fi
 
 if [[ $MenuChoice == *"RUBY"* ]] ; then
   echo "RUBY"
-  bash ${SetupDir}/ruby.sh
+  bash ${SetupDir}/ruby.sh "$@"
 fi
 
 if [[ $MenuChoice == *"RUST"* ]] ; then
   echo "RUST"
-  bash ${SetupDir}/rust.sh
+  bash ${SetupDir}/rust.sh "$@"
 fi
 
 if [[ $MenuChoice == *"DOTNET"* ]] ; then
   echo "DOTNET"
-  bash ${SetupDir}/dotnet.sh
+  bash ${SetupDir}/dotnet.sh "$@"
 fi
 
 if [[ $MenuChoice == *"JAVA"* ]] ; then
   echo "JAVA"
-  bash ${SetupDir}/java.sh
+  bash ${SetupDir}/java.sh "$@"
 fi
 
 if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
-  bash ${SetupDir}/powershell.sh
-  bash ${SetupDir}/axurecli.sh
+  bash ${SetupDir}/powershell.sh "$@"
+  bash ${SetupDir}/axurecli.sh "$@"
 fi
 
 if [[ $MenuChoice == *"GUI"* ]] ; then
   echo "GUI"
-  bash ${SetupDir}/gui.sh
+  bash ${SetupDir}/gui.sh "$@"
 fi
 
 if [[ $MenuChoice == *"DOCKER"* ]] ; then
   echo "DOCKER"
-  bash ${SetupDir}/docker.sh
+  bash ${SetupDir}/docker.sh "$@"
 fi
 
 if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
-  bash ${SetupDir}/cassandra.sh
+  bash ${SetupDir}/cassandra.sh "$@"
 fi
 
 if [[ $MenuChoice == "NONE" ]] ; then
@@ -154,10 +141,9 @@ fi
 
 # main
 
-ProcessArguments  "$@"
 WelcomePrompt
 ContinuePrompt
-InstallMenu
+InstallMenu "$@"
 ByeMessage
 
 exit 0
