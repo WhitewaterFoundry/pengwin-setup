@@ -3,7 +3,7 @@
 SetupDir="/etc/wlinux-setup.d"
 VERSION="1.2a"
 
-source "${SetupDir}/common.sh" "$@"
+source ${SetupDir}/common.sh "$@"
 
 # define functions
 
