@@ -1,11 +1,26 @@
 #!/bin/bash
 
-SetupDir=$(pwd)
+SetupDir="/etc/wlinux-setup.d"
 VERSION="1.2a"
 
 source "${SetupDir}/common.sh" "$@"
 
 # define functions
+
+function ProcessArguments {
+while [[ $# -gt 0 ]]
+do
+  case "$1" in
+    --debug|-d|--verbose|-v)
+      echo "Running in debug/verbose mode"
+      set -x
+      shift
+    ;;
+    *)
+      shift
+    esac
+done
+}
 
 function WelcomePrompt {
 whiptail --title "Welcome to WLinux" --msgbox "Thank you for supporting sustainable independent open source development.\n
