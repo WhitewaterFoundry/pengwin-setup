@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/etc/wlinux-setup.d/common.sh"
+source "common.sh" "$@"
 
 if (whiptail --title "NODE" --yesno "Would you like to download and install NodeJS using n and the npm package manager?" 8 88) then
     echo "Installing NODE"

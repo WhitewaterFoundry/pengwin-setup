@@ -3,6 +3,21 @@
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
 
+function ProcessArguments {
+    while [[ $# -gt 0 ]]
+    do
+      case "$1" in
+        --debug|-d|--verbose|-v)
+          echo "Running in debug/verbose mode"
+          set -x
+          shift
+        ;;
+        *)
+          shift
+        esac
+    done
+}
+
 function createtmp {
     echo "Saving current directory as \$CURDIR"
     CURDIR=$(pwd)
@@ -26,3 +41,5 @@ sudo apt upgrade -y
 echo "Removing unnecessary packages: $ sudo apt autoremove -y"
 sudo apt autoremove -y
 }
+
+ProcessArguments "$@"
