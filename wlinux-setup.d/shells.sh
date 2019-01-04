@@ -1,8 +1,7 @@
 #!/bin/bash
-<<<<<<< HEAD:wlinux-setup.d/shells
 
 function installandsetshell {
-    
+
 EDITORCHOICE=$(
 whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
     "ZSH" "zsh" off \
@@ -15,8 +14,6 @@ if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     sudo apt install zsh -y
     zshinstall
 fi
-=======
->>>>>>> 2a77e4c5e1382ef7ef2e8ad7bdac180ec6e8745b:wlinux-setup.d/shells.sh
 
 source "/etc/wlinux-setup.d/common.sh"
 
@@ -30,7 +27,7 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         echo "run 'sudo rm /etc/zsh/$ZSH_INSTALLED && wlinux-setup' to re-create config file"
     else
         echo "Old zshrc found & not edited before --> backing up"
-                 
+
         # Get current date-time
         dt=$(date '+%d%m%Y-%H%M')
         # Save backup with date-time
@@ -73,8 +70,8 @@ function fishinstall {
 if (whiptail --title "fish" --yesno "Would you like to download and install oh-my-fish?" 8 55) then
     createtmp
     whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to wlinux-setup" 8 95
-    mkdir "Type exit to return to wlinux-setup" 
-    cd "Type exit to return to wlinux-setup" 
+    mkdir "Type exit to return to wlinux-setup"
+    cd "Type exit to return to wlinux-setup"
     curl -L https://get.oh-my.fish | fish
     cd ..
     cleantmp
@@ -106,9 +103,7 @@ if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     zshinstall
 fi
 
-<<<<<<< HEAD:wlinux-setup.d/shells
 installandsetshell {}
-=======
 if [[ $EDITORCHOICE == *"FISH"* ]] ; then
     echo "Installing fish..."
     sudo apt install fish -y
@@ -120,4 +115,3 @@ if [[ $EDITORCHOICE == *"CSH"* ]] ; then
     sudo apt install csh -y
     cshinstall
 fi
->>>>>>> 2a77e4c5e1382ef7ef2e8ad7bdac180ec6e8745b:wlinux-setup.d/shells.sh
