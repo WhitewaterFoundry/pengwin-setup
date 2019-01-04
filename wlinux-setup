@@ -71,7 +71,7 @@ echo "Selected:" $MenuChoice
 echo "ExitStatus:" $ExitStatus
 
 if [[ $ExitStatus == 0 ]] ; then
-	if [[ $MenuChoice == *""* ]] ; then
+	if [[ ! $MenuChoice ]] ; then
 	  echo "None selected"
 	  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
 	  	InstallMenu
