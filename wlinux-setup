@@ -71,6 +71,15 @@ echo "Selected:" $MenuChoice
 echo "ExitStatus:" $ExitStatus
 
 if [[ $ExitStatus == 0 ]] ; then
+	if [[ $MenuChoice == *""* ]] ; then
+	  echo "None selected"
+	  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
+	  	InstallMenu
+	  else
+	  	return
+	  fi
+	fi
+	
 	if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
 	  echo "LANGUAGE"
 	  bash ${SetupDir}/language.sh
@@ -145,15 +154,6 @@ if [[ $ExitStatus == 0 ]] ; then
 	if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
 	  echo "CASSANDRA"
 	  bash ${SetupDir}/cassandra.sh
-	fi
-
-	if [[ $MenuChoice == *""* ]] ; then
-	  echo "None selected"
-	  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
-	  	InstallMenu
-	  else
-	  	return
-	  fi
 	fi
 fi
 }
