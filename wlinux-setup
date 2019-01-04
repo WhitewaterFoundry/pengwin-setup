@@ -71,12 +71,6 @@ echo "Selected:" $MenuChoice
 echo "ExitStatus:" $ExitStatus
 
 if [[ $ExitStatus == 0 ]] ; then
-	if [[ $MenuChoice == *""* ]] ; then
-	  echo "None selected"
-	  whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
-	  InstallMenu
-	fi
-
 	if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
 	  echo "LANGUAGE"
 	  bash ${SetupDir}/language.sh
