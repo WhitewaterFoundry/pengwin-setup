@@ -70,91 +70,93 @@ ExitStatus=$?
 echo "Selected:" $MenuChoice
 echo "ExitStatus:" $ExitStatus
 
-if [[ $ExitStatus == 0 ]] ; then
-	if [[ ! $MenuChoice ]] ; then
-	  echo "None selected"
-	  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
-	  	InstallMenu
-	  else
-	  	return
-	  fi
-	fi
-	
-	if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
-	  echo "LANGUAGE"
-	  bash ${SetupDir}/language.sh
-	fi
+if [[ $ExitStatus != 0 ]] ; then
+  return
+fi
 
-	if [[ $MenuChoice == *"EXPLORER"* ]] ; then
-	  echo "EXPLORER"
-	  bash ${SetupDir}/explorer.sh
-	fi
+if [[ ! $MenuChoice ]] ; then
+  echo "None selected"
+  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
+  	InstallMenu
+  else
+  	return
+  fi
+fi
 
-	if [[ $MenuChoice == *"SHELLS"* ]] ; then
-	  echo "SHELLS"
-	  bash ${SetupDir}/shells.sh
-	fi
+if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
+  echo "LANGUAGE"
+  bash ${SetupDir}/language.sh
+fi
 
-	if [[ $MenuChoice == *"EDITORS"* ]] ; then
-	  echo "EDITORS"
-	  bash ${SetupDir}/editors.sh
-	fi 
+if [[ $MenuChoice == *"EXPLORER"* ]] ; then
+  echo "EXPLORER"
+  bash ${SetupDir}/explorer.sh
+fi
 
-	if [[ $MenuChoice == *"PYTHON"* ]] ; then
-	  echo "PYTHON"
-	  bash ${SetupDir}/python.sh
-	fi
+if [[ $MenuChoice == *"SHELLS"* ]] ; then
+  echo "SHELLS"
+  bash ${SetupDir}/shells.sh
+fi
 
-	if [[ $MenuChoice == *"NODE"* ]] ; then
-	  echo "NODE"
-	  bash ${SetupDir}/nodejs.sh
-	fi
+if [[ $MenuChoice == *"EDITORS"* ]] ; then
+  echo "EDITORS"
+  bash ${SetupDir}/editors.sh
+fi 
 
-	if [[ $MenuChoice == *"GO"* ]] ; then
-	  echo "GO"
-	  bash ${SetupDir}/go.sh
-	fi
+if [[ $MenuChoice == *"PYTHON"* ]] ; then
+  echo "PYTHON"
+  bash ${SetupDir}/python.sh
+fi
 
-	if [[ $MenuChoice == *"RUBY"* ]] ; then
-	  echo "RUBY"
-	  bash ${SetupDir}/ruby.sh
-	fi
+if [[ $MenuChoice == *"NODE"* ]] ; then
+  echo "NODE"
+  bash ${SetupDir}/nodejs.sh
+fi
 
-	if [[ $MenuChoice == *"RUST"* ]] ; then
-	  echo "RUST"
-	  bash ${SetupDir}/rust.sh
-	fi
+if [[ $MenuChoice == *"GO"* ]] ; then
+  echo "GO"
+  bash ${SetupDir}/go.sh
+fi
 
-	if [[ $MenuChoice == *"DOTNET"* ]] ; then
-	  echo "DOTNET"
-	  bash ${SetupDir}/dotnet.sh
-	fi
+if [[ $MenuChoice == *"RUBY"* ]] ; then
+  echo "RUBY"
+  bash ${SetupDir}/ruby.sh
+fi
 
-	if [[ $MenuChoice == *"JAVA"* ]] ; then
-	  echo "JAVA"
-	  bash ${SetupDir}/java.sh
-	fi
+if [[ $MenuChoice == *"RUST"* ]] ; then
+  echo "RUST"
+  bash ${SetupDir}/rust.sh
+fi
 
-	if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
-	  echo "POWERSHELL"
-	  bash ${SetupDir}/powershell.sh
-	  bash ${SetupDir}/axurecli.sh
-	fi
+if [[ $MenuChoice == *"DOTNET"* ]] ; then
+  echo "DOTNET"
+  bash ${SetupDir}/dotnet.sh
+fi
 
-	if [[ $MenuChoice == *"GUI"* ]] ; then
-	  echo "GUI"
-	  bash ${SetupDir}/gui.sh
-	fi
+if [[ $MenuChoice == *"JAVA"* ]] ; then
+  echo "JAVA"
+  bash ${SetupDir}/java.sh
+fi
 
-	if [[ $MenuChoice == *"DOCKER"* ]] ; then
-	  echo "DOCKER"
-	  bash ${SetupDir}/docker.sh
-	fi
+if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
+  echo "POWERSHELL"
+  bash ${SetupDir}/powershell.sh
+  bash ${SetupDir}/axurecli.sh
+fi
 
-	if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
-	  echo "CASSANDRA"
-	  bash ${SetupDir}/cassandra.sh
-	fi
+if [[ $MenuChoice == *"GUI"* ]] ; then
+  echo "GUI"
+  bash ${SetupDir}/gui.sh
+fi
+
+if [[ $MenuChoice == *"DOCKER"* ]] ; then
+  echo "DOCKER"
+  bash ${SetupDir}/docker.sh
+fi
+
+if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
+  echo "CASSANDRA"
+  bash ${SetupDir}/cassandra.sh
 fi
 }
 
