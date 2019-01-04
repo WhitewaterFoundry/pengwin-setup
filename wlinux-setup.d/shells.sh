@@ -1,20 +1,5 @@
 #!/bin/bash
 
-function installandsetshell {
-
-EDITORCHOICE=$(
-whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
-    "ZSH" "zsh" off \
-    "FISH" "fish" off \
-    "CSH" "csh" off 3>&1 1>&2 2>&3
-)
-
-if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
-    echo "Installing zsh..."
-    sudo apt install zsh -y
-    zshinstall
-fi
-
 source "/etc/wlinux-setup.d/common.sh"
 
 function zshinstall {
@@ -90,6 +75,7 @@ if (whiptail --title "csh" --yesno "Would you like to set csh as the default she
 fi
 }
 
+function installandsetshell {
 EDITORCHOICE=$(
 whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
     "ZSH" "zsh" off \
@@ -103,7 +89,6 @@ if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     zshinstall
 fi
 
-installandsetshell {}
 if [[ $EDITORCHOICE == *"FISH"* ]] ; then
     echo "Installing fish..."
     sudo apt install fish -y
@@ -115,3 +100,6 @@ if [[ $EDITORCHOICE == *"CSH"* ]] ; then
     sudo apt install csh -y
     cshinstall
 fi
+}
+
+installandsetshell
