@@ -65,11 +65,25 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
     "POWERSHELL" "Install PowerShell for Linux and/or Azure CLI tools" off \
     "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
     "DOCKER" "Install a secure bridge to Docker for Windows" off \
-    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
-    "NONE" "" on 3>&1 1>&2 2>&3
+    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off 3>&1 1>&2 2>&3
 )
 
+ExitStatus=$?
 echo "Selected:" $MenuChoice
+echo "ExitStatus:" $ExitStatus
+
+if [[ $ExitStatus != 0 ]] ; then
+  return
+fi
+
+if [[ ! $MenuChoice ]] ; then
+  echo "None selected"
+  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
+  	InstallMenu
+  else
+  	return
+  fi
+fi
 
 if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
   echo "LANGUAGE"
@@ -145,12 +159,6 @@ fi
 if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
   bash ${SetupDir}/cassandra.sh "$@"
-fi
-
-if [[ $MenuChoice == "NONE" ]] ; then
-  echo "NONE"
-  whiptail --title "No selection" --msgbox "Please select your desired options using the SPACE bar and then hit ENTER to confirm." 8 80
-  installmenu
 fi
 }
 
