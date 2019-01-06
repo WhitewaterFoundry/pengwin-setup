@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/etc/wlinux-setup.d/common.sh"
+source "/usr/local/wlinux-setup.d/common.sh"
 
 if (whiptail --title "FZF" --yesno "Would you like to download and install command line finder fzf?" 8 80) then
     echo "Installing FZF"
