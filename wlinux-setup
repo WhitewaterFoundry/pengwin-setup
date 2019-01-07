@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SetupDir="/etc/wlinux-setup.d"
+SetupDir="/usr/local/wlinux-setup.d"
 VERSION="1.2a"
 
 source ${SetupDir}/common.sh "$@"

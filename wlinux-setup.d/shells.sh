@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/etc/wlinux-setup.d/common.sh"
+source "/usr/local/wlinux-setup.d/common.sh"
 
 function zshinstall {
 ZSH_SETUP=".zsh_wlinux"
