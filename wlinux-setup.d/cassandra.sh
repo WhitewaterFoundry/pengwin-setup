@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/etc/wlinux-setup.d/common.sh"
+source "/usr/local/wlinux-setup.d/common.sh"
 
 if (whiptail --title "CASSANDRA" --yesno "Would you like to download and install Apache Cassandra?" 8 60) then
     echo "Installing CASSANDRA"
