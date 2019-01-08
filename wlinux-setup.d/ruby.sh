@@ -47,7 +47,7 @@ fi
 
 if (whiptail --title "RAILS" --yesno "Would you like to download and install Rails from RubyGems?" 8 65); then
     echo "Installing RAILS"
-    bash "nodejs.sh" "$@"
+    bash ${SetupDir}/nodejs.sh "$@"
     updateupgrade
     sudo apt-get -y -t testing install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
     createtmp
