@@ -32,9 +32,18 @@ if (whiptail --title "CODE" --yesno "Would you like to download and install Code
     sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg 
     echo "Adding Microsoft apt repo to /etc/apt/sources.list.d/vscode.list with echo"
     sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' 
+
+    #Temporary: Fix issue with udev
+    echo 'deb https://deb.debian.org/debian stretch-backports main' | sudo tee /etc/apt/sources.list.d/stretch-backports.list
+    sudo apt-mark hold udev libudev1
+
     updateupgrade
-    echo "Installing code with dependencies: $ sudo apt install code libxss1 libasound2 -y"
-    sudo apt install code libxss1 libasound2 libx11-xcb-dev -y
+
+    #Temporary: Fix issue with udev
+    sudo apt-get install -y --allow-downgrades -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
+
+    echo "Installing code with dependencies: $ sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev"
+    sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev
     cleantmp
 else
     echo "Skipping CODE"
