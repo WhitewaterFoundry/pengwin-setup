@@ -41,7 +41,8 @@ if (whiptail --title "CODE" --yesno "Would you like to download and install Code
 
     #Temporary: Fix issue with udev
     sudo apt-get install -y --allow-downgrades --allow-change-held-packages -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
-
+    sudo apt-mark hold udev libudev1
+    
     echo "Installing code with dependencies: $ sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev"
     sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev
     cleantmp
