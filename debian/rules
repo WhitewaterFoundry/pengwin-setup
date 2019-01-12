@@ -23,3 +23,8 @@
 #override_dh_auto_configure:
 #	dh_auto_configure -- #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 
+override_dh_usrlocal:
+    # Skip when building our package.
+    # /usr/local by debian policy kept for system adminstrator packages
+    # however as this is our own distribution and they are required /
+    # administrative packages we can allow them to be installed here
