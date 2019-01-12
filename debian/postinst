@@ -22,6 +22,7 @@ case "$1" in
     configure)
 
     chmod u+x /usr/local/bin/wlinux-setup
+    echo "Type wlinux-setup to launch the WLinux setup utility."
     
     ;;
 
