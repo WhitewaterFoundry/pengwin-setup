@@ -2,8 +2,8 @@
 
 source "/usr/local/wlinux-setup.d/common.sh"
 
-DOCKERVERSION="18.09.0"
-DOCKERCOMPOSEVERSION="1.23.1"
+DOCKERVERSION="18.09.1"
+DOCKERCOMPOSEVERSION="1.23.2"
 
 function dockerinstall_build_relay {
     #Build the relay
