@@ -3,7 +3,7 @@ version: 2
 jobs:
     builddeb:
         docker:
-            - image: circleci/bash:4.4.19
+            - image: patrick330602/fake_wsl_env
         environment:
             DEBEMAIL "contact@whitewaterfoundry.com"
             DEBFULLNAME "Whitewater Foundry, Ltd. Co."
