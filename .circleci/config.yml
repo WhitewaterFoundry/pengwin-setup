@@ -11,7 +11,7 @@ jobs:
             - checkout
             - run:
                 name: Ensure we have debuild installed
-                command: apt install -y devscripts
+                command: apt install -y devscripts debhelper
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
