@@ -16,6 +16,16 @@ set -e
 
 case "$1" in
     install|upgrade)
+    # Check for legacy wlinux-setup and remove if necessary
+    if [[ -f "/etc/setup" ]] ; then
+        echo "Legacy wlinux-setup script found! Removing"
+        rm /etc/setup
+
+        echo "Creating backup of current global profile to profile.old"
+        mv /etc/profile /etc/profile.old
+
+        echo "Creating new global profile without legacy wlinux-setup alias"
+        grep -v -F "alias wlinux-setup='bash /etc/setup'" /etc/profile.old >> /etc/profile
     ;;
 
     abort-upgrade)
