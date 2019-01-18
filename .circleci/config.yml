@@ -11,7 +11,7 @@ jobs:
             - checkout
             - run:
                 name: Ensure we have debuild installed
-                run: apt install -y debuild
+                command: apt install -y debuild
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
