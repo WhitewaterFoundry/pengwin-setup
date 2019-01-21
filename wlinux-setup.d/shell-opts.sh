@@ -2,7 +2,7 @@
 
 source "/usr/local/wlinux-setup.d/common.sh"
 
-function InputRc {
+function Inputrc {
 echo "Installing optimised inputrc commands to /etc/inputrc"
 
 if [[ ! -f "/etc/inputrc" ]] ; then
