@@ -35,20 +35,20 @@ if [ -f "/etc/zsh/zshrc" ] ; then
 
         sudo touch /etc/zsh/zshrc
         sudo tee -a /etc/zsh/zshrc << EOF
-        ## Template global zshrc
-        unsetop no_match
-        source /etc/profile
-        setopt no_match
+## Template global zshrc
+unsetopt no_match
+source /etc/profile
+setopt no_match
 
-        # Check for existence of our custom virtual language environment
-        # install location, if so, source the profile
-        if [[ -f "/home/.envs/envrc" ]] ; then
-        source "/home/.envs/envrc"
-        fi
+# Check for existence of our custom virtual language environment
+# install location, if so, source the profile
+if [[ -f "/home/.envs/envrc" ]] ; then
+    source "/home/.envs/envrc"
+fi
 
-        # Add our own + common aliases
-        alias ll="ls -al"
-        EOF
+# Add our own + common aliases
+alias ll="ls -al"
+EOF
 
         # Create .zsh_wlinux file to let future runs know zshrc has been modified by wlinux-setup
         sudo touch /etc/zsh/$ZSH_SETUP
