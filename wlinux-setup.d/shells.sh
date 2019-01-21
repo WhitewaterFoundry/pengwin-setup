@@ -15,8 +15,11 @@ if [ -f "/etc/zsh/zshrc" ] ; then
 
         # Get current date-time
         dt=$(date '+%d%m%Y-%H%M')
+
         # Save backup with date-time
         sudo cp /etc/zsh/zshrc /etc/zsh/zshrc_$dt.old
+        echo "Old zshrc backed up to /etc/zsh/zshrc_$dt.old"
+
         # Delete old  zshrc so we can start fresh
         sudo rm /etc/zsh/zshrc
 
@@ -25,8 +28,12 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
         echo "Creating fresh zshrc and modifying to source /etc/profile"
-        sudo touch /etc/zsh/zshrc
+        if [[ ! -d "/etc/zsh" ]] ; then
+            echo "/etc/zsh not found, creating..."
+            sudo mkdir -p /etc/zsh
+        fi
 
+        sudo touch /etc/zsh/zshrc
         sudo tee -a /etc/zsh/zshrc << EOF
         ## Template global zshrc
         unsetop no_match
