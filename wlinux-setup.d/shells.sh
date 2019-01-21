@@ -27,7 +27,7 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # Reset after to prevent any unforeseen consequences.
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
-        echo "Creating fresh zshrc and modifying to source /etc/profile"
+        echo "Creating fresh zshrc, modifying to add wlinux template commands and source /etc/profile"
         if [[ ! -d "/etc/zsh" ]] ; then
             echo "/etc/zsh not found, creating..."
             sudo mkdir -p /etc/zsh
