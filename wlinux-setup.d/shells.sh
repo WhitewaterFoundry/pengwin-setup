@@ -26,9 +26,23 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # This would prevent issues in other shell alternatives if they appear.
         echo "Creating fresh zshrc and modifying to source /etc/profile"
         sudo touch /etc/zsh/zshrc
-        echo "unsetopt no_match" | sudo tee -a /etc/zsh/zshrc
-        echo "source /etc/profile" | sudo tee -a /etc/zsh/zshrc
-        echo "setopt no_match" | sudo tee -a /etc/zsh/zshrc
+
+        sudo tee -a /etc/zsh/zshrc << EOF
+        ## Template global zshrc
+        unsetop no_match
+        source /etc/profile
+        setopt no_match
+
+        # Check for existence of our custom virtual language environment
+        # install location, if so, source the profile
+        if [[ -f "/home/.envs/envrc" ]] ; then
+        source "/home/.envs/envrc"
+        fi
+
+        # Add our own + common aliases
+        alias ll="ls -al"
+        EOF
+
         # Create .zsh_wlinux file to let future runs know zshrc has been modified by wlinux-setup
         sudo touch /etc/zsh/$ZSH_SETUP
     fi
