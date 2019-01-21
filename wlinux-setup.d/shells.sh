@@ -15,8 +15,11 @@ if [ -f "/etc/zsh/zshrc" ] ; then
 
         # Get current date-time
         dt=$(date '+%d%m%Y-%H%M')
+
         # Save backup with date-time
         sudo cp /etc/zsh/zshrc /etc/zsh/zshrc_$dt.old
+        echo "Old zshrc backed up to /etc/zsh/zshrc_$dt.old"
+
         # Delete old  zshrc so we can start fresh
         sudo rm /etc/zsh/zshrc
 
@@ -24,11 +27,29 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # Reset after to prevent any unforeseen consequences.
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
-        echo "Creating fresh zshrc and modifying to source /etc/profile"
+        echo "Creating fresh zshrc, modifying to add wlinux template commands and source /etc/profile"
+        if [[ ! -d "/etc/zsh" ]] ; then
+            echo "/etc/zsh not found, creating..."
+            sudo mkdir -p /etc/zsh
+        fi
+
         sudo touch /etc/zsh/zshrc
-        echo "unsetopt no_match" | sudo tee -a /etc/zsh/zshrc
-        echo "source /etc/profile" | sudo tee -a /etc/zsh/zshrc
-        echo "setopt no_match" | sudo tee -a /etc/zsh/zshrc
+        sudo tee -a /etc/zsh/zshrc << EOF
+## Template global zshrc
+unsetopt no_match
+source /etc/profile
+setopt no_match
+
+# Check for existence of our custom virtual language environment
+# install location, if so, source the profile
+if [[ -f "/home/.envs/envrc" ]] ; then
+    source "/home/.envs/envrc"
+fi
+
+# Add our own + common aliases
+alias ll="ls -al"
+EOF
+
         # Create .zsh_wlinux file to let future runs know zshrc has been modified by wlinux-setup
         sudo touch /etc/zsh/$ZSH_SETUP
     fi
