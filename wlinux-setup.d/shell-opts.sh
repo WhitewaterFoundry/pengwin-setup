@@ -12,11 +12,16 @@ fi
 cat /etc/inputrc | while read line
 do
 	if [[ $line == *"### WLINUX OPTIMISED DEFAULTS"* ]] ; then
-		echo "Previous wlinux inputrc customizations detected. Cancelling install..."
-		whiptail --title "Warning!" --msgbox "Previous install of wlinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines $WLINUX_STRING" 15 95
-		return
+		return 1
 	fi
 done
+
+if [[ $? == 1 ]] ; then
+    # While loop found previous customizations
+    echo "Previous wlinux inputrc customizations detected. Cancelling install..."
+    whiptail --title "Warning!" --msgbox "Previous install of wlinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines $WLINUX_STRING" 15 95
+    return
+fi
 
 # Write Carlos' custom inputrc to global inputrc (see: https://github.com/crramirez/shellprefs/blob/master/.inputrc)
 sudo tee -a /etc/inputrc << EOF
