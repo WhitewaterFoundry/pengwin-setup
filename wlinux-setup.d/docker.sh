@@ -12,8 +12,8 @@ function dockerinstall_build_relay {
         echo "Checking for go"
         if ! (go version); then
             echo "Downloading Go using wget."
-            wget -c "https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz"
-            tar -xzf go*.linux-amd64.tar.gz
+            wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
+            tar -xzf go*.tar.gz
 
             export GOROOT=$(pwd)/go
             export PATH="${GOROOT}/bin:$PATH"
