@@ -12,8 +12,8 @@ function dockerinstall_build_relay {
         echo "Checking for go"
         if ! (go version); then
             echo "Downloading Go using wget."
-            wget -c "https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz"
-            tar -xzf go*.linux-amd64.tar.gz
+            wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
+            tar -xzf go*.tar.gz
 
             export GOROOT=$(pwd)/go
             export PATH="${GOROOT}/bin:$PATH"
@@ -118,7 +118,7 @@ if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to D
 
     export PATH=${PATH}:$(wslpath "C:\Windows\System32") #Be sure we can execute Windows commands
 
-    wget -c https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz
+    wget -c https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKERVERSION}.tgz
     sudo tar -xzvf docker-${DOCKERVERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
 
     sudo chmod 755 /usr/bin/docker
