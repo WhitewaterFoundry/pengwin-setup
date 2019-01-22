@@ -7,9 +7,9 @@ GOVERSION="1.11.4"
 if (whiptail --title "GO" --yesno "Would you like to download and install the latest Go from Google?" 8 70) then
     createtmp
     echo "Downloading Go using wget."
-    wget https://dl.google.com/go/go${GOVERSION}.linux-amd64.tar.gz
+    wget https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz
     echo "Unpacking tar binaries to /usr/local/go."
-    sudo tar -C /usr/local -xzf go*.linux-amd64.tar.gz
+    sudo tar -C /usr/local -xzf go*.tar.gz
     echo "Creating ~/go/ for your projects."
     mkdir ~/go/
     echo "Setting Go environment variables GOROOT, GOPATH, and adding Go to PATH with export."
