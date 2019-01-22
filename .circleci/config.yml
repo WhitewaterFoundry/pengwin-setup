@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+    builddeb:
+        docker:
+            - image: patrick330602/fake_wsl_env
+        environment:
+            DEBEMAIL "contact@whitewaterfoundry.com"
+            DEBFULLNAME "Whitewater Foundry, Ltd. Co."
+        steps:
+            - checkout
+            - run:
+                name: Ensure we have debuild installed
+                command: apt install -y devscripts debhelper
+            - run:
+                name: Build the package
+                command: debuild -i -us -uc -b
+
+workflows:
+    version: 2
+    build:
+        jobs:
+            - builddeb

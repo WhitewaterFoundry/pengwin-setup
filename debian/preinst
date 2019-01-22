@@ -15,7 +15,16 @@ set -e
 
 
 case "$1" in
-    install|upgrade)
+    install)
+    # Check for legacy wlinux-setup and remove if necessary
+    if [ -f "/etc/setup" ]
+    then
+        echo "Legacy wlinux-setup script found! Removing"
+        rm /etc/setup
+    fi
+    ;;
+
+    upgrade)
     ;;
 
     abort-upgrade)
