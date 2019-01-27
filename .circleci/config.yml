@@ -10,13 +10,15 @@ jobs:
         steps:
             - checkout
             - run:
-                name: Ensure we have debuild installed
+                name: Ensure we have devscripts and debuild installed
                 command: |
                     apt-get -y -q update
                     apt-get -y -q install devscripts debhelper 
             - run:
-                name: Set version in changelog
-                command: dch --create --package wlinux-setup --newversion 0.1-${CIRCLE_PREVIOUS_BUILD_NUM}
+                name: Update changelog
+                command: |
+                    rm ./debian/changelog
+                    dch --create --distribution buster --package "wlinux-setup" --newversion 0.1-${CIRCLE_PREVIOUS_BUILD_NUM} "Built on Circle CI"
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
