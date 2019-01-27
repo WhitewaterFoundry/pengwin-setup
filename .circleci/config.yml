@@ -20,7 +20,7 @@ jobs:
                 command: |
                     debuild -i -us -uc -b
                     mkdir -p /tmp/pkgs
-                    cp *.deb /tmp/pkgs
+                    cp ../wlinux-setup_0.1-1_all.deb /tmp/pkgs
             - store_artifacts:
                 path: /tmp/pkgs
     deploydeb:
