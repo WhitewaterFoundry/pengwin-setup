@@ -41,7 +41,9 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/buster /tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb
+                command: |
+                    PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb"
+                    package_cloud push whitewaterfoundry/wlinux-setup/debian/buster ${PKGLOCATION}
 workflows:
     version: 2
     build:
