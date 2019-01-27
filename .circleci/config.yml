@@ -14,7 +14,7 @@ jobs:
                 command: |
                     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list
                     apt-get -y -q update
-                    apt-get -y -q install -t stretch-backports devscripts debhelper ca-certificates
+                    apt-get -y -q install -t stretch-backports devscripts debhelper 
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
@@ -33,6 +33,9 @@ jobs:
         steps:
             - attach_workspace:
                  at: /tmp/pkgs
+            - run:
+                name: Install certificates
+                command: apt-get -y -q install ca-certificates
             - run:
                 name: Install packageloud cli
                 command: gem install package_cloud
