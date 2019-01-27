@@ -45,7 +45,7 @@ jobs:
             - run:
                 name: Push deb package
                 command: |
-                    PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb"
+                    PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb"
                     echo $PKGLOCATION
                     package_cloud push whitewaterfoundry/wlinux-setup/debian/buster $PKGLOCATION
 workflows:
