@@ -19,6 +19,7 @@ jobs:
                 name: Build the package
                 command: debuild -i -us -uc -b
     deploydeb:
+        machine: true
         steps:
             - run:
                 name: Install packagecloud CLI
