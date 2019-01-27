@@ -2,7 +2,7 @@ Source: wlinux-setup
 Section: unknown
 Priority: optional
 Maintainer: Whitewater Foundry, Ltd. Co. <contact@whitewaterfoundry.com>
-Version: 1.0-1
+Version: 1.0.0-1
 Build-Depends: debhelper (>= 11)
 Standards-Version: 4.1.3
 Homepage: https://github.com/WhitewaterFoundry/wlinux-setup
