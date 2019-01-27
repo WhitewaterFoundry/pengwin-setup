@@ -10,14 +10,15 @@ jobs:
         steps:
             - checkout
             - run:
-                name: Ensure we have debuild installed
+                name: Ensure we have devscripts and debuild installed
                 command: |
                     apt-get -y -q update
                     apt-get -y -q install devscripts debhelper 
             - run:
-                name: Set version in changelog
+                name: Update changelog
                 command: |
-                    sed "s/0.1-1/0.1-${CIRCLE_BUILD_NUM}/" ./debian/changelog
+                    rm ./debian/changelog
+                    dch --create --distribution buster --package "wlinux-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
@@ -26,10 +27,7 @@ jobs:
                 command: mkdir -p /tmp/pkgs
             - run:
                 name: Copy package to workspace
-                command: |
-                    PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb"
-                    echo $PKGLOCATION
-                    cp ../wlinux-setup_0.1-1_all.deb $PKGLOCATION
+                command: cp ../wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
             - persist_to_workspace:
                 root: /tmp/pkgs
                 paths: .
@@ -44,10 +42,7 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: |
-                    PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb"
-                    echo $PKGLOCATION
-                    package_cloud push whitewaterfoundry/wlinux-setup/debian/buster $PKGLOCATION
+                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/buster /tmp/pkgs/wlinux-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
 workflows:
     version: 2
     build:
