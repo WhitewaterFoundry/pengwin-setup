@@ -17,7 +17,12 @@ jobs:
                     apt-get -y -q install -t stretch-backports devscripts debhelper
             - run:
                 name: Build the package
-                command: debuild -i -us -uc -b
+                command: |
+                debuild -i -us -uc -b
+                mkdir -p /tmp/pkgs
+                cp *.deb /tmp/pkgs
+            - store_artifacts:
+                path: /tmp/pkgs
     deploydeb:
         machine: true
         steps:
@@ -26,7 +31,7 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch wlinux-setup_0.1-1_all.deb
+                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch /tmp/pkgs/wlinux-setup_0.1-1_all.deb
 
 workflows:
     version: 2
