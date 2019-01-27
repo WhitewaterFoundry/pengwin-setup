@@ -26,7 +26,7 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: package_cloud push whitewaterfoundry/wslu/debian/testing wlinux-setup_0.1-1_all.deb
+                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/stretch wlinux-setup_0.1-1_all.deb
 
 workflows:
     version: 2
