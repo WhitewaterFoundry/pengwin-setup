@@ -26,7 +26,9 @@ jobs:
                 command: mkdir -p /tmp/pkgs
             - run:
                 name: Copy package to workspace
-                command: cp ../wlinux-setup_0.1-1_all.deb /tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb
+                command: |
+                    PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb"
+                    cp ../wlinux-setup_0.1-1_all.deb ${PKGLOCATION}
             - persist_to_workspace:
                 root: /tmp/pkgs
                 paths: .
@@ -43,7 +45,7 @@ jobs:
                 name: Push deb package
                 command: |
                     PKGLOCATION="/tmp/pkgs/wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb"
-                    package_cloud push whitewaterfoundry/wlinux-setup/debian/buster ${PKGLOCATION}
+                    package_cloud push whitewaterfoundry/wlinux-setup/debian/buster 
 workflows:
     version: 2
     build:
