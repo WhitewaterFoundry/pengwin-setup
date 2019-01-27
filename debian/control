@@ -4,12 +4,12 @@ Priority: optional
 Maintainer: Whitewater Foundry, Ltd. Co. <contact@whitewaterfoundry.com>
 Build-Depends: debhelper (>= 11)
 Standards-Version: 4.1.3
-Homepage: <insert the upstream URL, if relevant>
-#Vcs-Browser: https://salsa.debian.org/debian/wlinux-setup
-#Vcs-Git: https://salsa.debian.org/debian/wlinux-setup.git
+Version: 0.1-1
+Homepage: https://github.com/WhitewaterFoundry/wlinux-setup
+Vcs-Browser: https://github.com/WhitewaterFoundry/wlinux-setup
+Vcs-Git: https://github.com/WhitewaterFoundry/wlinux-setup.git
 
 Package: wlinux-setup
 Architecture: all
 Depends: ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Setup tool for WLinux.
