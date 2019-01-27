@@ -14,13 +14,36 @@ jobs:
                 command: |
                     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list
                     apt-get -y -q update
-                    apt-get -y -q install -t stretch-backports devscripts debhelper
+                    apt-get -y -q install -t stretch-backports devscripts debhelper 
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
-
+            - run:
+                name: Create workspace
+                command: mkdir -p /tmp/pkgs
+            - run:
+                name: Copy package to workspace
+                command: cp ../wlinux-setup_0.1-1_all.deb /tmp/pkgs
+            - persist_to_workspace:
+                root: /tmp/pkgs
+                paths: .
+    deploydeb:
+        docker:
+            - image: circleci/ruby:2.3-jessie
+        steps:
+            - attach_workspace:
+                 at: /tmp/pkgs
+            - run:
+                name: Install packageloud cli
+                command: gem install package_cloud
+            - run:
+                name: Push deb package
+                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/buster /tmp/pkgs/wlinux-setup_0.1-1_all.deb
 workflows:
     version: 2
     build:
         jobs:
             - builddeb
+            - deploydeb:
+                requires:
+                    - builddeb
