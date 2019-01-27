@@ -28,14 +28,13 @@ jobs:
                 root: /tmp/pkgs
                 paths: .
     deploydeb:
-        docker:
-            - image: debian
+        <<: *defaults
         steps:
+             - run:
+                name: Install certificates to allow attach_workspace to work
+                command: apt-get -y -q install ca-certificates
             - attach_workspace:
                  at: /tmp/pkgs
-            - run:
-                name: Install certificates
-                command: apt-get -y -q install ca-certificates
             - run:
                 name: Install packageloud cli
                 command: gem install package_cloud
