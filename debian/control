@@ -1,5 +1,5 @@
 Source: wlinux-setup
-Section: unknown
+Section: utils
 Priority: optional
 Maintainer: Whitewater Foundry, Ltd. Co. <contact@whitewaterfoundry.com>
 Build-Depends: debhelper (>= 11)
