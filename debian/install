@@ -1,3 +1,2 @@
 wlinux-setup /usr/local/bin
 wlinux-setup.d /usr/local
-wlinux-setup.d/* /usr/local/wlinux-setup.d/*
