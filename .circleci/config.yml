@@ -14,7 +14,7 @@ jobs:
                 command: |
                     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list
                     apt-get -y -q update
-                    apt-get -y -q install -t stretch-backports devscripts debhelper
+                    apt-get -y -q install -t stretch-backports devscripts debhelper ca-certificates
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
