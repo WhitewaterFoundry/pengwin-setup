@@ -28,6 +28,9 @@ jobs:
                 root: /tmp/pkgs
                 paths: .
     deploydeb:
+        docker:
+            - image: debian
+        steps:
             - attach_workspace:
                  at: /tmp/pkgs
             - run:
