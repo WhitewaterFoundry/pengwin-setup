@@ -3,7 +3,7 @@ version: 2
 jobs:
     builddeb:
         docker:
-            - image: debian
+            - image: debian:testing
         environment:
             DEBEMAIL "contact@whitewaterfoundry.com"
             DEBFULLNAME "Whitewater Foundry, Ltd. Co."
@@ -12,9 +12,8 @@ jobs:
             - run:
                 name: Ensure we have debuild installed
                 command: |
-                    echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list
                     apt-get -y -q update
-                    apt-get -y -q install -t stretch-backports devscripts debhelper 
+                    apt-get -y -q install devscripts debhelper 
             - run:
                 name: Set version
                 command: |
