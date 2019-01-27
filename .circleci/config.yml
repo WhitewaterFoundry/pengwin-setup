@@ -15,7 +15,7 @@ jobs:
                     apt-get -y -q update
                     apt-get -y -q install devscripts debhelper 
             - run:
-                name: Set version
+                name: Set version in changelog
                 command: |
                     sed "s/0.1-1/0.1-${CIRCLE_BUILD_NUM}/" ./debian/changelog
             - run:
