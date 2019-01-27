@@ -18,9 +18,9 @@ jobs:
             - run:
                 name: Build the package
                 command: |
-                debuild -i -us -uc -b
-                mkdir -p /tmp/pkgs
-                cp *.deb /tmp/pkgs
+                    debuild -i -us -uc -b
+                    mkdir -p /tmp/pkgs
+                    cp *.deb /tmp/pkgs
             - store_artifacts:
                 path: /tmp/pkgs
     deploydeb:
