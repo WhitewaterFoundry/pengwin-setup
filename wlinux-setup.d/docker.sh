@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 DOCKERVERSION="18.09.1"
 DOCKERCOMPOSEVERSION="1.23.2"
