@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 function InputRc {
 WLINUX_STRING="### WLINUX OPTIMISED DEFAULTS"
