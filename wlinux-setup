@@ -54,7 +54,7 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
     "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
     "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
     "SHELLS" "Install and configure zsh, csh, and fish" off \
-    "SHELL-OPTS" "Install various optimisations for your shell" off \
+    "SHELL-OPTS" "Install various optimisations for your shell & shell applications" off \
     "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
     "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
     "NODEJS" "Install Node.js and npm" off \
