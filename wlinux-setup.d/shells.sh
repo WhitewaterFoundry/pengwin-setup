@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 function zshinstall {
 ZSH_SETUP=".zsh_wlinux"
@@ -103,6 +103,9 @@ whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash
     "FISH" "fish" off \
     "CSH" "csh" off 3>&1 1>&2 2>&3
 )
+
+# Ensure we're up to date
+updateupgrade
 
 if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."
