@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 function Inputrc {
 echo "Installing optimised inputrc commands to /etc/inputrc"
@@ -68,5 +68,5 @@ whiptail --title "Further customizations" --msgbox "To make further customizatio
 }
 
 if (whiptail --title "Inputrc Customizations" --yesno "Would you like to install input optimizations to the global inputrc (\"/etc/inputrc\")? Please bear in mind that while bash reads this script on start, other shells like zsh and fish do not." 15 95) ; then
-	Inputrc
+	InputRc
 fi
