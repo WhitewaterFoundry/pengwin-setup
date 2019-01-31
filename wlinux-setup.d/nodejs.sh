@@ -7,6 +7,7 @@ if (whiptail --title "NODE" --yesno "Would you like to download and install Node
     createtmp
 
     echo "Ensuring we have build-essential installed"
+    updateupgrade
     sudo apt install build-essential -y
 
     echo "Installing n, Node.js version manager"
