@@ -14,7 +14,7 @@ if (whiptail --title "NODE" --yesno "Would you like to download and install Node
     bash n-install.sh -y
 
     echo "Installing latest node.js release"
-    source "${HOME}/.bashrc"
+    export PATH="$PATH:${HOME}/n/bin"
     n latest
 
     echo "Installing npm"
