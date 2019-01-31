@@ -4,19 +4,23 @@ source $(dirname "$0")/common.sh "$@"
 
 if (whiptail --title "NODE" --yesno "Would you like to download and install NodeJS using n and the npm package manager?" 8 88) then
     echo "Installing NODE"
-
-    echo "Installing n, Node.js version manager"
-    curl -L https://git.io/n-install -o n-install.sh | export N_PREFIX="${HOME}/.n" bash
+    createtmp
 
     echo "Ensuring we have build-essential installed"
     sudo apt install build-essential -y
 
+    echo "Installing n, Node.js version manager"
+    curl -L https://git.io/n-install -o n-install.sh
+    bash n-install.sh -y
+
     echo "Installing latest node.js release"
+    source "${HOME}/.bashrc"
     n latest
 
     echo "Installing npm"
     curl -0 -L https://npmjs.com/install.sh | sh
 
+    cleantmp
         if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) then
             echo "Installing YARN"
             curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
