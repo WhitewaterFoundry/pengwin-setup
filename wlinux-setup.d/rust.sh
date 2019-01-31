@@ -14,6 +14,10 @@ if (whiptail --title "RUST" --yesno "Would you like to download and install the 
     chmod +x rustup.rs
     sh rustup.rs -y
 
+    echo "Adding rustup to path"
+    conf_path='/etc/profile.d/rust.sh'
+    echo 'export PATH="$PATH:${HOME}/.cargo/bin"' | sudo tee "${conf_path}"
+
     # Cleanup
     echo "Cleaning up rustup temporary folder"
     cleantmp
