@@ -18,6 +18,10 @@ if (whiptail --title "RUST" --yesno "Would you like to download and install the 
     conf_path='/etc/profile.d/rust.sh'
     echo 'export PATH="$PATH:${HOME}/.cargo/bin"' | sudo tee "${conf_path}"
 
+    # Copy configuration to fish
+    sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
+    sudo cp "${conf_path}" "${__fish_sysconf_dir}"
+
     # Cleanup
     echo "Cleaning up rustup temporary folder"
     cleantmp
