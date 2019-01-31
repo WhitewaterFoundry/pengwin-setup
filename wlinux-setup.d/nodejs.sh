@@ -15,11 +15,13 @@ if (whiptail --title "NODE" --yesno "Would you like to download and install Node
     bash n-install.sh -y
 
     echo "Installing latest node.js release"
-    export PATH="$PATH:${HOME}/n/bin"
+    export N_PREFIX="${HOME}/n"
+    export PATH="$PATH:${N_PREFIX}/bin"
     n latest
 
     echo "Installing npm"
-    curl -0 -L https://npmjs.com/install.sh | sudo sh
+    curl -0 -L https://npmjs.com/install.sh -o install.sh
+    sh install.sh
 
     cleantmp
         if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) then
