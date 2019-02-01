@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-function Inputrc {
+function InputRc {
 echo "Installing optimised inputrc commands to /etc/inputrc"
 
 if [[ ! -f "/etc/inputrc" ]] ; then
