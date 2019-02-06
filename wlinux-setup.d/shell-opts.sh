@@ -3,29 +3,36 @@
 source "/usr/local/wlinux-setup.d/common.sh"
 
 function Inputrc {
+
 echo "Installing optimised inputrc commands to /etc/inputrc"
 
 if [[ ! -f "/etc/inputrc" ]] ; then
 	sudo touch /etc/inputrc
 fi
 
+WLINUX_STRING="### WLINUX OPTIMISED DEFAULTS"
+
 cat /etc/inputrc | while read line
 do
-	if [[ $line == *"### WLINUX OPTIMISED DEFAULTS"* ]] ; then
+	if [[ $line == *"${WLINUX_STRING}"* ]] ; then
 		return 1
 	fi
 done
 
 if [[ $? == 1 ]] ; then
     # While loop found previous customizations
-    echo "Previous wlinux inputrc customizations detected. Cancelling install..."
-    whiptail --title "Warning!" --msgbox "Previous install of wlinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines $WLINUX_STRING" 15 95
+    echo "Previous WLinux inputrc customizations detected. Cancelling install..."
+    whiptail --title "Warning!" --msgbox "Previous install of WLinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines ${WLINUX_STRING}" 15 95
     return
 fi
 
-# Write Carlos' custom inputrc to global inputrc (see: https://github.com/crramirez/shellprefs/blob/master/.inputrc)
+echo "Ensuring that bash-completion is installed"
+
+updateupgrade
+sudo apt-get -y -q install bash-completion
+
 sudo tee -a /etc/inputrc << EOF
-### WLINUX OPTIMISED DEFAULTS
+${WLINUX_STRING}
 # Don't ring bell on completion
 set bell-style none
 
@@ -61,12 +68,12 @@ set menu-complete-display-prefix On
   # a history expansion in the line
   Space: magic-space
 \$endif
-### WLINUX OPTIMISED DEFAULTS
+${WLINUX_STRING}
 EOF
 
-whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice." 16 95
+whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice. \n\nPlease close and re-open WLinux" 16 95
 }
 
-if (whiptail --title "Inputrc Customizations" --yesno "Would you like to install input optimizations to the global inputrc (\"/etc/inputrc\")? Please bear in mind that while bash reads this script on start, other shells like zsh and fish do not." 15 95) ; then
+if (whiptail --title "Inputrc Customizations" --yesno "Would you like to install readline optimizations to the global inputrc (\"/etc/inputrc\")? Please bear in mind that while bash reads this script on start, other shells like zsh and fish do not." 15 95) ; then
 	Inputrc
 fi
