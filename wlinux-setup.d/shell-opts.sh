@@ -22,7 +22,7 @@ done
 if [[ $? == 1 ]] ; then
     # While loop found previous customizations
     echo "Previous WLinux inputrc customizations detected. Cancelling install..."
-    whiptail --title "Warning!" --msgbox "Previous install of WLinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines ${WLINUX_STRING}" 15 95
+    whiptail --title "Warning!" --msgbox "Previous install of WLinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines ${WLINUX_STRING}" 10 95
     return
 fi
 
@@ -59,8 +59,8 @@ set colored-completion-prefix On
 # Color the common prefix in menu-complete
 set menu-complete-display-prefix On
 
-\"\e[A\": history-search-backward
-\"\e[B\": history-search-forward
+"\e[A": history-search-backward
+"\e[B": history-search-forward
 
 \$if Bash
   # Magic Space
@@ -69,11 +69,12 @@ set menu-complete-display-prefix On
   Space: magic-space
 \$endif
 ${WLINUX_STRING}
+
 EOF
 
-whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice. \n\nPlease close and re-open WLinux" 16 95
+whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice. \n\nPlease close and re-open WLinux" 13 95
 }
 
-if (whiptail --title "Inputrc Customizations" --yesno "Would you like to install readline optimizations to the global inputrc (\"/etc/inputrc\")? Please bear in mind that while bash reads this script on start, other shells like zsh and fish do not." 15 95) ; then
+if (whiptail --title "Inputrc Customizations" --yesno "Would you like to install readline optimizations to the global inputrc (\"/etc/inputrc\")? \n\nPlease bear in mind that while bash reads this script on start, other shells like zsh and fish do not." 11 95) ; then
 	Inputrc
 fi
