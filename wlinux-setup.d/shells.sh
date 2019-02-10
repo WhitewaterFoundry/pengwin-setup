@@ -105,6 +105,9 @@ whiptail --title "Shell Menu" --checklist --separate-output "Custom shells and i
     "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
 )
 
+# Ensure we're up to date
+updateupgrade
+
 if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."
     sudo apt install zsh -y

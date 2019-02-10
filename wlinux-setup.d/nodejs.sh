@@ -5,19 +5,30 @@ source $(dirname "$0")/common.sh "$@"
 if (whiptail --title "NODE" --yesno "Would you like to download and install NodeJS using n and the npm package manager?" 8 88) then
     echo "Installing NODE"
     createtmp
-    updateupgrade
-    sudo apt install n build-essential -y 
-    sudo n latest
-    curl -0 -L https://npmjs.com/install.sh | sudo sh
-    cleantmp
 
+    echo "Ensuring we have build-essential installed"
+    updateupgrade
+    sudo apt install build-essential -y
+
+    echo "Installing n, Node.js version manager"
+    curl -L https://git.io/n-install -o n-install.sh
+    bash n-install.sh -y
+
+    echo "Installing latest node.js release"
+    export N_PREFIX="${HOME}/n"
+    export PATH="$PATH:${N_PREFIX}/bin"
+    n latest
+
+    echo "Installing npm"
+    curl -0 -L https://npmjs.com/install.sh -o install.sh
+    sh install.sh
+
+    cleantmp
         if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) then
             echo "Installing YARN"
-            createtmp
             curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
             echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
             sudo apt-get update && sudo apt-get install yarn --no-install-recommends
-            cleantmp
         else
             echo "Skipping YARN"
         fi
