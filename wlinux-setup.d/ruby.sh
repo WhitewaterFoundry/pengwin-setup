@@ -15,7 +15,7 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
 
     echo "Configuring rbenv"
 
-    conf_path='/etc/profile.d/ruby'
+    conf_path='/etc/profile.d/ruby.sh'
 
     echo 'export PATH="${HOME}/.rbenv/bin:${PATH}"' | sudo tee "${conf_path}"
     echo 'eval "$(rbenv init -)"' | sudo tee -a "${conf_path}"

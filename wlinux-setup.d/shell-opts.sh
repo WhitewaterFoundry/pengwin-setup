@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
+
 
 function Inputrc {
-
 echo "Installing optimised inputrc commands to /etc/inputrc"
 
 if [[ ! -f "/etc/inputrc" ]] ; then
@@ -74,6 +74,7 @@ EOF
 
 whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice. \n\nPlease close and re-open WLinux" 13 95
 }
+
 
 if (whiptail --title "Inputrc Customizations" --yesno "Would you like to install readline optimizations to the global inputrc (\"/etc/inputrc\")? \n\nPlease bear in mind that while bash reads this script on start, other shells like zsh and fish do not." 11 95) ; then
 	Inputrc
