@@ -50,11 +50,10 @@ function ByeMessage {
 function InstallMenu {
 
 MenuChoice=$(
-whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 16 \
+whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
     "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
     "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
-    "SHELLS" "Install and configure zsh, csh, and fish" off \
-    "SHELL-OPTS" "Install optimised shell startup files" off \
+    "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
     "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
     "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
     "NODEJS" "Install Node.js and npm" off \
@@ -99,11 +98,6 @@ fi
 if [[ $MenuChoice == *"SHELLS"* ]] ; then
   echo "SHELLS"
   bash ${SetupDir}/shells.sh "$@"
-fi
-
-if [[ $MenuChoice == *"SHELL-OPTS"* ]] ; then
-	echo "SHELL-OPTS"
-	bash ${SetupDir}/shell-opts.sh
 fi
 
 if [[ $MenuChoice == *"EDITORS"* ]] ; then

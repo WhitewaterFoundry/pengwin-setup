@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 function zshinstall {
 ZSH_SETUP=".zsh_wlinux"
@@ -98,10 +98,11 @@ fi
 
 function installandsetshell {
 EDITORCHOICE=$(
-whiptail --title "Shell Menu" --checklist --separate-output "Custom shells (bash included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+whiptail --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
     "ZSH" "zsh" off \
     "FISH" "fish" off \
-    "CSH" "csh" off 3>&1 1>&2 2>&3
+    "CSH" "csh" off \
+    "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
 )
 
 if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
@@ -121,6 +122,12 @@ if [[ $EDITORCHOICE == *"CSH"* ]] ; then
     sudo apt install csh -y
     cshinstall
 fi
+
+if [[ $EDITORCHOICE == *"BASH-RL"* ]] ; then
+	echo "BASH-RL"
+	bash ${SetupDir}/shell-opts.sh "$@"
+fi
+
 }
 
 installandsetshell
