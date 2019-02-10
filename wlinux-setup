@@ -107,7 +107,7 @@ fi
 
 if [[ $MenuChoice == *"PYTHON"* ]] ; then
   echo "PYTHON"
-  bash ${SetupDir}/python.sh "$@"
+  bash ${SetupDir}/pythonpi.sh "$@"
 fi
 
 if [[ $MenuChoice == *"NODE"* ]] ; then
