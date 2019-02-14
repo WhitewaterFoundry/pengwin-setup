@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-DOCKERVERSION="18.09.1"
+DOCKERVERSION="18.09.2"
 DOCKERCOMPOSEVERSION="1.23.2"
 
 function dockerinstall_build_relay {
