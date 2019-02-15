@@ -62,7 +62,7 @@ if [[ ${connected} != 0  ]]; then
 fi
 EOF
     sudo cp docker-relay /usr/bin/docker-relay
-    sudo chmod +x /usr/bin/docker-relay
+    sudo chmod u+x /usr/bin/docker-relay
 
     echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
 
@@ -159,6 +159,27 @@ if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to D
             fi
 
         fi
+
+        cat << 'EOF' >> create-mnt-c-link
+#!/bin/bash
+
+if [[ -z $(ls -A /mnt/c) ]]; then
+
+    rm -d /mnt/c #Ensure that we only delete the directory if it is empty
+    ln -s $(wslpath -u "C:\\") /mnt/c
+fi
+EOF
+        sudo cp create-mnt-c-link /usr/bin/create-mnt-c-link
+        sudo chmod u+x /usr/bin/create-mnt-c-link
+
+        echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
+
+        cat << 'EOF' >> create-mnt-c-link.sh
+sudo create-mnt-c-link
+EOF
+        sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
+        sudo chmod -w /usr/bin/create-mnt-c-link
+
     fi
 
     whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open WLinux" 8 60
