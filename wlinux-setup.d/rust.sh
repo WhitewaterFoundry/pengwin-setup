@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust via rustup?" 8 85) then
     echo "Installing rust"
@@ -13,6 +13,14 @@ if (whiptail --title "RUST" --yesno "Would you like to download and install the 
     echo "Executing..."
     chmod +x rustup.rs
     sh rustup.rs -y
+
+    echo "Adding rustup to path"
+    conf_path='/etc/profile.d/rust.sh'
+    echo 'export PATH="$PATH:${HOME}/.cargo/bin"' | sudo tee "${conf_path}"
+
+    # Copy configuration to fish
+    sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
+    sudo cp "${conf_path}" "${__fish_sysconf_dir}"
 
     # Cleanup
     echo "Cleaning up rustup temporary folder"

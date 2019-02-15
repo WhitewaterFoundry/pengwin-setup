@@ -15,7 +15,7 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
 
     echo "Configuring rbenv"
 
-    conf_path='/etc/profile.d/ruby'
+    conf_path='/etc/profile.d/ruby.sh'
 
     echo 'export PATH="${HOME}/.rbenv/bin:${PATH}"' | sudo tee "${conf_path}"
     echo 'eval "$(rbenv init -)"' | sudo tee -a "${conf_path}"
@@ -29,7 +29,11 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
 
     #Copy configuration to  fish
     sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
-    sudo cp "${conf_path}" "${__fish_sysconf_dir}"
+    conf_path_fish="${__fish_sysconf_dir}/ruby.fish"
+
+    echo 'set PATH $HOME/.rbenv/bin $PATH' | sudo tee "${conf_path_fish}"
+    echo 'set PATH $HOME/.rbenv/shims $PATH' | sudo tee -a "${conf_path_fish}"
+    echo 'rbenv rehash >/dev/null ^&1' | sudo tee -a "${conf_path_fish}"
 
     echo "Installing Ruby using rbenv"
     rbenv install 2.5.3 --verbose
