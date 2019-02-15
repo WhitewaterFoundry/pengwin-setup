@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 if (whiptail --title "AZURECLI" --yesno "Would you like to download and install Azure command line tools?" 8 70) then
     echo "Installing AZURECLI"

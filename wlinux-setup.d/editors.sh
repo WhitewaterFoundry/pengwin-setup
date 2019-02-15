@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/usr/local/wlinux-setup.d/common.sh"
+source $(dirname "$0")/common.sh "$@"
 
 function neoviminstall {
 if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) then
@@ -42,7 +42,7 @@ if (whiptail --title "CODE" --yesno "Would you like to download and install Code
     #Temporary: Fix issue with udev
     sudo apt-get install -y --allow-downgrades --allow-change-held-packages -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
     sudo apt-mark hold udev libudev1
-    
+
     echo "Installing code with dependencies: $ sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev"
     sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev
     cleantmp
@@ -60,7 +60,7 @@ whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (na
 )
 
 if [[ $EDITORCHOICE == *"NEOVIM"* ]] ; then
-    neoviminstall
+  neoviminstall
 fi
 
 if [[ $EDITORCHOICE == *"EMACS"* ]] ; then
@@ -72,4 +72,4 @@ if [[ $EDITORCHOICE == *"CODE"* ]] ; then
 fi
 }
 
-editormenu()
+editormenu
