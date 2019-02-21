@@ -12,6 +12,10 @@ function install_terraform() {
   sudo mv terraform /usr/bin
   sudo chmod +x /usr/bin/terraform
 
+  echo "Installing bash-completion"
+  sudo mkdir -p /etc/bash_completion.d
+  sudo apt-get install -yq bash-completion
+
   terraform -install-autocomplete
   cleantmp
 }
