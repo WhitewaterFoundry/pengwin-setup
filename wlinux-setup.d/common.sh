@@ -39,6 +39,14 @@ echo "Updating apt package index from repositories: $ sudo apt update"
 sudo apt update
 echo "Applying available package upgrades from repositories: $ sudo apt upgrade -y"
 sudo apt upgrade -y
+
+echo "Installing necessary prerequisites..."
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' git | grep "install ok installed")
+if [ "" == "$PKG_OK" ]; then
+  echo "Git not installed. Installing"
+  sudo apt-get --force-yes --yes install git
+fi
+
 echo "Removing unnecessary packages: $ sudo apt autoremove -y"
 sudo apt autoremove -y
 }
