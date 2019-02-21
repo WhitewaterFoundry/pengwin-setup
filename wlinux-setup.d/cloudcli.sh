@@ -12,6 +12,7 @@ function install_terraform() {
   sudo mv terraform /usr/bin
   sudo chmod +x /usr/bin/terraform
 
+  terraform -install-autocomplete
   cleantmp
 }
 
