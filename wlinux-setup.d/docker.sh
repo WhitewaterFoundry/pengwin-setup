@@ -135,6 +135,7 @@ if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to D
     fi
 
     echo "Installing bash-completion"
+    sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
     sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
 
