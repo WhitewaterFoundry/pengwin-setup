@@ -43,4 +43,11 @@ echo "Removing unnecessary packages: $ sudo apt autoremove -y"
 sudo apt autoremove -y
 }
 
+function getexecname {
+user_path=$(cmd.exe /c "echo %HOMEDRIVE%%HOMEPATH%" 2>&1 | tr -d "\r")
+wslexec_dir=$(echo $PATH | sed -e 's/:/\n/g' | grep 'Program\ Files/WindowsApps')
+execname=$(ls "${wslexec_dir}" | grep '.exe')
+echo "${execname}"
+}
+
 ProcessArguments "$@"
