@@ -2,28 +2,28 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-function neoviminstall {
-if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) then
+function neovim_install {
+  if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) ; then
     echo "Installing neovim and building tools from Debian: $ sudo apt install neovim build-essential"
     updateupgrade
-    sudo apt -t testing install neovim build-essential -y
-else
+    sudo apt-get -y -q -t testing install neovim build-essential
+  else
     echo "Skipping NEOVIM"
-fi
+  fi
 }
 
-function emacsinstall {
-if (whiptail --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) then
+function emacs_install {
+  if (whiptail --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) ; then
     echo "Installing emacs: $ sudo apt install emacs -y"
     updateupgrade
-    sudo apt install emacs -y
-else
+    sudo apt-get -y -q install emacs
+  else
     echo "Skipping EMACS"
-fi
+  fi
 }
 
-function codeinstall {
-if (whiptail --title "CODE" --yesno "Would you like to download and install Code from Microsoft?" 8 65) then
+function code_install {
+  if (whiptail --title "CODE" --yesno "Would you like to download and install Code from Microsoft?" 8 65) ; then
     echo "Installing CODE"
     createtmp
     echo "Downloading and unpacking Microsoft's apt repo key with curl and gpg"
@@ -40,36 +40,36 @@ if (whiptail --title "CODE" --yesno "Would you like to download and install Code
     updateupgrade
 
     #Temporary: Fix issue with udev
-    sudo apt-get install -y --allow-downgrades --allow-change-held-packages -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
+    sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
     sudo apt-mark hold udev libudev1
 
-    echo "Installing code with dependencies: $ sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev"
-    sudo apt-get install -y code libxss1 libasound2 libx11-xcb-dev
+    echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev libssl1.0.2"
+    sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev libssl1.0.2
     cleantmp
-else
+  else
     echo "Skipping CODE"
-fi  
+  fi
 }
 
-function editormenu {
-EDITORCHOICE=$(
-whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
-    "NEOVIM" "Neovim" off \
-    "EMACS" "Emacs" off \
-    "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
-)
+function editor_menu {
+  local editor_choice=$(
+    whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+      "NEOVIM" "Neovim" off \
+      "EMACS" "Emacs" off \
+      "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
+  )
 
-if [[ $EDITORCHOICE == *"NEOVIM"* ]] ; then
-  neoviminstall
-fi
+  if [[ ${editor_choice} == *"NEOVIM"* ]] ; then
+    neovim_install
+  fi
 
-if [[ $EDITORCHOICE == *"EMACS"* ]] ; then
-  emacsinstall
-fi
+  if [[ ${editor_choice} == *"EMACS"* ]] ; then
+    emacs_install
+  fi
 
-if [[ $EDITORCHOICE == *"CODE"* ]] ; then
-  codeinstall
-fi
+  if [[ ${editor_choice} == *"CODE"* ]] ; then
+    code_install
+  fi
 }
 
-editormenu
+editor_menu
