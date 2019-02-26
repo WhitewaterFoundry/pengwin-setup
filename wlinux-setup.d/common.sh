@@ -13,6 +13,11 @@ function ProcessArguments {
           set -x
           shift
         ;;
+        -y|--yes|--assume-yes)
+          echo "Skipping confirmations"
+          SkipConfirmations=1
+          shift
+        ;;
         *)
           shift
         esac
