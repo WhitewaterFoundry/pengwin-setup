@@ -54,10 +54,7 @@ function getexecpath {
 n=1
 while [ $n -lt 25 ] ; do
     pathitem="$(echo $PATH | cut -d':' -f$n)"
-    if echo $pathitem | grep 'Program Files/WindowsApps' ; then
-        echo $pathitem
-	return
-    fi
+    echo $pathitem | grep 'Program Files/WindowsApps'
     n=$((n+1))
 done
 }
