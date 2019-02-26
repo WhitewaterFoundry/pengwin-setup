@@ -50,4 +50,13 @@ execname=$(ls "${wslexec_dir}" | grep '.exe')
 echo "${execname}"
 }
 
+function getexecpath {
+n=1
+while [ $n -lt 25 ] ; do
+    pathitem="$(echo $PATH | cut -d':' -f$n)"
+    echo $pathitem | grep 'Program Files/WindowsApps'
+    n=$((n+1))
+done
+}
+
 ProcessArguments "$@"
