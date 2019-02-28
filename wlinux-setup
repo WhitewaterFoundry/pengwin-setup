@@ -29,7 +29,8 @@ sudo apt-get update
 # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
 if [ -f "/etc/apt/.dist-upgrade" ] ; then
 	# whiptail prompt here, delete on dist-upgrade
-	if (whiptail --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to a regular upgrade, this may install extra / remove packages necessary to complete. Would you like to install?\n\nIf you would like to run a non-automated distribution upgrade and see what will be upgraded / installed / removed, or perform this in your own time, run 'sudo apt-get dist-upgrade'" 15 96) then
+	echo "Distribution upgrade flag noticed! Alerting user"
+	if (whiptail --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90) then
 		sudo rm /etc/apt/.dist-upgrade
 		sudo apt-get dist-upgrade -y
 		exit 0
@@ -37,9 +38,11 @@ if [ -f "/etc/apt/.dist-upgrade" ] ; then
 fi
 
 # Check if there's any upgrades to wlinux-setup / wlinux-base
-UPGRADES="$(sudo apt-get upgrade --show-upgraded --assume-no | grep 'wlinux')"
-if [[ ! "${UGPRADES}" == *""* ]] ; then
-	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for WLinux core packages. Would you like to update them? (this is highly recommended)\n\nwlinux-setup will close after installation complete."10 45) then
+echo "Running upgrade check..."
+UPGRD_CHECK="$(sudo apt-get upgrade --show-upgraded --assume-no | grep wlinux)"
+if [[ "${UPGRD_CHECK}" == *"wlinux"* ]] ; then
+	echo "WLinux core package upgrades found"
+	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for WLinux core packages. Would you like to update them? (this is highly recommended)\n\nwlinux-setup will close after installation complete." 10 90) then
 		sudo apt-get upgrade wlinux-base wlinux-setup -y
 		exit 0
 	fi
@@ -185,20 +188,21 @@ fi
 }
 
 ### Main
-CheckUpgrades
+WelcomePrompt
+ContinuePrompt
 
+CheckUpgrades
 # Ensure our packages are held to prevent odd situation of
 # being updated while running other operations from wlinux-setup 
 # install menu
 echo "Holding wlinux-base & wlinux-setup to ensure no changes while operating"
 sudo apt-mark hold wlinux-base wlinux-setup > /dev/null 2&>1
 
-WelcomePrompt
-ContinuePrompt
 InstallMenu "$@"
-ByeMessage
 
 # Unhold our packages
 echo "Unholding wlinux-base & wlinux-setup"
 sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2&>1
+
+ByeMessage
 exit 0
