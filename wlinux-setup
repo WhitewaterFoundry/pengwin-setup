@@ -196,13 +196,13 @@ CheckUpgrades
 # being updated while running other operations from wlinux-setup 
 # install menu
 echo "Holding wlinux-base & wlinux-setup to ensure no changes while operating"
-sudo apt-mark hold wlinux-base wlinux-setup > /dev/null 2&>1
+sudo apt-mark hold wlinux-base wlinux-setup > /dev/null 2>&1
 
 InstallMenu "$@"
 
 # Unhold our packages
 echo "Unholding wlinux-base & wlinux-setup"
-sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2&>1
+sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2>&1
 
 ByeMessage
 exit 0
