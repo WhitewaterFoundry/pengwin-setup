@@ -135,6 +135,7 @@ if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to D
     fi
 
     echo "Installing bash-completion"
+    sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
     sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
 
@@ -158,9 +159,7 @@ if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to D
                 sudo sed -i 's$\(root=\)\(.*\)$\1/$' /etc/wsl.conf
             fi
 
-        fi
-
-        cat << 'EOF' >> create-mnt-c-link
+            cat << 'EOF' >> create-mnt-c-link
 #!/bin/bash
 
 if [[ -z $(ls -A /mnt/c) ]]; then
@@ -169,16 +168,18 @@ if [[ -z $(ls -A /mnt/c) ]]; then
     ln -s $(wslpath -u "C:\\") /mnt/c
 fi
 EOF
-        sudo cp create-mnt-c-link /usr/bin/create-mnt-c-link
-        sudo chmod u+x /usr/bin/create-mnt-c-link
+            sudo cp create-mnt-c-link /usr/bin/create-mnt-c-link
+            sudo chmod u+x /usr/bin/create-mnt-c-link
 
-        echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
+            echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
 
-        cat << 'EOF' >> create-mnt-c-link.sh
+            cat << 'EOF' >> create-mnt-c-link.sh
 sudo create-mnt-c-link
 EOF
-        sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
-        sudo chmod -w /usr/bin/create-mnt-c-link
+            sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
+            sudo chmod -w /usr/bin/create-mnt-c-link
+        fi
+
 
     fi
 
