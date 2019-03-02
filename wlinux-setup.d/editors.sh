@@ -45,7 +45,7 @@ function code_install {
     sudo apt-mark hold udev libudev1
 
     echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev"
-    sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev libssl1.0.2
+    sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev
 
     #Temporary: Fix issue with Python Extention of VSCode
     echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
