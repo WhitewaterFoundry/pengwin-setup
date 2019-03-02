@@ -32,6 +32,7 @@ function code_install {
     sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg 
     echo "Adding Microsoft apt repo to /etc/apt/sources.list.d/vscode.list with echo"
     sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' 
+    cleantmp
 
     #Temporary: Fix issue with udev
     echo 'deb https://deb.debian.org/debian stretch-backports main' | sudo tee /etc/apt/sources.list.d/stretch-backports.list
@@ -43,9 +44,14 @@ function code_install {
     sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
     sudo apt-mark hold udev libudev1
 
-    echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev libssl1.0.2"
+    echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev"
     sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev libssl1.0.2
-    cleantmp
+
+    #Temporary: Fix issue with Python Extention of VSCode
+    echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
+    sudo apt-get update
+    sudo apt-get install -y -q libssl1.0.2
+
   else
     echo "Skipping CODE"
   fi
@@ -72,4 +78,4 @@ function editor_menu {
   fi
 }
 
-editor_menu
+editor_menu "$@"
