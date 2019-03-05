@@ -10,5 +10,5 @@ Vcs-Git: https://github.com/WhitewaterFoundry/wlinux-setup.git
 
 Package: wlinux-setup
 Architecture: all
-Depends: ${misc:Depends}, git
+Depends: ${misc:Depends}, git, wslu
 Description: Setup tool for WLinux.
