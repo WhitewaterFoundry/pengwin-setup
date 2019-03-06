@@ -2,8 +2,6 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-GOVERSION="1.12"
-
 if (whiptail --title "GO" --yesno "Would you like to download and install the latest Go from Google?" 8 70) then
     createtmp
     echo "Downloading Go using wget."
