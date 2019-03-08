@@ -12,3 +12,4 @@ Package: wlinux-setup
 Architecture: all
 Depends: ${misc:Depends}, git, wslu
 Description: Setup tool for WLinux.
+Essential: yes
