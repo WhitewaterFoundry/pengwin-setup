@@ -80,15 +80,18 @@ if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Win
 
     # Set correct permissions
     echo "Setting correct theme folder permissions"
-    sudo chown -R root:root ${INSTALLDIR}/windows-10-light
-    sudo chown -R root:root ${INSTALLDIR}/windows-10-dark
-    sudo chmod -R 0755 ${INSTALLDIR}/windows-10-light
-    sudo chmod -R 0755 ${INSTALLDIR}/windows-10-dark
+    sudo chown -R root:root "${INSTALLDIR}/${LIGHTDIR}"
+    sudo chown -R root:root "${INSTALLDIR}/${DARKDIR}"
+    sudo chmod -R 0755 "${INSTALLDIR}/${LIGHTDIR}"
+    sudo chmod -R 0755 "${INSTALLDIR}/${DARKDIR}"
+
+    # Install lxappearance to let user set theme
+    sudo apt-get install -q -y lxappearance
 
     # Cleanup
     cleantmp
 
-    whiptail --title "How to set Windows 10 theme" --msgbox "Download a Linux desktop environment of your choice and these themes will show up under themes / appearance settings. In the future we plan on setting this theme for Linux GUI applications even without a full desktop environment installed" 9 90
+    whiptail --title "How to set Windows 10 theme" --msgbox "To set the either of the Windows 10 light/dark themes:\nRun 'lxappearance', choose from the list of installed themes and click apply. You may change the theme in this way at anytime, including fonts and cursors." 9 90
 else
     echo "Skipping Windows 10 theme install"
 fi
