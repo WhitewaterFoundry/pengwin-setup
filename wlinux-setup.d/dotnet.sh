@@ -11,8 +11,7 @@ if (whiptail --title "DOTNET" --yesno "Would you like to download and install th
   echo 'deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main' | sudo tee /etc/apt/sources.list.d/microsoft.list
   #Temporary: Fix issue with libssl1.0.2
   echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
-
-  updateupgrade
+  sudo apt-get update
   sudo apt-get -y -q install dotnet-sdk-2.1
   cleantmp
 

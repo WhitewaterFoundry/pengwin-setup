@@ -5,7 +5,6 @@ source $(dirname "$0")/common.sh "$@"
 function neovim_install {
   if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) ; then
     echo "Installing neovim and building tools from Debian: $ sudo apt install neovim build-essential"
-    updateupgrade
     sudo apt-get -y -q -t testing install neovim build-essential
   else
     echo "Skipping NEOVIM"
@@ -15,7 +14,6 @@ function neovim_install {
 function emacs_install {
   if (whiptail --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) ; then
     echo "Installing emacs: $ sudo apt install emacs -y"
-    updateupgrade
     sudo apt-get -y -q install emacs
   else
     echo "Skipping EMACS"
@@ -37,8 +35,7 @@ function code_install {
     #Temporary: Fix issue with udev
     echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
     sudo apt-mark hold udev libudev1
-
-    updateupgrade
+    sudo apt-get update
 
     #Temporary: Fix issue with udev
     sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stable udev=232-25+deb9u8 libudev1=232-25+deb9u8

@@ -68,9 +68,6 @@ function install_and_set_cloud {
     return
   fi
   
-  # Ensure we're up to date
-  updateupgrade
-  
   if [[ ${EDITORCHOICE} == *"TERRAFORM"* ]] ; then
     
     install_terraform
