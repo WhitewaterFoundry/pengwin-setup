@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 function neovim_install {
   if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) ; then
-    echo "Installing neovim and building tools from Debian: $ sudo apt install neovim build-essential"
+    echo "Installing neovim and building tools from Debian: $ sudo apt-get install neovim build-essential"
     sudo apt-get -y -q -t testing install neovim build-essential
   else
     echo "Skipping NEOVIM"
@@ -13,7 +13,7 @@ function neovim_install {
 
 function emacs_install {
   if (whiptail --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) ; then
-    echo "Installing emacs: $ sudo apt install emacs -y"
+    echo "Installing emacs: $ sudo apt-get install emacs -y"
     sudo apt-get -y -q install emacs
   else
     echo "Skipping EMACS"
