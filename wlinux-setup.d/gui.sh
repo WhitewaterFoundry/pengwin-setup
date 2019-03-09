@@ -31,7 +31,7 @@ else
 fi
 
 
-if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (Experimental)" 8 70) then
+if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (including lxappearance, a GUI application to set the theme)" 8 70) then
 	echo "Installing Windows 10 theme"
     # Source files locations
     W10LIGHT_URL="https://github.com/B00merang-Project/Windows-10/archive/master.zip"
