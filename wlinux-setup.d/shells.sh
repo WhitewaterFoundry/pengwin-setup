@@ -105,24 +105,21 @@ whiptail --title "Shell Menu" --checklist --separate-output "Custom shells and i
     "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
 )
 
-# Ensure we're up to date
-updateupgrade
-
 if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."
-    sudo apt install zsh -y
+    sudo apt-get install zsh -y
     zshinstall
 fi
 
 if [[ $EDITORCHOICE == *"FISH"* ]] ; then
     echo "Installing fish..."
-    sudo apt install fish -y
+    sudo apt-get install fish -y
     fishinstall
 fi
 
 if [[ $EDITORCHOICE == *"CSH"* ]] ; then
     echo "Installing csh..."
-    sudo apt install csh -y
+    sudo apt-get install csh -y
     cshinstall
 fi
 

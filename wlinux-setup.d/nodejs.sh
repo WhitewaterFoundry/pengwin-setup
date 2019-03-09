@@ -16,7 +16,6 @@ fi
 createtmp
 
 echo "Ensuring we have build-essential installed"
-updateupgrade
 sudo apt-get -y -q install build-essential
 
 echo "Installing n, Node.js version manager"
