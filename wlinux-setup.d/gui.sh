@@ -14,7 +14,6 @@ fi
 if (whiptail --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75) then
     echo "Installing GUILIB"
     echo "$ apt install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y"
-    updateupgrade
     sudo apt install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y
     echo "Configuring dbus if you already had it installed. If not, you might see some errors, and that is okay."
     #stretch
@@ -40,8 +39,6 @@ if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Win
     INSTALLDIR="/usr/share/themes"
     LIGHTDIR="windows-10-light"
     DARKDIR="windows-10-dark"
-
-    updateupgrade
 
     echo "$ sudo apt install unzip -y"
     sudo apt install unzip -y
@@ -100,7 +97,6 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
     echo "Installing fcitx"
 
     echo "sudo apt install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
-    updateupgrade
     sudo apt install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
 
     FCCHOICE=$(whiptail --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 15 65 8 \

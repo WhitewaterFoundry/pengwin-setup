@@ -10,7 +10,6 @@ if (whiptail --title "CASSANDRA" --yesno "Would you like to download and install
     sudo chmod 644 /etc/apt/trusted.gpg.d/cassandra.gpg
     sudo bash -c "echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' > /etc/apt/sources.list.d/cassandra.list"
     sudo su -c "echo '${USER} ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
-    updateupgrade
     sudo mount -t proc proc /proc
     sudo apt install cassandra -y
     sudo su -c "echo 'cassandra ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
