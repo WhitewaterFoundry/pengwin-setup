@@ -9,8 +9,8 @@ if (whiptail --title "POWERSHELL" --yesno "Would you like to download and instal
     rm microsoft.gpg
     sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list'
     sudo apt-get update
-    sudo apt -t unstable install liblttng-ust0 libssl1.0.2 libicu57 liburcu6 liblttng-ust-ctl4
-    sudo apt install powershell -y
+    sudo apt-get -t unstable install liblttng-ust0 libssl1.0.2 libicu57 liburcu6 liblttng-ust-ctl4
+    sudo apt-get install powershell -y
 else
     echo "Skipping POWERSHELL"
 fi

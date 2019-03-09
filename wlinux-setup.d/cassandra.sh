@@ -9,9 +9,10 @@ if (whiptail --title "CASSANDRA" --yesno "Would you like to download and install
     sudo cp cassandra.gpg /etc/apt/trusted.gpg.d/cassandra.gpg
     sudo chmod 644 /etc/apt/trusted.gpg.d/cassandra.gpg
     sudo bash -c "echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' > /etc/apt/sources.list.d/cassandra.list"
+    sudo apt-get update
     sudo su -c "echo '${USER} ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
     sudo mount -t proc proc /proc
-    sudo apt install cassandra -y
+    sudo apt-get install cassandra -y
     sudo su -c "echo 'cassandra ALL=(root) NOPASSWD: /bin/mount, /bin/umount' >> /etc/sudoers"
     sudo su -c "echo 'sudo mount -t proc proc /proc' >> /etc/profile"
 
@@ -70,7 +71,7 @@ EOF
 
         echo "Creating update.bat file on Windows Desktop"
         phrase1='wlinux.exe run "echo '
-        phrase2=' | sudo -S apt update ; sudo -S apt upgrade -y ; sudo -S apt autoclean -y"'
+        phrase2=' | sudo -S apt-get update ; sudo -S apt-get upgrade -y ; sudo -S apt-get autoclean -y"'
         write="$phrase1$passvar$phrase2"
         sudo cat << EOF > update.bat
 @echo off
