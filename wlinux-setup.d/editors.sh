@@ -35,22 +35,21 @@ function code_install {
     cleantmp
 
     #Temporary: Fix issue with udev
-    echo 'deb https://deb.debian.org/debian stretch-backports main' | sudo tee /etc/apt/sources.list.d/stretch-backports.list
+    echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
     sudo apt-mark hold udev libudev1
 
     updateupgrade
 
     #Temporary: Fix issue with udev
-    sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stretch-backports udev=239-12~bpo9+1 libudev1=239-12~bpo9+1
+    sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stable udev=232-25+deb9u8 libudev1=232-25+deb9u8
     sudo apt-mark hold udev libudev1
 
     echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev"
     sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev
 
     #Temporary: Fix issue with Python Extention of VSCode
-    echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
-    sudo apt-get update
-    sudo apt-get install -y -q libssl1.0.2
+    #Assuming that the stable repository is there by the udev fix
+    sudo apt-get install -y -q  -t stable libssl1.0.2
 
   else
     echo "Skipping CODE"

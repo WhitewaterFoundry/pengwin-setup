@@ -2,9 +2,9 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-execname=$(getexecname)
+execname='wlinux.exe'
 echo "WSL executable name: ${execname}"
-plainname=$(echo ${execname} | cut -s -d'.' -f1)
+plainname='WLinux'
 
 if (whiptail --title "EXPLORER" --yesno "Would you like to enable Windows Explorer shell integration?" 8 65); then
     echo "Enabling Windows Explorer shell integration."
@@ -21,8 +21,7 @@ if (whiptail --title "EXPLORER" --yesno "Would you like to enable Windows Explor
     @="_${plainname}Path_ run \\"cd \\\\\\"\$(wslpath \\\\\\"%V\\\\\\")\\\\\\" && \$(getent passwd \$LOGNAME | cut -d: -f7)\\""
 EOF
 
-    execpath=$(wslpath -m "$(getexecpath)" | sed 's$/$\\\\\\\\$g')
-    fullexec="${execpath}\\\\\\\\${execname}"
+    fullexec=$(wslpath -m "$(which ${execname})" | sed 's$/$\\\\\\\\$g')
     sed -i "s/_${plainname}Path_/${fullexec}/g" Install.reg
     cp Install.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Install.reg
     cmd.exe /C "Reg import %TEMP%\Install.reg"
