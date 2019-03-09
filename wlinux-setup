@@ -43,7 +43,12 @@ UPGRD_CHECK="$(sudo apt-get upgrade --show-upgraded --assume-no | grep wlinux)"
 if [[ "${UPGRD_CHECK}" == *"wlinux"* ]] ; then
 	echo "WLinux core package upgrades found"
 	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for WLinux core packages. Would you like to update them? (this is highly recommended)\n\nwlinux-setup will close after installation complete." 10 90) then
+
+	  # Ensure that packages get updated without affecting other held packages like udev
+    sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2>&1
+
 		sudo apt-get upgrade wlinux-base wlinux-setup -y
+
 		exit 0
 	fi
 fi
