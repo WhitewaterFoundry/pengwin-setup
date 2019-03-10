@@ -163,11 +163,12 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
     export XMODIFIERS=@im=fcitx
     export DefaultIMModule=fcitx
 
-    echo "Saving environmental variables to /etc/profile.d/fcitx"
-    sudo sh -c 'echo "export QT_IM_MODULE=fcitx" >> /etc/profile.d/fcitx'
-    sudo sh -c 'echo "export GTK_IM_MODULE=fcitx" >> /etc/profile.d/fcitx'
-    sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx'
-    sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx'
+    echo "Saving environmental variables to /etc/profile.d/fcitx.sh"
+    sudo sh -c 'echo "#!/bin/bash" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export QT_IM_MODULE=fcitx" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export GTK_IM_MODULE=fcitx" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx.sh'
 
     if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open WLinux? WARNING: Requires an X server to be running or it will generate errors." 8 70) then
         echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
@@ -204,8 +205,9 @@ if (whiptail --title "HiDPI" --yesno "Would you like to configure Qt and GDK for
     echo "Installing HiDPI"
     export QT_SCALE_FACTOR=2
     export GDK_SCALE=2
-    sudo sh -c 'echo "export QT_SCALE_FACTOR=2" >> /etc/profile.d/hidpi'
-    sudo sh -c 'echo "export GDK_SCALE=2" >> /etc/profile.d/hidpi'
+    sudo sh -c 'echo "#!/bin/bash" >> /etc/profile.d/hidpi.sh'
+    sudo sh -c 'echo "export QT_SCALE_FACTOR=2" >> /etc/profile.d/hidpi.sh'
+    sudo sh -c 'echo "export GDK_SCALE=2" >> /etc/profile.d/hidpi.sh'
 else
     echo "Skipping HiDPI"
 fi
