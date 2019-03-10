@@ -7,47 +7,39 @@ ZSH_SETUP=".zsh_wlinux"
 
 # Backup old zshrc if existent (e.g. wlinux-setup being re-run)
 if [ -f "/etc/zsh/zshrc" ] ; then
-    if [ -f "/etc/zsh/"$ZSH_SETUP ] ; then
-        echo "wlinux-setup has already modified zshrc"
+    if [ -f "/etc/zsh/${ZSH_SETUP}" ] ; then
+        echo "wlinux-setup has already modified zprofile"
         echo "run 'sudo rm /etc/zsh/$ZSH_INSTALLED && wlinux-setup' to re-create config file"
     else
-        echo "Old zshrc found & not edited before --> backing up"
+        if [ -f "/etc/zsh/zprofile" ] ; then
+	    echo "Old zprofile found --> backing up"
 
-        # Get current date-time
-        dt=$(date '+%d%m%Y-%H%M')
+            # Get current date-time
+            dt="$(date '+%d%m%Y-%H%M')"
 
-        # Save backup with date-time
-        sudo cp /etc/zsh/zshrc /etc/zsh/zshrc_$dt.old
-        echo "Old zshrc backed up to /etc/zsh/zshrc_$dt.old"
+            # Save backup with date-time
+            sudo cp /etc/zsh/zprofile "/etc/zsh/zprofile_${dt}.old"
+            echo "Old zshrc backed up to /etc/zsh/zprofile_${dt}.old"
 
-        # Delete old  zshrc so we can start fresh
-        sudo rm /etc/zsh/zshrc
+            # Delete old zprofile so we can start fresh
+            sudo rm /etc/zsh/zprofile
+        fi
 
         # Need to "unsetopt no_match" to stop line31 in /etc/profile failing on not finding anything under /etc/profile.d/*
         # Reset after to prevent any unforeseen consequences.
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
-        echo "Creating fresh zshrc, modifying to add wlinux template commands and source /etc/profile"
+        echo "Creating zprofile and editing to source /etc/profile"
         if [[ ! -d "/etc/zsh" ]] ; then
             echo "/etc/zsh not found, creating..."
             sudo mkdir -p /etc/zsh
         fi
 
-        sudo touch /etc/zsh/zshrc
-        sudo tee -a /etc/zsh/zshrc << EOF
-## Template global zshrc
+        sudo touch /etc/zsh/zprofile
+        sudo tee -a /etc/zsh/zprofile << EOF
 unsetopt no_match
 source /etc/profile
 setopt no_match
-
-# Check for existence of our custom virtual language environment
-# install location, if so, source the profile
-if [[ -f "/home/.envs/envrc" ]] ; then
-    source "/home/.envs/envrc"
-fi
-
-# Add our own + common aliases
-alias ll="ls -al"
 EOF
 
         # Create .zsh_wlinux file to let future runs know zshrc has been modified by wlinux-setup
