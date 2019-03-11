@@ -80,7 +80,7 @@ function ByeMessage {
 # main menu
 function InstallMenu {
 MenuChoice=$(
-whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
+whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 16 \
     "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
     "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
     "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
@@ -95,7 +95,8 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
     "POWERSHELL" "Install PowerShell for Linux and/or Azure CLI tools" off \
     "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
     "DOCKER" "Install a secure bridge to Docker for Windows" off \
-    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off 3>&1 1>&2 2>&3
+    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
+    "CLOUDCLI" "Install CLI tools for cloud management" off 3>&1 1>&2 2>&3
 )
 
 ExitStatus=$?
@@ -189,6 +190,11 @@ fi
 if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
   echo "CASSANDRA"
   bash ${SetupDir}/cassandra.sh "$@"
+fi
+
+if [[ $MenuChoice == *"CLOUDCLI"* ]] ; then
+  echo "CLOUDCLI"
+  bash ${SetupDir}/cloudcli.sh "$@"
 fi
 }
 
