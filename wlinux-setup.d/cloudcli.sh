@@ -3,7 +3,7 @@
 source $(dirname "$0")/common.sh "$@"
 
 function install_terraform() {
-  if (confirm --title "OpenStack CLI" --yesno "Would you like to install the OpenStack command-line clients?\n\nPython 2.7+ is required" 10 90) ; then
+  if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40) ; then
     echo "Installing Terraform..."
 
     createtmp
