@@ -57,4 +57,16 @@ sudo apt-get autoremove -y
 #echo "${execname}"
 #}
 
+function confirm() {
+
+  if [[ ! ${SkipConfirmations} ]]; then
+
+    whiptail "$@"
+
+    return $?
+  else
+    return 0
+  fi
+}
+
 ProcessArguments "$@"
