@@ -5,8 +5,8 @@ jobs:
         docker:
             - image: debian:testing
         environment:
-            DEBEMAIL "contact@whitewaterfoundry.com"
-            DEBFULLNAME "Whitewater Foundry, Ltd. Co."
+            DEBEMAIL="contact@whitewaterfoundry.com"
+            DEBFULLNAME="Whitewater Foundry, Ltd. Co."
         steps:
             - checkout
             - run:
