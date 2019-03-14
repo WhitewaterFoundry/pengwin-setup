@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: wlinux-setup
-Source: https://github.com/WhitewaterFoundry/wlinux-setup
+Upstream-Name: pengwin-setup
+Source: https://github.com/WhitewaterFoundry/pengwin-setup
 
 Files: *
 Copyright: 2019 Whitewater Foundry, Ltd. Co.
@@ -22,3 +22,4 @@ License: Expat
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+ 

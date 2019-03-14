@@ -1,15 +1,15 @@
-Source: wlinux-setup
+Source: pengwin-setup
 Section: utils
 Priority: optional
 Maintainer: Whitewater Foundry, Ltd. Co. <contact@whitewaterfoundry.com>
 Build-Depends: debhelper (>= 11)
 Standards-Version: 4.1.3
-Homepage: https://github.com/WhitewaterFoundry/wlinux-setup
-Vcs-Browser: https://github.com/WhitewaterFoundry/wlinux-setup
-Vcs-Git: https://github.com/WhitewaterFoundry/wlinux-setup.git
+Homepage: https://github.com/WhitewaterFoundry/pengwin-setup
+Vcs-Browser: https://github.com/WhitewaterFoundry/pengwin-setup
+Vcs-Git: https://github.com/WhitewaterFoundry/pengwin-setup.git
 
-Package: wlinux-setup
+Package: pengwin-setup
 Architecture: all
 Depends: ${misc:Depends}, git, wslu
-Description: Setup tool for WLinux.
+Description: Setup tool for Pengwin.
 Essential: yes
