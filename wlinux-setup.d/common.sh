@@ -2,7 +2,10 @@
 
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
-SetupDir="/usr/local/wlinux-setup.d"
+
+if [[ -z ${SetupDir} ]]; then
+  SetupDir="$(dirname "$0")"
+fi
 
 GOVERSION="1.12"
 
