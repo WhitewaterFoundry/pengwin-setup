@@ -62,14 +62,14 @@ Many more packages are available via the apt package manager and optional pip, n
 " 15 96
 }
 
-function ContinuePrompt {
-if (whiptail --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45) then
+function continue_prompt() {
+  if (confirm --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45); then
     echo "Starting wlinux-setup."
-else
+  else
     echo "Exiting wlinux-setup."
     echo "You may run the script again any time by running: $ wlinux-setup"
     exit 0
-fi
+  fi
 }
 
 function ByeMessage {
@@ -92,7 +92,7 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
     "RUST" "Install latest version of Rust via rustup installer" off \
     "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
     "JAVA" "Install the Java OpenJDK and JRE" off \
-    "POWERSHELL" "Install PowerShell for Linux and/or Azure CLI tools" off \
+    "POWERSHELL" "Install PowerShell for Linux" off \
     "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
     "DOCKER" "Install a secure bridge to Docker for Windows" off \
     "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
@@ -174,7 +174,6 @@ fi
 if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
   bash ${SetupDir}/powershell.sh "$@"
-  bash ${SetupDir}/azurecli.sh "$@"
 fi
 
 if [[ $MenuChoice == *"GUI"* ]] ; then
@@ -200,7 +199,7 @@ fi
 
 ### Main
 WelcomePrompt
-ContinuePrompt
+continue_prompt
 
 CheckUpgrades
 # Ensure our packages are held to prevent odd situation of
