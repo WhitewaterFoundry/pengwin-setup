@@ -78,9 +78,10 @@ function ByeMessage {
 }
 
 # main menu
-function InstallMenu {
-MenuChoice=$(
-whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 16 \
+function install_menu() {
+  MENU_CHOICE=
+
+  menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 16 \
     "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
     "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
     "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
@@ -96,106 +97,93 @@ whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated ad
     "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
     "DOCKER" "Install a secure bridge to Docker for Windows" off \
     "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
-    "CLOUDCLI" "Install CLI tools for cloud management" off 3>&1 1>&2 2>&3
-)
+    "CLOUDCLI" "Install CLI tools for cloud management" off
 
-ExitStatus=$?
-echo "Selected:" $MenuChoice
-echo "ExitStatus:" $ExitStatus
-
-if [[ $ExitStatus != 0 ]] ; then
-  return
-fi
-
-if [[ ! $MenuChoice ]] ; then
-  echo "None selected"
-  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
-  	InstallMenu
-  else
-  	return
+  local exit_status=$?
+  if [[ ${exit_status} != 0 ]] ; then
+    return
   fi
-fi
 
-if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
-  echo "LANGUAGE"
-  bash ${SetupDir}/language.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"LANGUAGE"* ]] ; then
+    echo "LANGUAGE"
+    bash ${SetupDir}/language.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"EXPLORER"* ]] ; then
-  echo "EXPLORER"
-  bash ${SetupDir}/explorer.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"EXPLORER"* ]] ; then
+    echo "EXPLORER"
+    bash ${SetupDir}/explorer.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"SHELLS"* ]] ; then
-  echo "SHELLS"
-  bash ${SetupDir}/shells.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"SHELLS"* ]] ; then
+    echo "SHELLS"
+    bash ${SetupDir}/shells.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"EDITORS"* ]] ; then
-  echo "EDITORS"
-  bash ${SetupDir}/editors.sh "$@"
-fi 
+  if [[ ${MENU_CHOICE} == *"EDITORS"* ]] ; then
+    echo "EDITORS"
+    bash ${SetupDir}/editors.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"PYTHON"* ]] ; then
-  echo "PYTHON"
-  bash ${SetupDir}/pythonpi.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"PYTHON"* ]] ; then
+    echo "PYTHON"
+    bash ${SetupDir}/pythonpi.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"NODE"* ]] ; then
-  echo "NODE"
-  bash ${SetupDir}/nodejs.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"NODE"* ]] ; then
+    echo "NODE"
+    bash ${SetupDir}/nodejs.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"GO"* ]] ; then
-  echo "GO"
-  bash ${SetupDir}/go.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"GO"* ]] ; then
+    echo "GO"
+    bash ${SetupDir}/go.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"RUBY"* ]] ; then
-  echo "RUBY"
-  bash ${SetupDir}/ruby.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"RUBY"* ]] ; then
+    echo "RUBY"
+    bash ${SetupDir}/ruby.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"RUST"* ]] ; then
-  echo "RUST"
-  bash ${SetupDir}/rust.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"RUST"* ]] ; then
+    echo "RUST"
+    bash ${SetupDir}/rust.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"DOTNET"* ]] ; then
-  echo "DOTNET"
-  bash ${SetupDir}/dotnet.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"DOTNET"* ]] ; then
+    echo "DOTNET"
+    bash ${SetupDir}/dotnet.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"JAVA"* ]] ; then
-  echo "JAVA"
-  bash ${SetupDir}/java.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"JAVA"* ]] ; then
+    echo "JAVA"
+    bash ${SetupDir}/java.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
-  echo "POWERSHELL"
-  bash ${SetupDir}/powershell.sh "$@"
-  bash ${SetupDir}/azurecli.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"POWERSHELL"* ]] ; then
+    echo "POWERSHELL"
+    bash ${SetupDir}/powershell.sh "$@"
+    bash ${SetupDir}/azurecli.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"GUI"* ]] ; then
-  echo "GUI"
-  bash ${SetupDir}/gui.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"GUI"* ]] ; then
+    echo "GUI"
+    bash ${SetupDir}/gui.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"DOCKER"* ]] ; then
-  echo "DOCKER"
-  bash ${SetupDir}/docker.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"DOCKER"* ]] ; then
+    echo "DOCKER"
+    bash ${SetupDir}/docker.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
-  echo "CASSANDRA"
-  bash ${SetupDir}/cassandra.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"CASSANDRA"* ]] ; then
+    echo "CASSANDRA"
+    bash ${SetupDir}/cassandra.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"CLOUDCLI"* ]] ; then
-  echo "CLOUDCLI"
-  bash ${SetupDir}/cloudcli.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"CLOUDCLI"* ]] ; then
+    echo "CLOUDCLI"
+    bash ${SetupDir}/cloudcli.sh "$@"
+  fi
 }
 
 ### Main
@@ -209,7 +197,7 @@ CheckUpgrades
 echo "Holding wlinux-base & wlinux-setup to ensure no changes while operating"
 sudo apt-mark hold wlinux-base wlinux-setup > /dev/null 2>&1
 
-InstallMenu "$@"
+install_menu "$@"
 
 # Unhold our packages
 echo "Unholding wlinux-base & wlinux-setup"
