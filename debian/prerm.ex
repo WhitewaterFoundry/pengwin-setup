@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for wlinux-setup
+# prerm script for pengwin-setup
 #
 # see: dh_installdeb(1)
 

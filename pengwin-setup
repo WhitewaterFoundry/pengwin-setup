@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SetupDir="/usr/local/wlinux-setup.d"
+SetupDir="/usr/local/pengwin-setup.d"
 VERSION="1.2a"
 
 source ${SetupDir}/common.sh "$@"
@@ -37,17 +37,17 @@ if [ -f "/etc/apt/.dist-upgrade" ] ; then
 	fi
 fi
 
-# Check if there's any upgrades to wlinux-setup / wlinux-base
+# Check if there's any upgrades to pengwin-setup / pengwin-base
 echo "Running upgrade check..."
-UPGRD_CHECK="$(sudo apt-get upgrade --show-upgraded --assume-no | grep wlinux)"
-if [[ "${UPGRD_CHECK}" == *"wlinux"* ]] ; then
-	echo "WLinux core package upgrades found"
-	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for WLinux core packages. Would you like to update them? (this is highly recommended)\n\nwlinux-setup will close after installation complete." 10 90) then
+UPGRD_CHECK="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
+if [[ "${UPGRD_CHECK}" == *"pengwin"* ]] ; then
+	echo "Pengwin core package upgrades found"
+	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? (this is highly recommended)\n\pengwin-setup will close after installation complete." 10 90) then
 
 	  # Ensure that packages get updated without affecting other held packages like udev
-    sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2>&1
+    sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
 
-		sudo apt-get upgrade wlinux-base wlinux-setup -y
+		sudo apt-get upgrade pengwin-base pengwin-setup -y
 
 		exit 0
 	fi
@@ -55,34 +55,34 @@ fi
 }
 
 function WelcomePrompt {
-whiptail --title "Welcome to WLinux" --msgbox "Thank you for supporting sustainable independent open source development.\n
-WLinux comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
-wlinux-setup allows you to install additional hand-curated selections for WLinux and configure optional WSL-specific settings. \n
+whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
+Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
+pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
 Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
 " 15 96
 }
 
 function ContinuePrompt {
-if (whiptail --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45) then
-    echo "Starting wlinux-setup."
+if (whiptail --title "Continue setup?" --yesno "Would you like to continue pengwin-setup?" 8 45) then
+    echo "Starting pengwin-setup."
 else
-    echo "Exiting wlinux-setup."
-    echo "You may run the script again any time by running: $ wlinux-setup"
+    echo "Exiting pengwin-setup."
+    echo "You may run the script again any time by running: $ pengwin-setup"
     exit 0
 fi
 }
 
 function ByeMessage {
-    whiptail --title "Setup is complete." --msgbox "You may run wlinux-setup again any time by typing $ wlinux-setup\n\nYou may open a browser link to get help any time by typing: $ wlinux-help" 8 80
+    whiptail --title "Setup is complete." --msgbox "You may run pengwin-setup again any time by typing $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 8 80
     exit 0
 }
 
 # main menu
 function InstallMenu {
 MenuChoice=$(
-whiptail --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
-    "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
-    "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
+whiptail --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
+    "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
+    "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
     "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
     "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
     "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
@@ -198,16 +198,16 @@ ContinuePrompt
 
 CheckUpgrades
 # Ensure our packages are held to prevent odd situation of
-# being updated while running other operations from wlinux-setup 
+# being updated while running other operations from pengwin-setup 
 # install menu
-echo "Holding wlinux-base & wlinux-setup to ensure no changes while operating"
-sudo apt-mark hold wlinux-base wlinux-setup > /dev/null 2>&1
+echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
+sudo apt-mark hold pengwin-base pengwin-setup > /dev/null 2>&1
 
 InstallMenu "$@"
 
 # Unhold our packages
-echo "Unholding wlinux-base & wlinux-setup"
-sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2>&1
+echo "Unholding pengwin-base & pengwin-setup"
+sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
 
 ByeMessage
 exit 0
