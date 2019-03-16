@@ -1,12 +1,12 @@
 #!/bin/bash
 
 SetupDir="/usr/local/pengwin-setup.d"
+
 VERSION="1.2a"
 
 source ${SetupDir}/common.sh "$@"
 
 # define functions
-
 function ProcessArguments {
 while [[ $# -gt 0 ]]
 do
@@ -46,9 +46,7 @@ if [[ "${UPGRD_CHECK}" == *"pengwin"* ]] ; then
 
 	  # Ensure that packages get updated without affecting other held packages like udev
     sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
-
 		sudo apt-get upgrade pengwin-base pengwin-setup -y
-
 		exit 0
 	fi
 fi
@@ -62,27 +60,28 @@ Many more packages are available via the apt package manager and optional pip, n
 " 15 96
 }
 
-function ContinuePrompt {
-if (whiptail --title "Continue setup?" --yesno "Would you like to continue pengwin-setup?" 8 45) then
-    echo "Starting pengwin-setup."
-else
-    echo "Exiting pengwin-setup."
-    echo "You may run the script again any time by running: $ pengwin-setup"
+function continue_prompt() {
+  if (confirm --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45); then
+    echo "Starting wlinux-setup."
+  else
+    echo "Exiting wlinux-setup."
+    echo "You may run the script again any time by running: $ wlinux-setup"
     exit 0
-fi
+  fi
 }
 
 function ByeMessage {
-    whiptail --title "Setup is complete." --msgbox "You may run pengwin-setup again any time by typing $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 8 80
+    whiptail --title "Setup is complete." --msgbox "You may run wlinux-setup again any time by typing $ wlinux-setup\n\nYou may open a browser link to get help any time by typing: $ wlinux-help" 8 80
     exit 0
 }
 
 # main menu
-function InstallMenu {
-MenuChoice=$(
-whiptail --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 15 \
-    "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
-    "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
+function install_menu() {
+  MENU_CHOICE=
+
+  menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 16 \
+    "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
+    "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
     "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
     "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
     "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
@@ -92,104 +91,98 @@ whiptail --title "pengwin-setup" --checklist --separate-output "\nHand-curated a
     "RUST" "Install latest version of Rust via rustup installer" off \
     "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
     "JAVA" "Install the Java OpenJDK and JRE" off \
-    "POWERSHELL" "Install PowerShell for Linux and/or Azure CLI tools" off \
+    "POWERSHELL" "Install PowerShell for Linux" off \
     "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
     "DOCKER" "Install a secure bridge to Docker for Windows" off \
-    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off 3>&1 1>&2 2>&3
-)
+    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
+    "CLOUDCLI" "Install CLI tools for cloud management" off
 
-ExitStatus=$?
-echo "Selected:" $MenuChoice
-echo "ExitStatus:" $ExitStatus
-
-if [[ $ExitStatus != 0 ]] ; then
-  return
-fi
-
-if [[ ! $MenuChoice ]] ; then
-  echo "None selected"
-  if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the install menu?" 10 80) then
-  	InstallMenu
-  else
-  	return
+  local exit_status=$?
+  if [[ ${exit_status} != 0 ]] ; then
+    return
   fi
-fi
 
-if [[ $MenuChoice == *"LANGUAGE"* ]] ; then
-  echo "LANGUAGE"
-  bash ${SetupDir}/language.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"LANGUAGE"* ]] ; then
+    echo "LANGUAGE"
+    bash ${SetupDir}/language.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"EXPLORER"* ]] ; then
-  echo "EXPLORER"
-  bash ${SetupDir}/explorer.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"EXPLORER"* ]] ; then
+    echo "EXPLORER"
+    bash ${SetupDir}/explorer.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"SHELLS"* ]] ; then
-  echo "SHELLS"
-  bash ${SetupDir}/shells.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"SHELLS"* ]] ; then
+    echo "SHELLS"
+    bash ${SetupDir}/shells.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"EDITORS"* ]] ; then
-  echo "EDITORS"
-  bash ${SetupDir}/editors.sh "$@"
-fi 
+  if [[ ${MENU_CHOICE} == *"EDITORS"* ]] ; then
+    echo "EDITORS"
+    bash ${SetupDir}/editors.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"PYTHON"* ]] ; then
-  echo "PYTHON"
-  bash ${SetupDir}/pythonpi.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"PYTHON"* ]] ; then
+    echo "PYTHON"
+    bash ${SetupDir}/pythonpi.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"NODE"* ]] ; then
-  echo "NODE"
-  bash ${SetupDir}/nodejs.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"NODE"* ]] ; then
+    echo "NODE"
+    bash ${SetupDir}/nodejs.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"GO"* ]] ; then
-  echo "GO"
-  bash ${SetupDir}/go.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"GO"* ]] ; then
+    echo "GO"
+    bash ${SetupDir}/go.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"RUBY"* ]] ; then
-  echo "RUBY"
-  bash ${SetupDir}/ruby.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"RUBY"* ]] ; then
+    echo "RUBY"
+    bash ${SetupDir}/ruby.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"RUST"* ]] ; then
-  echo "RUST"
-  bash ${SetupDir}/rust.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"RUST"* ]] ; then
+    echo "RUST"
+    bash ${SetupDir}/rust.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"DOTNET"* ]] ; then
-  echo "DOTNET"
-  bash ${SetupDir}/dotnet.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"DOTNET"* ]] ; then
+    echo "DOTNET"
+    bash ${SetupDir}/dotnet.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"JAVA"* ]] ; then
-  echo "JAVA"
-  bash ${SetupDir}/java.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"JAVA"* ]] ; then
+    echo "JAVA"
+    bash ${SetupDir}/java.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
-  echo "POWERSHELL"
-  bash ${SetupDir}/powershell.sh "$@"
-  bash ${SetupDir}/axurecli.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"POWERSHELL"* ]] ; then
+    echo "POWERSHELL"
+    bash ${SetupDir}/powershell.sh "$@"
+    bash ${SetupDir}/azurecli.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"GUI"* ]] ; then
-  echo "GUI"
-  bash ${SetupDir}/gui.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"GUI"* ]] ; then
+    echo "GUI"
+    bash ${SetupDir}/gui.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"DOCKER"* ]] ; then
-  echo "DOCKER"
-  bash ${SetupDir}/docker.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"DOCKER"* ]] ; then
+    echo "DOCKER"
+    bash ${SetupDir}/docker.sh "$@"
+  fi
 
-if [[ $MenuChoice == *"CASSANDRA"* ]] ; then
-  echo "CASSANDRA"
-  bash ${SetupDir}/cassandra.sh "$@"
-fi
+  if [[ ${MENU_CHOICE} == *"CASSANDRA"* ]] ; then
+    echo "CASSANDRA"
+    bash ${SetupDir}/cassandra.sh "$@"
+  fi
+
+  if [[ ${MENU_CHOICE} == *"CLOUDCLI"* ]] ; then
+    echo "CLOUDCLI"
+    bash ${SetupDir}/cloudcli.sh "$@"
+  fi
+   
 }
 
 ### Main
@@ -208,6 +201,7 @@ InstallMenu "$@"
 # Unhold our packages
 echo "Unholding pengwin-base & pengwin-setup"
 sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
+
 
 ByeMessage
 exit 0
