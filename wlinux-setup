@@ -174,7 +174,6 @@ fi
 if [[ $MenuChoice == *"POWERSHELL"* ]] ; then
   echo "POWERSHELL"
   bash ${SetupDir}/powershell.sh "$@"
-  bash ${SetupDir}/azurecli.sh "$@"
 fi
 
 if [[ $MenuChoice == *"GUI"* ]] ; then
