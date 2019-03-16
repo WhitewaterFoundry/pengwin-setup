@@ -49,80 +49,78 @@ function docker_install_build_relay() {
 
   cat << 'EOF' >> docker-relay
 #!/bin/bash
-
 connected=$(docker version 2>&1 | grep -c "daemon\|error")
 if [[ ${connected} != 0  ]]; then
+    PATH=${PATH}:$(wslpath "C:\Windows\System32")
+    wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
+    wHome=$(wslpath -u "${wHomeWinPath}")
 
-  PATH=${PATH}:$(wslpath "C:\Windows\System32")
-  wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
-  wHome=$(wslpath -u "${wHomeWinPath}")
-
-  killall --quiet socat
-  exec nohup socat UNIX-LISTEN:/var/run/docker.sock,fork,group=docker,umask=007 EXEC:"\'${wHome}/.npiperelay/npiperelay.exe\' -ep -s //./pipe/docker_engine",nofork  </dev/null &>/dev/null &
+    killall --quiet socat
+    exec nohup socat UNIX-LISTEN:/var/run/docker.sock,fork,group=docker,umask=007 EXEC:"\'${wHome}/.npiperelay/npiperelay.exe\' -ep -s //./pipe/docker_engine",nofork  </dev/null &>/dev/null &
 fi
 EOF
+    sudo cp docker-relay /usr/bin/docker-relay
+    sudo chmod u+x /usr/bin/docker-relay
 
-  sudo cp docker-relay /usr/bin/docker-relay
-  sudo chmod u+x /usr/bin/docker-relay
+    echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
 
-  echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
-
-  cat << 'EOF' >> docker_relay.sh
+    cat << 'EOF' >> docker_relay.sh
 sudo docker-relay
 EOF
+    sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
+    sudo chmod -w /usr/bin/docker-relay
 
-  sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
-  sudo chmod -w /usr/bin/docker-relay
+    sudo addgroup docker
+    sudo adduser ${USER} docker
 
-  sudo addgroup docker
-  sudo adduser ${USER} docker
+    echo "Running the relay for the first time."
+    sudo docker-relay
 
-  echo "Running the relay for the first time."
-  sudo docker-relay
+    sleep 1s
 
-  sleep 1s
-
-  sudo docker version
+    sudo docker version
 }
 
-function docker_install_conf_tcp() {
-  echo "Connect to Docker via TCP"
+function dockerinstall_conf_tcp {
+    echo "Connect to Docker via TCP"
 
-  cat << 'EOF' >> docker_relay.sh
+    cat << 'EOF' >> docker_relay.sh
 export DOCKER_HOST=tcp://0.0.0.0:2375
 EOF
-  sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
+    sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
 
-  export DOCKER_HOST=tcp://0.0.0.0:2375
-  connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-  if [[ ${connected} != 0  ]]; then
-    whiptail --title "DOCKER" \
-    --msgbox "Please go to Docker for Windows -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
-  fi
+    export DOCKER_HOST=tcp://0.0.0.0:2375
+    connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+    if [[ ${connected} != 0  ]]; then
+        whiptail --title "DOCKER" \
+        --msgbox "Please go to Docker for Windows -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
+    fi
 }
 
-function main() {
-  if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
+if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
 
-    local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+    connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
     while [[ ${connected} != 0  ]]; do
-      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
-        return
+        if ! (whiptail --title "DOCKER" --yesno "Docker Desktop appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
+            return
 
-      fi
+        fi
 
-      local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+        connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+
 
     done
 
     createtmp
+
     sudo apt-get -y -q update
 
     export PATH=${PATH}:$(wslpath "C:\Windows\System32") #Be sure we can execute Windows commands
 
     wget -c https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz
     sudo tar -xzvf docker-${DOCKER_VERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
+
 
     sudo chmod 755 /usr/bin/docker
     sudo chown root:root /usr/bin/docker
@@ -189,16 +187,17 @@ sudo create-mnt-c-link
 EOF
         sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
         sudo chmod -w /usr/bin/create-mnt-c-link
-      fi
-
+ 
 
     fi
 
     whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open WLinux" 8 60
     cleantmp
+
   else
     echo "Skipping Docker"
   fi
 }
 
 main "$@"
+

@@ -5,8 +5,8 @@ jobs:
         docker:
             - image: debian:testing
         environment:
-            DEBEMAIL "contact@whitewaterfoundry.com"
-            DEBFULLNAME "Whitewater Foundry, Ltd. Co."
+            DEBEMAIL="contact@whitewaterfoundry.com"
+            DEBFULLNAME="Whitewater Foundry, Ltd. Co."
         steps:
             - checkout
             - run:
@@ -18,7 +18,7 @@ jobs:
                 name: Update changelog
                 command: |
                     rm ./debian/changelog
-                    dch --create --distribution buster --package "wlinux-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
+                    dch --create --distribution buster --package "pengwin-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
@@ -27,7 +27,7 @@ jobs:
                 command: mkdir -p /tmp/pkgs
             - run:
                 name: Copy package to workspace
-                command: cp ../wlinux-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
+                command: cp ../pengwin-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
             - persist_to_workspace:
                 root: /tmp/pkgs
                 paths: .
@@ -42,7 +42,7 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: package_cloud push whitewaterfoundry/wlinux-setup/debian/buster /tmp/pkgs/wlinux-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
+                command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
 workflows:
     version: 2
     build:

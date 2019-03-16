@@ -7,6 +7,7 @@ ZSH_SETUP=".zsh_wlinux"
 
 # Backup old zshrc if existent (e.g. wlinux-setup being re-run)
 if [ -f "/etc/zsh/zshrc" ] ; then
+
     if [ -f "/etc/zsh/${ZSH_SETUP}" ] ; then
         echo "wlinux-setup has already modified zprofile"
         echo "run 'sudo rm /etc/zsh/$ZSH_INSTALLED && wlinux-setup' to re-create config file"
@@ -29,6 +30,7 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # Reset after to prevent any unforeseen consequences.
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
+        
         echo "Creating zprofile and editing to source /etc/profile"
         if [[ ! -d "/etc/zsh" ]] ; then
             echo "/etc/zsh not found, creating..."
@@ -96,14 +98,11 @@ menu --title "Shell Menu" --checklist --separate-output "Custom shells and impro
     "FISH" "fish" off \
     "CSH" "csh" off \
     "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
-
+    
 local exit_status=$?
 if [[ ${exit_status} != 0 ]] ; then
   return
 fi
-
-# Ensure we're up to date
-updateupgrade
 
 if [[ $MENU_CHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."

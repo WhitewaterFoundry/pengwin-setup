@@ -1,2 +1,2 @@
-wlinux-setup /usr/local/bin
-wlinux-setup.d /usr/local
+pengwin-setup /usr/local/bin
+pengwin-setup.d /usr/local
