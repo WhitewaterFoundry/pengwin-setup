@@ -89,36 +89,41 @@ fi
 }
 
 function installandsetshell {
-EDITORCHOICE=$(
-whiptail --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
+MENU_CHOICE=
+
+menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
     "ZSH" "zsh" off \
     "FISH" "fish" off \
     "CSH" "csh" off \
     "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
-)
+
+local exit_status=$?
+if [[ ${exit_status} != 0 ]] ; then
+  return
+fi
 
 # Ensure we're up to date
 updateupgrade
 
-if [[ $EDITORCHOICE == *"ZSH"* ]] ; then
+if [[ $MENU_CHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."
     sudo apt install zsh -y
     zshinstall
 fi
 
-if [[ $EDITORCHOICE == *"FISH"* ]] ; then
+if [[ $MENU_CHOICE == *"FISH"* ]] ; then
     echo "Installing fish..."
     sudo apt install fish -y
     fishinstall
 fi
 
-if [[ $EDITORCHOICE == *"CSH"* ]] ; then
+if [[ $MENU_CHOICE == *"CSH"* ]] ; then
     echo "Installing csh..."
     sudo apt install csh -y
     cshinstall
 fi
 
-if [[ $EDITORCHOICE == *"BASH-RL"* ]] ; then
+if [[ $MENU_CHOICE == *"BASH-RL"* ]] ; then
 	echo "BASH-RL"
 	bash ${SetupDir}/shell-opts.sh "$@"
 fi

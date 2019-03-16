@@ -72,4 +72,34 @@ function confirm() {
   fi
 }
 
+function menu() {
+
+  MENU_CHOICE=$(whiptail "$@" 3>&1 1>&2 2>&3)
+
+  local exit_status=$?
+
+  echo "Selected:" ${MENU_CHOICE}
+  echo "ExitStatus:" ${exit_status}
+
+  if [[ ${exit_status} != 0 ]] ; then
+    echo "Cancelled"
+    return ${exit_status}
+  fi
+
+  if [[ -z "${MENU_CHOICE}" ]] ; then
+
+    echo "None selected"
+
+    if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 10 80) ; then
+      menu "$@"
+    else
+      local exit_status=$?
+
+      echo "Cancelled"
+      return ${exit_status}
+    fi
+  fi
+
+}
+
 ProcessArguments "$@"
