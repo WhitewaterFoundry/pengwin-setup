@@ -1,12 +1,12 @@
 #!/bin/bash
 
-SetupDir="/usr/local/wlinux-setup.d"
+SetupDir="/usr/local/pengwin-setup.d"
+
 VERSION="1.2a"
 
 source ${SetupDir}/common.sh "$@"
 
 # define functions
-
 function ProcessArguments {
 while [[ $# -gt 0 ]]
 do
@@ -37,27 +37,25 @@ if [ -f "/etc/apt/.dist-upgrade" ] ; then
 	fi
 fi
 
-# Check if there's any upgrades to wlinux-setup / wlinux-base
+# Check if there's any upgrades to pengwin-setup / pengwin-base
 echo "Running upgrade check..."
-UPGRD_CHECK="$(sudo apt-get upgrade --show-upgraded --assume-no | grep wlinux)"
-if [[ "${UPGRD_CHECK}" == *"wlinux"* ]] ; then
-	echo "WLinux core package upgrades found"
-	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for WLinux core packages. Would you like to update them? (this is highly recommended)\n\nwlinux-setup will close after installation complete." 10 90) then
+UPGRD_CHECK="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
+if [[ "${UPGRD_CHECK}" == *"pengwin"* ]] ; then
+	echo "Pengwin core package upgrades found"
+	if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? (this is highly recommended)\n\pengwin-setup will close after installation complete." 10 90) then
 
 	  # Ensure that packages get updated without affecting other held packages like udev
-    sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2>&1
-
-		sudo apt-get upgrade wlinux-base wlinux-setup -y
-
+    sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
+		sudo apt-get upgrade pengwin-base pengwin-setup -y
 		exit 0
 	fi
 fi
 }
 
 function WelcomePrompt {
-whiptail --title "Welcome to WLinux" --msgbox "Thank you for supporting sustainable independent open source development.\n
-WLinux comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
-wlinux-setup allows you to install additional hand-curated selections for WLinux and configure optional WSL-specific settings. \n
+whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
+Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
+pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
 Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
 " 15 96
 }
@@ -184,24 +182,26 @@ function install_menu() {
     echo "CLOUDCLI"
     bash ${SetupDir}/cloudcli.sh "$@"
   fi
+   
 }
 
 ### Main
 WelcomePrompt
-continue_prompt
+ContinuePrompt
 
 CheckUpgrades
 # Ensure our packages are held to prevent odd situation of
-# being updated while running other operations from wlinux-setup 
+# being updated while running other operations from pengwin-setup 
 # install menu
-echo "Holding wlinux-base & wlinux-setup to ensure no changes while operating"
-sudo apt-mark hold wlinux-base wlinux-setup > /dev/null 2>&1
+echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
+sudo apt-mark hold pengwin-base pengwin-setup > /dev/null 2>&1
 
-install_menu "$@"
+InstallMenu "$@"
 
 # Unhold our packages
-echo "Unholding wlinux-base & wlinux-setup"
-sudo apt-mark unhold wlinux-base wlinux-setup > /dev/null 2>&1
+echo "Unholding pengwin-base & pengwin-setup"
+sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
+
 
 ByeMessage
 exit 0

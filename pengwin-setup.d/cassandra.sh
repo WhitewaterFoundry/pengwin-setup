@@ -68,11 +68,11 @@ $write1"
 $write2"
 EOF
         sudo cp autorun.bat "${wHome}/cassandra/"
-
         echo "Creating update.bat file on Windows Desktop"
         phrase1='wlinux.exe run "echo '
         phrase2=' | sudo -S apt-get update ; sudo -S apt-get upgrade -y ; sudo -S apt-get autoclean -y"'
-        write="$phrase1$passvar$phrase2"
+====
+        
         sudo cat << EOF > update.bat
 @echo off
 $write

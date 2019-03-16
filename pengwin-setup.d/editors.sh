@@ -74,4 +74,5 @@ function editor_menu {
   fi
 }
 
+
 editor_menu "$@"

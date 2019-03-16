@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for wlinux-setup
+# preinst script for pengwin-setup
 #
 # see: dh_installdeb(1)
 
@@ -16,10 +16,10 @@ set -e
 
 case "$1" in
     install)
-    # Check for legacy wlinux-setup and remove if necessary
+    # Check for legacy pengwin-setup and remove if necessary
     if [ -f "/etc/setup" ]
     then
-        echo "Legacy wlinux-setup script found! Removing"
+        echo "Legacy pengwin-setup script found! Removing"
         rm /etc/setup
     fi
     ;;

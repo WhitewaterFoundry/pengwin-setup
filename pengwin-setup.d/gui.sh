@@ -30,7 +30,6 @@ else
     echo "Skipping GUILIB"
 fi
 
-
 if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (including lxappearance, a GUI application to set the theme)" 8 70) then
 	echo "Installing Windows 10 theme"
     # Source files locations
@@ -95,10 +94,8 @@ fi
 
 if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improved non-Latin input?" 8 65) then
     echo "Installing fcitx"
-
     echo "sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
     sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
-
     FCCHOICE=$(whiptail --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 15 65 8 \
     "sunpinyin" "Chinese sunpinyin" off \
     "libpinyin" "Chinese libpinyin" off \
