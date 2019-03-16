@@ -60,6 +60,51 @@ function install_awscli() {
   fi
 }
 
+function install_ibmcli() {
+
+  if (confirm --title "IBM Cloud CLI" --yesno "Would you like to install the stand-alone IBM Cloud CLI?" 8 70) ; then
+    echo "Installing IBM Cloud CLI..."
+
+    createtmp
+
+    curl -sL https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64 | tar -xvz
+
+    cd Bluemix_CLI
+    sudo ./install
+
+    yes | ibmcloud plugin install dev -r 'IBM Cloud'
+    yes | ibmcloud plugin install cloud-functions -r 'IBM Cloud'
+    yes | ibmcloud plugin install container-registry -r 'IBM Cloud'
+    yes | ibmcloud plugin install container-service -r 'IBM Cloud'
+    yes | ibmcloud plugin install sdk-gen -r 'IBM Cloud'
+
+    echo "Installing bash-completion"
+    sudo mkdir -p /etc/bash_completion.d
+    sudo apt-get install -yq bash-completion
+
+    sudo cp /usr/local/ibmcloud/autocomplete/bash_autocomplete /etc/bash_completion.d/ibmcli_completion
+
+    ibmcloud --version
+
+    echo "Installing Helm"
+    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+
+    wget https://raw.githubusercontent.com/helm/helm/master/scripts/completions.bash
+    sudo cp completions.bash /etc/bash_completion.d/helm_completions.bash
+
+    echo "Installing kubectl"
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get -y -q update
+    sudo apt-get -y -q install kubectl
+
+    cleantmp
+  else
+    echo "Skipping IBM Cloud CLI"
+
+  fi
+}
+
 function install_openstack() {
 
   if (confirm --title "OpenStack CLI" --yesno "Would you like to install the OpenStack command-line clients?\n\nPython 2.7+ is required" 10 90) ; then
@@ -86,10 +131,12 @@ function install_openstack() {
 
 function main() {
   local choice=$(
-    whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 12 60 4 \
-      "TERRAFORM" "Terraform                   " off \
+    whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 14 60 5 \
       "AWS" "AWS CLI" off \
-      "OPENSTACK" "OpenStack command-line clients      " off 3>&1 1>&2 2>&3
+      "AZURE" "Azure CLI" off \
+      "IBM" "IBM Cloud CLI" off \
+      "OPENSTACK" "OpenStack command-line clients      " off \
+      "TERRAFORM" "Terraform                   " off 3>&1 1>&2 2>&3
   )
 
   echo "Selected:" ${choice}
@@ -97,25 +144,35 @@ function main() {
     return
   fi
   
-  if [[ ${choice} == *"TERRAFORM"* ]] ; then
-    
-    install_terraform
-    
+  if [[ ${choice} == *"AZURE"* ]] ; then
+
+    bash "${SetupDir}/azurecli.sh" "$@"
+
   fi
-  
 
   if [[ ${choice} == *"AWS"* ]] ; then
 
-    install_awscli
+    install_awscli "$@"
+
+  fi
+
+  if [[ ${choice} == *"IBM"* ]] ; then
+
+    install_ibmcli "$@"
 
   fi
 
   if [[ ${choice} == *"OPENSTACK"* ]] ; then
 
-    install_openstack
+    install_openstack "$@"
 
   fi
 
+  if [[ ${choice} == *"TERRAFORM"* ]] ; then
+
+    install_terraform "$@"
+
+  fi
 }
 
 main "$@"
