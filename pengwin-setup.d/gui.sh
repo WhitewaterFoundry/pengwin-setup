@@ -13,9 +13,8 @@ fi
 
 if (whiptail --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75) then
     echo "Installing GUILIB"
-    echo "$ apt install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y"
-    updateupgrade
-    sudo apt install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y
+    echo "$ apt-get install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y"
+    sudo apt-get install xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 -y
     echo "Configuring dbus if you already had it installed. If not, you might see some errors, and that is okay."
     #stretch
     sudo touch /etc/dbus-1/session.conf
@@ -31,8 +30,7 @@ else
     echo "Skipping GUILIB"
 fi
 
-
-if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (Experimental)" 8 70) then
+if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (including lxappearance, a GUI application to set the theme)" 8 70) then
 	echo "Installing Windows 10 theme"
     # Source files locations
     W10LIGHT_URL="https://github.com/B00merang-Project/Windows-10/archive/master.zip"
@@ -41,10 +39,8 @@ if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Win
     LIGHTDIR="windows-10-light"
     DARKDIR="windows-10-dark"
 
-    updateupgrade
-
-    echo "$ sudo apt install unzip -y"
-    sudo apt install unzip -y
+    echo "$ sudo apt-get install unzip -y"
+    sudo apt-get install unzip -y
 
     # Download themes to temporary folder (sub folders for light & dark) then unzip
     echo "Downloading themes to temporary folder"
@@ -98,11 +94,8 @@ fi
 
 if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improved non-Latin input?" 8 65) then
     echo "Installing fcitx"
-
-    echo "sudo apt install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
-    updateupgrade
-    sudo apt install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
-
+    echo "sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
+    sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
     FCCHOICE=$(whiptail --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 15 65 8 \
     "sunpinyin" "Chinese sunpinyin" off \
     "libpinyin" "Chinese libpinyin" off \
@@ -118,47 +111,47 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
 )
 
     if [[ $FCCHOICE == *"sunpinyin"* ]] ; then
-        sudo apt install fcitx-sunpinyin -y
+        sudo apt-get install fcitx-sunpinyin -y
     fi
 
     if [[ $FCCHOICE == *"libpinyin"* ]] ; then
-        sudo apt install fcitx-libpinyin -y
+        sudo apt-get install fcitx-libpinyin -y
     fi
 
     if [[ $FCCHOICE == *"rime"* ]] ; then
-        sudo apt install fcitx-rime -y
+        sudo apt-get install fcitx-rime -y
     fi
 
     if [[ $FCCHOICE == *"googlepinyin"* ]] ; then
-        sudo apt install fcitx-googlepinyin -y
+        sudo apt-get install fcitx-googlepinyin -y
     fi
 
     if [[ $FCCHOICE == *"chewing"* ]] ; then
-        sudo apt install fcitx-chewing -y
+        sudo apt-get install fcitx-chewing -y
     fi
 
     if [[ $FCCHOICE == *"mozc"* ]] ; then
-        sudo apt install fcitx-mozc -y
+        sudo apt-get install fcitx-mozc -y
     fi
 
     if [[ $FCCHOICE == *"kkc"* ]] ; then
-        sudo apt install fcitx-kkc fcitx-kkc-dev -y
+        sudo apt-get install fcitx-kkc fcitx-kkc-dev -y
     fi
 
     if [[ $FCCHOICE == *"hangul"* ]] ; then
-        sudo apt install fcitx-hangul -y
+        sudo apt-get install fcitx-hangul -y
     fi
 
     if [[ $FCCHOICE == *"unikey"* ]] ; then
-        sudo apt install fcitx-unikey -y
+        sudo apt-get install fcitx-unikey -y
     fi
 
     if [[ $FCCHOICE == *"sayura"* ]] ; then
-        sudo apt install fcitx-sayura -y
+        sudo apt-get install fcitx-sayura -y
     fi
 
     if [[ $FCCHOICE == *"tables"* ]] ; then
-        sudo apt install fcitx-table fcitx-table-all -y
+        sudo apt-get install fcitx-table fcitx-table-all -y
     fi
 
     echo "Setting environmental variables"
@@ -167,13 +160,14 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
     export XMODIFIERS=@im=fcitx
     export DefaultIMModule=fcitx
 
-    echo "Saving environmental variables to /etc/profile.d/fcitx"
-    sudo sh -c 'echo "export QT_IM_MODULE=fcitx" >> /etc/profile.d/fcitx'
-    sudo sh -c 'echo "export GTK_IM_MODULE=fcitx" >> /etc/profile.d/fcitx'
-    sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx'
-    sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx'
+    echo "Saving environmental variables to /etc/profile.d/fcitx.sh"
+    sudo sh -c 'echo "#!/bin/bash" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export QT_IM_MODULE=fcitx" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export GTK_IM_MODULE=fcitx" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx.sh'
+    sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx.sh'
 
-    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open WLinux? WARNING: Requires an X server to be running or it will generate errors." 8 70) then
+    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open WLinux? WARNING: Requires an X server to be running or it will generate errors." 10 70) then
         echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
         sudo sh -c 'echo "fcitx-autostart &>/dev/null" >> /etc/profile.d/fcitx'
     else
@@ -208,8 +202,9 @@ if (whiptail --title "HiDPI" --yesno "Would you like to configure Qt and GDK for
     echo "Installing HiDPI"
     export QT_SCALE_FACTOR=2
     export GDK_SCALE=2
-    sudo sh -c 'echo "export QT_SCALE_FACTOR=2" >> /etc/profile.d/hidpi'
-    sudo sh -c 'echo "export GDK_SCALE=2" >> /etc/profile.d/hidpi'
+    sudo sh -c 'echo "#!/bin/bash" >> /etc/profile.d/hidpi.sh'
+    sudo sh -c 'echo "export QT_SCALE_FACTOR=2" >> /etc/profile.d/hidpi.sh'
+    sudo sh -c 'echo "export GDK_SCALE=2" >> /etc/profile.d/hidpi.sh'
 else
     echo "Skipping HiDPI"
 fi
