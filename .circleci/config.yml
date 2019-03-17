@@ -50,6 +50,7 @@ workflows:
             - builddeb
     deploydebbuild:
         jobs:
+            - builddeb
             - deploydeb:
                 filters:
                     branches:
