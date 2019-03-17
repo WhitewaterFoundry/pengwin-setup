@@ -195,7 +195,7 @@ EOF
 
     fi
 
-    whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open WLinux" 8 60
+    whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open Pengwin" 8 60
     cleantmp
 
   else

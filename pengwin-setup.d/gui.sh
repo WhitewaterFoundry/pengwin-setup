@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-whiptail --title "Note about GUI Apps" --msgbox "Use of GUI applications on WLinux requires an X server running on Windows 10.\n\nExamples include:\n\nX410\nVcXsrv\nXming" 15 60
+whiptail --title "Note about GUI Apps" --msgbox "Use of GUI applications on Pengwin requires an X server running on Windows 10.\n\nExamples include:\n\nX410\nVcXsrv\nXming" 15 60
 
 if (whiptail --title "X410" --yesno "Would you like to view a link to X410 (recommended) on the Microsoft Store?" 8 80) then
     echo "Running $ wslview <link>"
@@ -167,7 +167,7 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
     sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx.sh'
     sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx.sh'
 
-    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open WLinux? WARNING: Requires an X server to be running or it will generate errors." 10 70) then
+    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 8 70) then
         echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
         sudo sh -c 'echo "fcitx-autostart &>/dev/null" >> /etc/profile.d/fcitx'
     else

@@ -3,14 +3,14 @@
 source $(dirname "$0")/common.sh "$@"
 
 function zshinstall {
-ZSH_SETUP=".zsh_wlinux"
+ZSH_SETUP=".zsh_pengwin"
 
-# Backup old zshrc if existent (e.g. wlinux-setup being re-run)
+# Backup old zshrc if existent (e.g. pengwin-setup being re-run)
 if [ -f "/etc/zsh/zshrc" ] ; then
 
-    if [ -f "/etc/zsh/${ZSH_SETUP}" ] ; then
-        echo "wlinux-setup has already modified zprofile"
-        echo "run 'sudo rm /etc/zsh/$ZSH_INSTALLED && wlinux-setup' to re-create config file"
+    if [ -f "/etc/zsh/"$ZSH_SETUP ] ; then
+        echo "pengwin-setup has already modified zshrc"
+        echo "run 'sudo rm /etc/zsh/$ZSH_INSTALLED && pengwin-setup' to re-create config file"
     else
         if [ -f "/etc/zsh/zprofile" ] ; then
 	    echo "Old zprofile found --> backing up"
@@ -31,7 +31,7 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
         
-        echo "Creating zprofile and editing to source /etc/profile"
+        echo "Creating fresh zshrc, modifying to add pengwin template commands and source /etc/profile"
         if [[ ! -d "/etc/zsh" ]] ; then
             echo "/etc/zsh not found, creating..."
             sudo mkdir -p /etc/zsh
@@ -44,16 +44,16 @@ source /etc/profile
 setopt no_match
 EOF
 
-        # Create .zsh_wlinux file to let future runs know zshrc has been modified by wlinux-setup
+        # Create .zsh_pengwin file to let future runs know zshrc has been modified by pengwin-setup
         sudo touch /etc/zsh/$ZSH_SETUP
     fi
 fi
 
 if (whiptail --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95) then
     createtmp
-    whiptail --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to wlinux-setup" 8 95
-    mkdir "Type exit to return to wlinux-setup" 
-    cd "Type exit to return to wlinux-setup" 
+    whiptail --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
+    mkdir "Type exit to return to pengwin-setup" 
+    cd "Type exit to return to pengwin-setup" 
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     cd ..
     cleantmp
@@ -69,9 +69,9 @@ fi
 function fishinstall {
 if (whiptail --title "fish" --yesno "Would you like to download and install oh-my-fish?" 8 55) then
     createtmp
-    whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to wlinux-setup" 8 95
-    mkdir "Type exit to return to wlinux-setup"
-    cd "Type exit to return to wlinux-setup"
+    whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
+    mkdir "Type exit to return to pengwin-setup"
+    cd "Type exit to return to pengwin-setup"
     curl -L https://get.oh-my.fish | fish
     cd ..
     cleantmp
@@ -91,19 +91,14 @@ fi
 }
 
 function installandsetshell {
-MENU_CHOICE=
+MENU_CHOICE=""
 
 menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
     "ZSH" "zsh" off \
     "FISH" "fish" off \
     "CSH" "csh" off \
-    "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
+    "BASH-RL" "Recommended readline settings for productivity " off
     
-local exit_status=$?
-if [[ ${exit_status} != 0 ]] ; then
-  return
-fi
-
 if [[ $MENU_CHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."
     sudo apt install zsh -y

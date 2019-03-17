@@ -26,8 +26,8 @@ manpage.1: manpage.sgml
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
   <!ENTITY dhemail     "<email>contact@whitewaterfoundry.com</email>">
   <!ENTITY dhusername  "Whitewater Foundry, Ltd. Co.">
-  <!ENTITY dhucpackage "<refentrytitle>Wlinux-setup</refentrytitle>">
-  <!ENTITY dhpackage   "wlinux-setup">
+  <!ENTITY dhucpackage "<refentrytitle>pengwin-setup</refentrytitle>">
+  <!ENTITY dhpackage   "pengwin-setup">
 
   <!ENTITY debian      "<productname>Debian</productname>">
   <!ENTITY gnu         "<acronym>GNU</acronym>">
