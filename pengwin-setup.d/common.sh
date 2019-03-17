@@ -2,7 +2,7 @@
 
 wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
 wHome=$(wslpath -u "${wHomeWinPath}")
-SetupDir="/usr/local/wlinux-setup.d"
+SetupDir="/usr/local/pengwin-setup.d"
 
 GOVERSION="1.12"
 

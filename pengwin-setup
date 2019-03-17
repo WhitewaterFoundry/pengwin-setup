@@ -56,10 +56,10 @@ fi
 
 function WelcomePrompt {
 whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
-Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
+Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n
 pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
 Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
-" 15 96
+" 17 80
 }
 
 function ContinuePrompt {

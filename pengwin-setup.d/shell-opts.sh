@@ -10,19 +10,19 @@ if [[ ! -f "/etc/inputrc" ]] ; then
 	sudo touch /etc/inputrc
 fi
 
-WLINUX_STRING="### WLINUX OPTIMISED DEFAULTS"
+PENGWIN_STRING="### PENGWIN OPTIMISED DEFAULTS"
 
 cat /etc/inputrc | while read line
 do
-	if [[ $line == *"${WLINUX_STRING}"* ]] ; then
+	if [[ $line == *"${PENGWIN_STRING}"* ]] ; then
 		return 1
 	fi
 done
 
 if [[ $? == 1 ]] ; then
     # While loop found previous customizations
-    echo "Previous WLinux inputrc customizations detected. Cancelling install..."
-    whiptail --title "Warning!" --msgbox "Previous install of WLinux inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines ${WLINUX_STRING}" 10 95
+    echo "Previous Pengwin inputrc customizations detected. Cancelling install..."
+    whiptail --title "Warning!" --msgbox "Previous install of Pengwin inputrc customizations detected. To reinstall, please edit \"/etc/inputrc\" with your favourite text editor and remove all of the text between (and including) the lines ${PENGWIN_STRING}" 10 95
     return
 fi
 
@@ -33,7 +33,7 @@ sudo mkdir -p /etc/bash_completion.d
 sudo apt-get -y -q install bash-completion
 
 sudo tee -a /etc/inputrc << EOF
-${WLINUX_STRING}
+${PENGWIN_STRING}
 # Don't ring bell on completion
 set bell-style none
 
@@ -69,11 +69,11 @@ set menu-complete-display-prefix On
   # a history expansion in the line
   Space: magic-space
 \$endif
-${WLINUX_STRING}
+${PENGWIN_STRING}
 
 EOF
 
-whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice. \n\nPlease close and re-open WLinux" 13 95
+whiptail --title "Further customizations" --msgbox "To make further customizations you may either edit the global inputrc preferences under \"/etc/inputrc\", or for user-specific preferences edit \"~/.inputrc\" with the text editor of your choice. \n\nPlease close and re-open Pengwin" 13 95
 }
 
 
