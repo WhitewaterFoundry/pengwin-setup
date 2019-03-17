@@ -194,7 +194,7 @@ function install_menu() {
 
 ### Main
 WelcomePrompt
-ContinuePrompt
+continue_prompt
 
 CheckUpgrades
 # Ensure our packages are held to prevent odd situation of
@@ -203,7 +203,7 @@ CheckUpgrades
 echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
 sudo apt-mark hold pengwin-base pengwin-setup > /dev/null 2>&1
 
-InstallMenu "$@"
+install_menu "$@"
 
 # Unhold our packages
 echo "Unholding pengwin-base & pengwin-setup"
