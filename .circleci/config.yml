@@ -52,6 +52,7 @@ workflows:
         jobs:
             - deploydeb:
                 filters:
-                    only: master
+                    branches:
+                        only: master
                 requires:
                     - builddeb
