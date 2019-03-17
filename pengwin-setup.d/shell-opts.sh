@@ -27,8 +27,6 @@ if [[ $? == 1 ]] ; then
 fi
 
 echo "Ensuring that bash-completion is installed"
-
-updateupgrade
 sudo mkdir -p /etc/bash_completion.d
 sudo apt-get -y -q install bash-completion
 

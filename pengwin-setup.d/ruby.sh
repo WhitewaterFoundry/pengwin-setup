@@ -6,7 +6,6 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
   echo "Installing RUBY"
   echo "Installing Ruby dependencies"
 
-  updateupgrade
   sudo apt-get -y -q -t testing install git-core curl zlib1g-dev build-essential libssl-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
   createtmp
 
@@ -65,7 +64,7 @@ if (whiptail --title "RAILS" --yesno "Would you like to download and install Rai
       exit 1
     fi
   fi
-  updateupgrade
+
   sudo apt-get -y -t testing install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
   createtmp
   gem install rails -v 5.2.0
