@@ -91,19 +91,14 @@ fi
 }
 
 function installandsetshell {
-MENU_CHOICE=
+MENU_CHOICE=""
 
 menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
     "ZSH" "zsh" off \
     "FISH" "fish" off \
     "CSH" "csh" off \
-    "BASH-RL" "Recommended readline settings for productivity " off 3>&1 1>&2 2>&3
+    "BASH-RL" "Recommended readline settings for productivity " off
     
-local exit_status=$?
-if [[ ${exit_status} != 0 ]] ; then
-  return
-fi
-
 if [[ $MENU_CHOICE == *"ZSH"* ]] ; then
     echo "Installing zsh..."
     sudo apt install zsh -y
