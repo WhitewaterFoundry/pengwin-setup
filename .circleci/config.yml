@@ -45,9 +45,13 @@ jobs:
                 command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
 workflows:
     version: 2
-    build:
+    testdebbuild:
         jobs:
             - builddeb
+    deploydebbuild:
+        jobs:
             - deploydeb:
+                filters:
+                    only: master
                 requires:
                     - builddeb
