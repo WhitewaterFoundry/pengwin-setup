@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-    builddeb:
+    buildtest:
         docker:
             - image: debian:testing
         environment:
@@ -31,7 +31,7 @@ jobs:
             - persist_to_workspace:
                 root: /tmp/pkgs
                 paths: .
-    deploydeb:
+    deploymasterdeb:
         docker:
             - image: circleci/ruby:2.3-jessie
         steps:
@@ -43,17 +43,38 @@ jobs:
             - run:
                 name: Push deb package
                 command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
+    deploydevdeb:
+        docker:
+            - image: circleci/ruby:2.3-jessie
+        steps:
+            - attach_workspace:
+                 at: /tmp/pkgs
+            - run:
+                name: Install packageloud cli
+                command: gem install package_cloud
+            - run:
+                name: Push deb package
+                command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
 workflows:
     version: 2
     testdebbuild:
         jobs:
-            - builddeb
-    deploydebbuild:
+            - buildtest
+    deploymasterbranch:
         jobs:
-            - builddeb
-            - deploydeb:
+            - buildtest
+            - deploymasterdeb:
                 filters:
                     branches:
                         only: master
                 requires:
-                    - builddeb
+                    - buildtest
+    deploydevbranch:
+        jobs:
+            - buildtest
+            - deploydevdeb:
+                filters:
+                    branches:
+                        only: development
+                requires:
+                    - buildtest
