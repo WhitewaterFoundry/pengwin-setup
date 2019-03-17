@@ -54,10 +54,10 @@ fi
 
 function WelcomePrompt {
 whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
-Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu. \n
+Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n
 pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
 Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
-" 15 96
+" 17 80
 }
 
 function continue_prompt() {
@@ -77,9 +77,9 @@ function ByeMessage {
 
 # main menu
 function install_menu() {
-  MENU_CHOICE=
+  MENU_CHOICE=""
 
-  menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 22 99 16 \
+  menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 23 99 17 \
     "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
     "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
     "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
@@ -95,7 +95,9 @@ function install_menu() {
     "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
     "DOCKER" "Install a secure bridge to Docker for Windows" off \
     "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
-    "CLOUDCLI" "Install CLI tools for cloud management" off
+    "CLOUDCLI" "Install CLI tools for cloud management" off \
+    "SERVICES" "Enable services support (SSH, rc.local)" off
+
 
   local exit_status=$?
   if [[ ${exit_status} != 0 ]] ; then
@@ -182,7 +184,12 @@ function install_menu() {
     echo "CLOUDCLI"
     bash ${SetupDir}/cloudcli.sh "$@"
   fi
-   
+
+  if [[ ${MENU_CHOICE} == *"SERVICES"* ]] ; then
+    echo "SERVICES"
+    bash ${SetupDir}/services.sh "$@"
+  fi
+
 }
 
 ### Main
