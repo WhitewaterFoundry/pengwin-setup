@@ -1,30 +1,31 @@
 #!/bin/bash
 
-wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
-wHome=$(wslpath -u "${wHomeWinPath}")
+readonly wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
+readonly wHome=$(wslpath -u "${wHomeWinPath}")
+readonly CANCELLED="CANCELLED"
 
 SetupDir="/usr/local/pengwin-setup.d"
 
-GOVERSION="1.12"
+readonly GOVERSION="1.12"
 
-function ProcessArguments {
-    while [[ $# -gt 0 ]]
-    do
-      case "$1" in
-        --debug|-d|--verbose|-v)
-          echo "Running in debug/verbose mode"
-          set -x
-          shift
-        ;;
-        -y|--yes|--assume-yes)
-          echo "Skipping confirmations"
-          SkipConfirmations=1
-          shift
-        ;;
-        *)
-          shift
-        esac
-    done
+function process_arguments() {
+  while [[ $# -gt 0 ]]
+  do
+    case "$1" in
+      --debug|-d|--verbose|-v)
+        echo "Running in debug/verbose mode"
+        set -x
+        shift
+      ;;
+      -y|--yes|--assume-yes)
+        echo "Skipping confirmations"
+        SkipConfirmations=1
+        shift
+      ;;
+      *)
+        shift
+    esac
+  done
 }
 
 function createtmp {
@@ -68,34 +69,41 @@ function confirm() {
   fi
 }
 
+#######################################
+# Display a menu using whiptail. Echo the option key or CANCELLED if the user has cancelled
+# Globals:
+#   CANCELLED
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 function menu() {
 
-  MENU_CHOICE=$(whiptail "$@" 3>&1 1>&2 2>&3)
+  local menu_choice #Splitted to preserve exit code
+  menu_choice=$(whiptail "$@" 3>&1 1>&2 2>&3)
 
   local exit_status=$?
 
-  echo "Selected:" ${MENU_CHOICE}
-  echo "ExitStatus:" ${exit_status}
-
   if [[ ${exit_status} != 0 ]] ; then
-    echo "Cancelled"
-    return ${exit_status}
+    echo ${CANCELLED}
+    return
   fi
 
-  if [[ -z "${MENU_CHOICE}" ]] ; then
+  if [[ -z "${menu_choice}" ]] ; then
 
-    echo "None selected"
-
-    if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 10 80) ; then
+    if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60  3>&1 1>&2 2>&3) ; then
       menu "$@"
+
+      return
     else
       local exit_status=$?
-
-      echo "Cancelled"
-      return ${exit_status}
+      echo ${CANCELLED}
+      return
     fi
   fi
 
+  echo "${menu_choice}"
 }
 
-ProcessArguments "$@"
+process_arguments "$@"
