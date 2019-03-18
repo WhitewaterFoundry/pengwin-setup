@@ -7,20 +7,6 @@ VERSION="1.2a"
 source ${SetupDir}/common.sh "$@"
 
 # define functions
-function ProcessArguments {
-while [[ $# -gt 0 ]]
-do
-  case "$1" in
-    --debug|-d|--verbose|-v)
-      echo "Running in debug/verbose mode"
-      set -x
-      shift
-    ;;
-    *)
-      shift
-    esac
-done
-}
 
 function CheckUpgrades {
 echo "Updating package database"
@@ -77,115 +63,117 @@ function ByeMessage {
 
 # main menu
 function install_menu() {
-  MENU_CHOICE=""
+  local menu_choice=$(
 
-  menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 23 99 17 \
-    "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
-    "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
-    "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
-    "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
-    "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
-    "NODEJS" "Install Node.js and npm" off \
-    "GO" "Install the latest Go from Google" off \
-    "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
-    "RUST" "Install latest version of Rust via rustup installer" off \
-    "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
-    "JAVA" "Install the Java OpenJDK and JRE" off \
-    "POWERSHELL" "Install PowerShell for Linux" off \
-    "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
-    "DOCKER" "Install a secure bridge to Docker for Windows" off \
-    "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
-    "CLOUDCLI" "Install CLI tools for cloud management" off \
-    "SERVICES" "Enable services support (SSH, rc.local)" off
+    menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 23 99 17 \
+      "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
+      "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
+      "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
+      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
+      "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
+      "NODEJS" "Install Node.js and npm" off \
+      "GO" "Install the latest Go from Google" off \
+      "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
+      "RUST" "Install latest version of Rust via rustup installer" off \
+      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
+      "JAVA" "Install the Java OpenJDK and JRE" off \
+      "POWERSHELL" "Install PowerShell for Linux" off \
+      "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
+      "DOCKER" "Install a secure bridge to Docker for Windows" off \
+      "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
+      "CLOUDCLI" "Install CLI tools for cloud management" off \
+      "SERVICES" "Enable services support (SSH, rc.local)" off \
 
+  3>&1 1>&2 2>&3)
 
-  local exit_status=$?
-  if [[ ${exit_status} != 0 ]] ; then
+  echo "Selected:" ${menu_choice}
+
+  if [[ ${menu_choice} == "${CANCELLED}" ]] ; then
     return
   fi
 
-  if [[ ${MENU_CHOICE} == *"LANGUAGE"* ]] ; then
+  if [[ ${menu_choice} == *"LANGUAGE"* ]] ; then
     echo "LANGUAGE"
     bash ${SetupDir}/language.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"EXPLORER"* ]] ; then
+  if [[ ${menu_choice} == *"EXPLORER"* ]] ; then
     echo "EXPLORER"
     bash ${SetupDir}/explorer.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"SHELLS"* ]] ; then
+  if [[ ${menu_choice} == *"SHELLS"* ]] ; then
     echo "SHELLS"
     bash ${SetupDir}/shells.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"EDITORS"* ]] ; then
+  if [[ ${menu_choice} == *"EDITORS"* ]] ; then
     echo "EDITORS"
     bash ${SetupDir}/editors.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"PYTHON"* ]] ; then
+  if [[ ${menu_choice} == *"PYTHON"* ]] ; then
     echo "PYTHON"
     bash ${SetupDir}/pythonpi.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"NODE"* ]] ; then
+  if [[ ${menu_choice} == *"NODE"* ]] ; then
     echo "NODE"
     bash ${SetupDir}/nodejs.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"GO"* ]] ; then
+  if [[ ${menu_choice} == *"GO"* ]] ; then
     echo "GO"
     bash ${SetupDir}/go.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"RUBY"* ]] ; then
+  if [[ ${menu_choice} == *"RUBY"* ]] ; then
     echo "RUBY"
     bash ${SetupDir}/ruby.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"RUST"* ]] ; then
+  if [[ ${menu_choice} == *"RUST"* ]] ; then
     echo "RUST"
     bash ${SetupDir}/rust.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"DOTNET"* ]] ; then
+  if [[ ${menu_choice} == *"DOTNET"* ]] ; then
     echo "DOTNET"
     bash ${SetupDir}/dotnet.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"JAVA"* ]] ; then
+  if [[ ${menu_choice} == *"JAVA"* ]] ; then
     echo "JAVA"
     bash ${SetupDir}/java.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"POWERSHELL"* ]] ; then
+  if [[ ${menu_choice} == *"POWERSHELL"* ]] ; then
     echo "POWERSHELL"
     bash ${SetupDir}/powershell.sh "$@"
     bash ${SetupDir}/azurecli.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"GUI"* ]] ; then
+  if [[ ${menu_choice} == *"GUI"* ]] ; then
     echo "GUI"
     bash ${SetupDir}/gui.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"DOCKER"* ]] ; then
+  if [[ ${menu_choice} == *"DOCKER"* ]] ; then
     echo "DOCKER"
     bash ${SetupDir}/docker.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"CASSANDRA"* ]] ; then
+  if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
     echo "CASSANDRA"
     bash ${SetupDir}/cassandra.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"CLOUDCLI"* ]] ; then
+  if [[ ${menu_choice} == *"CLOUDCLI"* ]] ; then
     echo "CLOUDCLI"
     bash ${SetupDir}/cloudcli.sh "$@"
   fi
 
-  if [[ ${MENU_CHOICE} == *"SERVICES"* ]] ; then
+  if [[ ${menu_choice} == *"SERVICES"* ]] ; then
     echo "SERVICES"
     bash ${SetupDir}/services.sh "$@"
   fi
