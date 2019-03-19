@@ -47,17 +47,17 @@ Many more packages are available via the apt package manager and optional pip, n
 }
 
 function continue_prompt() {
-  if (confirm --title "Continue setup?" --yesno "Would you like to continue wlinux-setup?" 8 45); then
-    echo "Starting wlinux-setup."
+  if (confirm --title "Continue setup?" --yesno "Would you like to continue pengwin-setup?" 8 45); then
+    echo "Starting pengwin-setup."
   else
-    echo "Exiting wlinux-setup."
-    echo "You may run the script again any time by running: $ wlinux-setup"
+    echo "Exiting pengwin-setup."
+    echo "You may run the script again any time by running: $ pengwin-setup"
     exit 0
   fi
 }
 
 function ByeMessage {
-    whiptail --title "Setup is complete." --msgbox "You may run wlinux-setup again any time by typing $ wlinux-setup\n\nYou may open a browser link to get help any time by typing: $ wlinux-help" 8 80
+    whiptail --title "Setup is complete." --msgbox "You may run pengwin-setup again any time by typing $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 8 80
     exit 0
 }
 
@@ -65,9 +65,9 @@ function ByeMessage {
 function install_menu() {
   local menu_choice=$(
 
-    menu --title "wlinux-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 23 99 17 \
-      "LANGUAGE" "Change default language and keyboard setting in WLinux" off \
-      "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in WLinux  " off \
+    menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 23 99 17 \
+      "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
+      "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
       "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
       "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
