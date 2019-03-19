@@ -91,36 +91,40 @@ fi
 }
 
 function installandsetshell {
-MENU_CHOICE=""
+  local menu_choice=$(
 
-menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
-    "ZSH" "zsh" off \
-    "FISH" "fish" off \
-    "CSH" "csh" off \
-    "BASH-RL" "Recommended readline settings for productivity " off
-    
-if [[ $MENU_CHOICE == *"ZSH"* ]] ; then
+    menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
+        "ZSH" "zsh" off \
+        "FISH" "fish" off \
+        "CSH" "csh" off \
+        "BASH-RL" "Recommended readline settings for productivity " off
+
+  3>&1 1>&2 2>&3)
+
+  echo "Selected:" ${menu_choice}
+
+  if [[ $menu_choice == *"ZSH"* ]] ; then
     echo "Installing zsh..."
     sudo apt install zsh -y
     zshinstall
-fi
+  fi
 
-if [[ $MENU_CHOICE == *"FISH"* ]] ; then
+  if [[ $menu_choice == *"FISH"* ]] ; then
     echo "Installing fish..."
     sudo apt install fish -y
     fishinstall
-fi
+  fi
 
-if [[ $MENU_CHOICE == *"CSH"* ]] ; then
+  if [[ $menu_choice == *"CSH"* ]] ; then
     echo "Installing csh..."
     sudo apt install csh -y
     cshinstall
-fi
+  fi
 
-if [[ $MENU_CHOICE == *"BASH-RL"* ]] ; then
-	echo "BASH-RL"
-	bash ${SetupDir}/shell-opts.sh "$@"
-fi
+  if [[ $menu_choice == *"BASH-RL"* ]] ; then
+	  echo "BASH-RL"
+	  bash ${SetupDir}/shell-opts.sh "$@"
+  fi
 
 }
 
