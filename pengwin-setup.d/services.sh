@@ -2,15 +2,17 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-readonly PROFILE_RCLOCAL="/etc/profile.d/rclocal.sh"
 
 function enable_rclocal() {
 
   if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60) ; then
     echo "Enabling rc.local..."
 
-    echo '%sudo   ALL=NOPASSWD: /bin/bash /etc/rc.local' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
-    echo 'sudo /bin/bash /etc/rc.local' | sudo tee "${PROFILE_RCLOCAL}"
+    local cmd="/bin/bash /etc/rc.local"
+    echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
+
+    local profile_rclocal="/etc/profile.d/rclocal.sh"
+    echo "sudo ${cmd}" | sudo tee "${profile_rclocal}"
 
     sudo mkdir -p /etc/boot.d
 
@@ -25,15 +27,6 @@ function enable_rclocal() {
 function enable_ssh() {
 
   if (confirm --title "SSH Server" --yesno "Would you like to enable SSH Server?" 10 60) ; then
-
-    if [[ ! -e "${PROFILE_RCLOCAL}" ]]; then
-      enable_rclocal
-
-      if [[ $? != 0 ]]; then
-        echo "Cancelled"
-        return 1
-      fi
-    fi
 
     echo "Enabling SSH Server..."
 
@@ -71,7 +64,8 @@ function enable_ssh() {
       sudo service ssh --full-restart > /dev/null 2>&1
     fi
 
-    sudo tee /etc/boot.d/ssh << EOF
+    local startSsh="/usr/bin/start-ssh"
+    sudo tee "${startSsh}" << EOF
 #!/bin/bash
 
 sshd_status=\$(service ssh status)
@@ -81,7 +75,12 @@ fi
 
 EOF
 
-    sudo chmod 700 /etc/boot.d/ssh
+    sudo chmod 700 "${startSsh}"
+
+    echo "%sudo   ALL=NOPASSWD: ${startSsh}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-ssh
+
+    local profile_startssh="/etc/profile.d/start-ssh.sh"
+    echo "sudo ${startSsh}" | sudo tee "${profile_startssh}"
 
   else
     echo "Skipping SSH Server"
