@@ -55,11 +55,17 @@ function code_install {
 
 function editor_menu {
   local editor_choice=$(
-    whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+
+    menu --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
       "NEOVIM" "Neovim" off \
       "EMACS" "Emacs" off \
-      "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
-  )
+      "CODE" "Visual Studio Code (requires X)" off \
+
+  3>&1 1>&2 2>&3)
+
+  if [[ ${editor_choice} == "CANCELLED" ]] ; then
+    return 1
+  fi
 
   if [[ ${editor_choice} == *"NEOVIM"* ]] ; then
     neovim_install
