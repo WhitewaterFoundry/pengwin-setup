@@ -93,20 +93,26 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Services Menu" --checklist --separate-output "Enables service support\n[SPACE to select, ENTER to confirm]:" 10 70 2 \
+    menu --title "Services Menu" --checklist --separate-output "Enables varios services\n[SPACE to select, ENTER to confirm]:" 10 70 3 \
+      "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
       "RCLOCAL" "Enable running scripts at startup from rc.local " off \
       "SSH" "Enable SSH server" off \
 
   3>&1 1>&2 2>&3)
 
+  if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
+    echo "CASSANDRA"
+    bash ${SetupDir}/cassandra.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then
 
-      enable_rclocal "$@"
+    enable_rclocal "$@"
   fi
 
   if [[ ${menu_choice} == *"SSH"* ]] ; then
 
-      enable_ssh "$@"
+    enable_ssh "$@"
   fi
 }
 
