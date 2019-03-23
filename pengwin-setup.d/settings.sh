@@ -6,7 +6,7 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 12 70 4 \
+    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 14 97 4 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
       "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
@@ -14,7 +14,7 @@ function main() {
 
   3>&1 1>&2 2>&3)
 
-  if [[ ${editor_choice} == "CANCELLED" ]] ; then
+  if [[ ${menu_choice} == "CANCELLED" ]] ; then
     return 1
   fi
 
