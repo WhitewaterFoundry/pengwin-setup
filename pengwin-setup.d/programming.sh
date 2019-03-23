@@ -6,8 +6,8 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 25 70 7 \
-      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
+    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 15 90 7 \
+      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
       "JAVA" "Install the Java OpenJDK and JRE" off \
       "NODEJS" "Install Node.js and npm" off \
@@ -17,7 +17,7 @@ function main() {
 
   3>&1 1>&2 2>&3)
 
-  if [[ ${editor_choice} == "CANCELLED" ]] ; then
+  if [[ ${menu_choice} == "CANCELLED" ]] ; then
     return 1
   fi
 
