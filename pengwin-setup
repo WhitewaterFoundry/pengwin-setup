@@ -65,24 +65,13 @@ function ByeMessage {
 function install_menu() {
   local menu_choice=$(
 
-    menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 23 99 17 \
-      "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
-      "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
-      "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
-      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)" off \
-      "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
-      "NODEJS" "Install Node.js and npm" off \
-      "GO" "Install the latest Go from Google" off \
-      "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
-      "RUST" "Install latest version of Rust via rustup installer" off \
-      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet" off \
-      "JAVA" "Install the Java OpenJDK and JRE" off \
-      "POWERSHELL" "Install PowerShell for Linux" off \
-      "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
-      "DOCKER" "Install a secure bridge to Docker for Windows" off \
-      "CASSANDRA" "Install the NoSQL server Cassandra from Apache" off \
-      "CLOUDCLI" "Install CLI tools for cloud management" off \
+    menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 14 99 5 \
+      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)    " off \
+      "PROGRAMMING" "Install various programming languages support" off \
+      "SETTINGS" "Change various settings in Pengwin" off \
       "SERVICES" "Enable services support (SSH, rc.local)" off \
+      "TOOLS" "Install applications or servers" off \
+
 
   3>&1 1>&2 2>&3)
 
@@ -92,92 +81,42 @@ function install_menu() {
     return
   fi
 
-  if [[ ${menu_choice} == *"LANGUAGE"* ]] ; then
-    echo "LANGUAGE"
-    bash ${SetupDir}/language.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"EXPLORER"* ]] ; then
-    echo "EXPLORER"
-    bash ${SetupDir}/explorer.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"SHELLS"* ]] ; then
-    echo "SHELLS"
-    bash ${SetupDir}/shells.sh "$@"
-  fi
+  local exit_status
 
   if [[ ${menu_choice} == *"EDITORS"* ]] ; then
     echo "EDITORS"
     bash ${SetupDir}/editors.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"PYTHON"* ]] ; then
-    echo "PYTHON"
-    bash ${SetupDir}/pythonpi.sh "$@"
+  if [[ ${menu_choice} == *"PROGRAMMING"* ]] ; then
+    echo "PROGRAMMING"
+    bash ${SetupDir}/programming.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"NODE"* ]] ; then
-    echo "NODE"
-    bash ${SetupDir}/nodejs.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"GO"* ]] ; then
-    echo "GO"
-    bash ${SetupDir}/go.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"RUBY"* ]] ; then
-    echo "RUBY"
-    bash ${SetupDir}/ruby.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"RUST"* ]] ; then
-    echo "RUST"
-    bash ${SetupDir}/rust.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"DOTNET"* ]] ; then
-    echo "DOTNET"
-    bash ${SetupDir}/dotnet.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"JAVA"* ]] ; then
-    echo "JAVA"
-    bash ${SetupDir}/java.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"POWERSHELL"* ]] ; then
-    echo "POWERSHELL"
-    bash ${SetupDir}/powershell.sh "$@"
-    bash ${SetupDir}/azurecli.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"GUI"* ]] ; then
-    echo "GUI"
-    bash ${SetupDir}/gui.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"DOCKER"* ]] ; then
-    echo "DOCKER"
-    bash ${SetupDir}/docker.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
-    echo "CASSANDRA"
-    bash ${SetupDir}/cassandra.sh "$@"
-  fi
-
-  if [[ ${menu_choice} == *"CLOUDCLI"* ]] ; then
-    echo "CLOUDCLI"
-    bash ${SetupDir}/cloudcli.sh "$@"
+  if [[ ${menu_choice} == *"SETTINGS"* ]] ; then
+    echo "SETTINGS"
+    bash ${SetupDir}/settings.sh "$@"
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"SERVICES"* ]] ; then
     echo "SERVICES"
     bash ${SetupDir}/services.sh "$@"
+    exit_status=$?
   fi
 
+
+  if [[ ${menu_choice} == *"TOOLS"* ]] ; then
+    echo "TOOLS"
+    bash ${SetupDir}/tools.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${exit_status} != 0 ]] ; then
+    install_menu "$@"
+  fi
 }
 
 ### Main
