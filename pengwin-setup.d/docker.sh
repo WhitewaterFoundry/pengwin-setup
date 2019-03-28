@@ -97,7 +97,7 @@ EOF
   connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
   if [[ ${connected} != 0  ]]; then
     whiptail --title "DOCKER" \
-    --msgbox "Please go to Docker for Windows -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
+    --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
   fi
 }
 
