@@ -8,7 +8,7 @@ function main() {
 
     menu --title "Tools Menu" --checklist --separate-output "Install applications or servers\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
       "CLOUDCLI" "Install CLI tools for cloud management" off \
-      "DOCKER" "Install a secure bridge to Docker for Windows  " off \
+      "DOCKER" "Install a secure bridge to Docker Desktop  " off \
       "POWERSHELL" "Install PowerShell for Linux" off \
 
   3>&1 1>&2 2>&3)
