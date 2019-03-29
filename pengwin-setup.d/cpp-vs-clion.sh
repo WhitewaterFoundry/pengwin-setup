@@ -19,19 +19,18 @@ function main {
 
     sudo apt-get -y -q install gcc clang gdb build-essential gdbserver rsync zip
 
-    if ! (cmake) ; then
+    #Installs the Microsoft version of CMake for Visual Studio
+    createtmp
+    echo "Installing CMake"
 
-      createtmp
-      echo "Installing CMake"
+    local dist="$(uname -m)"
+    wget -O cmake.sh "https://github.com/Microsoft/CMake/releases/download/untagged/cmake-3.13.18112701-MSVC_2-Linux-${dist/86_/}.sh"
+    sudo bash cmake.sh  --skip-license --prefix=/usr/local
 
-      local dist="$(uname -m)"
-      wget -O cmake.sh "https://github.com/Microsoft/CMake/releases/download/untagged/cmake-3.13.18112701-MSVC_2-Linux-${dist/86_/}.sh"
-      sudo bash cmake.sh  --skip-license --prefix=/usr/local
+    cleantmp
 
-      cleantmp
-    fi
-
-    sudo apt-get -y -q install pkg-config
+    #Installs the regular version for CLion
+    sudo apt-get -y -q install pkg-config cmake
     sudo apt-get -y -q autoremove
     sudo apt-get -y -q clean
 
