@@ -17,9 +17,7 @@ function main {
       return 1
     fi
 
-    sudo apt-get -y -q install gcc clang gdb build-essential gdbserver
-    sudo apt-get -y -q autoremove
-    sudo apt-get -y -q clean
+    sudo apt-get -y -q install gcc clang gdb build-essential gdbserver rsync zip
 
     if ! (cmake) ; then
 
@@ -32,6 +30,10 @@ function main {
 
       cleantmp
     fi
+
+    sudo apt-get -y -q install pkg-config
+    sudo apt-get -y -q autoremove
+    sudo apt-get -y -q clean
 
   else
     echo "Skipping C++"
