@@ -32,6 +32,12 @@ function backup() {
 
 function restore() {
 
+  if [[ ! -f "${BACKUP_PATH}" ]]; then
+    whiptail --title "RESTORE" --msgbox "The file \"${BACKUP_PATH_WIN}\" was not found. If you have a previous backup move it to \"${BACKUP_PATH_WIN}\"" 10 70
+
+    return 1
+  fi
+
   if (whiptail --title "RESTORE" --yesno "Would you like to restore your directory ${HOME} from ${BACKUP_PATH_WIN} ?" 8 60) ; then
     echo "Restoring from ${BACKUP_PATH_WIN}"
 
