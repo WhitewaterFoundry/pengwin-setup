@@ -65,8 +65,9 @@ function ByeMessage {
 function install_menu() {
   local menu_choice=$(
 
-    menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 14 99 5 \
+    menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 15 99 6 \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)    " off \
+      "MAINTENANCE" "Various maintenance tasks like home backup" off \
       "PROGRAMMING" "Install various programming languages support" off \
       "SETTINGS" "Change various settings in Pengwin" off \
       "SERVICES" "Enable services support (SSH, rc.local)" off \
@@ -86,6 +87,12 @@ function install_menu() {
   if [[ ${menu_choice} == *"EDITORS"* ]] ; then
     echo "EDITORS"
     bash ${SetupDir}/editors.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${menu_choice} == *"MAINTENANCE"* ]] ; then
+    echo "MAINTENANCE"
+    bash ${SetupDir}/maintenance.sh "$@"
     exit_status=$?
   fi
 
