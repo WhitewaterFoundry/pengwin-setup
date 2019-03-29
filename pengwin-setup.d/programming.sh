@@ -6,7 +6,8 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 15 90 7 \
+    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 15 95 7 \
+      "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " off \
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
       "JAVA" "Install the Java OpenJDK and JRE" off \
@@ -19,6 +20,12 @@ function main() {
 
   if [[ ${menu_choice} == "CANCELLED" ]] ; then
     return 1
+  fi
+
+  if [[ ${menu_choice} == *"C++"* ]] ; then
+    echo "C++"
+    bash ${SetupDir}/cpp-vs-clion.sh "$@"
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"DOTNET"* ]] ; then
