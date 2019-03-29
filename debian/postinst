@@ -20,8 +20,8 @@ set -e
 
 case "$1" in
     configure)
-
-    chmod u+x /usr/local/bin/pengwin-setup
+    bash /usr/local/bin/pengwin-setup.d/explorer.sh --upgrade --yes
+    chmod 755 /usr/local/bin/pengwin-setup
     echo "Type pengwin-setup to launch the Pengwin setup utility."
     
     ;;
