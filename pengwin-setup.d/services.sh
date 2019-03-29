@@ -90,6 +90,12 @@ EOF
 
 function main() {
 
+  if [[ "$1" == "--enable-ssh" ]] ; then
+    enable_ssh "$@"
+
+    return
+  fi
+
   local menu_choice=$(
 
     menu --title "Services Menu" --checklist --separate-output "Enables varios services\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
