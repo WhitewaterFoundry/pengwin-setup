@@ -1,12 +1,19 @@
 #!/bin/bash
 
-readonly wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
-readonly wHome=$(wslpath -u "${wHomeWinPath}")
-readonly CANCELLED="CANCELLED"
+function cmd_exe() {
 
-SetupDir="/usr/local/pengwin-setup.d"
+  local result
+  local exit_status
+  cd $(wslpath C:\\) >/dev/null
 
-readonly GOVERSION="1.12"
+  result=$(cmd.exe $@ 2>&1)
+  exit_status=$?
+
+  cd - >/dev/null
+
+  echo "${result}"
+  return ${exit_status}
+}
 
 function process_arguments() {
   while [[ $# -gt 0 ]]
@@ -51,7 +58,7 @@ sudo apt-get autoremove -y
 }
 
 #function getexecname {
-#user_path=$(cmd.exe /c "echo %HOMEDRIVE%%HOMEPATH%" 2>&1 | tr -d "\r")
+#user_path=$(cmd_exe /c "echo %HOMEDRIVE%%HOMEPATH%" | tr -d "\r")
 #wslexec_dir=$(echo $PATH | sed -e 's/:/\n/g' | grep 'Program\ Files/WindowsApps')
 #execname=$(ls "${wslexec_dir}" | grep '.exe')
 #echo "${execname}"
@@ -106,4 +113,17 @@ function menu() {
   echo "${menu_choice}"
 }
 
-process_arguments "$@"
+function setup_env() {
+
+  process_arguments "$@"
+
+  readonly wHomeWinPath=$(cmd_exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
+  readonly wHome=$(wslpath -u "${wHomeWinPath}")
+  readonly CANCELLED="CANCELLED"
+
+  SetupDir="/usr/local/pengwin-setup.d"
+
+  readonly GOVERSION="1.12"
+}
+
+setup_env "$@"
