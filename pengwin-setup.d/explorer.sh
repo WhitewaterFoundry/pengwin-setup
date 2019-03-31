@@ -33,8 +33,8 @@ EOF
 
       local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
       sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
-      cp Install.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Install.reg
-      cmd.exe /C "Reg import %TEMP%\Install.reg"
+      cp Install.reg $(wslpath "$(cmd_exe /c 'echo %TEMP%' | tr -d '\r')")/Install.reg
+      cmd_exe /C "Reg import %TEMP%\Install.reg"
 
       cleantmp
    else
@@ -46,8 +46,8 @@ Windows Registry Editor Version 5.00
 [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\${plain_name}]
 [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\\${plain_name}]
 EOF
-      cp Uninstall.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Uninstall.reg
-      cmd.exe /C "Reg import %TEMP%\Uninstall.reg"
+      cp Uninstall.reg $(wslpath "$(cmd_exe /c 'echo %TEMP%' | tr -d '\r')")/Uninstall.reg
+      cmd_exe /C "Reg import %TEMP%\Uninstall.reg"
 
       cleantmp
   fi
@@ -64,8 +64,8 @@ Windows Registry Editor Version 5.00
 [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\${plain_name}]
 [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\\${plain_name}]
 EOF
-  cp Uninstall.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Uninstall.reg
-  cmd.exe /C "Reg import %TEMP%\Uninstall.reg"
+  cp Uninstall.reg $(wslpath "$(cmd_exe /c 'echo %TEMP%' | tr -d '\r')")/Uninstall.reg
+  cmd_exe /C "Reg import %TEMP%\Uninstall.reg"
 
   cleantmp
 
@@ -78,7 +78,7 @@ function main() {
 
   if [[ $# -gt 0 && "$1" == "--upgrade" ]]; then
 
-    cmd.exe /C "Reg query HKEY_CURRENT_USER\Software\Classes\Directory\shell\\WLinux"
+    cmd_exe /C "Reg query HKEY_CURRENT_USER\Software\Classes\Directory\shell\\WLinux"
 
     if [[ $? == 0 ]]; then
 
