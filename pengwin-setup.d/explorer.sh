@@ -33,7 +33,7 @@ EOF
 
       local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
       sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
-      cp Install.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Install.reg
+      cp Install.reg $(wslpath "$(powershell.exe -NoProfile -NonInteractive -Command "Write-Output \$Env:TEMP" | tr -d '\r')")/Install.reg
       cmd.exe /C "Reg import %TEMP%\Install.reg"
 
       cleantmp
@@ -46,7 +46,7 @@ Windows Registry Editor Version 5.00
 [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\${plain_name}]
 [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\\${plain_name}]
 EOF
-      cp Uninstall.reg $(wslpath "$(cmd.exe /c 'echo %TEMP%' 2>&1 | tr -d '\r')")/Uninstall.reg
+      cp Uninstall.reg $(wslpath "$(powershell.exe -NoProfile -NonInteractive -Command "Write-Output \$Env:TEMP" | tr -d '\r')")/Uninstall.reg
       cmd.exe /C "Reg import %TEMP%\Uninstall.reg"
 
       cleantmp
