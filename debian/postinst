@@ -20,6 +20,7 @@ set -e
 
 case "$1" in
     configure)
+    for l in C D E; do PATH=${PATH}:$(wslpath "${l}:\Windows\System32"); done
     bash /usr/local/pengwin-setup.d/explorer.sh --upgrade --yes
     chmod 755 /usr/local/bin/pengwin-setup
     echo "Type pengwin-setup to launch the Pengwin setup utility."
