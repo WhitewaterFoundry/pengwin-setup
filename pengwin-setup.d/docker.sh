@@ -41,7 +41,7 @@ function docker_install_build_relay() {
 
     GOOS=windows go build -o npiperelay.exe github.com/jstarks/npiperelay
     sudo mkdir -p "${wHome}/.npiperelay"
-    cmd.exe /c 'attrib +h %HOMEDRIVE%%HOMEPATH%\.npiperelay'
+    cmd_exe /c 'attrib +h %HOMEDRIVE%%HOMEPATH%\.npiperelay'
     sudo cp npiperelay.exe "${wHome}/.npiperelay/npiperelay.exe"
   fi
 
@@ -50,11 +50,26 @@ function docker_install_build_relay() {
   cat << 'EOF' >> docker-relay
 #!/bin/bash
 
+function cmd_exe() {
+
+  local result
+  local exit_status
+  cd $(wslpath C:\\) >/dev/null
+
+  result=$(cmd.exe $@ 2>&1)
+  exit_status=$?
+
+  cd - >/dev/null
+
+  echo "${result}"
+  return ${exit_status}
+}
+
 connected=$(docker version 2>&1 | grep -c "daemon\|error")
 if [[ ${connected} != 0  ]]; then
 
   PATH=${PATH}:$(wslpath "C:\Windows\System32")
-  wHomeWinPath=$(cmd.exe /c 'echo %HOMEDRIVE%%HOMEPATH%' 2>&1 | tr -d '\r')
+  wHomeWinPath=$(cmd_exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   wHome=$(wslpath -u "${wHomeWinPath}")
 
   killall --quiet socat
