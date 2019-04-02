@@ -17,22 +17,23 @@ function install_explorer() {
 
       cat << EOF >> Install.reg
 Windows Registry Editor Version 5.00
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\Pengwin]
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Pengwin]
 @="Open with Pengwin"
-"Icon"="%USERPROFILE%\\AppData\\Local\\Packages\\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\\LocalState\\rootfs\\usr\\local\\lib\\pengwin.ico"
-[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\Pengwin\command]
+"Icon"="_IcoPath_"
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Pengwin\command]
 @="_PengwinPath_ run \\"cd \\\\\\"\$(wslpath \\\\\\"%V\\\\\\")\\\\\\" && \$(getent passwd \$LOGNAME | cut -d: -f7)\\""
-"Icon"="%USERPROFILE%\\AppData\\Local\\Packages\\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\\LocalState\\rootfs\\usr\\local\\lib\\pengwin.ico"
-[HKEY_CURRENT_USER\Software\Classes\Directory\shell\\Pengwin]
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\Pengwin]
 @="Open with Pengwin"
-"Icon"="%USERPROFILE%\\AppData\\Local\\Packages\\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\\LocalState\\rootfs\\usr\\local\\lib\\pengwin.ico"
-[HKEY_CURRENT_USER\Software\Classes\Directory\shell\\Pengwin\command]
+"Icon"="_IcoPath_"
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\Pengwin\command]
 @="_PengwinPath_ run \\"cd \\\\\\"\$(wslpath \\\\\\"%V\\\\\\")\\\\\\" && \$(getent passwd \$LOGNAME | cut -d: -f7)\\""
-"Icon"="%USERPROFILE%\\AppData\\Local\\Packages\\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\\LocalState\\rootfs\\usr\\local\\lib\\pengwin.ico"
 EOF
 
       local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
+      local icopath=$(cmd_exe /C "echo '%USERPROFILE%\AppData\Local\Packages\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\LocalState\rootfs\usr\local\lib\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
+      icopath=$(echo $icopath | tr -d "\'")
       sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
+      sed -i "s/_IcoPath_/${icopath}/g" Install.reg
       cp Install.reg $(wslpath "$(cmd_exe /c 'echo %TEMP%' | tr -d '\r')")/Install.reg
       cmd_exe /C "Reg import %TEMP%\Install.reg"
 
