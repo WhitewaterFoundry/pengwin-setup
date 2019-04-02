@@ -79,9 +79,16 @@ function main() {
 
   if [[ $# -gt 0 && "$1" == "--upgrade" ]]; then
 
-    cmd_exe /C "Reg query HKEY_CURRENT_USER\Software\Classes\Directory\shell\\WLinux"
+    local exit_code_1
+    local exit_code_2
 
-    if [[ $? == 0 ]]; then
+    cmd_exe /C "Reg query HKEY_CURRENT_USER\Software\Classes\Directory\shell\\WLinux"
+    exit_code_1=$?
+
+    cmd_exe /C "Reg query HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\WLinux"
+    exit_code_2=$?
+
+    if [[ ${exit_code_1} == 0 || ${exit_code_2} == 0 ]]; then
 
       upgrade_explorer
     fi
