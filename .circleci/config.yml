@@ -42,7 +42,7 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
+                command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
     deploydevdeb:
         docker:
             - image: circleci/ruby:2.3-jessie
@@ -54,7 +54,7 @@ jobs:
                 command: gem install package_cloud
             - run:
                 name: Push deb package
-                command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-${CIRCLE_PREVIOUS_BUILD_NUM}_all.deb
+                command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
 workflows:
     version: 2
     testdebbuild:
