@@ -9,8 +9,6 @@ function install_explorer() {
   echo "WSL executable name: ${exec_name}"
   local plain_name='Pengwin'
 
-  # I know we should use plain_name instead of Pengwin below but for some reason the icon will only work with Pengwin hard-coded
-
   if (confirm --title "EXPLORER" --yesno "Would you like to enable Windows Explorer shell integration?" 8 65); then
       echo "Enabling Windows Explorer shell integration."
       createtmp
@@ -30,7 +28,7 @@ Windows Registry Editor Version 5.00
 EOF
 
       local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
-      local icopath=$(cmd_exe /C "echo '%USERPROFILE%\AppData\Local\Packages\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\LocalState\rootfs\usr\local\lib\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
+      local icopath=$(cmd_exe /C "echo '%USERPROFILE%\\AppData\\Local\\Packages\\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\\LocalState\\rootfs\\usr\\local\\lib\\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
       icopath=$(echo $icopath | tr -d "\'")
       sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
       sed -i "s/_IcoPath_/${icopath}/g" Install.reg
