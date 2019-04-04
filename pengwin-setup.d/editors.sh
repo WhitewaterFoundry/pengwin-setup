@@ -3,7 +3,7 @@
 source $(dirname "$0")/common.sh "$@"
 
 function neovim_install {
-  if (whiptail --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) ; then
+  if (confirm --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) ; then
     echo "Installing neovim and building tools from Debian: $ sudo apt-get install neovim build-essential"
     sudo apt-get -y -q -t testing install neovim build-essential
   else
@@ -12,7 +12,7 @@ function neovim_install {
 }
 
 function emacs_install {
-  if (whiptail --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) ; then
+  if (confirm --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) ; then
     echo "Installing emacs: $ sudo apt-get install emacs -y"
     sudo apt-get -y -q install emacs
   else
@@ -21,7 +21,7 @@ function emacs_install {
 }
 
 function code_install {
-  if (whiptail --title "CODE" --yesno "Would you like to download and install Code from Microsoft?" 8 65) ; then
+  if (confirm --title "CODE" --yesno "Would you like to download and install Code from Microsoft?" 8 65) ; then
     echo "Installing CODE"
     createtmp
     echo "Downloading and unpacking Microsoft's apt repo key with curl and gpg"
@@ -55,11 +55,17 @@ function code_install {
 
 function editor_menu {
   local editor_choice=$(
-    whiptail --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+
+    menu --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
       "NEOVIM" "Neovim" off \
       "EMACS" "Emacs" off \
-      "CODE" "Visual Studio Code (requires X)" off 3>&1 1>&2 2>&3
-  )
+      "CODE" "Visual Studio Code (requires X)   " off \
+
+  3>&1 1>&2 2>&3)
+
+  if [[ ${editor_choice} == "CANCELLED" ]] ; then
+    return 1
+  fi
 
   if [[ ${editor_choice} == *"NEOVIM"* ]] ; then
     neovim_install
