@@ -1,20 +1,5 @@
 #!/bin/bash
 
-function cmd_exe() {
-
-  local result
-  local exit_status
-  cd $(wslpath C:\\) >/dev/null
-
-  result=$(cmd.exe $@ 2>&1)
-  exit_status=$?
-
-  cd - >/dev/null
-
-  echo "${result}"
-  return ${exit_status}
-}
-
 function process_arguments() {
   while [[ $# -gt 0 ]]
   do
@@ -58,7 +43,7 @@ sudo apt-get autoremove -y
 }
 
 #function getexecname {
-#user_path=$(cmd_exe /c "echo %HOMEDRIVE%%HOMEPATH%" | tr -d "\r")
+#user_path=$(cmd-exe /c "echo %HOMEDRIVE%%HOMEPATH%" | tr -d "\r")
 #wslexec_dir=$(echo $PATH | sed -e 's/:/\n/g' | grep 'Program\ Files/WindowsApps')
 #execname=$(ls "${wslexec_dir}" | grep '.exe')
 #echo "${execname}"
@@ -117,7 +102,7 @@ function setup_env() {
 
   process_arguments "$@"
 
-  readonly wHomeWinPath=$(cmd_exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
+  readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
   readonly CANCELLED="CANCELLED"
 
