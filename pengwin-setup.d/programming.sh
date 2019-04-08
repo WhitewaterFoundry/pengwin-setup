@@ -10,7 +10,7 @@ function main() {
       "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " off \
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
-      "JAVA" "Install the Java OpenJDK and JRE" off \
+      "JAVA" "Install the SDKMan to manage Java SDKs" off \
       "NODEJS" "Install Node.js and npm" off \
       "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
