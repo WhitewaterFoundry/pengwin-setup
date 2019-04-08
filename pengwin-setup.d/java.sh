@@ -13,7 +13,10 @@ if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage a
 
   sdk version
 
-  whiptail --title "SDKMan" --msgbox "Please close and re-open Pengwin.\n\nTo install Java use: sdk list java to see the available versions. Then sdk install java 'version'" 12 60
+  curl https://raw.githubusercontent.com/Bash-it/bash-it/master/completion/available/sdkman.completion.bash | sudo tee /etc/bash_completion.d/sdkman.bash
+
+  whiptail --title "SDKMan" --msgbox "Please close and re-open Pengwin.\n\nTo install Java use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 15 60
+
 else
   echo "Skipping Java"
 fi
