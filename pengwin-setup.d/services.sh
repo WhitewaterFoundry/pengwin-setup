@@ -98,7 +98,7 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Services Menu" --checklist --separate-output "Enables varios services\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
+    menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
       "CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
       "RCLOCAL" "Enable running scripts at startup from rc.local " off \
       "SSH" "Enable SSH server" off \
