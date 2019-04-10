@@ -7,9 +7,9 @@ function main() {
   local menu_choice=$(
 
     menu --title "Tools Menu" --checklist --separate-output "Install applications or servers\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
+      "ANSIBLE" "Install tools to deploy Ansible Playbooks" off \
       "CLOUDCLI" "Install CLI tools for cloud management" off \
       "DOCKER" "Install a secure bridge to Docker Desktop" off \
-      "ANSIBLE" "Install tools to deploy Ansible Playbooks" off \
       "POWERSHELL" "Install PowerShell for Linux" off \
 
   3>&1 1>&2 2>&3)
