@@ -60,6 +60,23 @@ function install_awscli() {
   fi
 }
 
+function install_doctl() {
+
+  if (confirm --title "Digital Ocean CTL" --yesno "Would you like to install the Digital Ocean Commandline Tool?" 8 70) ; then
+    echo "Installing Digital Ocean CTL"
+
+    createtmp
+
+    curl -L https://github.com/digitalocean/doctl/releases/download/v1.15.0/doctl-1.15.0-linux-amd64.tar.gz | tar -xzv
+    sudo cp doctl /usr/local/bin
+    doctl version
+
+    cleantmp
+  else
+    echo "Skipping Digital Ocean CTL"
+
+  fi
+}
 function install_ibmcli() {
 
   if (confirm --title "IBM Cloud CLI" --yesno "Would you like to install the stand-alone IBM Cloud CLI?" 8 70) ; then
@@ -134,6 +151,7 @@ function main() {
     whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 14 60 5 \
       "AWS" "AWS CLI" off \
       "AZURE" "Azure CLI" off \
+      "DO" "Digital Ocean Commandline tool" off \
       "IBM" "IBM Cloud CLI" off \
       "OPENSTACK" "OpenStack command-line clients      " off \
       "TERRAFORM" "Terraform                   " off 3>&1 1>&2 2>&3
@@ -153,6 +171,12 @@ function main() {
   if [[ ${choice} == *"AWS"* ]] ; then
 
     install_awscli "$@"
+
+  fi
+
+  if [[ ${choice} == *"DO"* ]] ; then
+
+    install_doctl "$@"
 
   fi
 
