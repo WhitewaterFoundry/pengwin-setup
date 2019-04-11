@@ -66,9 +66,43 @@ function install_doctl() {
     echo "Installing Digital Ocean CTL"
 
     createtmp
+    
+    echo "Checking for go"
+    if ! (go version); then
+      echo "Downloading Go using wget."
+      wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
+      tar -xzf go*.tar.gz
 
-    curl -L https://github.com/digitalocean/doctl/releases/download/v1.15.0/doctl-1.15.0-linux-amd64.tar.gz | tar -xzv
-    sudo cp doctl /usr/local/bin
+      export GOROOT=$(pwd)/go
+      export PATH="${GOROOT}/bin:$PATH"
+    fi
+
+    mkdir gohome
+    export GOPATH=$(pwd)/gohome
+
+    echo "Checking for git"
+    if (git version); then
+      local git_exists=1
+    else
+      local git_exists=0
+
+      sudo apt-get -y -q install git
+    fi
+
+    echo "Building doctl"
+    go get -u github.com/digitalocean/doctl/cmd/doctl
+    sudo cp $GOPATH/bin/doctl /usr/local/bin/doctl
+    
+    if [[ ${git_exists} -eq 0 ]]; then
+      sudo apt-get -y -q purge git
+      sudo apt-get -y -q autoremove
+    fi
+
+    echo "Installing bash-completion"
+    sudo mkdir -p /etc/bash_completion.d
+    sudo apt-get install -yq bash-completion
+
+    doctl completion bash | sudo tee /etc/bash_completion.d/doc.bash_completion > /dev/null
     doctl version
 
     cleantmp
