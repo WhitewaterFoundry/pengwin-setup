@@ -60,6 +60,57 @@ function install_awscli() {
   fi
 }
 
+function install_doctl() {
+
+  if (confirm --title "Digital Ocean CTL" --yesno "Would you like to install the Digital Ocean Commandline Tool?" 8 70) ; then
+    echo "Installing Digital Ocean CTL"
+
+    createtmp
+    
+    echo "Checking for go"
+    if ! (go version); then
+      echo "Downloading Go using wget."
+      wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
+      tar -xzf go*.tar.gz
+
+      export GOROOT=$(pwd)/go
+      export PATH="${GOROOT}/bin:$PATH"
+    fi
+
+    mkdir gohome
+    export GOPATH=$(pwd)/gohome
+
+    echo "Checking for git"
+    if (git version); then
+      local git_exists=1
+    else
+      local git_exists=0
+
+      sudo apt-get -y -q install git
+    fi
+
+    echo "Building doctl"
+    go get -u github.com/digitalocean/doctl/cmd/doctl
+    sudo cp $GOPATH/bin/doctl /usr/local/bin/doctl
+    
+    if [[ ${git_exists} -eq 0 ]]; then
+      sudo apt-get -y -q purge git
+      sudo apt-get -y -q autoremove
+    fi
+
+    echo "Installing bash-completion"
+    sudo mkdir -p /etc/bash_completion.d
+    sudo apt-get install -yq bash-completion
+
+    doctl completion bash | sudo tee /etc/bash_completion.d/doc.bash_completion > /dev/null
+    doctl version
+
+    cleantmp
+  else
+    echo "Skipping Digital Ocean CTL"
+
+  fi
+}
 function install_ibmcli() {
 
   if (confirm --title "IBM Cloud CLI" --yesno "Would you like to install the stand-alone IBM Cloud CLI?" 8 70) ; then
@@ -134,6 +185,7 @@ function main() {
     whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 14 60 5 \
       "AWS" "AWS CLI" off \
       "AZURE" "Azure CLI" off \
+      "DO" "Digital Ocean Commandline tool" off \
       "IBM" "IBM Cloud CLI" off \
       "OPENSTACK" "OpenStack command-line clients      " off \
       "TERRAFORM" "Terraform                   " off 3>&1 1>&2 2>&3
@@ -153,6 +205,12 @@ function main() {
   if [[ ${choice} == *"AWS"* ]] ; then
 
     install_awscli "$@"
+
+  fi
+
+  if [[ ${choice} == *"DO"* ]] ; then
+
+    install_doctl "$@"
 
   fi
 
