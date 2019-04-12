@@ -5,7 +5,7 @@ source $(dirname "$0")/common.sh "$@"
 
 function install_explorer() {
 
-  local exec_name='wlinux.exe'
+  local exec_name='pengwin.exe'
   echo "WSL executable name: ${exec_name}"
   local plain_name='Pengwin'
 
