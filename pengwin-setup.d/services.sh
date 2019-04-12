@@ -12,8 +12,16 @@ function enable_rclocal() {
     echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
 
     local profile_rclocal="/etc/profile.d/rclocal.sh"
-    echo "sudo ${cmd}" | sudo tee "${profile_rclocal}"
+    sudo tee "${profile_rclocal}" << EOF
+#!/bin/bash
 
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+
+  sudo ${cmd}
+fi
+
+EOF
     sudo mkdir -p /etc/boot.d
 
   else
@@ -68,9 +76,14 @@ function enable_ssh() {
     sudo tee "${startSsh}" << EOF
 #!/bin/bash
 
-sshd_status=\$(service ssh status)
-if [[ \${sshd_status} = *"is not running"* ]]; then
-  service ssh --full-restart > /dev/null 2>&1
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+
+  sshd_status=\$(service ssh status)
+  if [[ \${sshd_status} = *"is not running"* ]]; then
+    service ssh --full-restart > /dev/null 2>&1
+  fi
+
 fi
 
 EOF
