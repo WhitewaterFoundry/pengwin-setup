@@ -100,6 +100,12 @@ function menu() {
 
 function setup_env() {
 
+  if ( ! which cmd.exe >/dev/null ); then
+    whiptail --title "Wrong user" --msgbox "pengwin-setup was ran with the user \"${USER}\".\n\nRun pengwin-setup from the default user and without sudo" 12 80
+
+    exit 0
+  fi
+
   process_arguments "$@"
 
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
