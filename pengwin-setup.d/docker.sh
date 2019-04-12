@@ -50,16 +50,20 @@ function docker_install_build_relay() {
   cat << 'EOF' >> docker-relay
 #!/bin/bash
 
-connected=$(docker version 2>&1 | grep -c "daemon\|error")
-if [[ ${connected} != 0  ]]; then
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
 
-  PATH=${PATH}:$(wslpath "C:\Windows\System32")
-  wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
-  wHome=$(wslpath -u "${wHomeWinPath}")
+  connected=$(docker version 2>&1 | grep -c "daemon\|error")
+  if [[ ${connected} != 0  ]]; then
 
-  killall --quiet socat
-  exec nohup socat UNIX-LISTEN:/var/run/docker.sock,fork,group=docker,umask=007 EXEC:"\'${wHome}/.npiperelay/npiperelay.exe\' -ep -s //./pipe/docker_engine",nofork  </dev/null &>/dev/null &
+    wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
+    wHome=$(wslpath -u "${wHomeWinPath}")
+
+    killall --quiet socat
+    exec nohup socat UNIX-LISTEN:/var/run/docker.sock,fork,group=docker,umask=007 EXEC:"\'${wHome}/.npiperelay/npiperelay.exe\' -ep -s //./pipe/docker_engine",nofork  </dev/null &>/dev/null &
+  fi
 fi
+
 EOF
 
   sudo cp docker-relay /usr/bin/docker-relay
@@ -68,7 +72,12 @@ EOF
   echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
 
   cat << 'EOF' >> docker_relay.sh
-sudo docker-relay
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+  sudo docker-relay
+fi
+
 EOF
 
   sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
@@ -119,8 +128,6 @@ function main() {
     createtmp
 
     sudo apt-get -y -q update
-
-    export PATH=${PATH}:$(wslpath "C:\Windows\System32") #Be sure we can execute Windows commands
 
     wget -c https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz
     sudo tar -xzvf docker-${DOCKER_VERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
@@ -186,7 +193,12 @@ EOF
         echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
 
         cat << 'EOF' >> create-mnt-c-link.sh
-sudo create-mnt-c-link
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+  sudo create-mnt-c-link
+fi
+
 EOF
         sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
         sudo chmod -w /usr/bin/create-mnt-c-link
