@@ -6,7 +6,7 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 15 95 7 \
+    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 16 95 8 \
       "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " off \
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
