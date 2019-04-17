@@ -108,6 +108,11 @@ function setup_env() {
 
   process_arguments "$@"
 
+  if ( ! wslpath > /dev/null 2>&1 ); then
+    shopt -s expand_aliases
+    alias wslpath=legacy_wslupath
+  fi
+
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
   readonly CANCELLED="CANCELLED"
