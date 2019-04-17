@@ -19,12 +19,12 @@ Windows Registry Editor Version 5.00
 @="Open with Pengwin"
 "Icon"="_IcoPath_"
 [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Pengwin\command]
-@="_PengwinPath_ run \\"cd \\\\\\"\$(wslpath \\\\\\"%V\\\\\\")\\\\\\" && login_shell\\""
+@="_PengwinPath_ run \\"login_shell \\\\\\"%V\\\\\\"\\""
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\Pengwin]
 @="Open with Pengwin"
 "Icon"="_IcoPath_"
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\Pengwin\command]
-@="_PengwinPath_ run \\"cd \\\\\\"\$(wslpath \\\\\\"%V\\\\\\")\\\\\\" && login_shell\\""
+@="_PengwinPath_ run \\"login_shell \\\\\\"%V\\\\\\"\\""
 EOF
 
       local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
