@@ -1,3 +1,4 @@
 #!/bin/sh
 
+cd "$(wslpath "${@}")" && \
 $(getent passwd $LOGNAME | cut -d: -f7) --login
