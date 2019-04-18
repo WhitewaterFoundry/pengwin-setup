@@ -18,6 +18,10 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install py
     wget https://raw.githubusercontent.com/pyenv/pyenv/master/completions/pyenv.bash
     sudo cp pyenv.bash /etc/bash_completion.d/pyenv_completions.bash
 
+    echo "installing Python 3.7"
+    ${HOME}/.pyenv/bin/pyenv install 3.7.3
+    ${HOME}/.pyenv/bin/pyenv global 3.7.3
+
     cleantmp
 
 elif (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.7, IDLE, and the pip package manager?" 8 90) then
