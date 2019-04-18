@@ -19,7 +19,7 @@ Windows Registry Editor Version 5.00
 @="Open with Pengwin"
 "Icon"="_IcoPath_"
 [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Pengwin\command]
-@="_PengwinPath_ run \\"login_shell \\\\\\"%V\\\\\\"\\""
+@="_PengwinPath_ run \\"login_shell\\""
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\Pengwin]
 @="Open with Pengwin"
 "Icon"="_IcoPath_"
