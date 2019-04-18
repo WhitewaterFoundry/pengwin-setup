@@ -167,7 +167,7 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
     sudo sh -c 'echo "export XMODIFIERS=@im=fcitx" >> /etc/profile.d/fcitx.sh'
     sudo sh -c 'echo "export DefaultIMModule=fcitx" >> /etc/profile.d/fcitx.sh'
 
-    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 8 70) then
+    if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
         echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
         sudo sh -c 'echo "fcitx-autostart &>/dev/null" >> /etc/profile.d/fcitx'
     else
@@ -180,9 +180,9 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
 
     if (whiptail --title "fcitx-autostart" --yesno "Would you like to run fcitx-autostart now? Requires an X server to be running." 8 85) then
         echo "Starting fcitx-autostart"
-        fcitx-autostart
+        fcitx-autostart &>/dev/null
     else
-        echo "Skipping fcitx-config-gtk3"
+        echo "Skipping start fcitx-autostart"
     fi
    
     if (whiptail --title "fcitx-config-gtk3" --yesno "Would you like to configure fcitx now? Requires an X server to be running." 8 80) then
