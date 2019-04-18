@@ -11,16 +11,34 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install py
     wget https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
     bash pyenv-installer
 
-    echo "Installing Bash completion"
-    sudo mkdir -p /etc/bash_completion.d
-    sudo apt-get install -yq bash-completion
+    export PATH="${HOME}/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
 
-    wget https://raw.githubusercontent.com/pyenv/pyenv/master/completions/pyenv.bash
-    sudo cp pyenv.bash /etc/bash_completion.d/pyenv_completions.bash
+    echo "inserting default scripts"
+
+    case "$shell" in
+  	bash )
+     	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ~/.bashrc
+      	echo "eval \"\$(pyenv init -)\"" >> ~/.bashrc
+      	echo "eval \"\$(pyenv virtualenv-init -)\"" >> ~/.bashrc
+   	;;
+  	zsh )
+    	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ~/.zshrc
+      	echo "eval \"\$(pyenv init -)\"" >> ~/.zshrc
+      	echo "eval \"\$(pyenv virtualenv-init -)\"" >> ~/.zshrc
+    	;;
+  	fish )
+	mkdir -p ~/.config/fish
+	echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >> ~/.config/fish/config.fish
+      	echo 'status --is-interactive; and . (pyenv init -|psub)'  >> ~/.config/fish/config.fish
+      	echo 'status --is-interactive; and . (pyenv virtualenv-init -|psub)' >> ~/.config/fish/config.fish
+    	;;
+  esac 
 
     echo "installing Python 3.7"
-    ${HOME}/.pyenv/bin/pyenv install 3.7.3
-    ${HOME}/.pyenv/bin/pyenv global 3.7.3
+    pyenv install 3.7.3
+    pyenv global 3.7.3
 
     cleantmp
 
