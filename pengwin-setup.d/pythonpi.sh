@@ -17,7 +17,7 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install py
 
     echo "inserting default scripts"
 
-    case "$shell" in
+    case "$(basename $SHELL)" in
   	bash )
      	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ~/.bashrc
       	echo "eval \"\$(pyenv init -)\"" >> ~/.bashrc
