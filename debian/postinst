@@ -21,6 +21,7 @@ set -e
 case "$1" in
     configure)
 
+    chmod 755 /usr/local/bin/login_shell
     chmod 755 /usr/local/bin/pengwin-setup
     echo "Type pengwin-setup to launch the Pengwin setup utility."
     
