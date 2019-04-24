@@ -11,30 +11,28 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install py
     wget https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
     bash pyenv-installer
 
-    export PATH="${HOME}/.pyenv/bin:$PATH"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-
     echo "inserting default scripts"
+    
+    if [ -f ${HOME}/.bashrc ]; then
+     	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ${HOME}/.bashrc
+      	echo "eval \"\$(pyenv init -)\"" >> ${HOME}/.bashrc
+      	echo "eval \"\$(pyenv virtualenv-init -)\"" >> ${HOME}/.bashrc
+	source ${HOME}/.bashrc
+    fi
 
-    case "$(basename $SHELL)" in
-  	bash )
-     	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ~/.bashrc
-      	echo "eval \"\$(pyenv init -)\"" >> ~/.bashrc
-      	echo "eval \"\$(pyenv virtualenv-init -)\"" >> ~/.bashrc
-   	;;
-  	zsh )
-    	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ~/.zshrc
-      	echo "eval \"\$(pyenv init -)\"" >> ~/.zshrc
-      	echo "eval \"\$(pyenv virtualenv-init -)\"" >> ~/.zshrc
-    	;;
-  	fish )
-	mkdir -p ~/.config/fish
-	echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >> ~/.config/fish/config.fish
-      	echo 'status --is-interactive; and . (pyenv init -|psub)'  >> ~/.config/fish/config.fish
-      	echo 'status --is-interactive; and . (pyenv virtualenv-init -|psub)' >> ~/.config/fish/config.fish
-    	;;
-  esac 
+    if [ -f ${HOME}/.zshrc ]; then
+    	echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ${HOME}/.zshrc
+      	echo "eval \"\$(pyenv init -)\"" >> ${HOME}/.zshrc
+      	echo "eval \"\$(pyenv virtualenv-init -)\"" >> ${HOME}/.zshrc
+	source ${HOME}/.zshrc
+    fi
+
+    if [ -d ${HOME}/,config/fish ]; then
+	echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >> ${HOME}/.config/fish/config.fish
+      	echo 'status --is-interactive; and . (pyenv init -|psub)'  >> ${HOME}/.config/fish/config.fish
+      	echo 'status --is-interactive; and . (pyenv virtualenv-init -|psub)' >> ${HOME}/.config/fish/config.fish
+	source ${HOME}/.config/fish/config.fish	
+    fi
 
     echo "installing Python 3.7"
     pyenv install 3.7.3
