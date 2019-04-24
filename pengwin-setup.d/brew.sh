@@ -7,14 +7,14 @@ if (whiptail --title "HOMEBREW" --yesno "Would you like to download and install 
 
 	# Check we have correct dependencies installed for brew
 	echo "Installing Homebrew dependencies"
-	sudo apt-get -y -q -t build-essential curl file git
+	sudo apt-get install -y -q build-essential curl file git
 
 	whiptail --title "HOMEBREW" --msgbox "Please press enter when asked to continue by the Homebrew installer." 7 85
-	sh -c "$(curl -fsSL https://raw.githubusercontent.com/LinuxBrew/install/master/install.sh)"
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 
 	echo "Adding Homebrew to system path"
-	sudo bash -c 'echo "eval \$($(brew --prefix)/bin/brew shellenv)" > /etc/profile/brew.sh'
-	source /etc/profile/brew.sh
+	sudo bash -c 'echo "eval \$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" > /etc/profile.d/brew.sh'
+	bash /etc/profile.d/brew.sh
 
 	whiptail --title "HOMEBREW" --msgbox "Please note, Homebrew does record and share analytics information (more information here: https://docs.brew.sh/Analytics.html). To opt-out, type:\n\`brew analytics off\`" 9 85
 else
