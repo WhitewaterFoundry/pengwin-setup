@@ -27,7 +27,7 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install py
 	source ${HOME}/.zshrc
     fi
 
-    if [ -d ${HOME}/,config/fish ]; then
+    if [ -d ${HOME}/.config/fish ]; then
 	echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >> ${HOME}/.config/fish/config.fish
       	echo 'status --is-interactive; and . (pyenv init -|psub)'  >> ${HOME}/.config/fish/config.fish
       	echo 'status --is-interactive; and . (pyenv virtualenv-init -|psub)' >> ${HOME}/.config/fish/config.fish
