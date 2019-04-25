@@ -6,7 +6,7 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Tools Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
+    menu --title "Tools Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 12 99 5 \
       "X410" "View a link to the X410 X-server on the Microsoft Store" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
