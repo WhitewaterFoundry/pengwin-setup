@@ -115,7 +115,7 @@ function install_menu() {
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *""* ]] ; then
+  if [[ ${menu_choice} == *"GUI"* ]] ; then
     echo "GUI"
     bash ${SetupDir}/gui.sh "$@"
     exit_status=$?
