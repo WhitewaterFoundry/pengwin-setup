@@ -11,7 +11,7 @@ function main() {
       "VCXSRV" "Install the VcXsrv open source X-server" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
       "SYNAPTIC" "Install the Synaptic package manager" off \
-      "THEME" "Install the LXAppearance theme switcher and an (optional) Win10 theme" off \
+      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher" off \
 
   3>&1 1>&2 2>&3)
 
@@ -40,7 +40,7 @@ function main() {
   fi
 
   if [[ ${menu_choice} == *"THEME"* ]] ; then
-    echo "THEME"
+    echo "WINTHEME"
     bash ${SetupDir}/theme.sh "$@"
   fi
 
