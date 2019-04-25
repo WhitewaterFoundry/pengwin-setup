@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $(dirname "$0")/common.sh "$@"
+
 if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Windows 10 theme? (including lxappearance, a GUI application to set the theme)" 8 70) then
 	echo "Installing Windows 10 theme"
 	# Source files locations
