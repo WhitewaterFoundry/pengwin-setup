@@ -6,10 +6,12 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Tools Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 12 99 5 \
+    menu --title "Tools Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 12 99 7 \
       "X410" "View a link to the X410 X-server on the Microsoft Store" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
+      "FCITX" "Install fcitx for improved non-Latin input support" off \
+      "HIDPI" "Configure Qt and GTK for HiDPI displays (experimental)" off \
       "SYNAPTIC" "Install the Synaptic package manager" off \
       "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher" off \
 
@@ -32,6 +34,16 @@ function main() {
   if [[ ${menu_choice} == *"GUILIB"* ]] ; then
     echo "GUILIB"
     bash ${SetupDir}/guilib.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"FCITX"* ]] ; then
+    echo "FCITX"
+    bash ${SetupDir}/fcitx.sh
+  fi
+
+  if [[ ${menu_choice} == *"HIDPI"* ]] ; then
+    echo "HIDPI"
+    bash ${SetupDir}/hidpi.sh
   fi
 
   if [[ ${menu_choice} == *"SYNAPTIC"* ]] ; then
