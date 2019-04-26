@@ -1,7 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "${@}" ] ; then
 	cd "$(wslpath "${@}")"
+fi
+
+# Proposed fix for PATH on Windows 10 1903+
+if echo $PATH | grep -Fqe '%SYSTEMROOT%' ; then
+	SystemDrive="$(echo $PATH | sed 's|:|\n|g' | grep 'AppData/Local/Microsoft/WindowsApps' | cut -d$'\n' -f1 | sed 's|/Users/.*/AppData/Local/Microsoft/WindowsApps||g')"
+	SystemRoot="$SystemDrive/WINDOWS"
+	PATH="$(echo $PATH | sed 's|/%SYSTEMROOT%|'"$SystemRoot"'|g')"
+	export PATH
+fi
+if echo $PATH | grep -Fqe '%SystemRoot%' ; then
+	SystemDrive="$(echo $PATH | sed 's|:|\n|g' | grep 'AppData/Local/Microsoft/WindowsApps' | cut -d$'\n' -f1 | sed 's|/Users/.*/AppData/Local/Microsoft/WindowsApps||g')"
+	SystemRoot="$SystemDrive/WINDOWS"
+	PATH="$(echo $PATH | sed 's|/%SystemRoot%|'"$SystemRoot"'|g')"
+	export PATH
 fi
 
 $(getent passwd $LOGNAME | cut -d: -f7) --login
