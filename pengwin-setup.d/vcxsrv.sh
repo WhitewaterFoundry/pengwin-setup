@@ -11,7 +11,7 @@ if (whiptail --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-se
 
 	wVcxsrvDir="$(cmd-exe /C "echo %USERPROFILE%\.vcxsrv" | tr -d '\r')"
 	VcxsrvDir="$(wslpath "${wVcxsrvDir}")"
-	if [[ ! -d "" ]] ; then
+	if [[ ! -d "${VcxsrvDir}" ]] ; then
 		createtmp
 		echo "Creating vcxsrv install directory: $VcxsrvDir"
 		mkdir -p "${VcxsrvDir}"
