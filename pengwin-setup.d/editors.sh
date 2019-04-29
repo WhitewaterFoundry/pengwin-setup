@@ -38,7 +38,10 @@ function code_install {
     sudo apt-get update
 
     #Temporary: Fix issue with udev
-    sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stable udev=232-25+deb9u8 libudev1=232-25+deb9u8
+    #UPDATE: Now finds latest version of udev and libudev1 specifically from stable repository
+    UdevVersion="$(apt-cache madison udev | grep ' stable' | cut -d'|' -f2 | sed 's| ||g')"
+    Libudev1Version="$(apt-cache madison libudev1 | grep ' stable' | cut -d'|' -f2 | sed 's| ||g')"
+    sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stable udev=$UdevVersion libudev1=$Libudev1Version
     sudo apt-mark hold udev libudev1
 
     echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev"
