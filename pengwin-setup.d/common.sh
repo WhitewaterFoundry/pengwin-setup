@@ -30,7 +30,7 @@ function createtmp {
 
 function cleantmp {
     echo "Returning to $CURDIR"
-    cd $CURDIR
+    cd "$CURDIR"
     echo "Cleaning up $TMPDIR"
     sudo rm -r $TMPDIR  # need to add sudo here because git clones leave behind write-protected files
 }
