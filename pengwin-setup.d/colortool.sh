@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme? This will be installed to your Windows home directory under .ColorTool" 8 80) then
+if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme? This will be installed to your Windows home directory under .ColorTool" 9 80) then
 	echo "Installing ColorTool"
 	ColortoolUrl="https://github.com/Microsoft/console/releases/download/1810.02002/ColorTool.zip"
 
