@@ -6,7 +6,7 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 14 97 3 \
+    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 10 97 3 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
       "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
