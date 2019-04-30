@@ -6,9 +6,8 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 14 97 4 \
+    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 14 97 3 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
-      "GUI" "Install the basics needed for most GUI apps and configure GUI options" off \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
       "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
 
@@ -16,11 +15,6 @@ function main() {
 
   if [[ ${menu_choice} == "CANCELLED" ]] ; then
     return 1
-  fi
-
-  if [[ ${menu_choice} == *"GUI"* ]] ; then
-    echo "GUI"
-    bash ${SetupDir}/gui.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"EXPLORER"* ]] ; then
