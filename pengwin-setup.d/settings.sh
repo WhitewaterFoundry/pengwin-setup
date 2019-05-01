@@ -6,8 +6,9 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 10 97 3 \
+    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 10 97 4 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
+      "COLORTOOL" "Install ColorTool to set Windows console color schemes" off \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
       "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off \
 
@@ -20,6 +21,11 @@ function main() {
   if [[ ${menu_choice} == *"EXPLORER"* ]] ; then
     echo "EXPLORER"
     bash ${SetupDir}/explorer.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"COLORTOOL"* ]] ; then
+    echo "COLORTOOL"
+    bash ${SetupDir}/colortool.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"LANGUAGE"* ]] ; then
