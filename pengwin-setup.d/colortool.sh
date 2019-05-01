@@ -59,7 +59,7 @@ function main() {
 
 # No arguments found
 if [[ "\$#" -eq 0 ]] ; then
-	usage
+	echo "No argument[s] provided. Usage: colortool -h|--help"
 fi
 
 # Handle arguments
@@ -72,6 +72,9 @@ case "\$1" in
 		;;
 	-s|--set-theme)
 		set_theme "\$2"
+		;;
+	*)
+		echo "Unrecognised argument[s]. Usage: colortool -h|--help"
 		;;
 esac
 
