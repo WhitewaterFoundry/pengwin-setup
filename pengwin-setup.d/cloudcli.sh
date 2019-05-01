@@ -8,7 +8,7 @@ function install_terraform() {
 
     createtmp
 
-    wget -O terraform.zip https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_$(dpkg --print-architecture).zip
+    wget -O terraform.zip https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_$(dpkg --print-architecture).zip
     unzip terraform.zip
     sudo mv terraform /usr/bin
     sudo chmod +x /usr/bin/terraform
@@ -62,7 +62,7 @@ function install_awscli() {
 
 function install_doctl() {
 
-  if (confirm --title "Digital Ocean CTL" --yesno "Would you like to install the Digital Ocean Commandline Tool?" 8 70) ; then
+  if (confirm --title "Digital Ocean CTL" --yesno "Would you like to install the Digital Ocean CLI?" 8 70) ; then
     echo "Installing Digital Ocean CTL"
 
     createtmp
@@ -185,7 +185,7 @@ function main() {
     whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 14 60 5 \
       "AWS" "AWS CLI" off \
       "AZURE" "Azure CLI" off \
-      "DO" "Digital Ocean Commandline tool" off \
+      "DO" "Digital Ocean CLI" off \
       "IBM" "IBM Cloud CLI" off \
       "OPENSTACK" "OpenStack command-line clients      " off \
       "TERRAFORM" "Terraform                   " off 3>&1 1>&2 2>&3
