@@ -60,21 +60,26 @@ function main() {
 # No arguments found
 if [[ "\$#" -eq 0 ]] ; then
 	echo "No argument[s] provided. Usage: colortool -h|--help"
+	return 1
 fi
 
 # Handle arguments
 case "\$1" in
 	-h|--help)
 		usage
+		return 0
 		;;
 	-l|--list-themes)
 		echo "\$SchemeNames"
+		return 0
 		;;
 	-s|--set-theme)
 		set_theme "\$2"
+		return \$?
 		;;
 	*)
 		echo "Unrecognised argument[s]. Usage: colortool -h|--help"
+		return 1
 		;;
 esac
 
