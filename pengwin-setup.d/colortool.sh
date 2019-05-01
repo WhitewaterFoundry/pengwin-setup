@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme? This will be installed to your Windows home directory under .ColorTool" 9 80) then
+if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme, along with a setup script for a user-friendly theme setting method? This will be installed to your Windows home directory under .ColorTool" 10 80) then
 	echo "Installing ColorTool"
 	ColortoolUrl="https://github.com/Microsoft/console/releases/download/1810.02002/ColorTool.zip"
 
@@ -25,7 +25,7 @@ if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's 
 		echo "Setting ColorTool.exe permissions"
 		chmod +x "${ColortoolDir}/ColorTool.exe"
 
-		if (whiptail --title "COLORTOOL" --yesno "Would you like to install a collection of iTerm2 color schemes compatible with Microsoft ColorTool, along with a setup script for a user-friendly theme setting method?" 10 80) then
+		if (whiptail --title "COLORTOOL" --yesno "Would you like to install a collection of iTerm2 color schemes compatible with Microsoft ColorTool?" 8 80) then
 			echo "Installing iTerm themes for ColorTool"
 			ColorschemesUrl="https://github.com/mbadolato/iTerm2-Color-Schemes/archive/master.zip"
 
@@ -88,8 +88,18 @@ echo "                       -s|--set-theme "theme_name""
 
 function set_theme() {
 
-# Hold result of while loop
+# Local variable to hold result
+# 1 = default = no matching color scheme found
 local result=1
+
+# Local function required for piping text as root
+function sudo_bash() {
+
+if ! sudo bash -c "\$@" ; then
+	result=2
+fi
+
+}
 
 # While loop, executed with only the 'echo -e ____' in a subshell
 while read line ; do
@@ -97,27 +107,32 @@ while read line ; do
 		echo "Setting scheme \$1"
 		echo ""
 		"${ColortoolDir}/ColorTool.exe" --xterm "\$1"
-		echo "Ensuring scheme set on each terminal launch"
-		function sudo_bash() { sudo bash -c "\$@" ; }
-		sudo_bash "echo '#!/bin/bash' > /etc/profile.d/01-colortool.sh"
-		sudo_bash "echo '\"/mnt/c/Users/kim (grufwub)/.ColorTool/ColorTool.exe\" --quiet --xterm \"\$1\"' >> /etc/profile.d/01-colortool.sh"
 		result=0
+
+		echo "Ensuring scheme set on each terminal launch..."
+		sudo_bash "echo '\"/mnt/c/Users/kim (grufwub)/.ColorTool/ColorTool.exe\" --quiet --xterm \"\$1\"' > /etc/profile.d/01-colortool.sh"
 	fi
 done <<< "\$(echo -e "\$SchemeNames")"
 
 # Handle end result (exit smoothly if scheme set)
-if [[ \$result -eq 0 ]] ; then
-	exit 0
+if [[ \$result -eq 1 ]] ; then
+	echo "Scheme \$1 not found"
+	return 1
+elif [[ \$result -eq 2 ]] ; then
+	echo "Failed to get root, unable to set color scheme for terminal launch"
+	return 1
 else
-	echo "Scheme \$1 does not exist"
-	exit 1
+	return 0
 fi
 
 }
 
 main "\$@"
+exit $?
 EOF
 		sudo chmod +x /usr/local/bin/colortool
+		whiptail --title "COLORTOOL" --msgbox "Finished installing. You can view and set installed schemes with 'colortool'" 8 80
+
 		cleantmp
 	else
 		echo "${ColortoolDir} already exists, leaving in place."
