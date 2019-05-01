@@ -2,12 +2,10 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-if (whiptail --title "PYTHON" --yesno "Would you like to download and install pyenv with Python 3.7?" 7 90) then
+if (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.7 with pyenv?" 7 90) then
     echo "Installing PYENV"
     createtmp
-
     sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
-
     wget https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
     bash pyenv-installer
 
