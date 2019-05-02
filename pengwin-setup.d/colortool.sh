@@ -100,15 +100,6 @@ function set_theme() {
 # 1 = default = no matching color scheme found
 local result=1
 
-# Local function required for piping text as root
-function sudo_bash() {
-
-if ! sudo bash -c "\$@" ; then
-	result=2
-fi
-
-}
-
 # While loop, executed with only the 'echo -e ____' in a subshell
 while read line ; do
 	if [[ "\$line" == "\$1" ]] ; then
