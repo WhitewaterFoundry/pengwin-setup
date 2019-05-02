@@ -118,7 +118,10 @@ while read line ; do
 		result=0
 
 		echo "Ensuring scheme set on each terminal launch..."
-		sudo_bash "echo '\"/mnt/c/Users/kim (grufwub)/.ColorTool/ColorTool.exe\" --quiet --xterm \"\$1\"' > /etc/profile.d/01-colortool.sh"
+		local bashstr="echo '\"${ColortoolDir}/ColorTool.exe\" --quiet --xterm \"\$1\"' > /etc/profile.d/01-colortool.sh"
+		if ! sudo bash -c "\$bashstr" ; then
+			result=2
+		fi
 	fi
 done <<< "\$(echo -e "\$SchemeNames")"
 
