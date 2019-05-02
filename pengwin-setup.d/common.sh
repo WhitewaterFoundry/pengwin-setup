@@ -36,9 +36,9 @@ function cleantmp {
 }
 
 function updateupgrade {
-echo "Applying available package upgrades from repositories: $ sudo apt upgrade -y"
+echo "Applying available package upgrades from repositories."
 sudo apt-get upgrade -y
-echo "Removing unnecessary packages: $ sudo apt autoremove -y"
+echo "Removing unnecessary packages."
 sudo apt-get autoremove -y
 }
 
