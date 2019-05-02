@@ -100,15 +100,6 @@ function set_theme() {
 # 1 = default = no matching color scheme found
 local result=1
 
-# Local function required for piping text as root
-function sudo_bash() {
-
-if ! sudo bash -c "\$@" ; then
-	result=2
-fi
-
-}
-
 # While loop, executed with only the 'echo -e ____' in a subshell
 while read line ; do
 	if [[ "\$line" == "\$1" ]] ; then
@@ -118,7 +109,10 @@ while read line ; do
 		result=0
 
 		echo "Ensuring scheme set on each terminal launch..."
-		sudo_bash "echo '\"/mnt/c/Users/kim (grufwub)/.ColorTool/ColorTool.exe\" --quiet --xterm \"\$1\"' > /etc/profile.d/01-colortool.sh"
+		local bashstr="echo '\"${ColortoolDir}/ColorTool.exe\" --quiet --xterm \"\$1\"' > /etc/profile.d/01-colortool.sh"
+		if ! sudo bash -c "\$bashstr" ; then
+			result=2
+		fi
 	fi
 done <<< "\$(echo -e "\$SchemeNames")"
 
