@@ -32,7 +32,7 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install Py
     echo "installing Python 3.7"
     export PATH="${HOME}/.pyenv/bin:$PATH"
     eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -"
+    eval "$(pyenv virtualenv-init -)"
     pyenv install 3.7.3
     pyenv global 3.7.3
 
