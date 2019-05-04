@@ -30,15 +30,15 @@ function createtmp {
 
 function cleantmp {
     echo "Returning to $CURDIR"
-    cd $CURDIR
+    cd "$CURDIR"
     echo "Cleaning up $TMPDIR"
     sudo rm -r $TMPDIR  # need to add sudo here because git clones leave behind write-protected files
 }
 
 function updateupgrade {
-echo "Applying available package upgrades from repositories: $ sudo apt upgrade -y"
+echo "Applying available package upgrades from repositories."
 sudo apt-get upgrade -y
-echo "Removing unnecessary packages: $ sudo apt autoremove -y"
+echo "Removing unnecessary packages."
 sudo apt-get autoremove -y
 }
 
@@ -100,7 +100,18 @@ function menu() {
 
 function setup_env() {
 
+  if ( ! which cmd.exe >/dev/null ); then
+    whiptail --title "Wrong user" --msgbox "pengwin-setup was ran with the user \"${USER}\".\n\nRun pengwin-setup from the default user and without sudo" 12 80
+
+    exit 0
+  fi
+
   process_arguments "$@"
+
+  if ( ! wslpath > /dev/null 2>&1 ); then
+    shopt -s expand_aliases
+    alias wslpath=legacy_wslupath
+  fi
 
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
