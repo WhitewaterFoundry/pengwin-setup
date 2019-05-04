@@ -178,10 +178,16 @@ for l in $( ls /mnt ); do
     continue
   fi
 
-  if [[ -z $(ls -A /mnt/${l}) ]]; then
+  DEST_PATH=$(wslpath -u "${l^^}:\\" 2>/dev/null)
+
+  if [[ $? != 0 ]]; then
+    continue
+  fi
+
+  if [[ -z $(ls -A /mnt/${l} 2>/dev/null) ]]; then
 
     rm -d /mnt/${l} #Ensure that we only delete the directory if it is empty
-    ln -s $(wslpath -u "${l^^}:\\") /mnt/${l}
+    ln -s $DEST_PATH /mnt/${l}
   fi
 
 done
