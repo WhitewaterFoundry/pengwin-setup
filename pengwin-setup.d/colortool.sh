@@ -90,6 +90,10 @@ case "\$1" in
 		reset
 		return \$?
 		;;
+	-d|--display-current)
+		display_current
+		return \$?
+		;;
 	*)
 		echo "Unrecognised argument[s]. Usage: colortool -h|--help"
 		return 1
@@ -106,6 +110,7 @@ echo "                       -l|--list-themes"
 echo "                       -p|--list-previews"
 echo "                       -s|--set-theme "theme_name""
 echo "                       -r|--reset"
+echo "                       -d|--display-current"
 
 }
 
@@ -158,6 +163,20 @@ if [[ -f "/etc/profile.d/01-colortool.sh" ]] ; then
 else
 	echo "No console scheme configured to be set on Pengwin launch"
 	echo "If your console is currently themed, please restart the shell to return to default"
+	return 1
+fi
+
+}
+
+function display_current()
+{
+
+if [[ -f "/etc/profile.d/01-colortool.sh" ]] ; then
+	local current_theme="\$(cat /etc/profile.d/01-colortool.sh | cut -d\" -f4 | sed 's|.itermcolors||g')"
+	echo "Currently configured to set \"\$current_theme\" on Pengwin launch"
+	return 0
+else
+	echo "No console scheme configured to be set on Pengwin launch"
 	return 1
 fi
 
