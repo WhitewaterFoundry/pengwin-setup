@@ -103,7 +103,9 @@ function usage() {
 # Print usage
 echo "Usage: colortool-setup -h|--help"
 echo "                       -l|--list-themes"
+echo "                       -p|--list-previews"
 echo "                       -s|--set-theme "theme_name""
+echo "                       -r|--reset"
 
 }
 
