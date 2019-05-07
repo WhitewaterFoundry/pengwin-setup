@@ -77,8 +77,17 @@ case "\$1" in
 		echo "\$SchemeNames"
 		return 0
 		;;
+	-p|--list-previews)
+		"${ColortoolDir}/ColorTool.exe" --xterm --schemes
+		echo ""
+		return 0
+		;;
 	-s|--set-theme)
 		set_theme "\$2"
+		return \$?
+		;;
+	-r|--reset)
+		reset
 		return \$?
 		;;
 	*)
@@ -129,6 +138,25 @@ elif [[ \$result -eq 2 ]] ; then
 	return 1
 else
 	return 0
+fi
+
+}
+
+function reset()
+{
+
+if [[ -f "/etc/profile.d/01-colortool.sh" ]] ; then
+	if sudo rm -f "/etc/profile.d/01-colortool.sh" ; then
+		echo "Reset console theme to default. Please restart shell to see changes"
+		return 0
+	else
+		echo "Failed to get root, unable to remove Pengwin launch config"
+		return 1
+	fi
+else
+	echo "No console scheme configured to be set on Pengwin launch"
+	echo "If your console is currently themed, please restart the shell to return to default"
+	return 1
 fi
 
 }
