@@ -14,6 +14,11 @@ function process_arguments() {
         SkipConfirmations=1
         shift
       ;;
+      --noupdate)
+        echo "Skipping updates"
+        SKIP_UPDATES=1
+        shift
+      ;;
       *)
         shift
     esac
