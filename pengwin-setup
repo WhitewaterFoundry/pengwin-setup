@@ -136,7 +136,10 @@ function install_menu() {
 WelcomePrompt
 continue_prompt
 
-CheckUpgrades
+if [[ ! ${SKIP_UPDATES} ]]; then
+  CheckUpgrades
+fi
+
 # Ensure our packages are held to prevent odd situation of
 # being updated while running other operations from pengwin-setup 
 # install menu
