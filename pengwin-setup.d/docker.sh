@@ -50,6 +50,9 @@ function docker_install_build_relay() {
   cat << 'EOF' >> docker-relay
 #!/bin/bash
 
+#Import the Windows path
+PATH="$1"
+
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
 
@@ -69,13 +72,13 @@ EOF
   sudo cp docker-relay /usr/bin/docker-relay
   sudo chmod u+x /usr/bin/docker-relay
 
-  echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
+  echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/docker-relay
 
   cat << 'EOF' >> docker_relay.sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
-  sudo docker-relay
+  sudo docker-relay "${PATH}"
 fi
 
 EOF
