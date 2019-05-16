@@ -107,7 +107,30 @@ EOF
   if [[ ${connected} != 0  ]]; then
     whiptail --title "DOCKER" \
     --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
+  else
+    docker version
   fi
+}
+
+function docker_install_conf_toolbox() {
+  echo "Connect to Docker Toolbox"
+
+  cat << 'EOF' >> docker_relay.sh
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+  VM=${DOCKER_MACHINE_NAME-default}
+  DOCKER_MACHINE="$(which docker-machine.exe)"
+  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" )" &> /dev/null
+  export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
+fi
+
+EOF
+  sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
+
+  . /etc/profile.d/docker_relay.sh
+
+  docker version
 }
 
 function main() {
@@ -137,7 +160,10 @@ function main() {
 
     #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
     local connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-    if [[ $(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2) -gt 17063 && ${connected} != 0  ]]; then
+    if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
+      #Install via Docker Toolbox
+      docker_install_conf_toolbox
+    elif [[ $(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2) -gt 17063 && ${connected} != 0  ]]; then
       #Connect via Unix Sockets
       docker_install_build_relay
     else
