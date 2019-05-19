@@ -1,9 +1,17 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
 DOCKER_VERSION="18.09.2"
 DOCKER_COMPOSE_VERSION="1.23.2"
+
+# Imported from common.sh
+declare wHome
+declare GOVERSION
+
+#Imported global variables
+declare USER
 
 function docker_install_build_relay() {
   #Build the relay
@@ -23,10 +31,11 @@ function docker_install_build_relay() {
     export GOPATH=$(pwd)/gohome
 
     echo "Checking for git"
+    local git_exists
     if (git version); then
-      local git_exists=1
+      git_exists=1
     else
-      local git_exists=0
+      git_exists=0
 
       sudo apt-get -y -q install git
     fi
@@ -144,14 +153,15 @@ function main() {
     echo "Installing the bridge to Docker."
 
     local errorCheck="docker daemon is not running.\|docker.exe: command not found\|error during connect:"
-    local connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
+    local connected
+    connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     while [[ ${connected} != 0  ]]; do
       if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
 
-      local connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
+      connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
 
     done
 
@@ -159,14 +169,14 @@ function main() {
 
     sudo apt-get -y -q update
 
-    wget -c https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz
+    wget -c "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz"
     sudo tar -xzvf docker-${DOCKER_VERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
 
     sudo chmod 755 /usr/bin/docker
     sudo chown root:root /usr/bin/docker
 
     #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
-    local connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+    connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
     local currentVersion=$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2)
 
     if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
@@ -260,5 +270,5 @@ EOF
   fi
 }
 
-main "$@"
+main
 
