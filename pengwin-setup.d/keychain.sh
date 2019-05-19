@@ -14,7 +14,8 @@ done
 
 let width=85
 let height=7+count
-whiptail --title "KEYCHAIN" --radiolist "Pick an SSH key:" $height $width $count $option_list 3>&1 1>&2 2>&3
+execstr="whiptail --title \"KEYCHAIN\" --radiolist \"Pick an SSH key:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
+eval $execstr
 
 }
 
