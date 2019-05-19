@@ -143,14 +143,15 @@ function main() {
   if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
 
-    local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found\|error during connect:")
+    local errorCheck="docker daemon is not running.\|docker.exe: command not found\|error during connect:"
+    local connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     while [[ ${connected} != 0  ]]; do
       if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
 
-      local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+      local connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
 
     done
 
