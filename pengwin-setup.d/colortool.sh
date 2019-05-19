@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme, along with a setup script for a user-friendly theme setting method? This will be installed to your Windows home directory under .ColorTool" 10 80) then
 	echo "Installing ColorTool"
-	ColortoolUrl="https://github.com/Microsoft/console/releases/download/1810.02002/ColorTool.zip"
+	ColortoolUrl="https://github.com/microsoft/Terminal/releases/download/1904.29002/ColorTool.zip"
 
 	echo "Installing required install dependencies"
 	sudo apt-get install -y -q wget unzip
@@ -13,11 +13,12 @@ if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's 
 	ColortoolDir="$(wslpath "${wColortoolDir}")"
 	if [[ ! -d "${ColortoolDir}" ]] ; then
 		createtmp
-		echo "Creating ColorTool install directory: $ColortoolDir"
-		mkdir -p "${ColortoolDir}"
 
 		echo "Downloading ColorTool zip"
-		wget -O colortool.zip "$ColortoolUrl"
+		if wget -O colortool.zip "$ColortoolUrl" ; then
+		# Download succeeded! Continue rest of script
+		echo "Creating ColorTool install directory: $ColortoolDir"
+		mkdir -p "${ColortoolDir}"
 
 		echo "Unpacking ColorTool zip"
 		unzip colortool.zip -d "${ColortoolDir}"
@@ -30,13 +31,17 @@ if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's 
 			ColorschemesUrl="https://github.com/mbadolato/iTerm2-Color-Schemes/archive/master.zip"
 
 			echo "Downloading iTerm themes zip"
-			wget -O iterm2-schemes.zip "$ColorschemesUrl"
-
+			if wget -O iterm2-schemes.zip "$ColorschemesUrl" ; then
+			# Download succeeded! Continue
 			echo "Unpacking iTerm themes zip"
 			unzip iterm2-schemes.zip
 
 			echo "Copy iTerm2 schemes to ${ColortoolDir}/schemes"
 			cp iTerm2-Color-Schemes-master/schemes/* "${ColortoolDir}/schemes"
+			else
+			# Download failed
+			echo "Download failed. Is your internet connection down? Please try installing again"
+			fi
 		fi
 
 		echo "Creating colortool script and installing to /usr/local/bin"
@@ -51,8 +56,7 @@ if [[ ! -d "${ColortoolDir}" ]] ; then
 fi
 
 # Scan ColorTool directory schemes folder
-ColorSchemes="\$(/bin/ls -1 "${ColortoolDir}/schemes" | grep ".\.itermcolors")"
-SchemeNames="\$(echo "\${ColorSchemes}" | sed 's|\.itermcolors||g')"
+SchemeNames="\$(/bin/ls -1 "${ColortoolDir}/schemes" | grep ".\.itermcolors" | sed 's|\.itermcolors||g')"
 
 # Begin functions
 function main() {
@@ -73,8 +77,21 @@ case "\$1" in
 		echo "\$SchemeNames"
 		return 0
 		;;
+	-p|--list-previews)
+		"${ColortoolDir}/ColorTool.exe" --xterm --schemes
+		echo ""
+		return 0
+		;;
 	-s|--set-theme)
 		set_theme "\$2"
+		return \$?
+		;;
+	-r|--reset)
+		reset
+		return \$?
+		;;
+	-d|--display-current)
+		display_current
 		return \$?
 		;;
 	*)
@@ -90,7 +107,10 @@ function usage() {
 # Print usage
 echo "Usage: colortool-setup -h|--help"
 echo "                       -l|--list-themes"
+echo "                       -p|--list-previews"
 echo "                       -s|--set-theme "theme_name""
+echo "                       -r|--reset"
+echo "                       -d|--display-current"
 
 }
 
@@ -105,11 +125,11 @@ while read line ; do
 	if [[ "\$line" == "\$1" ]] ; then
 		echo "Setting scheme \$1"
 		echo ""
-		"${ColortoolDir}/ColorTool.exe" --xterm "\$1"
+		"${ColortoolDir}/ColorTool.exe" --xterm "\$1.itermcolors"
 		result=0
 
 		echo "Ensuring scheme set on each terminal launch..."
-		local bashstr="echo '\"${ColortoolDir}/ColorTool.exe\" --quiet --xterm \"\$1\"' > /etc/profile.d/01-colortool.sh"
+		local bashstr="echo '\"${ColortoolDir}/ColorTool.exe\" --quiet --xterm \"\$1.itermcolors\"' > /etc/profile.d/01-colortool.sh"
 		if ! sudo bash -c "\$bashstr" ; then
 			result=2
 		fi
@@ -129,11 +149,49 @@ fi
 
 }
 
+function reset()
+{
+
+if [[ -f "/etc/profile.d/01-colortool.sh" ]] ; then
+	if sudo rm -f "/etc/profile.d/01-colortool.sh" ; then
+		echo "Reset console theme to default. Please restart shell to see changes"
+		return 0
+	else
+		echo "Failed to get root, unable to remove Pengwin launch config"
+		return 1
+	fi
+else
+	echo "No console scheme configured to be set on Pengwin launch"
+	echo "If your console is currently themed, please restart the shell to return to default"
+	return 1
+fi
+
+}
+
+function display_current()
+{
+
+if [[ -f "/etc/profile.d/01-colortool.sh" ]] ; then
+	local current_theme="\$(cat /etc/profile.d/01-colortool.sh | cut -d\" -f4 | sed 's|.itermcolors||g')"
+	echo "Currently configured to set \"\$current_theme\" on Pengwin launch"
+	return 0
+else
+	echo "No console scheme configured to be set on Pengwin launch"
+	return 1
+fi
+
+}
+
 main "\$@"
 exit $?
 EOF
 		sudo chmod +x /usr/local/bin/colortool
 		whiptail --title "COLORTOOL" --msgbox "Finished installing. You can view and set installed schemes with 'colortool'" 8 80
+
+		else
+		# Download failed
+		echo "Download failed. Is your internet connection down? Please try installing again"
+		fi
 
 		cleantmp
 	else
