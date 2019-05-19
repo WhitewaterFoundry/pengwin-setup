@@ -9,13 +9,12 @@ let count=0
 option_list=""
 for i in $1 ; do
 	let count+=1
-	option_list="$option_list \"$i\" \"\" off"
+	option_list="$option_list $i \"\" off"
 done
 
 let width=85
 let height=7+count
-result=$(whiptail --title "KEYCHAIN" --radiolist "Pick an SSH key:" $height $width $count $option_list 3>&1 1>&2 2>&3)
-echo $result
+whiptail --title "KEYCHAIN" --radiolist "Pick an SSH key:" $height $width $count $option_list 3>&1 1>&2 2>&3
 
 }
 
