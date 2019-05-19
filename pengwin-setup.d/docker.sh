@@ -133,9 +133,9 @@ function docker_install_conf_toolbox() {
 if ( which cmd.exe >/dev/null ); then
   VM=${DOCKER_MACHINE_NAME-default}
   DOCKER_MACHINE="$(which docker-machine.exe)"
-  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" )" > /dev/null 2>&1
+  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" 2>/dev/null )" > /dev/null 2>&1
 
-  if [[ $? == 0 ]] ; then
+  if [[ "${DOCKER_CERT_PATH}" != "" ]] ; then
     export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
   fi
 fi
