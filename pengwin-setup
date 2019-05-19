@@ -67,11 +67,11 @@ function install_menu() {
 
     menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 15 99 7 \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)    " off \
+      "GUI" "Install an X server or various other GUI applications" off \
       "MAINTENANCE" "Various maintenance tasks like home backup" off \
       "PROGRAMMING" "Install various programming languages support" off \
-      "SETTINGS" "Change various settings in Pengwin" off \
       "SERVICES" "Enable services support (SSH, rc.local)" off \
-      "GUI" "Install an X server or various other GUI applications" off \
+      "SETTINGS" "Change various settings in Pengwin" off \
       "TOOLS" "Install applications or servers" off \
 
 
@@ -91,6 +91,12 @@ function install_menu() {
     exit_status=$?
   fi
 
+  if [[ ${menu_choice} == *"GUI"* ]] ; then
+    echo "GUI"
+    bash ${SetupDir}/gui.sh "$@"
+    exit_status=$?
+  fi
+
   if [[ ${menu_choice} == *"MAINTENANCE"* ]] ; then
     echo "MAINTENANCE"
     bash ${SetupDir}/maintenance.sh "$@"
@@ -103,21 +109,15 @@ function install_menu() {
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"SETTINGS"* ]] ; then
-    echo "SETTINGS"
-    bash ${SetupDir}/settings.sh "$@"
-    exit_status=$?
-  fi
-
   if [[ ${menu_choice} == *"SERVICES"* ]] ; then
     echo "SERVICES"
     bash ${SetupDir}/services.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"GUI"* ]] ; then
-    echo "GUI"
-    bash ${SetupDir}/gui.sh "$@"
+  if [[ ${menu_choice} == *"SETTINGS"* ]] ; then
+    echo "SETTINGS"
+    bash ${SetupDir}/settings.sh "$@"
     exit_status=$?
   fi
 
