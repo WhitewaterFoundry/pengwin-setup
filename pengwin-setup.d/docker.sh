@@ -124,8 +124,11 @@ function docker_install_conf_toolbox() {
 if ( which cmd.exe >/dev/null ); then
   VM=${DOCKER_MACHINE_NAME-default}
   DOCKER_MACHINE="$(which docker-machine.exe)"
-  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" )" &> /dev/null
-  export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
+  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" )" > /dev/null 2>&1
+
+  if [[ $? == 0 ]] ; then
+    export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
+  fi
 fi
 
 EOF
@@ -137,10 +140,10 @@ EOF
 }
 
 function main() {
-  if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
+  if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
 
-    local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+    local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found\|error during connect:")
     while [[ ${connected} != 0  ]]; do
       if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
