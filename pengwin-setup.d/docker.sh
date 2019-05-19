@@ -139,7 +139,7 @@ function main() {
 
     local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
     while [[ ${connected} != 0  ]]; do
-      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
+      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
@@ -160,10 +160,12 @@ function main() {
 
     #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
     local connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+    local currentVersion=$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2)
+
     if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
       #Install via Docker Toolbox
       docker_install_conf_toolbox
-    elif [[ $(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2) -gt 17063 && ${connected} != 0  ]]; then
+    elif [[ ${currentVersion} -gt 17063 && ${connected} != 0  ]]; then
       #Connect via Unix Sockets
       docker_install_build_relay
     else
@@ -184,7 +186,7 @@ function main() {
 
     docker-compose version
 
-    if [[ $(wslpath 'C:\\') = '/mnt/c/' ]]; then
+    if [[ ${currentVersion} -gt 17063 && $(wslpath 'C:\') = '/mnt/c/' ]]; then
 
       if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
         echo "Changing the root from /mnt to /"
