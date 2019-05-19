@@ -50,6 +50,9 @@ function docker_install_build_relay() {
   cat << 'EOF' >> docker-relay
 #!/bin/bash
 
+#Import the Windows path
+PATH="$1"
+
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
 
@@ -69,13 +72,13 @@ EOF
   sudo cp docker-relay /usr/bin/docker-relay
   sudo chmod u+x /usr/bin/docker-relay
 
-  echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/docker-relay
+  echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/docker-relay
 
   cat << 'EOF' >> docker_relay.sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
-  sudo docker-relay
+  sudo docker-relay "${PATH}"
 fi
 
 EOF
@@ -206,10 +209,20 @@ for l in $( ls /mnt ); do
     continue
   fi
 
-  if [[ -z $(ls -A /mnt/${l}) ]]; then
+  DEST_PATH=$(wslpath -u "${l^^}:\\" 2>/dev/null)
 
-    rm -d /mnt/${l} #Ensure that we only delete the directory if it is empty
-    ln -s $(wslpath -u "${l^^}:\\") /mnt/${l}
+  if [[ $? != 0 ]]; then
+    continue
+  fi
+
+  if [[ -z $(ls -A /mnt/${l} 2>/dev/null) ]]; then
+
+    if [[ $? != 0 ]]; then
+      continue
+    fi
+
+    rm -d /mnt/${l} 2>/dev/null #Ensure that we only delete the directory if it is empty
+    ln -s $DEST_PATH /mnt/${l} 2>/dev/null
   fi
 
 done
