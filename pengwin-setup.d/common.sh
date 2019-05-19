@@ -113,7 +113,7 @@ function setup_env() {
 
   process_arguments "$@"
 
-  if ( ! wslpath > /dev/null 2>&1 ); then
+  if ( ! wslpath 'C:\' > /dev/null 2>&1 ); then
     shopt -s expand_aliases
     alias wslpath=legacy_wslupath
   fi
