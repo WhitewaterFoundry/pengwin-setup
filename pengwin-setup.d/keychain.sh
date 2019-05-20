@@ -15,7 +15,26 @@ done
 let width=85
 let height=7+count
 execstr="whiptail --title \"KEYCHAIN\" --radiolist \"Pick an SSH key:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
-eval $execstr
+result=$(eval $execstr)
+
+if [[ $? != 0 ]] ; then
+	echo "User cancelled"
+	return
+fi
+
+if [[ "$result" == "" ]] ; then
+	if whiptail --title "KEYCHAIN" --yesno "No SSH keys selected, would you like to go back and try again?" 10 85 ; then
+		echo "Repeat SSH key prompt"
+		sshkey_prompt "$@"
+	fi
+else
+	key_path="${HOME}/.ssh/$result"
+	echo "eval \`keychain --eval --agents ssh \"$key_path\"\`" | sudo tee $conf_path
+
+	# Copy configuration to fish
+	sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
+	sudo cp "${conf_path}" "${__fish_sysconf_dir}"
+fi
 
 }
 
@@ -30,14 +49,7 @@ if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and 
         conf_path="/etc/profile.d/keychain.sh"
 
         key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|.pub||g')"
-	result=$(sshkey_prompt "$key_list")
-	key_path="${HOME}/.ssh/$result"
-
-	echo "eval \`keychain --eval --agents ssh \"$key_path\"\`" | sudo tee $conf_path
-
-        # Copy configuration to fish
-        sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
-        sudo cp "${conf_path}" "${__fish_sysconf_dir}"
+	sshkey_prompt "$key_list"
     else
         whiptail --title "KEYCHAIN" --msgbox "No user SSH keys found. If you create key(s) and would like to cache their password on terminal launch, re-run the Keychain installer under pengwin-setup" 10 85
     fi
