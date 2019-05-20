@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-function sshkey_prompt()
+function sshkey_select()
 {
 
 let count=0
@@ -28,6 +28,7 @@ if [[ "$result" == "" ]] ; then
 		sshkey_prompt "$@"
 	fi
 else
+	conf_path="/etc/profile.d/keychain.sh"
 	key_path="${HOME}/.ssh/$result"
 	echo "eval \`keychain --eval --agents ssh \"$key_path\"\`" | sudo tee $conf_path
 
@@ -46,10 +47,8 @@ if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and 
     key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|.pub||g')"
     if [[ "$key_list" != "" ]] ; then
         echo "Offering user SSH selection"
-        conf_path="/etc/profile.d/keychain.sh"
-
         key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|.pub||g')"
-	sshkey_prompt "$key_list"
+	sshkey_select "$key_list"
     else
         whiptail --title "KEYCHAIN" --msgbox "No user SSH keys found. If you create key(s) and would like to cache their password on terminal launch, re-run the Keychain installer under pengwin-setup" 10 85
     fi
