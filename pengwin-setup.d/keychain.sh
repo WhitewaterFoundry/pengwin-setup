@@ -31,7 +31,7 @@ if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and 
 
         key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|.pub||g')"
 	result=$(sshkey_prompt "$key_list")
-	key_path="${HOME}/.ssh/$result.pub"
+	key_path="${HOME}/.ssh/$result"
 
 	echo "eval \`keychain --eval --agents ssh \"$key_path\"\`" | sudo tee $conf_path
 
