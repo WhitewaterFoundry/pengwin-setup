@@ -25,7 +25,7 @@ fi
 if [[ "$result" == "" ]] ; then
 	if whiptail --title "KEYCHAIN" --yesno "No SSH keys selected, would you like to go back and try again?" 10 85 ; then
 		echo "Repeat SSH key prompt"
-		sshkey_prompt "$@"
+		sshkey_select "$@"
 	fi
 else
 	conf_path="/etc/profile.d/keychain.sh"
