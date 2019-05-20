@@ -14,7 +14,7 @@ done
 
 let width=85
 let height=7+count
-execstr="whiptail --title \"KEYCHAIN\" --radiolist \"Pick an SSH key:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
+execstr="whiptail --title \"KEYCHAIN\" --radiolist \"Pick an SSH key to automatically load:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
 result=$(eval $execstr)
 
 if [[ $? != 0 ]] ; then
@@ -39,7 +39,7 @@ fi
 
 }
 
-if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and set it to start on console launch?" 8 85) then
+if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and set it to load an SSH key of your choice on terminal launch?" 8 85) then
     echo "Installing Keychain"
     sudo apt-get install -q -y keychain
 
