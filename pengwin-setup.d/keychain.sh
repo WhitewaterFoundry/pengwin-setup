@@ -14,7 +14,7 @@ done
 
 let width=85
 let height=7+count
-execstr="whiptail --title \"KEYCHAIN\" --radiolist \"Pick an SSH key to automatically load:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
+execstr="whiptail --title \"KEYCHAIN\" --checklist --separate-output \"Pick an SSH key to automatically load:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
 result=$(eval $execstr)
 
 if [[ $? != 0 ]] ; then
@@ -29,8 +29,11 @@ if [[ "$result" == "" ]] ; then
 	fi
 else
 	conf_path="/etc/profile.d/keychain.sh"
-	key_path="${HOME}/.ssh/$result"
-	echo "eval \`keychain --eval --agents ssh \"$key_path\"\`" | sudo tee $conf_path
+	sudo rm -f $conf_path # remove old config file if present
+	for i in $result ; do
+		key_path="${HOME}/.ssh/$i"
+		echo "eval \`keychain --eval --agents ssh \"$key_path\"\`" | sudo tee -a $conf_path
+	done
 
 	# Copy configuration to fish
 	sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
