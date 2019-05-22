@@ -44,10 +44,9 @@ if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and 
     sudo apt-get install -q -y keychain
 
     echo "Checking for user SSH keys..."
-    key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|.pub||g')"
+    key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|\.pub||g')"
     if [[ "$key_list" != "" ]] ; then
         echo "Offering user SSH selection"
-        key_list="$(/bin/ls -1 "${HOME}/.ssh" | grep ".\.pub" | sed 's|.pub||g')"
 	sshkey_select "$key_list"
     else
         whiptail --title "KEYCHAIN" --msgbox "No user SSH keys found. If you create key(s) and would like to cache their password on terminal launch, re-run the Keychain installer under pengwin-setup" 10 85
