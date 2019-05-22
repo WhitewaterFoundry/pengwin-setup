@@ -26,7 +26,7 @@ if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's 
 		echo "Setting ColorTool.exe permissions"
 		chmod +x "${ColortoolDir}/ColorTool.exe"
 
-		if (whiptail --title "COLORTOOL" --yesno "Would you like to install a collection of iTerm2 color schemes compatible with Microsoft ColorTool?" 8 80) then
+		if (whiptail --title "COLORTOOL" --yesno "Would you like to install a collection of iTerm2 color schemes compatible with Microsoft ColorTool?" 8 85) then
 			echo "Installing iTerm themes for ColorTool"
 			ColorschemesUrl="https://github.com/mbadolato/iTerm2-Color-Schemes/archive/master.zip"
 
@@ -195,6 +195,7 @@ EOF
 
 		cleantmp
 	else
+		whiptail --title "COLORTOOL" --msgbox "${ColortoolDir} already exists, leaving in place.\nTo reinstall ColorTool, please delete ${ColortoolDir} and run this installer again." 10 85
 		echo "${ColortoolDir} already exists, leaving in place."
 		echo "To reinstall ColorTool, please delete ${ColortoolDir} and run this installer again"
 	fi
