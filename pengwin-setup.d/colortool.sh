@@ -195,9 +195,8 @@ EOF
 
 		cleantmp
 	else
-		whiptail --title "COLORTOOL" --msgbox "${ColortoolDir} already exists, leaving in place.\nTo reinstall ColorTool, please delete ${ColortoolDir} and run this installer again." 10 85
 		echo "${ColortoolDir} already exists, leaving in place."
-		echo "To reinstall ColorTool, please delete ${ColortoolDir} and run this installer again"
+		whiptail --title "COLORTOOL" --msgbox "ColorTool install already exists, leaving in place.\nTo reinstall ColorTool, please delete \'${ColortoolDir}\' and run this installer again." 10 85
 	fi
 else
 	echo "Skipping ColorTool"
