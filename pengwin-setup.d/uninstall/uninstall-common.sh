@@ -17,8 +17,7 @@ if whiptail --title "!! $uninstall_item !!" --yesno "Are you sure you would like
 	fi
 fi
 
-echo "$@"
-echo "User cancelled $1 uninstall"
+echo "User cancelled $uninstall_item uninstall"
 bash ${SetupDir}/uninstall.sh "$@"
 
 }
