@@ -9,11 +9,22 @@ local brew_conf="/etc/profile.d/brew.sh"
 
 echo "Uninstalling Homebrew"
 
+if ! ruby --version; then
+	echo "Installing Ruby for uninstall script"
+	sudo apt-get install ruby -y -q
+fi
+
 echo "Running Homebrew uninstall script"
 if ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" ; then
 	echo "Successfully executed script"
 else
-	echo "Uninstall failed"
+	if ! brew ; then
+		echo "Full uninstall failed. Removing remnants"
+		sudo rm -rf "/home/linuxbrew"
+		sudo rm -rf "$HOME/.linuxbrew"
+	else
+		echo "Uninstall failed"
+	fi
 fi
 
 echo "Removing PATH modification: $brew_conf"
