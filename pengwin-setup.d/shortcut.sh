@@ -1,12 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
+source $(dirname "$0")/common.sh "$@"
+
+#Globals
+declare DEST_PATH
 
 function create_shortcut() {
   local cmdName="$1"
   local cmdToExec="$2"
   local cmdIcon="$3"
-  local cmdGui="$4"
+  local gui="$4"
 
   echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
   wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
@@ -50,17 +53,26 @@ function create_shortcut_from_desktop() {
           Name)
 
             if [[ -z "${cmdName}" ]]; then
-              cmdName="${value}"
+              cmdName="${value} (WSL)"
             fi
 
             ;;
           Exec)
 
             if [[ -z "${cmdToExec}" ]]; then
+
+              declare -a cmdToExecArray
               local cmdToExecArray
+
               read -ra cmdToExecArray <<< "${value}"
 
               cmdToExec="${cmdToExecArray[0]}"
+
+              case "${cmdToExec}" in
+                *display-im6.q16)
+                  return
+                  ;;
+              esac
             fi
 
             ;;
@@ -111,16 +123,25 @@ function create_shortcut_from_desktop() {
   create_shortcut "${cmdName}" "${cmdToExec}" "${cmdIcon}" "${gui}"
 }
 
+function main {
 
-function main() {
+  if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70) ; then
 
-  rm "${DEST_PATH}"/*
+    echo "Generating Start Menu"
 
-  find /usr/share/applications -name *.desktop | while read desktopFile; do
+    DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
 
-    create_shortcut_from_desktop "${desktopFile}"
+    rm "${DEST_PATH}"/*
 
-  done
+    find /usr/share/applications -name '*.desktop' | while read desktopFile; do
+
+      create_shortcut_from_desktop "${desktopFile}"
+
+    done
+
+  else
+    echo "Skipping Start Menu Generation"
+  fi
 
 }
 

@@ -2,10 +2,17 @@
 
 source $(dirname "$0")/common.sh "$@"
 
+declare INSTALLED=false
+
+#Imported from common.h
+declare SetupDir
+
 function neovim_install {
   if (confirm --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50) ; then
     echo "Installing neovim and building tools from Debian: $ sudo apt-get install neovim build-essential"
     sudo apt-get -y -q -t testing install neovim build-essential
+
+    INSTALLED=true
   else
     echo "Skipping NEOVIM"
   fi
@@ -15,6 +22,8 @@ function emacs_install {
   if (confirm --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50) ; then
     echo "Installing emacs: $ sudo apt-get install emacs -y"
     sudo apt-get -y -q install emacs
+
+    INSTALLED=true
   else
     echo "Skipping EMACS"
   fi
@@ -51,6 +60,7 @@ function code_install {
     #Assuming that the stable repository is there by the udev fix
     sudo apt-get install -y -q  -t stable libssl1.0.2
 
+    INSTALLED=true
   else
     echo "Skipping CODE"
   fi
@@ -81,7 +91,11 @@ function editor_menu {
   if [[ ${editor_choice} == *"CODE"* ]] ; then
     code_install
   fi
+
+  if [[ "${INSTALLED}" == true ]] ; then
+    bash ${SetupDir}/shortcut.sh --yes
+  fi
 }
 
 
-editor_menu "$@"
+editor_menu
