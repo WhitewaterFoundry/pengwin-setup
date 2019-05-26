@@ -21,3 +21,22 @@ echo "User cancelled $uninstall_item uninstall"
 bash ${SetupDir}/uninstall.sh "$@"
 
 }
+
+function clean_configs()
+{
+
+# Usage: clean_bashrc <STRING_TO_CLEAN>
+
+if [[ -f "$HOME/.bashrc" ]] ; then
+sed -i "s|||g" "$HOME/.bashrc"
+fi
+
+if [[ -f "$HOME/.zshrc" ]] ; then
+
+fi
+
+if [[ -f "$HOME/.config/fish" ]] ; then
+
+fi
+
+}
