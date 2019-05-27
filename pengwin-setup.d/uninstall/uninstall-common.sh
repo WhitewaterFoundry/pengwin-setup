@@ -22,17 +22,27 @@ bash ${SetupDir}/uninstall.sh "$@"
 
 }
 
-function clean_initfile()
+function clean_file()
 {
 
-# Usage: clean_initfile <INITFILE> <REGEX>
+# Usage: clean_file <FILE> <REGEX>
 
 # Following n (node version manager) install script,
-# best to clean init file by writing to memory then
+# best to clean file by writing to memory then
 # writing back to file
-local initFileContents
-initFileContents=$(grep -Ev "$2" "$1")
-printf '%s' "$initFileContents" > "$1"
+local fileContents
+fileContents=$(grep -Ev "$2" "$1")
+printf '%s' "$fileContents" > "$1"
+
+}
+
+function sudo_clean_file()
+{
+
+# Same as above, just with administrative privileges
+local fileContents
+fileContents=$(grep -Ev "$2" "$1")
+sudo bash -c "printf '%s' "$fileContents" > "$1""
 
 }
 
@@ -52,23 +62,5 @@ for i in "$@" ; do
 done
 
 sudo apt-get remove -y -q --autoremove "$installed"
-
-}
-
-function remove_source()
-{
-
-# Usage: remove_source <SOURCENAME> <GPGKEY>
-local sourceFile="/etc/apt/sources.list.d/$1.list"
-
-echo "Removing APT source: $1"
-if [[ -f "$sourceFile" ]] ; then
-	sudo rm -f "$sourceFile"
-else
-	echo "... not found!"
-fi
-
-echo "Removing APT key: $2"
-sudo apt-key del "$2"
 
 }
