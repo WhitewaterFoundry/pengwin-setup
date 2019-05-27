@@ -3,7 +3,6 @@
 source $(dirname "$0")/uninstall-common.sh
 
 node_dir="$HOME/n"
-yarn_src="/etc/apt/sources.list.d/yarn.list"
 yarn_key='72EC F46A 56B4 AD39 C907  BBB7 1646 B01B 86E5 0310'
 line_rgx='^[^#]*\bN_PREFIX='
 
@@ -20,20 +19,9 @@ else
 	echo "... not found!"
 fi
 
-echo "Removing Yarn"
-if dpkg-query -l yarn > /dev/null 2>&1 ; then
-	sudo apt-get remove yarn -y -q --autoremove
-else
-	echo "... not installed!"
-fi
-
-echo "Removing Yarn APT source"
-if [[ -f "$yarn_src" ]] ; then
-	sudo rm -f "$yarn_src"
-	sudo apt-key del "$yarn_key"
-else
-	echo "... not installed!"
-fi
+# Removing Yarn APT package + source
+remove_package "yarn"
+remove_source "yarn" "$yarn_key"
 
 echo "Removing PATH modifier(s)"
 if [[ -f "$HOME/.bashrc" ]] ; then
