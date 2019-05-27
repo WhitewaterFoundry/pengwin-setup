@@ -9,6 +9,7 @@ function main()
 {
 
 local rust_conf="/etc/profile.d/rust.sh"
+local rust_fish_conf="/etc/fish/conf.d/rust.sh"
 
 echo "Uninstalling rust"
 
@@ -26,11 +27,13 @@ else
 	echo "... not found!"
 fi
 
-echo "Removing PATH modifier: $rust_conf"
+echo "Removing PATH modifier(s)"
 if [[ -f "$rust_conf" ]] ; then
 	sudo rm -f "$rust_conf"
-else
-	echo "$.. not found!"
+fi
+
+if [[ -f "$rust_fish_conf" ]] ; then
+	sudo rm -f "$rust_fish_conf"
 fi
 
 }
