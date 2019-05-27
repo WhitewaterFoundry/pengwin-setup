@@ -39,13 +39,19 @@ printf '%s' "$initFileContents" > "$1"
 function remove_package()
 {
 
-# Usage: remove_package <PACKAGE>
-echo "Removing APT package: $1"
-if dpkg-query -s "$1" | grep 'installed' > /dev/null 2>&1 ; then
-	sudo apt-get remove -y -q --autoremove "$1"
-else
-	echo "... not installed!"
-fi
+# Usage: remove_package <PACKAGES...>
+echo "Removing APT packages: $@"
+local installed
+
+for i in "$@" ; do
+	if dpkg-query -s "$i" | grep 'installed' > /dev/null 2>&1 ; then
+		installed="$installed $i"
+	else
+		echo "... $i not installed!"
+	fi
+done
+
+sudo apt-get remove -y -q --autoremove "$installed"
 
 }
 
