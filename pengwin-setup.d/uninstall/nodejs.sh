@@ -3,6 +3,7 @@
 source $(dirname "$0")/uninstall-common.sh
 
 node_dir="$HOME/n"
+yarn_src="/etc/apt/sources.list.d/yarn.list"
 yarn_key='72EC F46A 56B4 AD39 C907  BBB7 1646 B01B 86E5 0310'
 line_rgx='^[^#]*\bN_PREFIX='
 
@@ -21,17 +22,26 @@ fi
 
 # Removing Yarn APT package + source
 remove_package "yarn"
-remove_source "yarn" "$yarn_key"
+
+echo "Removing APT source"
+if [[ -f "$yarn_src" ]] ; then
+	sudo rm -f "$yarn_src"
+else
+	echo "... not found!"
+fi
+
+echo "Removing APT key"
+sudo apt-key del "$yarn_key"
 
 echo "Removing PATH modifier(s)"
 if [[ -f "$HOME/.bashrc" ]] ; then
 	echo "$HOME/.bashrc found, cleaning"
-	clean_initfile "$HOME/.bashrc" "$line_rgx"
+	clean_file "$HOME/.bashrc" "$line_rgx"
 fi
 
 if [[ -f "$HOME/.zshrc" ]] ; then
 	echo "$HOME/.zshrc found, cleaning"
-	clean_initfile "$HOME/.zshrc" "$line_rgx"
+	clean_file "$HOME/.zshrc" "$line_rgx"
 fi
 
 # Node install script doesn't support automatic Fish shell config

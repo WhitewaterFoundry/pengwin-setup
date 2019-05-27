@@ -24,25 +24,25 @@ echo "Removing PATH modifier(s)"
 initFile="$HOME/.bashrc"
 if [[ -f "$initFile" ]] ; then
 	echo "$initFile found! Cleaning..."
-	clean_initfile "$initFile" "$line_rgx"
-	clean_initfile "$initFile" "$line2_rgx"
-	clean_initfile "$initFile" "$line3_rgx"
+	clean_file "$initFile" "$line_rgx"
+	clean_file "$initFile" "$line2_rgx"
+	clean_file "$initFile" "$line3_rgx"
 fi
 
 initFile="$HOME/.zshrc"
 if [[ -f "$initFile" ]] ; then
 	echo "$initFile found! Cleaning..."
-	clean_initfile "$initFile" "$line_rgx"
-	clean_initfile "$initFile" "$line2_rgx"
-	clean_initfile "$initFile" "$line3_rgx"
+	clean_file "$initFile" "$line_rgx"
+	clean_file "$initFile" "$line2_rgx"
+	clean_file "$initFile" "$line3_rgx"
 fi
 
 initFile="$HOME/.config/fish"
 if [[ -f "$initFile" ]] ; then
 	echo "$initFile found! Cleaning..."
-	clean_initfile "$initFile" "$line_rgx"
-	clean_initfile "$initFile" "$line2_rgx"
-	clean_initfile "$initFile" "$line3_rgx"
+	clean_file "$initFile" "$line_rgx"
+	clean_file "$initFile" "$line2_rgx"
+	clean_file "$initFile" "$line3_rgx"
 fi
 
 }
