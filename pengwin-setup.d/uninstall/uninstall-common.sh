@@ -22,21 +22,16 @@ bash ${SetupDir}/uninstall.sh "$@"
 
 }
 
-function clean_configs()
+function clean_initfile()
 {
 
-# Usage: clean_bashrc <STRING_TO_CLEAN>
+# Usage: clean_initfile <INITFILE> <REGEX>
 
-if [[ -f "$HOME/.bashrc" ]] ; then
-sed -i "s|||g" "$HOME/.bashrc"
-fi
-
-if [[ -f "$HOME/.zshrc" ]] ; then
-
-fi
-
-if [[ -f "$HOME/.config/fish" ]] ; then
-
-fi
+# Following n (node version manager) install script,
+# best to clean init file by writing to memory then
+# writing back to file
+local initFileContents
+initFileContents=$(grep -Ev "$2" "$1")
+printf '%s' "$initFileContents" > "$1"
 
 }
