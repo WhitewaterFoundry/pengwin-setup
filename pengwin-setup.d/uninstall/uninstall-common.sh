@@ -35,3 +35,34 @@ initFileContents=$(grep -Ev "$2" "$1")
 printf '%s' "$initFileContents" > "$1"
 
 }
+
+function remove_package()
+{
+
+# Usage: remove_package <PACKAGE>
+echo "Removing APT package: $1"
+if dpkg-query -s "$1" | grep 'installed' > /dev/null 2>&1 ; then
+	sudo apt-get remove -y -q --autoremove "$1"
+else
+	echo "... not installed!"
+fi
+
+}
+
+function remove_source()
+{
+
+# Usage: remove_source <SOURCENAME> <GPGKEY>
+local sourceFile="/etc/apt/sources.list.d/$1.list"
+
+echo "Removing APT source: $1"
+if [[ -f "$sourceFile" ]] ; then
+	sudo rm -f "$sourceFile"
+else
+	echo "... not found!"
+fi
+
+echo "Removing APT key: $2"
+sudo apt-key del "$2"
+
+}
