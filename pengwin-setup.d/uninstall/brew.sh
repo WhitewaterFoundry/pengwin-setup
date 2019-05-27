@@ -10,7 +10,7 @@ local tmp_ruby
 
 echo "Uninstalling Homebrew"
 
-if ! ruby --version; then
+if ! ruby --version > /dev/null 2>&1 ; then
 	echo "Installing Ruby for uninstall script"
 	sudo apt-get install ruby -y -q
 	tmp_ruby=0
