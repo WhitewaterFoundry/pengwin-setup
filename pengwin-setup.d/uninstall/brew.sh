@@ -6,12 +6,14 @@ function main()
 {
 
 local brew_conf="/etc/profile.d/brew.sh"
+local tmp_ruby
 
 echo "Uninstalling Homebrew"
 
 if ! ruby --version; then
 	echo "Installing Ruby for uninstall script"
 	sudo apt-get install ruby -y -q
+	tmp_ruby=0
 fi
 
 echo "Running Homebrew uninstall script"
@@ -32,6 +34,11 @@ if [[ -f "$brew_conf" ]] ; then
 	sudo rm -f "$brew_conf"
 else
 	echo "... not found!"
+fi
+
+if $tmp_ruby ; then
+	echo "Ruby temporarily installed for uninstall script, removing..."
+	sudo apt-get remove -y -q ruby --autoremove
 fi
 
 }
