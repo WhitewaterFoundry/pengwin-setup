@@ -32,7 +32,7 @@ function clean_file()
 # writing back to file
 local fileContents
 fileContents=$(grep -Ev "$2" "$1")
-printf '%s' "$fileContents" > "$1"
+printf '%s\n' "$fileContents" > "$1"
 
 }
 
@@ -42,7 +42,7 @@ function sudo_clean_file()
 # Same as above, just with administrative privileges
 local fileContents
 fileContents=$(sudo grep -Ev "$2" "$1")
-sudo bash -c "printf '%s' \"$fileContents\" > \"$1\""
+sudo bash -c "printf '%s\\n' \"$fileContents\" > \"$1\""
 
 }
 
