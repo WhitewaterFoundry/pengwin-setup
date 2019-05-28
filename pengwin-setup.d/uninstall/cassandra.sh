@@ -5,7 +5,7 @@ source $(dirname "$0")/uninstall-common.sh
 cas_src="/etc/apt/sources.list.d/cassandra.list"
 cas_key="/etc/apt/trusted.gpg.d/cassandra.gpg"
 sudoers_rgx='^[^#]*\bALL=.(root.) NOPASSWD: /bin/mount, /bin/umount'
-proflie_rgx='^[^#]*\bsudo mount -t proc proc /proc'
+profile_rgx='^[^#]*\bsudo mount -t proc proc /proc'
 
 function main()
 {
