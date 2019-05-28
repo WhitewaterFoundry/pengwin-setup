@@ -41,8 +41,8 @@ function sudo_clean_file()
 
 # Same as above, just with administrative privileges
 local fileContents
-fileContents=$(grep -Ev "$2" "$1")
-sudo bash -c "printf '%s' "$fileContents" > "$1""
+fileContents=$(sudo grep -Ev "$2" "$1")
+sudo bash -c "printf '%s' \"$fileContents\" > \"$1\""
 
 }
 
@@ -53,14 +53,16 @@ function remove_package()
 echo "Removing APT packages: $@"
 local installed
 
+installed=""
 for i in "$@" ; do
+	echo "UNINSTALLING: \"$i\""
 	if dpkg-query -s "$i" | grep 'installed' > /dev/null 2>&1 ; then
-		installed="$installed $i"
+		installed="$i $installed"
 	else
 		echo "... $i not installed!"
 	fi
 done
 
-sudo apt-get remove -y -q --autoremove "$installed"
+sudo apt-get remove -y -q $installed --autoremove
 
 }
