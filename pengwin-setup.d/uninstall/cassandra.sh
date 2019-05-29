@@ -36,8 +36,8 @@ echo "Removing Cassandra-specific changes to /etc/profile"
 sudo_clean_file "/etc/profile" "$profile_rgx"
 
 echo "Unlinking Cassandra from user directory"
-if [[ -d "$HOME/cassandra" ]] ; then
-	sudo unlink "$HOME/cassandra"
+if [[ -d "$wHome/cassandra" ]] ; then
+	sudo unlink "/etc/cassandra"
 else
 	echo "... not symlinked!"
 fi
