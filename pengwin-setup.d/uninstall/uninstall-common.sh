@@ -42,8 +42,7 @@ function sudo_clean_file()
 # Same as above, just with administrative privileges
 local fileContents
 fileContents=$(sudo grep -Ev "$2" "$1")
-execString="printf '%s\n' '$fileContents' > '$1'"
-sudo bash -c "$execStr"
+sudo bash -c "printf '%s\\n' '$fileContents' > '$1'"
 
 }
 
