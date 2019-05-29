@@ -13,10 +13,10 @@ dcbashcomp='/etc/bash_completion.d/docker-compose'
 dockerbin='/usr/bin/docker'
 dockercbin='/usr/bin/docker-compose'
 
-wslconf_rgx=''
+wslconf_rgx='^[^#]*\broot=/'
 mntbin='/usr/bin/create-mnt-c-link'
 mntbin_profile='/etc/profile.d/create-mnt-c-link.sh'
-mntbin_rgx=''
+mntbin_rgx='^[^#]*\bsudo\s*ALL=NOPASSWD: /usr/bin/create-mnt-c-link' '/etc/sudoers'
 
 function revert_mnt_point()
 {
