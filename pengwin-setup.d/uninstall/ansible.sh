@@ -12,12 +12,8 @@ echo "Uninstalling Ansible"
 
 remove_package "ansible"
 
-echo "Removing APT source"
-if [[ -f "$ans_src" ]] ; then
-	sudo rm -f "$ans_src"
-else
-	echo "... not found!"
-fi
+echo "Removing APT source..."
+sudo_rem_file "$ans_src"
 
 echo "Removing APT key"
 sudo apt-key del "$ans_key"
