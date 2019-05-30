@@ -26,19 +26,10 @@ if whiptail --title "DOCKER" --yesno "Would you like to revert your root mount p
 	echo "Cleaning changes from /etc/wsl.conf"
 	sudo_clean_file "/etc/wsl.conf" "$wslconf_rgx"
 
-	echo "Removing /usr/bin/create-mnt-c-link"
-	if [[ -f "$mntbin" ]] ; then
-		sudo rm -f "$mntbin"
-	else
-		echo "... not found!"
-	fi
+	sudo_rem_file "$mntbin"
 
 	echo "Removing create-mnt-c-link profile configuration"
-	if [[ -f "$mntbin_profile" ]] ; then
-		sudo rm -f "$mntbin_profile"
-	else
-		echo "... not found!"
-	fi
+	sudo_rem_file "$mntbin_profile"
 
 	echo "Cleaning create-mnt-c-link changes from /etc/sudoers"
 	sudo_clean_file "/etc/sudoers" "$mntbin_rgx"
@@ -68,54 +59,20 @@ else
 	echo "... not found!"
 fi
 
-echo "Removing docker-relay script"
-if [[ -f "$relaybin" ]] ; then
-	sudo rm -f "$relaybin"
-else
-	echo "... not found!"
-fi
+sudo_rem_file "$relaybin"
 
-echo "Removing docker-relay sudoers modification"
-if [[ -f "$relaysudoer" ]] ; then
-	sudo rm -f "$relaysudoer"
-else
-	echo "... not found!"
-fi
+echo "Removing docker-relay sudoers modification..."
+sudo_rem_file "$relaysudoer"
 
-echo "Removing docker-relay profile modification"
-if [[ -f "$relayprofile" ]] ; then
-	sudo rm -f "$relayprofile"
-else
-	echo "... not found!"
-fi
+echo "Removing docker-relay profile modification..."
+sudo_rem_file "$relayprofile"
 
-echo "Removing docker Linux executable"
-if [[ -f "$dockerbin" ]] ; then
-	sudo rm -f "$dockerbin"
-else
-	echo "... not found!"
-fi
+sudo_rem_file "$dockerbin"
+sudo_rem_file "$dockercbin"
 
-echo "Removing docker-compose Linux executable"
-if [[ -f "$dockercbin" ]] ; then
-	"$dockercbin"
-else
-	echo "... not found!"
-fi
-
-echo "Removing docker bash completion"
-if [[ -f "$dbashcomp" ]] ; then
-	sudo rm -f "$dbashcomp"
-else
-	echo "... not found!"
-fi
-
-echo "Removing docker-compose bash completion"
-if [[ -f "$dcbashcomp" ]] ; then
-	sudo rm -f "$dcbashcomp"
-else
-	echo "... not found!"
-fi
+echo "Removing bash completion..."
+sudo_rem_file "$dbashcomp"
+sudo_rem_file "$dcbashcomp"
 
 echo "Checking root mount path"
 if [[ $(wslpath 'C:\\') == '/c' ]] ; then
