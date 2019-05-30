@@ -22,6 +22,59 @@ bash ${SetupDir}/uninstall.sh "$@"
 
 }
 
+function rem_file()
+{
+
+# Usage: remove_file <FILE>
+echo "Removing file: '$1'"
+if [[ -f "$1" ]] ; then
+	rm -f "$1"
+else
+	echo "... not found!"
+fi
+
+}
+
+
+function rem_dir()
+{
+
+# Usage: remove_dir <DIR>
+echo "Removing directory: '$1'"
+if [[ -d "$1" ]] ; then
+	rm -rf "$1"
+else
+	echo "... not found!"
+fi
+
+}
+
+function sudo_rem_file()
+{
+
+# Same as above, just with administrative privileges
+echo "Removing file: '$1'"
+if [[ -f "$1" ]] ; then
+	sudo rm -f "$1"
+else
+	echo "... not found!"
+fi
+
+}
+
+function sudo_rem_dir()
+{
+
+# Same as above, just with administrative privileges
+echo "Removing directory: '$1'"
+if [[ -d "$1" ]] ; then
+	sudo rm -rf "$1"
+else
+	echo "... not found!"
+fi
+
+}
+
 function clean_file()
 {
 
