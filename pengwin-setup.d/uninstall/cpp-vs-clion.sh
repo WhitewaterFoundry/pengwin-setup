@@ -15,7 +15,12 @@ function main()
 
 echo "Uninstalling Cpp VisualStudio CLion integration"
 
-
+sudo_rem_file "$bin_cmake"
+sudo_rem_file "$bin_cpack"
+sudo_rem_file "$bin_ctest"
+sudo_rem_dir "$cmake_doc"
+sudo_rem_file "$cmake_aclocal"
+sudo_rem_dir "$cmake_share"
 
 }
 
