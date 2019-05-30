@@ -5,7 +5,6 @@ source $(dirname "$0")/uninstall-common.sh
 function main()
 {
 
-local brew_conf="/etc/profile.d/brew.sh"
 local tmp_ruby
 
 echo "Uninstalling Homebrew"
@@ -29,12 +28,8 @@ else
 	fi
 fi
 
-echo "Removing PATH modification: $brew_conf"
-if [[ -f "$brew_conf" ]] ; then
-	sudo rm -f "$brew_conf"
-else
-	echo "... not found!"
-fi
+echo "Removing PATH modification..."
+sudo_rem_file "/etc/profile.d/brew.sh"
 
 if $tmp_ruby ; then
 	echo "Ruby temporarily installed for uninstall script, removing..."

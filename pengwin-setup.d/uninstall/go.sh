@@ -2,8 +2,6 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
-go_dir="/usr/local/go"
-
 function main()
 {
 
@@ -12,18 +10,10 @@ local go_conf="/etc/profile.d/go.sh"
 echo "Uninstalling go"
 
 echo "Removing $go_dir"
-if [[ -d "$go_dir" ]] ; then
-	sudo rm -rf "$go_dir"
-else
-	echo "... not found!"
-fi
+sudo_rem_dir "/usr/local/go"
 
-echo "Removing PATH modifier: $go_conf"
-if [[ -f "$go_conf" ]] ; then
-	sudo rm -f "$go_conf"
-else
-	echo "... not found!"
-fi
+echo "Removing PATH modifier..."
+sudo_rem_file "/etc/profile.d/go.sh"
 
 # whiptail user go directory
 

@@ -3,24 +3,18 @@
 source $(dirname "$0")/uninstall-common.sh
 
 installdir='/usr/local'
-bin_cmake="$installdir/bin/cmake"
-bin_cpack="$installdir/bin/cpack"
-bin_ctest="$installdir/bin/ctest"
-cmake_doc="$installdir/doc"
-cmake_aclocal="$installdir/share/aclocal/cmake.m4"
-cmake_share="$installdir/share/cmake-*"
 
 function main()
 {
 
 echo "Uninstalling Cpp VisualStudio CLion integration"
 
-sudo_rem_file "$bin_cmake"
-sudo_rem_file "$bin_cpack"
-sudo_rem_file "$bin_ctest"
-sudo_rem_dir "$cmake_doc"
-sudo_rem_file "$cmake_aclocal"
-sudo_rem_dir "$cmake_share"
+sudo_rem_file "$installdir/bin/cmake"
+sudo_rem_file "$installdir/bin/cpack"
+sudo_rem_file "$installdir/bin/ctest"
+sudo_rem_dir "$installdir/doc"
+sudo_rem_file "$installdir/share/aclocal/cmake.m4"
+sudo_rem_dir "$installdir/share/cmake-*"
 
 }
 
