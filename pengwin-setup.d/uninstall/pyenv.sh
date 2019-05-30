@@ -2,7 +2,6 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
-pyenv_dir="$HOME/.pyenv"
 line_rgx='^[^#]*\bPATH.*/.pyenv/bin'
 line2_rgx='^[^#]*\bpyenv init -'
 line3_rgx='^[^#]*\bpyenv virtualenv-init -'
@@ -13,12 +12,7 @@ function main()
 echo "Uninstalling pyenv"
 local initFile
 
-echo "Removing $pyenv_dir"
-if [[ -d "$pyenv_dir" ]] ; then
-	rm -rf "$pyenv_dir"
-else
-	echo "... not found!"
-fi
+rem_dir "$HOME/.pyenv"
 
 echo "Removing PATH modifier(s)"
 initFile="$HOME/.bashrc"

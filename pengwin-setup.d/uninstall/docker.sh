@@ -2,20 +2,9 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
-relaybin='/usr/bin/docker-relay'
-relaysudoer='/etc/sudoers.d/docker-relay'
-relayprofile='/etc/profile.d/docker-relay.sh'
 relayexedir="$wHome/.npiperelay"
 
-dbashcomp='/etc/bash_completion.d/docker'
-dcbashcomp='/etc/bash_completion.d/docker-compose'
-
-dockerbin='/usr/bin/docker'
-dockercbin='/usr/bin/docker-compose'
-
 wslconf_rgx='^[^#]*\broot=/'
-mntbin='/usr/bin/create-mnt-c-link'
-mntbin_profile='/etc/profile.d/create-mnt-c-link.sh'
 mntbin_rgx='^[^#]*\bsudo\s*ALL=NOPASSWD: /usr/bin/create-mnt-c-link' '/etc/sudoers'
 
 function revert_mnt_point()
@@ -26,10 +15,10 @@ if whiptail --title "DOCKER" --yesno "Would you like to revert your root mount p
 	echo "Cleaning changes from /etc/wsl.conf"
 	sudo_clean_file "/etc/wsl.conf" "$wslconf_rgx"
 
-	sudo_rem_file "$mntbin"
+	sudo_rem_file "/usr/bin/create-mnt-c-link"
 
 	echo "Removing create-mnt-c-link profile configuration"
-	sudo_rem_file "$mntbin_profile"
+	sudo_rem_file "/etc/profile.d/create-mnt-c-link.sh"
 
 	echo "Cleaning create-mnt-c-link changes from /etc/sudoers"
 	sudo_clean_file "/etc/sudoers" "$mntbin_rgx"
@@ -59,20 +48,20 @@ else
 	echo "... not found!"
 fi
 
-sudo_rem_file "$relaybin"
+sudo_rem_file "/usr/bin/docker-relay"
 
 echo "Removing docker-relay sudoers modification..."
-sudo_rem_file "$relaysudoer"
+sudo_rem_file "/etc/sudoers.d/docker-relay"
 
 echo "Removing docker-relay profile modification..."
-sudo_rem_file "$relayprofile"
+sudo_rem_file "/etc/profile.d/docker-relay.sh"
 
-sudo_rem_file "$dockerbin"
-sudo_rem_file "$dockercbin"
+sudo_rem_file "/usr/bin/docker"
+sudo_rem_file "/usr/bin/docker-compose"
 
 echo "Removing bash completion..."
-sudo_rem_file "$dbashcomp"
-sudo_rem_file "$dcbashcomp"
+sudo_rem_file "/etc/bash_completion.d/docker"
+sudo_rem_file "/etc/bash_completion.d/docker-compose"
 
 echo "Checking root mount path"
 if [[ $(wslpath 'C:\\') == '/c' ]] ; then
