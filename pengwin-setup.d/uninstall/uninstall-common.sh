@@ -121,3 +121,63 @@ if [[ $installed != "" ]] ; then
 fi
 
 }
+
+function pip_uninstall()
+{
+
+# Usage: pip_uninstall <2/3> <PACKAGE>
+local pip
+
+case "$1"
+	)
+	pip='pip'
+	;;
+	2)
+	pip='pip'
+	;;
+	3)
+	pip='pip3'
+	;;
+esac
+
+echo "Removing $2"
+if $pip --version > /dev/null 2>&1 ; then
+	if $pip list | grep "$2" > /dev/null 2>&1 ; then
+		$pip uninstall "$2"
+		return
+	fi
+fi
+
+echo "... not installed!"
+
+}
+
+function sudo_pip_uninstall()
+{
+
+# Same as above, but with administrator privileges
+local pip
+
+case "$1"
+	)
+	pip='pip'
+	;;
+	2)
+	pip='pip'
+	;;
+	3)
+	pip='pip3'
+	;;
+esac
+
+echo "Removing $2"
+if $pip --version > /dev/null 2>&1 ; then
+        if $pip list | grep "$2" > /dev/null 2>&1 ; then
+                sudo $pip uninstall "$2"
+                return
+	fi
+fi
+
+echo "... not installed!"
+
+}
