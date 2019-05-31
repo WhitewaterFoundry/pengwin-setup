@@ -108,14 +108,16 @@ local installed
 
 installed=""
 for i in "$@" ; do
-	echo "UNINSTALLING: \"$i\""
-	if dpkg-query -s "$i" | grep 'installed' > /dev/null 2>&1 ; then
+	if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
 		installed="$i $installed"
 	else
 		echo "... $i not installed!"
 	fi
 done
 
-sudo apt-get remove -y -q $installed --autoremove
+if [[ $installed != "" ]] ; then
+	echo "Uninstalling: $installed"
+	sudo apt-get remove -y -q $installed --autoremove
+fi
 
 }
