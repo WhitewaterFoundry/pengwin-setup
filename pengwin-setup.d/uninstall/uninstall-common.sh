@@ -99,6 +99,27 @@ sudo bash -c "printf '%s\\n' '$fileContents' > '$1'"
 
 }
 
+function inclusive_file_clean()
+{
+
+# Usage: inclusive_file_clean <FILE> <SEARCHSTRING>
+# meow
+local fileContents
+fileContents=$(sed -e ':a' -e 'N' -e '$!ba' -e "s|$2\\n.*\\n$2||g" "$1")
+printf '%s\n' "$fileContents" > "$1"
+
+}
+
+function sudo_inclusive_file_clean()
+{
+
+# Same as above
+local fileContents
+fileContents=$(sudo sed -e ':a' -e 'N' -e '$!ba' -e "s|$PENGWIN_STRING\\n.*\\n$PENGWIN_STRING||g" "$1")
+sudo bash -c "printf '%s\\n' '$fileContents' > '$1'"
+
+}
+
 function remove_package()
 {
 
@@ -128,8 +149,8 @@ function pip_uninstall()
 # Usage: pip_uninstall <2/3> <PACKAGE>
 local pip
 
-case "$1"
-	)
+case "$1" in
+	"")
 	pip='pip'
 	;;
 	2)
@@ -158,8 +179,8 @@ function sudo_pip_uninstall()
 # Same as above, but with administrator privileges
 local pip
 
-case "$1"
-	)
+case "$1" in
+	"")
 	pip='pip'
 	;;
 	2)
