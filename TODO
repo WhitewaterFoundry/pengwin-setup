@@ -1,13 +1,10 @@
-cloudcli (?)
-cpp vs clion (?)
-visual code
 fcitx (?)
-guilib (?)
-hidpi (?)
-keychain (?)
 language (?)
 maintenance (?)
-powershell (?)
-shell-opts
 synaptic (?)
-theme
+
+finish show_warning change
+make sure all pass $@ to show_warning
+write new show_warning strings
+check if need to delete go build folders
+add apt update after removing any sources
