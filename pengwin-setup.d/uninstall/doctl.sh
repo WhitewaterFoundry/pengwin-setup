@@ -7,7 +7,6 @@ function main()
 
 echo "Uninstalling Digital Ocean CTL"
 
-# need to delete go build folder?
 sudo_rem_file "/usr/local/bin/doctl"
 
 echo "Removing bash completion..."
