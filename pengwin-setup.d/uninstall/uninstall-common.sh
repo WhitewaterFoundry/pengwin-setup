@@ -102,7 +102,6 @@ function inclusive_file_clean()
 {
 
 # Usage: inclusive_file_clean <FILE> <SEARCHSTRING>
-# meow
 local fileContents
 fileContents=$(sed -e ':a' -e 'N' -e '$!ba' -e "s|$2\\n.*\\n$2||g" "$1")
 cat > "$1" << EOF
