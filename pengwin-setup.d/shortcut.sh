@@ -97,11 +97,17 @@ function create_shortcut_from_desktop() {
                 cmdIcon=$(find /usr/share/pixmaps \
                   \
                   /usr/share/icons/hicolor/256x256/apps \
-                  /usr/share/icons/hicolor/128x128/apps \
                   /usr/share/icons/Adwaita/256x256/apps \
+                  /usr/share/icons/gnome/256x256/apps \
+                  /usr/share/icons/hicolor/128x128/apps \
                   /usr/share/icons/hicolor/scalable/apps \
+                  /usr/share/icons/hicolor/48x48/apps \
+                  /usr/share/icons/gnome/48x48/apps \
+                  /usr/share/icons/Adwaita/512x512/places \
+                  /usr/share/icons/Adwaita/256x256/devices \
+                  /usr/share/icons \
                   \
-                  -name "${value}*" | head -n 1)
+                  -maxdepth 1 -name "${value}*" -type f,l | head -n 1)
               else
                 cmdIcon="${value}"
               fi
