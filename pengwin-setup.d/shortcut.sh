@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
 
 DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
+readonly NO_ICON="NO_ICON"
 
 function create_shortcut() {
   local cmdName="$1"
   local cmdToExec="$2"
   local cmdIcon="$3"
   local cmdGui="$4"
+
+  if [[ -z "${cmdIcon}" ]]; then
+    return
+
+  elif [[ "${cmdIcon}" == ${NO_ICON} ]]; then
+
+    cmdIcon=""
+  fi
 
   echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
   wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
@@ -53,6 +62,7 @@ function create_shortcut_from_desktop() {
               cmdName="${value}"
             fi
 
+
             ;;
           Exec)
 
@@ -61,6 +71,11 @@ function create_shortcut_from_desktop() {
               read -ra cmdToExecArray <<< "${value}"
 
               cmdToExec="${cmdToExecArray[0]}"
+
+              if [[ "${cmdToExec}" == synaptic* ]]; then
+                return
+              fi
+
             fi
 
             ;;
@@ -70,20 +85,29 @@ function create_shortcut_from_desktop() {
             if [[ -z "${cmdIcon}" ]]; then
 
               if [[ ! -f "${value}" ]]; then
-                cmdIcon=$(find /usr/share/pixmaps -name "${value}*" | head -n 1)
+                cmdIcon=$(find /usr/share/pixmaps \
+                  \
+                  /usr/share/icons/hicolor/256x256/apps \
+                  /usr/share/icons/hicolor/128x128/apps \
+                  /usr/share/icons/Adwaita/256x256/apps \
+                  /usr/share/icons/hicolor/scalable/apps \
+                  \
+                  -name "${value}*" | head -n 1)
               else
                 cmdIcon="${value}"
               fi
 
               if [[ -n "${cmdIcon}" ]]; then
                 cmdIcon="--icon ${cmdIcon}"
+              else
+                cmdIcon="${NO_ICON}"
               fi
             fi
 
 
             ;;
 
-         Type)
+          Type)
 
             if [[ "${value}" != "Application" ]]; then
               return
@@ -100,6 +124,16 @@ function create_shortcut_from_desktop() {
 
 
             ;;
+
+           NoDisplay)
+
+            if [[ "${value}" == "true" ]]; then
+              return
+            fi
+
+
+            ;;
+
           esac
 
 
