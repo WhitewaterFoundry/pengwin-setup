@@ -4,6 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 #Globals
 declare DEST_PATH
+declare SKIP_STARTMENU
 readonly NO_ICON="NO_ICON"
 
 function create_shortcut() {
@@ -161,6 +162,10 @@ function create_shortcut_from_desktop() {
 }
 
 function main() {
+
+  if [[ ${SKIP_STARTMENU} ]]; then
+    return
+  fi
 
   if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70) ; then
 
