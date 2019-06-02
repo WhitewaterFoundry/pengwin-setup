@@ -38,6 +38,6 @@ sudo_rem_dir "/var/log/cassandra"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Apache Cassandra" "$@" ; then
 	main "$@"
 fi

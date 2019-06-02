@@ -16,6 +16,6 @@ sudo_rem_file "/etc/profile.d/rbenv.sh"
 
 }
 
-if show_warning "rbenv" "$ruby_dir" "$@" ; then
+if show_warning "rbenv" "$@" ; then
 	main "$@"
 fi

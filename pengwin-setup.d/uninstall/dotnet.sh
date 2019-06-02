@@ -16,3 +16,7 @@ echo "Removing APT key..."
 sudo_rem_file "/etc/apt/trusted.gpg.d/microsoft.gpg"
 
 }
+
+if show_warning "dotnet" "$@" ; then
+	main "$@"
+fi

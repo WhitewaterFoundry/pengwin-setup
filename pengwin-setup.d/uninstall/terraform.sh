@@ -14,6 +14,6 @@ clean_file "$HOME/.bashrc" "$terra_rgx"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Terraform" "$@" ; then
 	main "$@"
 fi

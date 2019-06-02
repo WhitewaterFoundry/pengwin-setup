@@ -29,6 +29,6 @@ sudo_rem_file "/etc/profile.d/vcxsrv.sh"
 
 }
 
-if show_warning "vcxsrv" "$vcxsrv_dir" "$@" ; then
+if show_warning "vcxsrv" "$@" ; then
 	main "$@"
 fi

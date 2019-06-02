@@ -18,6 +18,6 @@ sudo_rem_file "/etc/apt/trusted.gpg.d/microsoft.gpg"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Powershell" "$@" ; then
 	main "$@"
 fi

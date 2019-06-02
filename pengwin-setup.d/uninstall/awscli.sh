@@ -16,6 +16,6 @@ sudo_rem_file "/usr/local/bin/aws_completer"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "AWS CLI" "$@" ; then
 	main "$@"
 fi

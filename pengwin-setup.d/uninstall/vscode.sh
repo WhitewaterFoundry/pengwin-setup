@@ -23,6 +23,6 @@ sudo apt-get install -y -q udev libudev1
 
 }
 
-if show_warning "" "" ; then
+if show_warning "VisualStudio Code" "$@" ; then
 	main "$@"
 fi

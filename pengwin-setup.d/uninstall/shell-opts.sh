@@ -8,7 +8,7 @@ PENGWIN_STRING='### PENGWIN OPTIMISED DEFAULTS'
 function main()
 {
 
-echo "Uninstalling inputrc bash-shell optimisations"
+echo "Uninstalling readline optimizations"
 
 echo "Cleaning /etc/inputrc"
 if [[ -f "/etc/inputrc" ]] ; then
@@ -19,6 +19,6 @@ fi
 
 }
 
-if show_warning "" "" ; then
+if show_warning "readline optimizations" "$@" ; then
 	main "$@"
 fi

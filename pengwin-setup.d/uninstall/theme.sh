@@ -16,6 +16,6 @@ sudo_rem_dir "/usr/share/themes/windows-10-light"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Windows 10 GTK/Qt themes" "$@" ; then
 	main "$@"
 fi

@@ -18,6 +18,6 @@ sudo_rem_dir "$installdir/share/cmake-*"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Cpp VisualStudio CLion" "$@" ; then
 	main "$@"
 fi
