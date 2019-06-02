@@ -56,7 +56,7 @@ if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Win
 
 	if [[ -d "${INSTALLICONSDIR}/${ICONSDIR}" ]] ; then
 		echo "${INSTALLICONSDIR}/${ICONSDIR} already exists, removing old"
-		sudo rm -r $INSTALLDIR/$ICONSDIR
+		sudo rm -r $INSTALLICONSDIR/$ICONSDIR
 	fi
 
 	# Move to themes folder
@@ -69,7 +69,7 @@ if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Win
 	echo "Setting correct theme folder permissions"
 	sudo chown -R root:root "${INSTALLDIR}/${LIGHTDIR}"
 	sudo chown -R root:root "${INSTALLDIR}/${DARKDIR}"
-	sudo chown -R root:root "${INSTALLDIR}/${ICONSDIR}"
+	sudo chown -R root:root "${INSTALLICONSDIR}/${ICONSDIR}"
 	sudo chmod -R 0755 "${INSTALLDIR}/${LIGHTDIR}"
 	sudo chmod -R 0755 "${INSTALLDIR}/${DARKDIR}"
 	sudo chmod -R 0755 "${INSTALLICONSDIR}/${ICONSDIR}"
@@ -77,7 +77,9 @@ if (whiptail --title "Windows 10 Theme" --yesno "Would you like to install a Win
 	# Install lxappearance to let user set theme
 	sudo apt-get install -q -y lxappearance
 
-  bash ${SetupDir}/shortcut.sh --yes
+  lxappearance &
+
+  bash ${SetupDir}/shortcut.sh --yes "$@"
 
 	# Cleanup
 	cleantmp
