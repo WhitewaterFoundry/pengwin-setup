@@ -106,7 +106,9 @@ function inclusive_file_clean()
 # meow
 local fileContents
 fileContents=$(sed -e ':a' -e 'N' -e '$!ba' -e "s|$2\\n.*\\n$2||g" "$1")
-printf '%s\n' "$fileContents" > "$1"
+cat > "$1" << EOF
+$fileContents
+EOF
 
 }
 
@@ -115,8 +117,10 @@ function sudo_inclusive_file_clean()
 
 # Same as above
 local fileContents
-fileContents=$(sudo sed -e ':a' -e 'N' -e '$!ba' -e "s|$PENGWIN_STRING\\n.*\\n$PENGWIN_STRING||g" "$1")
-sudo bash -c "printf '%s\\n' '$fileContents' > '$1'"
+fileContents=$(sudo sed -e ':a' -e 'N' -e '$!ba' -e "s|$2\\n.*\\n$2||g" "$1")
+sudo bash -c "cat > '$1'" << EOF
+$fileContents
+EOF
 
 }
 
