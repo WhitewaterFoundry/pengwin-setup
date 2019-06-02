@@ -93,9 +93,9 @@ function editor_menu {
   fi
 
   if [[ "${INSTALLED}" == true ]] ; then
-    bash ${SetupDir}/shortcut.sh --yes
+    bash ${SetupDir}/shortcut.sh --yes "$@"
   fi
 }
 
 
-editor_menu
+editor_menu "$@"
