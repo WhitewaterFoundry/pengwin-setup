@@ -19,6 +19,6 @@ sudo_rem_file "/etc/profile.d/go.sh"
 
 }
 
-if show_warning "go" "$go_dir" "$@" ; then
+if show_warning "go" "$@" ; then
 	main "$@"
 fi

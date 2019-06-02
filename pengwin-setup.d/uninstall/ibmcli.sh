@@ -35,6 +35,6 @@ sudo_rem_file "/etc/bash_completion.d/helm_completions.bash"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "IBM Cloud CLI" "$@" ; then
 	main "$@"
 fi

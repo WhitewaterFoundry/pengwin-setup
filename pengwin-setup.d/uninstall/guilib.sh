@@ -15,6 +15,6 @@ sudo_rem_file "/usr/share/dbus-1/session.conf"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "base GUI libraries and modifications" "$@" ; then
 	main "$@"
 fi

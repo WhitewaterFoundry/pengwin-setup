@@ -38,6 +38,6 @@ fi
 
 }
 
-if show_warning "Homebrew" "Homebrew" "$@" ; then
+if show_warning "Homebrew" "$@" ; then
 	main "$@"
 fi

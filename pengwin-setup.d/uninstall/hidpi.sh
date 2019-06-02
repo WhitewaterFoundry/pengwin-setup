@@ -10,6 +10,6 @@ sudo_rem_file "/etc/profile.d/hidpi.sh"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "HiDPI modifications" "$@" ; then
 	main "$@"
 fi

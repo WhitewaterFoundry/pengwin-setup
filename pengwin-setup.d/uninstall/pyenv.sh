@@ -41,6 +41,6 @@ fi
 
 }
 
-if show_warning "pyenv" "$pyenv_dir" "$@" ; then
+if show_warning "pyenv" "$@" ; then
 	main "$@"
 fi

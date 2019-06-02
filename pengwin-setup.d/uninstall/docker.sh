@@ -86,6 +86,6 @@ fi
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Docker Bridge" "$@" ; then
 	main "$@"
 fi

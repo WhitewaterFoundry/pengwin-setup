@@ -14,6 +14,6 @@ remove_package "keychain"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Keychain" "$@" ; then
 	main "$@"
 fi

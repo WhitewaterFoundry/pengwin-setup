@@ -37,6 +37,6 @@ fi
 
 }
 
-if show_warning "node" "$node_dir" "$@" ; then
+if show_warning "nodejs" "$@" ; then
 	main "$@"
 fi

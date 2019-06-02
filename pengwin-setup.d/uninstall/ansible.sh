@@ -19,7 +19,7 @@ sudo apt-key del "$ans_key"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "ansible" "$@" ; then
 	main "$@"
 fi
 

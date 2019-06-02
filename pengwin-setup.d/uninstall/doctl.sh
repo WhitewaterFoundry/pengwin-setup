@@ -14,6 +14,6 @@ sudo_rem_file "/etc/bash_completion.d/doc.bash_completion"
 
 }
 
-if show_warning "" "" ; then
+if show_warning "Digital Ocean CTL" "$@" ; then
 	main "$@"
 fi
