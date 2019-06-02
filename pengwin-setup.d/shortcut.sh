@@ -1,13 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
+source $(dirname "$0")/common.sh "$@"
+
+#Globals
+declare DEST_PATH
 readonly NO_ICON="NO_ICON"
 
 function create_shortcut() {
   local cmdName="$1"
   local cmdToExec="$2"
   local cmdIcon="$3"
-  local cmdGui="$4"
+  local gui="$4"
 
   if [[ -z "${cmdIcon}" ]]; then
     return
@@ -59,22 +62,28 @@ function create_shortcut_from_desktop() {
           Name)
 
             if [[ -z "${cmdName}" ]]; then
-              cmdName="${value}"
+              cmdName="${value} (WSL)"
             fi
-
 
             ;;
           Exec)
 
             if [[ -z "${cmdToExec}" ]]; then
+
+              declare -a cmdToExecArray
               local cmdToExecArray
               read -ra cmdToExecArray <<< "${value}"
 
               cmdToExec="${cmdToExecArray[0]}"
 
-              if [[ "${cmdToExec}" == synaptic* ]]; then
-                return
-              fi
+              case "${cmdToExec}" in
+                *display-im6.q16)
+                  return
+                  ;;
+                synaptic*)
+                  return
+                  ;;
+              esac
 
             fi
 
@@ -145,16 +154,25 @@ function create_shortcut_from_desktop() {
   create_shortcut "${cmdName}" "${cmdToExec}" "${cmdIcon}" "${gui}"
 }
 
-
 function main() {
 
-  rm "${DEST_PATH}"/*
+  if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70) ; then
 
-  find /usr/share/applications -name *.desktop | while read desktopFile; do
+    echo "Generating Start Menu"
 
-    create_shortcut_from_desktop "${desktopFile}"
+    DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
 
-  done
+    rm "${DEST_PATH}"/*
+
+    find /usr/share/applications -name '*.desktop' | while read desktopFile; do
+
+      create_shortcut_from_desktop "${desktopFile}"
+
+    done
+
+  else
+    echo "Skipping Start Menu Generation"
+  fi
 
 }
 
