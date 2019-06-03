@@ -20,11 +20,16 @@ sudo apt-get -y -q install build-essential
 
 echo "Installing n, Node.js version manager"
 curl -L https://git.io/n-install -o n-install.sh
-bash n-install.sh -y
+env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
+
+N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
+
+echo "${N_PATH}" | sudo tee "/etc/profile.d/n-prefix.sh"
+
+eval "${N_PATH}"
 
 echo "Installing latest node.js release"
-export N_PREFIX="${HOME}/n"
-export PATH="${PATH}:${N_PREFIX}/bin"
+
 n latest
 
 echo "Installing npm"
