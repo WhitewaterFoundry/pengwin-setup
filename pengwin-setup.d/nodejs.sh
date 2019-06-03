@@ -36,6 +36,9 @@ echo "Installing npm"
 curl -0 -L https://npmjs.com/install.sh -o install.sh
 sh install.sh
 
+sudo mkdir -p /etc/bash_completion.d
+npm completion | sudo tee /etc/bash_completion.d/npm
+
 cleantmp
 if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) ; then
   echo "Installing YARN"
