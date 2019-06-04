@@ -15,6 +15,45 @@ fi
 
 createtmp
 
+echo "Look for Windows version of npm"
+
+NPM_PROFILE="/etc/profile.d/n-prefix.sh"
+
+if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
+
+  if ! (confirm --title "npm in Windows" --yesno "npm is already installed in Windows in \"$(wslpath -m "$(which npm)")\".\n\nWould you still want to install the Linux version? This will hide the Windows version inside Pengwin." 12 80); then
+
+    echo "Skipping NODE"
+
+    exit 1
+  fi
+
+
+  sudo tee "${NPM_PROFILE}" << EOF
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+  WIN_NPM_PATH="\$(dirname "\$(which npm)")"
+  WIN_C_PATH="\$(wslpath 'C:\')"
+
+  if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
+    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}:##")
+  fi
+
+  WIN_YARN_PATH="\$(dirname "\$(which yarn)")"
+  if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
+    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}:##")
+  fi
+fi
+EOF
+
+  eval "$(cat "${NPM_PROFILE}")"
+
+else
+
+  sudo rm "${NPM_PROFILE}"
+fi
+
 echo "Ensuring we have build-essential installed"
 sudo apt-get -y -q install build-essential
 
@@ -24,7 +63,7 @@ env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
 
 N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
 
-echo "${N_PATH}" | sudo tee "/etc/profile.d/n-prefix.sh"
+echo "${N_PATH}" | sudo tee -a "${NPM_PROFILE}"
 
 eval "${N_PATH}"
 
