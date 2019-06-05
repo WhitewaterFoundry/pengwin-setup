@@ -6,6 +6,18 @@ line_rgx='^[^#]*\bPATH.*/.pyenv/bin'
 line2_rgx='^[^#]*\bpyenv init -'
 line3_rgx='^[^#]*\bpyenv virtualenv-init -'
 
+function multiclean_file()
+{
+
+if [[ -f "$1" ]] ; then
+	echo "$1 found! Cleaning..."
+	clean_file "$1" "$line_rgx"
+	clean_file "$1" "$line2_rgx"
+	clean_file "$1" "$line3_rgx"
+fi
+
+}
+
 function main()
 {
 
@@ -15,29 +27,9 @@ local initFile
 rem_dir "$HOME/.pyenv"
 
 echo "Removing PATH modifier(s)"
-initFile="$HOME/.bashrc"
-if [[ -f "$initFile" ]] ; then
-	echo "$initFile found! Cleaning..."
-	clean_file "$initFile" "$line_rgx"
-	clean_file "$initFile" "$line2_rgx"
-	clean_file "$initFile" "$line3_rgx"
-fi
-
-initFile="$HOME/.zshrc"
-if [[ -f "$initFile" ]] ; then
-	echo "$initFile found! Cleaning..."
-	clean_file "$initFile" "$line_rgx"
-	clean_file "$initFile" "$line2_rgx"
-	clean_file "$initFile" "$line3_rgx"
-fi
-
-initFile="$HOME/.config/fish"
-if [[ -f "$initFile" ]] ; then
-	echo "$initFile found! Cleaning..."
-	clean_file "$initFile" "$line_rgx"
-	clean_file "$initFile" "$line2_rgx"
-	clean_file "$initFile" "$line3_rgx"
-fi
+multiclean_file "$HOME/.bashrc"
+multiclean_file "$HOME/.zshrc"
+multiclean_file "$HOME/.config/fish"
 
 }
 
