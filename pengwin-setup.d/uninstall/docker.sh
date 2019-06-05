@@ -48,13 +48,13 @@ else
 	echo "... not found!"
 fi
 
-sudo_rem_file "/usr/bin/docker_relay"
+sudo_rem_file "/usr/bin/docker-relay"
 
 echo "Removing docker-relay sudoers modification..."
 sudo_rem_file "/etc/sudoers.d/docker-relay"
 
 echo "Removing docker-relay profile modification..."
-sudo_rem_file "/etc/profile.d/docker-relay.sh"
+sudo_rem_file "/etc/profile.d/docker_relay.sh"
 
 sudo_rem_file "/usr/bin/docker"
 sudo_rem_file "/usr/bin/docker-compose"
