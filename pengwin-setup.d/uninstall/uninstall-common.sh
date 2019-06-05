@@ -149,14 +149,11 @@ function pip_uninstall()
 {
 
 # Usage: pip_uninstall <2/3> <PACKAGE>
-local pip
+local pip=''
 
 case "$1" in
-	"")
-	pip='pip'
-	;;
 	2)
-	pip='pip'
+	pip='pip2'
 	;;
 	3)
 	pip='pip3'
@@ -166,7 +163,7 @@ esac
 echo "Removing $2"
 if $pip --version > /dev/null 2>&1 ; then
 	if $pip list | grep "$2" > /dev/null 2>&1 ; then
-		$pip uninstall "$2"
+		$pip uninstall "$2" -y
 		return
 	fi
 fi
@@ -179,14 +176,11 @@ function sudo_pip_uninstall()
 {
 
 # Same as above, but with administrator privileges
-local pip
+local pip=''
 
 case "$1" in
-	"")
-	pip='pip'
-	;;
 	2)
-	pip='pip'
+	pip='pip2'
 	;;
 	3)
 	pip='pip3'
@@ -196,7 +190,7 @@ esac
 echo "Removing $2"
 if $pip --version > /dev/null 2>&1 ; then
         if $pip list | grep "$2" > /dev/null 2>&1 ; then
-                sudo $pip uninstall "$2"
+                sudo $pip uninstall "$2" -y
                 return
 	fi
 fi

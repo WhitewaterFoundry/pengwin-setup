@@ -12,7 +12,7 @@ echo "Uninstalling rbenv"
 rem_dir "$HOME/.rbenv"
 
 echo "Removing PATH modifier..."
-sudo_rem_file "/etc/profile.d/rbenv.sh"
+sudo_rem_file "/etc/profile.d/ruby.sh"
 
 }
 
