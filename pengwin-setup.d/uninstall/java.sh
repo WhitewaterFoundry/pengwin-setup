@@ -9,6 +9,7 @@ function multiclean_file()
 {
 
 if [[ -f "$1" ]] ; then
+	echo "$1 found! Cleaning..."
 	clean_file "$1" "$sdkman_rgx1"
 	clean_file "$1" "$sdkman_rgx2"
 	clean_file "$1" "$sdkman_rgx3"
