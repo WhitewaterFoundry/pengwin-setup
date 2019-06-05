@@ -2,18 +2,22 @@
 
 source $(dirname "$0")/common.sh "$@"
 
+#Imported from common.h
+declare SetupDir
+
 function main() {
 
   local menu_choice=$(
 
-    menu --title "Tools Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 16 99 7 \
-      "X410" "View a link to the X410 X-server on the Microsoft Store" off \
-      "VCXSRV" "Install the VcXsrv open source X-server" off \
-      "GUILIB" "Install a base set of libraries for GUI applications" off \
+    menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 16 99 8 \
       "FCITX" "Install fcitx for improved non-Latin input support" off \
+      "GUILIB" "Install a base set of libraries for GUI applications" off \
       "HIDPI" "Configure Qt and GTK for HiDPI displays (experimental)" off \
+      "STARTMENU" "Generates Windows Start Menu shortcuts for GUI applications" off \
       "SYNAPTIC" "Install the Synaptic package manager" off \
-      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher" off \
+      "VCXSRV" "Install the VcXsrv open source X-server" off \
+      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " off \
+      "X410" "View a link to the X410 X-server on the Microsoft Store" off \
 
   3>&1 1>&2 2>&3)
 
@@ -44,6 +48,11 @@ function main() {
   if [[ ${menu_choice} == *"HIDPI"* ]] ; then
     echo "HIDPI"
     bash ${SetupDir}/hidpi.sh
+  fi
+
+  if [[ ${menu_choice} == *"STARTMENU"* ]] ; then
+    echo "STARTMENU"
+    bash ${SetupDir}/shortcut.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"SYNAPTIC"* ]] ; then
