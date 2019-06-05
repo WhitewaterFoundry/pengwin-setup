@@ -148,7 +148,8 @@ fi
 function pip_uninstall()
 {
 
-# Usage: pip_uninstall <2/3> <PACKAGE>
+# Usage: pip_uninstall <2/3> <PACKAGES>
+local installed=''
 local pip=''
 
 case "$1" in
@@ -159,13 +160,20 @@ case "$1" in
 	pip='pip3'
 	;;
 esac
+shift 1
 
-echo "Removing $2"
+echo "Removing pip packages: $installed"
 if $pip --version > /dev/null 2>&1 ; then
-	if $pip list | grep "$2" > /dev/null 2>&1 ; then
-		$pip uninstall "$2" -y
-		return
-	fi
+	for i in "$@" ; do
+		if ($pip list | grep "$i ") > /dev/null 2>&1 ; then
+			installed="$i $installed"
+		else
+			echo "... $i not installed!"
+		fi
+	done
+
+	$pip uninstall "$installed" -y
+	return
 fi
 
 echo "... not installed!"
@@ -175,24 +183,32 @@ echo "... not installed!"
 function sudo_pip_uninstall()
 {
 
-# Same as above, but with administrator privileges
+# Usage: sudo_pip_uninstall <2/3> <PACKAGES>
+local installed=''
 local pip=''
 
 case "$1" in
-	2)
-	pip='pip2'
-	;;
-	3)
-	pip='pip3'
-	;;
+        2)
+        pip='pip2'
+        ;;
+        3)
+        pip='pip3'
+        ;;
 esac
+shift 1
 
-echo "Removing $2"
+echo "Removing pip packages: $installed"
 if $pip --version > /dev/null 2>&1 ; then
-        if $pip list | grep "$2" > /dev/null 2>&1 ; then
-                sudo $pip uninstall "$2" -y
-                return
-	fi
+        for i in "$@" ; do
+                if (sudo $pip list | grep "$i ") > /dev/null 2>&1 ; then
+                        installed="$i $installed"
+                else
+                        echo "... $i not installed!"
+                fi
+        done
+
+	sudo $pip uninstall "$installed" -y
+	return
 fi
 
 echo "... not installed!"
