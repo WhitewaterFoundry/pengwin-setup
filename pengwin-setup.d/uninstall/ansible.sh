@@ -12,7 +12,7 @@ echo "Uninstalling Ansible"
 remove_package "ansible"
 
 echo "Removing APT source..."
-sudo_rem_file "/etc/apt/sources.list.d/ansible.sh"
+sudo_rem_file "/etc/apt/sources.list.d/ansible.list"
 
 echo "Removing APT key"
 sudo apt-key del "$ans_key"

@@ -5,9 +5,8 @@ source $(dirname "$0")/uninstall-common.sh
 function main()
 {
 
-local tmp_ruby
-
 echo "Uninstalling Homebrew"
+local tmp_ruby=1
 
 if ! ruby --version > /dev/null 2>&1 ; then
 	echo "Installing Ruby for uninstall script"
@@ -31,7 +30,7 @@ fi
 echo "Removing PATH modification..."
 sudo_rem_file "/etc/profile.d/brew.sh"
 
-if $tmp_ruby ; then
+if [ $tmp_ruby -eq 0 ] ; then
 	echo "Ruby temporarily installed for uninstall script, removing..."
 	sudo apt-get remove -y -q ruby --autoremove
 fi
