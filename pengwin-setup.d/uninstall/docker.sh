@@ -48,7 +48,7 @@ else
 	echo "... not found!"
 fi
 
-sudo_rem_file "/usr/bin/docker-relay"
+sudo_rem_file "/usr/bin/docker_relay"
 
 echo "Removing docker-relay sudoers modification..."
 sudo_rem_file "/etc/sudoers.d/docker-relay"
