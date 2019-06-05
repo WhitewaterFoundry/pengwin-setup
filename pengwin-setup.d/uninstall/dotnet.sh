@@ -7,7 +7,7 @@ function main()
 
 echo "Uninstalling dotnet"
 
-remove_package "dotnet-sdk-2.2"
+remove_package "dotnet-sdk-2.2" "nuget"
 
 echo "Removing APT source..."
 sudo_rem_file "/etc/apt/sources.list.d/microsoft.list"
