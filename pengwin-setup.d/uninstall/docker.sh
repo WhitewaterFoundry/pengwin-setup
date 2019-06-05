@@ -43,7 +43,7 @@ if [[ -d "$relayexedir" ]] ; then
 	fi
 
 	# Now safe to remove directory
-	rm -rf "$relayexedir"
+	sudo rm -rf "$relayexedir"
 else
 	echo "... not found!"
 fi
