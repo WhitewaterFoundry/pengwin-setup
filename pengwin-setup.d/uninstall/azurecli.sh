@@ -14,7 +14,7 @@ echo "Removing APT source..."
 sudo_rem_file "/etc/apt/sources.list.d/azurecli.list"
 
 echo "Removing APT key..."
-sudo_rem_file "/etc/apt/trusted.gpg.d/microsoft.gpg"
+safe_rem_microsoftgpg
 
 }
 

@@ -9,11 +9,12 @@ echo "Uninstalling dotnet"
 
 remove_package "dotnet-sdk-2.2" "nuget"
 
-echo "Removing APT source..."
-sudo_rem_file "/etc/apt/sources.list.d/microsoft.list"
+echo "Removing APT source(s)..."
+safe_rem_microsoftsrc
+safe_rem_debianstablesrc
 
 echo "Removing APT key..."
-sudo_rem_file "/etc/apt/trusted.gpg.d/microsoft.gpg"
+safe_rem_microsoftgpg
 
 }
 
