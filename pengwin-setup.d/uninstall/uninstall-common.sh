@@ -214,3 +214,62 @@ fi
 echo "... not installed!"
 
 }
+
+function safe_rem_microsoftgpg()
+{
+
+# Usage: safe_rem_microsoftgpg
+# (no arguments necessary)
+local pkg_list='azure-cli code dotnet powershell'
+
+for i in $pkg_list ; do
+        if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
+                echo "$i installed, not safe to remove microsoft APT source"
+                return
+        fi
+done
+
+# safe to remove!
+sudo_rem_file "/etc/apt/trusted.gpg.d/microsoft.gpg"
+
+}
+
+function safe_rem_microsoftsrc()
+{
+
+# Usage: safe_rem_microsoftsrc
+# (no arguments necessary)
+local pkg_list='dotnet powershell'
+
+# check packages not installed
+for i in $pkg_list ; do
+	if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
+		echo "$i installed, not safe to remove microsoft APT source"
+		return
+	fi
+done
+
+# safe to remove!
+sudo_rem_file "/etc/apt/sources.list.d/microsoft.list"
+
+}
+
+function safe_rem_debianstablesrc()
+{
+
+# Usage: safe_rem_debianstablesrc
+# (no arguments necessary)
+local pkg_list='code dotnet poewrshell'
+
+# check packages not installed
+for i in $pkg_list ; do
+        if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
+                echo "$i installed, not safe to remove microsoft APT source"
+                return
+        fi
+done
+
+# safe to remove!
+sudo_rem_file "/etc/apt/sources.list.d/stable.list"
+
+}
