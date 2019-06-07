@@ -10,11 +10,11 @@ echo "Uninstalling Powershell"
 remove_package "powershell"
 
 echo "Removing APT source(s)..."
-sudo_rem_file "/etc/apt/sources.list.d/microsoft.list"
-sudo_rem_file "/etc/apt/sources.list.d/stable.list"
+safe_rem_microsoftsrc
+safe_rem_debianstablesrc
 
 echo "Removing APT key..."
-sudo_rem_file "/etc/apt/trusted.gpg.d/microsoft.gpg"
+safe_rem_microsoftgpg
 
 }
 
