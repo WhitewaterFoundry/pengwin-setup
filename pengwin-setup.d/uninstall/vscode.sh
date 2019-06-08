@@ -24,7 +24,7 @@ sudo apt-get install -y -q udev libudev1
 echo "Removing Debian stable APT source..."
 safe_rem_debianstablesrc
 
-echo "Refreshing start-menu icon cache..."
+echo "Regenerating start-menu entry cache..."
 bash ${SetupDir}/shortcut.sh --yes
 
 }
