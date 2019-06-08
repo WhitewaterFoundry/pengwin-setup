@@ -1,9 +1,17 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
 DOCKER_VERSION="18.09.2"
 DOCKER_COMPOSE_VERSION="1.23.2"
+
+# Imported from common.sh
+declare wHome
+declare GOVERSION
+
+#Imported global variables
+declare USER
 
 function docker_install_build_relay() {
   #Build the relay
@@ -23,10 +31,11 @@ function docker_install_build_relay() {
     export GOPATH=$(pwd)/gohome
 
     echo "Checking for git"
+    local git_exists
     if (git version); then
-      local git_exists=1
+      git_exists=1
     else
-      local git_exists=0
+      git_exists=0
 
       sudo apt-get -y -q install git
     fi
@@ -110,21 +119,49 @@ EOF
   if [[ ${connected} != 0  ]]; then
     whiptail --title "DOCKER" \
     --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
+  else
+    docker version
   fi
 }
 
+function docker_install_conf_toolbox() {
+  echo "Connect to Docker Toolbox"
+
+  cat << 'EOF' >> docker_relay.sh
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+  VM=${DOCKER_MACHINE_NAME-default}
+  DOCKER_MACHINE="$(which docker-machine.exe)"
+  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" 2>/dev/null )" > /dev/null 2>&1
+
+  if [[ "${DOCKER_CERT_PATH}" != "" ]] ; then
+    export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
+  fi
+fi
+
+EOF
+  sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
+
+  . /etc/profile.d/docker_relay.sh
+
+  docker version
+}
+
 function main() {
-  if (whiptail --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
+  if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
 
-    local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+    local errorCheck="docker daemon is not running.\|docker.exe: command not found\|error during connect:"
+    local connected
+    connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     while [[ ${connected} != 0  ]]; do
-      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
+      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
 
-      local connected=$(docker.exe version 2>&1 | grep -c "docker daemon is not running.\|docker.exe: command not found")
+      connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
 
     done
 
@@ -132,15 +169,20 @@ function main() {
 
     sudo apt-get -y -q update
 
-    wget -c https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz
+    wget -c "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz"
     sudo tar -xzvf docker-${DOCKER_VERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
 
     sudo chmod 755 /usr/bin/docker
     sudo chown root:root /usr/bin/docker
 
     #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
-    local connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-    if [[ $(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2) -gt 17063 && ${connected} != 0  ]]; then
+    connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+    local currentVersion=$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2)
+
+    if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
+      #Install via Docker Toolbox
+      docker_install_conf_toolbox
+    elif [[ ${currentVersion} -gt 17063 && ${connected} != 0  ]]; then
       #Connect via Unix Sockets
       docker_install_build_relay
     else
@@ -161,7 +203,7 @@ function main() {
 
     docker-compose version
 
-    if [[ $(wslpath 'C:\\') = '/mnt/c/' ]]; then
+    if [[ ${currentVersion} -gt 17063 && $(wslpath 'C:\') = '/mnt/c/' ]]; then
 
       if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
         echo "Changing the root from /mnt to /"
@@ -228,5 +270,5 @@ EOF
   fi
 }
 
-main "$@"
+main
 
