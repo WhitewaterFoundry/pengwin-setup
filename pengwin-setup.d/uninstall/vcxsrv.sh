@@ -13,9 +13,9 @@ echo "Uninstalling VcxSrv"
 
 echo "Removing $vcxsrv_dir"
 if [[ -d "$vcxsrv_dir" ]] ; then
-	if cmd-exe "/C tasklist" | grep -Fq 'vcxsrv.exe' ; then
+	if cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe' ; then
 		echo "vcxsrv.exe running. Killing process..."
-		cmd-exe "/C taskkill /IM 'vcxsrv.exe' /F"
+		cmd-exe /C taskkill /IM 'vcxsrv.exe' /F
 	fi
 
 	# now safe to delete
