@@ -10,15 +10,6 @@ function main()
 
 echo "Uninstalling Apache Cassandra"
 
-# Removing cassandra
-remove_package "cassandra"
-
-echo "Removing APT source..."
-sudo_rem_file "/etc/apt/sources.list.d/cassandra.list"
-
-echo "Removing APT key"
-sudo_rem_file "/etc/apt/trusted.gpg.d/cassandra.gpg"
-
 echo "Removing Cassandra-specific changes to /etc/sudoers"
 sudo_clean_file "/etc/sudoers" "$sudoers_rgx"
 
@@ -32,9 +23,17 @@ else
 	echo "... not symlinked!"
 fi
 
+remove_package "cassandra"
+
 sudo_rem_dir "/etc/cassandra"
 sudo_rem_dir "/var/lib/cassandra"
 sudo_rem_dir "/var/log/cassandra"
+
+echo "Removing APT source..."
+sudo_rem_file "/etc/apt/sources.list.d/cassandra.list"
+
+echo "Removing APT key"
+sudo_rem_file "/etc/apt/trusted.gpg.d/cassandra.gpg"
 
 }
 
