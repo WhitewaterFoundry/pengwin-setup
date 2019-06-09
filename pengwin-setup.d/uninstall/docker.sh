@@ -37,9 +37,9 @@ echo "Uninstalling Docker Bridge"
 
 echo "Removing npiperelay.exe"
 if [[ -d "$relayexedir" ]] ; then
-	if cmd-exe /C "tasklist" | grep -Fq 'npiperelay.exe' ; then
+	if cmd-exe /C tasklist | grep -Fq 'npiperelay.exe' ; then
 		echo "npiperelay.exe running. Killing process..."
-		cmd-exe /C "taskkill /IM 'npiperelay.exe' /F"
+		cmd-exe /C taskkill /IM 'npiperelay.exe' /F
 	fi
 
 	# Now safe to remove directory
