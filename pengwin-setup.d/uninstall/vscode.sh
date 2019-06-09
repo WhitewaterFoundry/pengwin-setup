@@ -8,6 +8,7 @@ function main()
 echo "Uninstalling VisualStudio Code"
 
 remove_package "code"
+rem_dir "$HOME/.vscode"
 
 echo "Removing APT source..."
 sudo_rem_file "/etc/apt/sources.list.d/vscode.list"
