@@ -76,14 +76,9 @@ function enable_ssh() {
     sudo tee "${startSsh}" << EOF
 #!/bin/bash
 
-# Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
-
-  sshd_status=\$(service ssh status)
-  if [[ \${sshd_status} = *"is not running"* ]]; then
-    service ssh --full-restart > /dev/null 2>&1
-  fi
-
+sshd_status=\$(service ssh status)
+if [[ \${sshd_status} = *"is not running"* ]]; then
+  service ssh --full-restart > /dev/null 2>&1
 fi
 
 EOF
@@ -93,7 +88,16 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${startSsh}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-ssh
 
     local profile_startssh="/etc/profile.d/start-ssh.sh"
-    echo "sudo ${startSsh}" | sudo tee "${profile_startssh}"
+    sudo tee "${profile_startssh}" << EOF
+#!/bin/bash
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+
+  sudo ${startSsh}
+fi
+
+EOF
 
   else
     echo "Skipping SSH Server"
