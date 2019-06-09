@@ -22,7 +22,7 @@ function main()
 {
 
 echo "Uninstalling pyenv"
-local initFile
+local initFile tempPath
 
 rem_dir "$HOME/.pyenv"
 
@@ -30,6 +30,17 @@ echo "Removing PATH modifier(s)"
 multiclean_file "$HOME/.bashrc"
 multiclean_file "$HOME/.zshrc"
 multiclean_file "$HOME/.config/fish"
+
+# Otherwise pyenv leaves a lot of functions / variables set in the environment
+# which only get cleared after a shell restart. Ensures we don't have issues
+# if multiple applications are set to be installed
+echo "Cleaning up shell"
+unset 'PROMPT_COMMAND'
+tempPath=$(echo "$PATH" | sed 's|:|\n|g' | grep -v 'pyenv')
+export PATH="$(echo $tempPath | sed 's| |:|g')"
+unset -f 'pyenv'
+unset -f '_pyenv'
+unset -v '_pyenv_virtualenv_hook'
 
 }
 
