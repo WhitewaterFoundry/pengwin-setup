@@ -23,6 +23,7 @@ echo "Removing APT key"
 sudo apt-key del "$yarn_key"
 
 echo "Removing PATH modifier(s)..."
+sudo_rem_file "/etc/profile.d/n-prefix.sh"
 if [[ -f "$HOME/.bashrc" ]] ; then
 	echo "$HOME/.bashrc found, cleaning"
 	clean_file "$HOME/.bashrc" "$line_rgx"

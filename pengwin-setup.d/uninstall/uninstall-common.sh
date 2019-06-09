@@ -9,6 +9,7 @@ function show_warning()
 local uninstall_item="$1"
 shift 1
 
+echo "Offering user $uninstall_item uninstall"
 if whiptail --title "!! $uninstall_item !!" --yesno "Are you sure you would like to uninstall $uninstall_item?\n\nWhile you can reinstall $uninstall_item from pengwin-setup, any of your own changes to install file(s)/directory(s) will be lost.\n\nSelect 'yes' if you would like to proceed" 14 85 ; then
 	if whiptail --title "!! $uninstall_item !!" --yesno "Are you absolutely sure you'd like to proceed in uninstalling $uninstall_item?" 7 85 ; then
 		echo "User confirmed $uninstall_item uninstall"
