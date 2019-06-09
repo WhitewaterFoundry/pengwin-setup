@@ -9,13 +9,13 @@ echo "Uninstalling Windows 10 themes"
 
 # Unset themes ?
 
+sudo_rem_dir "/usr/share/themes/windows-10-dark"
+sudo_rem_dir "/usr/share/themes/windows-10-light"
+
 remove_package "lxappearance"
 
 echo "Regenerating start-menu entry cache..."
 bash ${SetupDir}/shortcut.sh --yes
-
-sudo_rem_dir "/usr/share/themes/windows-10-dark"
-sudo_rem_dir "/usr/share/themes/windows-10-light"
 
 }
 

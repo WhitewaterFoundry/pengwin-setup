@@ -13,7 +13,17 @@ echo "Uninstalling nodejs (including n version manager, npm and yarn package man
 rem_dir "$HOME/n"
 rem_dir "$HOME/.npm"
 
-# Removing Yarn APT package + source
+echo "Removing PATH modifier(s)..."
+sudo_rem_file "/etc/profile.d/n-prefix.sh"
+if [[ -f "$HOME/.bashrc" ]] ; then
+	echo "$HOME/.bashrc found, cleaning"
+	clean_file "$HOME/.bashrc" "$line_rgx"
+fi
+if [[ -f "$HOME/.zshrc" ]] ; then
+	echo "$HOME/.zshrc found, cleaning"
+	clean_file "$HOME/.zshrc" "$line_rgx"
+fi
+
 remove_package "yarn"
 
 echo "Removing APT source"
@@ -21,20 +31,6 @@ sudo_rem_file "/etc/apt/sources.list.d/yarn.list"
 
 echo "Removing APT key"
 sudo apt-key del "$yarn_key"
-
-echo "Removing PATH modifier(s)..."
-sudo_rem_file "/etc/profile.d/n-prefix.sh"
-if [[ -f "$HOME/.bashrc" ]] ; then
-	echo "$HOME/.bashrc found, cleaning"
-	clean_file "$HOME/.bashrc" "$line_rgx"
-fi
-
-if [[ -f "$HOME/.zshrc" ]] ; then
-	echo "$HOME/.zshrc found, cleaning"
-	clean_file "$HOME/.zshrc" "$line_rgx"
-fi
-
-# Node install script doesn't support automatic Fish shell config
 
 }
 

@@ -20,6 +20,10 @@ sudo_rem_file "/usr/local/bin/tiller"
 sudo_rem_dir "/usr/local/ibmcloud"
 rem_dir "$HOME/.bluemix"
 
+echo "Removing bash completions..."
+sudo_rem_file "/etc/bash_completion.d/ibmcli_completion"
+sudo_rem_file "/etc/bash_completion.d/helm_completions.bash"
+
 remove_package "kubectl"
 
 echo "Removing kubectl APT source..."
@@ -28,10 +32,6 @@ sudo_rem_file "/etc/apt/sources.list.d/kubernetes.list"
 echo "Removing kubectl APT keys..."
 sudo apt-key del "$kubectl_key1"
 sudo apt-key del "$kubectl_key2"
-
-echo "Removing bash completions..."
-sudo_rem_file "/etc/bash_completion.d/ibmcli_completion"
-sudo_rem_file "/etc/bash_completion.d/helm_completions.bash"
 
 }
 
