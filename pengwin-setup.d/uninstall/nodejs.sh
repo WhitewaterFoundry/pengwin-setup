@@ -24,6 +24,9 @@ if [[ -f "$HOME/.zshrc" ]] ; then
 	clean_file "$HOME/.zshrc" "$line_rgx"
 fi
 
+echo "Removing bash completion..."
+sudo_rem_file "/etc/bash_completion.d/npm"
+
 remove_package "yarn"
 
 echo "Removing APT source"
