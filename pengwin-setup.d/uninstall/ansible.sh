@@ -11,6 +11,8 @@ echo "Uninstalling Ansible"
 
 remove_package "ansible"
 
+rem_dir "$HOME/.ansible"
+
 echo "Removing APT source..."
 sudo_rem_file "/etc/apt/sources.list.d/ansible.list"
 
