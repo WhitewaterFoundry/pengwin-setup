@@ -10,6 +10,9 @@ echo "Uninstall Azure command line tools"
 # Remove packages
 remove_package "azure-cli" "jq"
 
+echo "Removing bash completion..."
+sudo_rem_file "/etc/bash_completion.d/azure-cli"
+
 echo "Removing APT source..."
 sudo_rem_file "/etc/apt/sources.list.d/azurecli.list"
 
