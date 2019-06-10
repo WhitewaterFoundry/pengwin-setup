@@ -225,7 +225,7 @@ local pkg_list='azure-cli code dotnet powershell'
 
 for i in $pkg_list ; do
         if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
-                echo "$i installed, not safe to remove microsoft APT source"
+                echo "$i installed, not safe to remove Microsoft APT key"
                 return
         fi
 done
@@ -245,7 +245,7 @@ local pkg_list='dotnet powershell'
 # check packages not installed
 for i in $pkg_list ; do
 	if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
-		echo "$i installed, not safe to remove microsoft APT source"
+		echo "$i installed, not safe to remove Microsoft APT source"
 		return
 	fi
 done
@@ -260,12 +260,12 @@ function safe_rem_debianstablesrc()
 
 # Usage: safe_rem_debianstablesrc
 # (no arguments necessary)
-local pkg_list='code dotnet poewrshell'
+local pkg_list='code dotnet powershell'
 
 # check packages not installed
 for i in $pkg_list ; do
         if (dpkg-query -s "$i" | grep 'installed') > /dev/null 2>&1 ; then
-                echo "$i installed, not safe to remove microsoft APT source"
+                echo "$i installed, not safe to remove Debian stable APT source"
                 return
         fi
 done
