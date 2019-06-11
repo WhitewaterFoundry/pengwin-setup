@@ -3,7 +3,7 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-if (whiptail --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75); then
+if (confirm --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75); then
 	echo "Installing GUILIB"
 	echo "$ apt-get install -y -q -t testing xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11"
 	sudo apt-get install -y -q -t testing xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11
