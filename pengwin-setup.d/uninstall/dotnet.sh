@@ -9,6 +9,12 @@ echo "Uninstalling dotnet"
 
 remove_package "dotnet-sdk-2.2" "nuget"
 
+echo "Removing leftover dotnet cli tools directory..."
+rem_dir "$HOME/.dotnet"
+
+echo "Removing dotnet cli tools PATH modification..."
+sudo_rem_file "/etc/profile.d/dotnet-cli-tools-bin-path.sh"
+
 echo "Removing APT source(s)..."
 safe_rem_microsoftsrc
 safe_rem_debianstablesrc
