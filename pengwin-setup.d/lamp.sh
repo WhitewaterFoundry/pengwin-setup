@@ -3,31 +3,34 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-echo "Installing MariaDB Database Server"
-sudo apt-get -y -q install mariadb-server mariadb-client
-apt policy mariadb-server
+function install_lamp() {
 
-service mariadb status
+  if (confirm --title "LAMP Stack" --yesno "Would you like to Install the LAMP Stack?" 10 60) ; then
 
-echo "Installing Apache Web Server"
-sudo apt-get -y -q install apache2 apache2-utils
-sudo service apache2 start
-sudo apache2 -v
+    echo "Installing MariaDB Database Server"
+    sudo apt-get -y -q install mariadb-server mariadb-client
+    apt policy mariadb-server
 
-service apache2 status
+    service mariadb status
 
+    echo "Installing Apache Web Server"
+    sudo apt-get -y -q install apache2 apache2-utils
+    sudo service apache2 start
+    sudo apache2 -v
 
-echo "Installing PHP"
-sudo apt-get -y -q install php libapache2-mod-php php-cli php-fpm php-json php-pdo php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath
-sudo a2enmod php7.3
+    service apache2 status
 
-php -v
+    echo "Installing PHP"
+    sudo apt-get -y -q install php libapache2-mod-php php-cli php-fpm php-json php-pdo php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath
+    sudo a2enmod php7.3
 
-echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php
+    php -v
 
-wslview "http://localhost/phpinfo.php"
+    echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php
 
-echo "Installing LAMP as a service"
+    wslview "http://localhost/phpinfo.php"
+
+    echo "Installing LAMP as a service"
 
     startLamp="/usr/bin/start-lamp"
     #local startLamp
@@ -62,3 +65,18 @@ if ( which cmd.exe >/dev/null ); then
 fi
 
 EOF
+
+  else
+    echo "Skipping SSH Server"
+  fi
+
+
+}
+
+function main() {
+
+  install_lamp
+
+}
+
+main
