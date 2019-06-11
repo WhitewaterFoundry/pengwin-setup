@@ -3,7 +3,7 @@
 source $(dirname "$0")/uninstall-common.sh
 sdkman_rgx1='^#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!'
 sdkman_rgx2='^[^#]*\bexport SDKMAN_DIR='
-sdkman_rgx3='^[^#]*\bsource "\${SDKMAN_DIR}\/bin\/sdkman-init\.sh"'
+sdkman_rgx3='^[^#]*\bsource ".*\/bin\/sdkman-init\.sh"'
 
 function multiclean_file()
 {
