@@ -7,14 +7,20 @@ function main()
 
 echo "Uninstalling Windows 10 themes"
 
-rem_file "$HOME/.gtkrc-2.0"
 sudo_rem_dir "/usr/share/themes/windows-10-dark"
 sudo_rem_dir "/usr/share/themes/windows-10-light"
 
-remove_package "lxappearance"
+if (whiptail --title "LXAppearance" --yesno "LXAppearance was installed alongside the Windows 10 themes to allow setting of Linux GUI application themes. Would you like to remove this too?" 8 85) ; then
+	remove_package "lxappearance"
 
-echo "Regenerating start-menu entry cache..."
-bash ${SetupDir}/shortcut.sh --yes
+	rem_file "$HOME/.gtkrc-2.0"
+
+	echo "Regenerating start-menu entry cache..."
+	bash ${SetupDir}/shortcut.sh --yes
+else
+	echo "User opted to keep LXAppearance installed. Cleaning Win10 theme configurations"
+	clean_file "$HOME/.gtkrc-2.0" "$theme_rgx"
+fi
 
 }
 
