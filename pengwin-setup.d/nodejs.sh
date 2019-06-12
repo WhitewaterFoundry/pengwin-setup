@@ -38,12 +38,12 @@ if ( which cmd.exe >/dev/null ); then
   WIN_C_PATH="\$(wslpath 'C:\')"
 
   if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
-    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}:##")
+    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
   fi
 
   WIN_YARN_PATH="\$(dirname "\$(which yarn)")"
   if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
-    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}:##")
+    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
   fi
 fi
 EOF
