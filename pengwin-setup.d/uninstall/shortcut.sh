@@ -2,7 +2,7 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
-shortcut_path="$(wslpath '$(wslvar -l Programs)')/Pengwin Applications"
+shortcut_path=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
 
 function main()
 {
