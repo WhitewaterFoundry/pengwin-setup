@@ -2,6 +2,8 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
+rust_rgx='^[^#]*\PATH.*/.cargo/bin'
+
 function main()
 {
 
@@ -13,6 +15,7 @@ rem_dir "$HOME/.cargo"
 echo "Removing PATH modifier(s)..."
 sudo_rem_file "/etc/profile.d/rust.sh"
 sudo_rem_file "/etc/fish/conf.d/rust.sh"
+clean_file "$HOME/.profile" "$rust_rgx"
 
 }
 
