@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
 function zshinstall {
 ZSH_SETUP=".zsh_pengwin"
@@ -56,32 +57,40 @@ if (whiptail --title "zsh" --yesno "Would you like to download and install oh-my
     cd "Type exit to return to pengwin-setup" 
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     cd ..
+
+    #Change the default theme for one more friendly with Windows console default font
+    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="bira"/' "${HOME}/.zshrc"
+
     cleantmp
 else
     echo "Skipping oh-my-zsh"
 fi
 
 if (whiptail --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55) then
-    chsh -s $(which zsh)
+    chsh -s "$(which zsh)"
 fi
 }
 
-function fishinstall {
-if (whiptail --title "fish" --yesno "Would you like to download and install oh-my-fish?" 8 55) then
+function fish_install() {
+  if (whiptail --title "fish" --yesno "Would you like to download and install oh-my-fish?" 8 55); then
     createtmp
     whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
     mkdir "Type exit to return to pengwin-setup"
     cd "Type exit to return to pengwin-setup"
     curl -L https://get.oh-my.fish | fish
     cd ..
-    cleantmp
-else
-    echo "Skipping Oh My Fish"
-fi
 
-if (whiptail --title "fish" --yesno "Would you like to set fish as the default shell?" 8 55) then
-    chsh -s $(which fish)
-fi
+    #Change the default theme for one more friendly with Windows console default font
+    fish -c "omf install bira"
+
+    cleantmp
+  else
+    echo "Skipping Oh My Fish"
+  fi
+
+  if (confirm --title "fish" --yesno "Would you like to set fish as the default shell?" 8 55); then
+    chsh -s "$(which fish)"
+  fi
 }
 
 function cshinstall {
@@ -112,7 +121,7 @@ function installandsetshell {
   if [[ $menu_choice == *"FISH"* ]] ; then
     echo "Installing fish..."
     sudo apt install fish -y
-    fishinstall
+    fish_install
   fi
 
   if [[ $menu_choice == *"CSH"* ]] ; then
