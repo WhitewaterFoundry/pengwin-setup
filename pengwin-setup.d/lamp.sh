@@ -21,12 +21,14 @@ function install_lamp() {
     service apache2 status
 
     echo "Installing PHP"
-    sudo apt-get -y -q install php libapache2-mod-php php-cli php-fpm php-json php-pdo php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath
+    sudo apt-get -y -q install php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath
     sudo a2enmod php7.3
 
     php -v
 
     echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php
+
+    sudo service apache2 restart
 
     wslview "http://localhost/phpinfo.php"
 
