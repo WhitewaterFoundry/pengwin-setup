@@ -40,7 +40,7 @@ function install_lamp() {
 #!/bin/bash
 
 mysql_status=\$(service mysql status)
-if [[ \${mysql_status} = *"is not running"* ]]; then
+if [[ \${mysql_status} = *"is stopped"* ]]; then
   service mysql --full-restart > /dev/null 2>&1
 fi
 
