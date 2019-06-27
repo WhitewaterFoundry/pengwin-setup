@@ -11,6 +11,7 @@ function main() {
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
       "JAVA" "Install the SDKMan to manage Java SDKs" off \
+      "LATEX" "Install TexLive for Latex Support" \
       "NODEJS" "Install Node.js and npm" off \
       "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
@@ -43,11 +44,15 @@ function main() {
     bash ${SetupDir}/java.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"LATEX"* ]] ; then
+    echo "LATEX"
+    bash ${SetupDir}/latex.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"NODEJS"* ]] ; then
     echo "NODE"
     bash ${SetupDir}/nodejs.sh "$@"
   fi
-
 
   if [[ ${menu_choice} == *"PYTHONPI"* ]] ; then
     echo "PYTHON"
