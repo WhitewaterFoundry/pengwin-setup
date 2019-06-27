@@ -5,7 +5,7 @@ source $(dirname "$0")/common.sh "$@"
 
 latex_choice=$(
 
-menu --title "LaTeX" --radiolist --separate-output "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 16 95 8 \
+menu --title "LaTeX" --radiolist --separate-output "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 12 74 4 \
     "FULL" "Install all TexLive packages" on \
     "BASE" "Install essential TexLive packages " off \
     "RECOMMENDED" "Install recommended TexLive packages" off \
@@ -30,7 +30,7 @@ fi
 
 if [[ ${latex_choice} == *"RECOMMENDED"* ]] ; then
   echo "Installing TexLive Recommended..."
-  sudo apt-get install -y texlive-latex-base texlive-recommended
+  sudo apt-get install -y texlive-latex-base texlive-latex-recommended
 fi
 
 if [[ ${menu_choice} == *"EXTRA"* ]] ; then
