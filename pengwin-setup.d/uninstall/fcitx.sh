@@ -12,7 +12,7 @@ sudo_rem_file "/etc/profile.d/fcitx"
 sudo_rem_file "/etc/profile.d/fcitx.sh"
 
 echo "Removing fcitx packages..."
-remove_package "fcitx-sunpinyin" "fcitx-libpinyin" "fcitx-rime" "fcitx-googlepinyin" "fcitx-chewing" "fcitx-mozc" "fcitx-kkc" "fcitx-kkc-dev" "fcitx-hangul" "fcitx-unikey" "fcitx-sayura" "fcitx-table" "fcitx-table-all"
+remove_package "fcitx" "fcitx-sunpinyin" "fcitx-libpinyin" "fcitx-rime" "fcitx-googlepinyin" "fcitx-chewing" "fcitx-mozc" "fcitx-kkc" "fcitx-kkc-dev" "fcitx-hangul" "fcitx-unikey" "fcitx-sayura" "fcitx-table" "fcitx-table-all"
 
 }
 
