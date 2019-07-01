@@ -15,6 +15,7 @@ if ! ruby --version > /dev/null 2>&1 ; then
 fi
 
 echo "Running Homebrew uninstall script"
+whiptail --title "Homebrew" --msgbox "Please type 'y' when requested to by the Homebrew uninstaller" 8 85
 if ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" ; then
 	echo "Successfully executed script"
 else
