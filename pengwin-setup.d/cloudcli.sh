@@ -44,7 +44,7 @@ function install_awscli() {
     fi
 
     createtmp
-    sudo apt-get -y install unzip
+    sudo apt-get -y install unzip python3-distutils
     wget -O awscli-bundle.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
     unzip awscli-bundle.zip
 
@@ -72,15 +72,21 @@ function install_doctl() {
     echo "Installing Digital Ocean CTL"
 
     createtmp
-    
+
     echo "Checking for go"
-    if ! (go version); then
+    if ! go version ; then
+    if ! /usr/local/go/bin/go version ; then
       echo "Downloading Go using wget."
       wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
-
       export GOROOT=$(pwd)/go
       export PATH="${GOROOT}/bin:$PATH"
+    else
+      # Whether it was just installed previously, or right now,
+      # makes sure to set correct env variables
+      export GOROOT=/usr/local/go
+      export PATH="${GOROOT}/bin:$PATH"
+    fi
     fi
 
     mkdir gohome
@@ -100,7 +106,7 @@ function install_doctl() {
     echo "Building doctl"
     go get -u github.com/digitalocean/doctl/cmd/doctl
     sudo cp ${GOPATH}/bin/doctl /usr/local/bin/doctl
-    
+
     if [[ ${git_exists} -eq 0 ]]; then
       sudo apt-get -y -q purge git
       sudo apt-get -y -q autoremove
