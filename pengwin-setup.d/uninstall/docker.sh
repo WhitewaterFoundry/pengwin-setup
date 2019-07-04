@@ -5,7 +5,7 @@ source $(dirname "$0")/uninstall-common.sh
 relayexedir="$wHome/.npiperelay"
 
 wslconf_rgx='^[^#]*\broot=/'
-mntbin_rgx='^[^#]*\bsudo\s*ALL=NOPASSWD: /usr/bin/create-mnt-c-link' '/etc/sudoers'
+mntbin_rgx='^[^#]*\bsudo\s*ALL=NOPASSWD: /usr/bin/create-mnt-c-link'
 
 function revert_mnt_point()
 {
