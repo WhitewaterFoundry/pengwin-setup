@@ -2,9 +2,13 @@
 
 SetupDir="/usr/local/pengwin-setup.d"
 
-VERSION="1.2a"
+export VERSION="1.2a"
 
+# shellcheck disable=SC1090
 source ${SetupDir}/common.sh "$@"
+
+declare CANCELLED
+declare SKIP_UPDATES
 
 # define functions
 
@@ -147,7 +151,7 @@ if [[ ! ${SKIP_UPDATES} ]]; then
 fi
 
 # Ensure our packages are held to prevent odd situation of
-# being updated while running other operations from pengwin-setup 
+# being updated while running other operations from pengwin-setup
 # install menu
 echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
 sudo apt-mark hold pengwin-base pengwin-setup > /dev/null 2>&1
