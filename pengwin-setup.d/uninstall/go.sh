@@ -12,6 +12,9 @@ echo "Uninstalling go"
 echo "Removing $go_dir"
 sudo_rem_dir "/usr/local/go"
 
+echo "Removing go build cache"
+rem_dir "$HOME/.cache/go-build"
+
 echo "Removing PATH modifier..."
 sudo_rem_file "/etc/profile.d/go.sh"
 

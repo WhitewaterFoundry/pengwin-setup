@@ -173,7 +173,7 @@ if $pip --version > /dev/null 2>&1 ; then
 		fi
 	done
 
-	$pip uninstall "$installed" -y
+	$pip uninstall $installed -y
 	return
 fi
 
@@ -208,7 +208,7 @@ if $pip --version > /dev/null 2>&1 ; then
                 fi
         done
 
-	sudo $pip uninstall "$installed" -y
+	sudo $pip uninstall $installed -y
 	return
 fi
 

@@ -14,7 +14,7 @@ sudo_rem_file "$installdir/bin/cpack"
 sudo_rem_file "$installdir/bin/ctest"
 sudo_rem_dir "$installdir/doc"
 sudo_rem_file "$installdir/share/aclocal/cmake.m4"
-sudo_rem_dir "$installdir/share/cmake-*"
+sudo_rem_dir $installdir/share/cmake-*
 
 }
 

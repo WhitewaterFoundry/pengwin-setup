@@ -24,7 +24,7 @@ function main {
     echo "Installing CMake"
 
     local dist="$(uname -m)"
-    wget -O cmake.sh "https://github.com/Microsoft/CMake/releases/download/untagged/cmake-3.13.18112701-MSVC_2-Linux-${dist/86_/}.sh"
+    wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.13.18112701/cmake-3.13.18112701-MSVC_2-Linux-${dist/86_/}.sh"
     sudo bash cmake.sh  --skip-license --prefix=/usr/local
 
     cleantmp
