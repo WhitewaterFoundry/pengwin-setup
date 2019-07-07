@@ -9,12 +9,13 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 16 95 9 \
+    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 16 95 10 \
       "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " off \
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
       "JAVA" "Install the SDKMan to manage Java SDKs" off \
       "JOOMLA" "Install development support for Joomla" off \
+      "LATEX" "Install TexLive for LaTeX Support" off \
       "NODEJS" "Install Node.js and npm" off \
       "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
@@ -51,11 +52,15 @@ function main() {
     bash ${SetupDir}/joomla.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"LATEX"* ]] ; then
+    echo "LATEX"
+    bash ${SetupDir}/latex.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"NODEJS"* ]] ; then
     echo "NODE"
     bash ${SetupDir}/nodejs.sh "$@"
   fi
-
 
   if [[ ${menu_choice} == *"PYTHONPI"* ]] ; then
     echo "PYTHON"

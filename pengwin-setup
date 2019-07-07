@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SetupDir="/usr/local/pengwin-setup.d"
+SetupDir="/mnt/e/crramirez/IdeaProjects/wlinux-setup/pengwin-setup.d"
 
 export VERSION="1.2a"
 

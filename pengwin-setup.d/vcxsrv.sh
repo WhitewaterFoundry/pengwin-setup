@@ -33,9 +33,7 @@ if (whiptail --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-se
 	if (whiptail --title "VCXSRV" --yesno "Would you like VcXsrv to be started at Pengwin launch? A startup script will be added to /etc/profile.d" 8 80) then
 		echo "Configuring VcxSrv to start on Pengwin launch"
 		sudo bash -c 'cat > /etc/profile.d/vcxsrv.sh' << EOF
-#!/bin/bash
-cmd.exe /C "${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow &> /dev/null &
-disown
+(cmd.exe /C "${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow &> /dev/null &)
 EOF
 	fi
 else

@@ -117,7 +117,7 @@ function main() {
 
   if [[ ${menu_choice} == *"HIDPI"* ]] ; then
     echo "HIDPI"
-    bash ${UninstallDir}/HIDPI.sh "$@"
+    bash ${UninstallDir}/hidpi.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"HOMEBREW"* ]] ; then
