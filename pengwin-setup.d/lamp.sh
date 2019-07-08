@@ -5,7 +5,7 @@ source "$(dirname "$0")/common.sh" "$@"
 
 function install_lamp() {
 
-  if (confirm --title "LAMP Stack" --yesno "Would you like to Install the LAMP Stack?" 10 60) ; then
+  if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60) ; then
 
     echo "Installing MariaDB Database Server"
     sudo apt-get -y -q install mariadb-server mariadb-client
