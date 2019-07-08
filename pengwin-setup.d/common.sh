@@ -19,6 +19,11 @@ function process_arguments() {
         SKIP_UPDATES=1
         shift
       ;;
+      --norebuildicons)
+        echo "Skipping rebuild start menu"
+        SKIP_STARTMENU=1
+        shift
+      ;;
       *)
         shift
     esac

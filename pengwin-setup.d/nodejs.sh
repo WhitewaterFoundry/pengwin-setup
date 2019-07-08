@@ -17,6 +17,7 @@ createtmp
 
 echo "Look for Windows version of npm"
 
+NPM_WIN_PROFILE="/etc/profile.d/rm-win-npm-path.sh"
 NPM_PROFILE="/etc/profile.d/n-prefix.sh"
 
 if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
@@ -29,7 +30,7 @@ if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
   fi
 
 
-  sudo tee "${NPM_PROFILE}" << EOF
+  sudo tee "${NPM_WIN_PROFILE}" << EOF
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
@@ -37,21 +38,18 @@ if ( which cmd.exe >/dev/null ); then
   WIN_C_PATH="\$(wslpath 'C:\')"
 
   if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
-    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}:##")
+    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
   fi
 
   WIN_YARN_PATH="\$(dirname "\$(which yarn)")"
   if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
-    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}:##")
+    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
   fi
 fi
 EOF
 
-  eval "$(cat "${NPM_PROFILE}")"
+  eval "$(cat "${NPM_WIN_PROFILE}")"
 
-else
-
-  sudo rm "${NPM_PROFILE}"
 fi
 
 echo "Ensuring we have build-essential installed"
@@ -63,9 +61,13 @@ env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
 
 N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
 
-echo "${N_PATH}" | sudo tee -a "${NPM_PROFILE}"
+echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
 
 eval "${N_PATH}"
+
+# Add the path for sudo
+SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
+echo "Defaults secure_path=\"${SUDO_PATH}:${N_PREFIX}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
 echo "Installing latest node.js release"
 
