@@ -53,12 +53,12 @@ sudo apt-get autoremove -y
 }
 
 function command_check() {
-# Usage: command_check <EXPECTED PATH>
+# Usage: command_check <EXPECTED PATH> <ARGS (if any)>
 local execname=$(echo "$1" | sed -e "s|^.*\/||g")
-if "$execname" > /dev/null 2>&1 ; then
+if "$execname" "$2" > /dev/null 2>&1 ; then
 	echo "Executable $execname in PATH"
 	return 0
-elif "$1" > /dev/null 2>&1 ; then
+elif "$1" "$2" > /dev/null 2>&1 ; then
 	echo "Executable '$execname' at: $1"
 	return 0
 else
