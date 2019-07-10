@@ -74,17 +74,21 @@ function install_doctl() {
     createtmp
 
     echo "Checking for go"
-    if ! command_check '/usr/local/go/bin/go' 'version' ; then
+    command_check '/usr/local/go/bin/go' 'version'
+    local go_check=$?
+    if [ $go_check -eq 1 ] ; then
       echo "Downloading Go using wget."
       wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
       export GOROOT=$(pwd)/go
       export PATH="${GOROOT}/bin:$PATH"
     else
-      # Whether it was just installed previously, or right now,
-      # makes sure to set correct env variables
-      export GOROOT=/usr/local/go
-      export PATH="${GOROOT}/bin:$PATH"
+      if [ $go_check -eq 2 ] ; then
+        # If go was only just installed previously without shell reset,
+        # makes sure to set correct env variables
+        export GOROOT=/usr/local/go
+        export PATH="${GOROOT}/bin:$PATH"
+      fi
     fi
 
     mkdir gohome
