@@ -74,8 +74,7 @@ function install_doctl() {
     createtmp
 
     echo "Checking for go"
-    if ! go version ; then
-    if ! /usr/local/go/bin/go version ; then
+    if ! command_check '/usr/local/go/bin/go' 'version' ; then
       echo "Downloading Go using wget."
       wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
@@ -86,7 +85,6 @@ function install_doctl() {
       # makes sure to set correct env variables
       export GOROOT=/usr/local/go
       export PATH="${GOROOT}/bin:$PATH"
-    fi
     fi
 
     mkdir gohome

@@ -18,12 +18,17 @@ function docker_install_build_relay() {
   if [[ ! -f "${wHome}/.npiperelay/npiperelay.exe" ]]; then
 
     echo "Checking for go"
-    if ! (go version); then
+    if ! command_check '/usr/local/go/bin/go' 'version' ; then
       echo "Downloading Go using wget."
       wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
 
       export GOROOT=$(pwd)/go
+      export PATH="${GOROOT}/bin:$PATH"
+    else
+      # Whether it was just installed previously, or right now,
+      # makes sure to set correct env variables
+      export GOROOT=/usr/local/go
       export PATH="${GOROOT}/bin:$PATH"
     fi
 
