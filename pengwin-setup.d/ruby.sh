@@ -52,8 +52,9 @@ if (whiptail --title "RAILS" --yesno "Would you like to download and install Rai
   echo "Installing RAILS"
 
   echo "Checking for node"
-  if ! node -v ; then
-  if ! "$HOME/n/bin/node" -v ; then # double checks if our local nodejs install was just performed but PATH not yet updated
+  command_check "$HOME/n/bin/node" "-v"
+  node_check=$?
+  if [ $node_check -eq 1 ] ; then # double checks if our local nodejs install was just performed but PATH not yet updated
     echo "node not installed. Offering user nodejs install"
     if (whiptail --title "NODE" --yesno "Ruby on Rails framework requires JavaScript Runtime Environment (Node.js) to manage the features of Rails.\n\nWould you like to download and install NodeJS using n and the npm package manager?" 12 65); then
       bash ${SetupDir}/nodejs.sh -y "$@"
@@ -61,7 +62,6 @@ if (whiptail --title "RAILS" --yesno "Would you like to download and install Rai
       echo "Skipping RAILS"
       exit 1
     fi
-  fi
   fi
   echo "node installed"
 
