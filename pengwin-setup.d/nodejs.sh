@@ -72,9 +72,12 @@ elif [[ ${menu_choice} == "N" ]] ; then
   env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
 
   N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
-
   echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
   eval "${N_PATH}"
+
+  # Clear N from .bashrc now not needed
+  filecontents=$(cat "$HOME/.bashrc" | grep -v -e '^.*N_PREFIX.*$')
+  printf '%s' "$filecontents" > "$HOME/.bashrc"
 
   # Add the path for sudo
   SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
@@ -100,6 +103,10 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   NVM_COMP="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/bash_completion.*$')"
   eval "$NVM_PATH"
   eval "$NVM_SH"
+
+  # Clear nvm from .bashrc now not needed
+  filecontents=$(cat "$HOME/.bashrc" | grep -v -e '^.*NVM_DIR.*$')
+  printf '%s' "$filecontents" > "$HOME/.bashrc"
 
   # Add nvm to path, nvm to bash completion
   echo '$NVM_PATH' | sudo tee /etc/profile.d/nvm-prefix.sh
