@@ -109,10 +109,10 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   printf '%s' "$filecontents" > "$HOME/.bashrc"
 
   # Add nvm to path, nvm to bash completion
-  echo '$NVM_PATH' | sudo tee /etc/profile.d/nvm-prefix.sh
-  echo '$NVM_SH' | sudo tee -a /etc/profile.d/nvm-prefix.sh
+  echo "$NVM_PATH" | sudo tee /etc/profile.d/nvm-prefix.sh
+  echo "$NVM_SH" | sudo tee -a /etc/profile.d/nvm-prefix.sh
   sudo mkdir -p /etc/bash_completion.d
-  echo '$NVM_COMP' | sudo tee /etc/bash_completion.d/nvm
+  echo "$NVM_COMP" | sudo tee /etc/bash_completion.d/nvm
 
   # Add the path for sudo
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
