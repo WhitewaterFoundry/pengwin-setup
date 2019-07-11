@@ -91,7 +91,8 @@ elif [[ ${menu_choice} == "N" ]] ; then
   installed=0
 elif [[ ${menu_choice} == "NVM" ]] ; then
   echo "Installing nvm, Node.js version manager"
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+  temp_profile="$(pwd)/temp_profile"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | PROFILE="$temp_profile" bash
 
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat ${HOME}/.bashrc | grep '^export NVM_DIR=')"
@@ -99,6 +100,7 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   eval "$NVM_PATH"
   eval "$NVM_SH"
 
+  sudo mv "$temp_profile" "/etc/profile.d/nvm-prefix.sh"
   # Add the path for sudo
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
   #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
