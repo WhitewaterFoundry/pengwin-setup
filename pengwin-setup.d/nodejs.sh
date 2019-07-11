@@ -74,7 +74,6 @@ elif [[ ${menu_choice} == "N" ]] ; then
   N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
 
   echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
-
   eval "${N_PATH}"
 
   # Add the path for sudo
@@ -103,10 +102,10 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   eval "$NVM_SH"
 
   # Add nvm to path, nvm to bash completion
-  sudo bash -c "echo '$NVM_PATH' > /etc/profile.d/nvm-prefix.sh"
-  sudo bash -c "echo '$NVM_SH' >> /etc/profile.d/nvm-prefix.sh"
+  echo '$NVM_PATH' | sudo tee /etc/profile.d/nvm-prefix.sh
+  echo '$NVM_SH' | sudo tee -a /etc/profile.d/nvm-prefix.sh
   sudo mkdir -p /etc/bash_completion.d
-  sudo bash -c "echo '$NVM_COMP' > /etc/bash_completion.d/nvm"
+  echo '$NVM_COMP' | sudo tee /etc/bash_completion.d/nvm
 
   # Add the path for sudo
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
