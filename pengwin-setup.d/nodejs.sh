@@ -13,10 +13,21 @@ if [[ ! ${SkipConfirmations} ]]; then
   fi
 fi
 
+echo "Offering user n / nvm version manager choice"
+menu_choice=$(
+
+  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 10 85 2 \
+    "N" "n version manager" off \
+    "NVM" "nvm version manager" off \
+
+    3>&1 1>&2 2>&3)
+
+if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  exit 1
+fi
+
 createtmp
-
 echo "Look for Windows version of npm"
-
 NPM_WIN_PROFILE="/etc/profile.d/rm-win-npm-path.sh"
 NPM_PROFILE="/etc/profile.d/n-prefix.sh"
 
@@ -52,18 +63,7 @@ EOF
 
 fi
 
-echo "Offering user n / nvm version manager choice"
-menu_choice=$(
-
-  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 10 85 2 \
-    "N" "n version manager" off \
-    "NVM" "nvm version manager" off \
-
-    3>&1 1>&2 2>&3)
-
-if [[ ${menu_choice} == "CANCELLED" ]] ; then
-  exit 1
-elif [[ ${menu_choice} == "N" ]] ; then
+if [[ ${menu_choice} == "N" ]] ; then
   echo "Ensuring we have build-essential installed"
   sudo apt-get -y -q install build-essential
 
