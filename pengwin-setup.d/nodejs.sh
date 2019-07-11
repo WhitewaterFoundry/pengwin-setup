@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if [[ ! ${SkipConfirmations} ]]; then
 
-  if (whiptail --title "NODE" --yesno "Would you like to download and install NodeJS using n and the npm package manager?" 8 88); then
+  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js with npm using either the n or nvm version manager?" 8 88); then
     echo "Installing NODE"
   else
     echo "Skipping NODE"
@@ -52,15 +52,15 @@ EOF
 
 fi
 
+echo "Offering user n / nvm version manager choice"
 menu_choice=$(
+
   menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 16 95 10 \
     "N" "'n' Node.js version manager" off \
     "NVM" "'nvm' Node.js version manager" off \
-    3>&1 1>&2 2>&3
-)
 
+    3>&1 1>&2 2>&3)
 
-installed=1
 if [[ ${menu_choice} == "CANCELLED" ]] ; then
   exit 1
 elif [[ ${menu_choice} == "N" ]] ; then
@@ -88,19 +88,26 @@ elif [[ ${menu_choice} == "N" ]] ; then
   curl -0 -L https://npmjs.com/install.sh -o install.sh
   sh install.sh
 
-  installed=0
+  # Add npm to bash completion
+  sudo mkdir -p /etc/bash_completion.d
+  npm completion | sudo tee /etc/bash_completion.d/npm
 elif [[ ${menu_choice} == "NVM" ]] ; then
   echo "Installing nvm, Node.js version manager"
-  temp_profile="$(pwd)/temp_profile"
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | PROFILE="$temp_profile" bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat ${HOME}/.bashrc | grep '^export NVM_DIR=')"
-  NVM_SH="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/nvm.sh.*$)"
+  NVM_SH="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/nvm.sh.*$')"
+  NVM_COMP="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/bash_completion.*$')"
   eval "$NVM_PATH"
   eval "$NVM_SH"
 
-  sudo mv "$temp_profile" "/etc/profile.d/nvm-prefix.sh"
+  # Add nvm to path, nvm to bash completion
+  sudo bash -c "echo '$NVM_PATH' > /etc/profile.d/nvm-prefix.sh"
+  sudo bash -c "echo '$NVM_SH' >> /etc/profile.d/nvm-prefix.sh"
+  sudo mkdir -p /etc/bash_completion.d
+  sudo bash -c "echo '$NVM_COMP' > /etc/bash_completion.d/nvm"
+
   # Add the path for sudo
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
   #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
@@ -108,11 +115,7 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   echo "Installing latest Node.js release"
   nvm install $(nvm ls-remote | tail -1 | sed -e 's|^\s||g') --latest-npm
 
-  installed=0
-fi
-
-if $installed ; then
-  sudo mkdir -p /etc/bash_completion.d
+  # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
 fi
 cleantmp
