@@ -52,35 +52,69 @@ EOF
 
 fi
 
-echo "Ensuring we have build-essential installed"
-sudo apt-get -y -q install build-essential
+menu_choice=$(
+  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 16 95 10 \
+    "N" "'n' Node.js version manager" off \
+    "NVM" "'nvm' Node.js version manager" off \
+    3>&1 1>&2 2>&3
+)
 
-echo "Installing n, Node.js version manager"
-curl -L https://git.io/n-install -o n-install.sh
-env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
 
-N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
+installed=1
+if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  exit 1
+elif [[ ${menu_choice} == "N" ]] ; then
+  echo "Ensuring we have build-essential installed"
+  sudo apt-get -y -q install build-essential
 
-echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
+  echo "Installing n, Node.js version manager"
+  curl -L https://git.io/n-install -o n-install.sh
+  env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
 
-eval "${N_PATH}"
+  N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
 
-# Add the path for sudo
-SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
-echo "Defaults secure_path=\"${SUDO_PATH}:${N_PREFIX}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
+  echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
 
-echo "Installing latest node.js release"
+  eval "${N_PATH}"
 
-n latest
+  # Add the path for sudo
+  SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
+  echo "Defaults secure_path=\"${SUDO_PATH}:${N_PREFIX}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
-echo "Installing npm"
-curl -0 -L https://npmjs.com/install.sh -o install.sh
-sh install.sh
+  echo "Installing latest node.js release"
+  n latest
 
-sudo mkdir -p /etc/bash_completion.d
-npm completion | sudo tee /etc/bash_completion.d/npm
+  echo "Installing npm"
+  curl -0 -L https://npmjs.com/install.sh -o install.sh
+  sh install.sh
 
+  installed=0
+elif [[ ${menu_choice} == "NVM" ]] ; then
+  echo "Installing nvm, Node.js version manager"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+  # Set NVM_DIR variable and load nvm
+  NVM_PATH="$(cat ${HOME}/.bashrc | grep '^export NVM_DIR=')"
+  NVM_SH="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/nvm.sh.*$)"
+  eval "$NVM_PATH"
+  eval "$NVM_SH"
+
+  # Add the path for sudo
+  #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
+  #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
+
+  echo "Installing latest Node.js release"
+  nvm install $(nvm ls-remote | tail -1 | sed -e 's|^\s||g') --latest-npm
+
+  installed=0
+fi
+
+if $installed ; then
+  sudo mkdir -p /etc/bash_completion.d
+  npm completion | sudo tee /etc/bash_completion.d/npm
+fi
 cleantmp
+
 if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) ; then
   echo "Installing YARN"
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
