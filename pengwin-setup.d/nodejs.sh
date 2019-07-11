@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if [[ ! ${SkipConfirmations} ]]; then
 
-  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js with npm using either the n or nvm version manager?" 8 88); then
+  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm) using either the n or nvm version manager?" 8 88); then
     echo "Installing NODE"
   else
     echo "Skipping NODE"
@@ -55,9 +55,9 @@ fi
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 16 95 10 \
-    "N" "'n' Node.js version manager" off \
-    "NVM" "'nvm' Node.js version manager" off \
+  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 10 85 2 \
+    "N" "n version manager" off \
+    "NVM" "nvm version manager" off \
 
     3>&1 1>&2 2>&3)
 
