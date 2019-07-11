@@ -3,6 +3,7 @@
 # shellcheck disable=SC1090
 source "$(dirname "$0")/common.sh" "$@"
 declare wHome
+declare wHomeWinPath
 declare USER
 
 function main() {
