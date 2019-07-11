@@ -8,7 +8,6 @@ if [[ ! ${SkipConfirmations} ]]; then
     echo "Installing NODE"
   else
     echo "Skipping NODE"
-
     exit 1
   fi
 fi
@@ -23,6 +22,7 @@ menu_choice=$(
     3>&1 1>&2 2>&3)
 
 if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  echo "Skipping NODE"
   exit 1
 fi
 
@@ -34,12 +34,9 @@ NPM_PROFILE="/etc/profile.d/n-prefix.sh"
 if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
 
   if ! (confirm --title "npm in Windows" --yesno "npm is already installed in Windows in \"$(wslpath -m "$(which npm)")\".\n\nWould you still want to install the Linux version? This will hide the Windows version inside Pengwin." 12 80); then
-
     echo "Skipping NODE"
-
     exit 1
   fi
-
 
   sudo tee "${NPM_WIN_PROFILE}" << EOF
 
@@ -60,7 +57,6 @@ fi
 EOF
 
   eval "$(cat "${NPM_WIN_PROFILE}")"
-
 fi
 
 if [[ ${menu_choice} == "N" ]] ; then
