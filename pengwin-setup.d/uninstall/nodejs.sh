@@ -3,7 +3,7 @@
 source $(dirname "$0")/uninstall-common.sh
 
 yarn_key='72EC F46A 56B4 AD39 C907  BBB7 1646 B01B 86E5 0310'
-line_rgx='^[^#]*\bN_PREFIX='
+n_line_rgx='^[^#]*\bN_PREFIX='
 
 function main()
 {
@@ -22,20 +22,21 @@ fi
 
 rem_dir "$HOME/n"
 rem_dir "$HOME/.npm"
+rem_dir "$HOME/.nvm"
 
 echo "Removing PATH modifier(s)..."
 sudo_rem_file "/etc/profile.d/n-prefix.sh"
+sudo_rem_file "/etc/profile.d/nvm-prefix.sh"
+sudo_rem_file "/etc/profile.d/rm-win-npm-path.sh"
+# The .bashrc path clean shouldn't be needed on newer installs, but takes into account legacy pengwin-setup nodejs installs
 if [[ -f "$HOME/.bashrc" ]] ; then
 	echo "$HOME/.bashrc found, cleaning"
-	clean_file "$HOME/.bashrc" "$line_rgx"
-fi
-if [[ -f "$HOME/.zshrc" ]] ; then
-	echo "$HOME/.zshrc found, cleaning"
-	clean_file "$HOME/.zshrc" "$line_rgx"
+	clean_file "$HOME/.bashrc" "$n_line_rgx"
 fi
 
 echo "Removing bash completion..."
 sudo_rem_file "/etc/bash_completion.d/npm"
+sudo_rem_file "/etc/bash_completion.d/nvm"
 
 remove_package "yarn"
 
