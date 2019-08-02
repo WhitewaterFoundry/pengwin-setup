@@ -42,17 +42,24 @@ if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
-  WIN_NPM_PATH="\$(dirname "\$(which npm)")"
+
   WIN_C_PATH="\$(wslpath 'C:\')"
 
-  if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
-    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
-  fi
+  while [[ true ]]; do
 
-  WIN_YARN_PATH="\$(dirname "\$(which yarn)")"
-  if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
-    PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
-  fi
+    WIN_YARN_PATH="\$(dirname "\$(which yarn)")"
+    if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
+      export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
+    fi
+
+    WIN_NPM_PATH="\$(dirname "\$(which npm)")"
+    if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
+      export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
+    else
+      break
+    fi
+
+  done
 fi
 EOF
 
