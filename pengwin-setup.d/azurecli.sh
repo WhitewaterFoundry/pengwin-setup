@@ -11,7 +11,7 @@ if (confirm --title "AZURECLI" --yesno "Would you like to download and install A
   sudo bash -c "echo 'deb https://packages.microsoft.com/repos/azure-cli/ stretch main' > /etc/apt/sources.list.d/azurecli.list"
   sudo apt-get -y -q update
   echo "Note: azure-cli install can appear to 'stall' at 16%, it is usually not broken, just taking a long time."
-  sudo apt-get -y -q install azure-cli
+  sudo apt-get -y -q install azure-cli jq
   cleantmp
 else
   echo "Skipping AZURECLI"
