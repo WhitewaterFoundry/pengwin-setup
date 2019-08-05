@@ -1,7 +1,9 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
+declare SetupDir
 
 function enable_rclocal() {
 
@@ -12,8 +14,16 @@ function enable_rclocal() {
     echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
 
     local profile_rclocal="/etc/profile.d/rclocal.sh"
-    echo "sudo ${cmd}" | sudo tee "${profile_rclocal}"
+    sudo tee "${profile_rclocal}" << EOF
+#!/bin/bash
 
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+
+  sudo ${cmd}
+fi
+
+EOF
     sudo mkdir -p /etc/boot.d
 
   else
@@ -44,7 +54,7 @@ function enable_ssh() {
 
     local sshd_file=/etc/ssh/sshd_config
 
-    sudo cp ${sshd_file} ${sshd_file}.`date '+%Y-%m-%d_%H-%M-%S'`.back
+    sudo cp ${sshd_file} "${sshd_file}.$(date '+%Y-%m-%d_%H-%M-%S').back"
 
     sudo sed -i '/^# configured by Pengwin/ d' ${sshd_file}
     sudo sed -i '/^ListenAddress/ d' ${sshd_file}
@@ -80,7 +90,16 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${startSsh}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-ssh
 
     local profile_startssh="/etc/profile.d/start-ssh.sh"
-    echo "sudo ${startSsh}" | sudo tee "${profile_startssh}"
+    sudo tee "${profile_startssh}" << EOF
+#!/bin/bash
+
+# Check if we have Windows Path
+if ( which cmd.exe >/dev/null ); then
+
+  sudo ${startSsh}
+fi
+
+EOF
 
   else
     echo "Skipping SSH Server"
@@ -91,15 +110,17 @@ EOF
 function main() {
 
   if [[ "$1" == "--enable-ssh" ]] ; then
-    enable_ssh "$@"
+    enable_ssh
 
     return
   fi
 
   local menu_choice=$(
 
-    menu --title "Services Menu" --checklist --separate-output "Enables varios services\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
+    menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
       "CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
+      "KEYCHAIN" "Install Keychain, the OpenSSH key manager" off \
+      "LAMP" "Install LAMP Stack" off \
       "RCLOCAL" "Enable running scripts at startup from rc.local " off \
       "SSH" "Enable SSH server" off \
 
@@ -114,14 +135,24 @@ function main() {
     bash ${SetupDir}/cassandra.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"KEYCHAIN"* ]] ; then
+    echo "KEYCHAIN"
+    bash ${SetupDir}/keychain.sh "@"
+  fi
+
+  if [[ ${menu_choice} == *"LAMP"* ]] ; then
+    echo "LAMP"
+    bash ${SetupDir}/lamp.sh "@"
+  fi
+
   if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then
 
-    enable_rclocal "$@"
+    enable_rclocal
   fi
 
   if [[ ${menu_choice} == *"SSH"* ]] ; then
 
-    enable_ssh "$@"
+    enable_ssh
   fi
 }
 
