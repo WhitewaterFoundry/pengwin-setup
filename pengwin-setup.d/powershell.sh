@@ -7,7 +7,7 @@ if (whiptail --title "POWERSHELL" --yesno "Would you like to download and instal
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
     sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
     rm microsoft.gpg
-    sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list'
+    sudo sh -c 'echo "deb https://packages.microsoft.com/debian/10/prod/ buster main" > /etc/apt/sources.list.d/microsoft.list'
     sudo sh -c 'echo "deb https://deb.debian.org/debian/ stable main contrib non-free" > /etc/apt/sources.list.d/stable.list'
     sudo apt-get update
     sudo apt-get install powershell -y
