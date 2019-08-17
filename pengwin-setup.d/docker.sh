@@ -3,8 +3,8 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="18.09.2"
-DOCKER_COMPOSE_VERSION="1.23.2"
+DOCKER_VERSION="19.03.1"
+DOCKER_COMPOSE_VERSION="1.24.1"
 
 # Imported from common.sh
 declare wHome
