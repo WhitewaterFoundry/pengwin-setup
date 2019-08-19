@@ -10,7 +10,7 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
   createtmp
 
   echo "Getting rbenv"
-  git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+  git clone --depth=1 https://github.com/rbenv/rbenv.git ~/.rbenv
 
   echo "Configuring rbenv"
 
