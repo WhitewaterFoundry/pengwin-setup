@@ -15,7 +15,7 @@ fi
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 10 85 2 \
+  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 10 45 2 \
     "N" "n version manager" off \
     "NVM" "nvm version manager" off \
 
