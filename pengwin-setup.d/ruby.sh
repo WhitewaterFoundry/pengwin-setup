@@ -10,7 +10,7 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
   createtmp
 
   echo "Getting rbenv"
-  git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+  git clone --depth=1 https://github.com/rbenv/rbenv.git ~/.rbenv
 
   echo "Configuring rbenv"
 
@@ -20,7 +20,7 @@ if (whiptail --title "RUBY" --yesno "Would you like to download and install Ruby
   echo 'eval "$(rbenv init -)"' | sudo tee -a "${conf_path}"
 
   echo "Getting ruby-build"
-  git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+  git clone --depth=1 https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 
   echo "Configuring ruby-build"
   echo 'export PATH="${HOME}/.rbenv/plugins/ruby-build/bin:${PATH}"' | sudo tee -a "${conf_path}"
