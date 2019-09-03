@@ -39,7 +39,7 @@ echo "Removing bash completion..."
 sudo_rem_file "/etc/bash_completion.d/npm"
 sudo_rem_file "/etc/bash_completion.d/nvm"
 
-remove_package "yarn" "nodejs" "npm"
+remove_package "yarn" "nodejs"
 
 echo "Removing APT source(s)"
 sudo_rem_file "/etc/apt/sources.list.d/yarn.list"
