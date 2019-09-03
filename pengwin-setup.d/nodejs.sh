@@ -131,19 +131,23 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
 elif [[ ${menu_choice} == "LATEST" ]] ; then
   echo "Installing latest node.js version from NodeSource repository"
 
-  NODESRC_URL='https://deb.nodesource.com/setup_12.x'
-  curl -sL "$NODESRC_URL" -o repo-install.sh
+  major_vers=12
+  nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
+  curl -sL "$nodesrc_url" -o repo-install.sh
   sudo bash repo-install.sh
 
-  major_vers=12
-  version=$(apt-cache madison nodejs | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   sudo apt-get install -y -q nodejs=$version
 elif [[ ${menu_choice} == "LTS" ]] ; then
-  echo "Installing LTS node.js version from standard Debian repository"
+  echo "Installing LTS node.js version from NodeSource repository"
 
   major_vers=10
-  version=$(apt-cache madison nodejs | grep 'unstable' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install -y -q npm nodejs=$version
+  nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
+  curl -sL "$nodesrc_url" -o repo-install.sh
+  sudo bash repo-install.sh
+
+  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  sudo apt-get install -y -q nodejs=$version
 fi
 cleantmp
 
