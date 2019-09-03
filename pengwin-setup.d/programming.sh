@@ -16,6 +16,7 @@ function main() {
       "JAVA" "Install the SDKMan to manage Java SDKs" off \
       "JOOMLA" "Install development support for Joomla" off \
       "LATEX" "Install TexLive for LaTeX Support" off \
+      "NIM" "Install Nim from official sources using choosenim" off \
       "NODEJS" "Install Node.js and npm" off \
       "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
@@ -55,6 +56,11 @@ function main() {
   if [[ ${menu_choice} == *"LATEX"* ]] ; then
     echo "LATEX"
     bash ${SetupDir}/latex.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"NIM"* ]] ; then
+    echo "nim"
+    bash ${SetupDir}/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]] ; then
