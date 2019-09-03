@@ -137,13 +137,13 @@ elif [[ ${menu_choice} == "LATEST" ]] ; then
 
   major_vers=12
   version=$(apt-cache madison nodejs | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install nodejs=$version
+  sudo apt-get install -y -q nodejs=$version
 elif [[ ${menu_choice} == "LTS" ]] ; then
   echo "Installing LTS node.js version from standard Debian repository"
 
   major_vers=10
   version=$(apt-cache madison nodejs | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install nodejs=$version
+  sudo apt-get install -y -q npm nodejs=$version
 fi
 cleantmp
 
