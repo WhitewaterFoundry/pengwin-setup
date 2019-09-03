@@ -5,8 +5,6 @@ source $(dirname "$0")/uninstall-common.sh
 function main()
 {
 
-local go_conf="/etc/profile.d/go.sh"
-
 echo "Uninstalling go"
 
 echo "Removing $go_dir"
