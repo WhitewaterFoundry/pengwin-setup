@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if [[ ! ${SkipConfirmations} ]]; then
 
-  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm) using either the n or nvm version manager?" 8 88); then
+  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 88); then
     echo "Installing NODE"
   else
     echo "Skipping NODE"
@@ -15,9 +15,11 @@ fi
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js version manager\n[SPACE to select, ENTER to confirm]:" 10 45 2 \
-    "N" "n version manager" off \
-    "NVM" "nvm version manager" off \
+  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 75 4 \
+    "N" "install with n version manager" off \
+    "NVM" "install with nvm version manager" off \
+    "LATEST" "install latest version via APT package manager" off \
+    "LTS" "install latest LTS version via APT package manager" off \
 
     3>&1 1>&2 2>&3)
 
@@ -126,6 +128,17 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
+elif [[ ${menu_choice} == "LATEST" ]] ; then
+  echo "Installing latest node.js version from NodeSource repository"
+
+  NODESRC_URL='https://deb.nodesource.com/setup_12.x'
+  curl -sL "$NODESRC_URL" -o repo-install.sh
+  sudo bash repo-install.sh
+
+  sudo apt-get install nodejs
+elif [[ ${menu_choice} == "LTS" ]] ; then
+  echo "Installing LTS node.js version from standard Debian repository"
+  sudo apt-get install nodejs
 fi
 cleantmp
 
