@@ -2,6 +2,7 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
+nodesource_key='9FD3 B784 BC1C 6FC3 1A8A  0A1C 1655 A0AB 6857 6280'
 yarn_key='72EC F46A 56B4 AD39 C907  BBB7 1646 B01B 86E5 0310'
 n_line_rgx='^[^#]*\bN_PREFIX='
 
@@ -38,13 +39,15 @@ echo "Removing bash completion..."
 sudo_rem_file "/etc/bash_completion.d/npm"
 sudo_rem_file "/etc/bash_completion.d/nvm"
 
-remove_package "yarn"
+remove_package "yarn" "nodejs"
 
-echo "Removing APT source"
+echo "Removing APT source(s)"
 sudo_rem_file "/etc/apt/sources.list.d/yarn.list"
+sudo_rem_file "/etc/apt/sources.list.d/nodesource.list"
 
-echo "Removing APT key"
+echo "Removing APT key(s)"
 sudo apt-key del "$yarn_key"
+sudo apt-key del "$nodesource_key"
 
 }
 
