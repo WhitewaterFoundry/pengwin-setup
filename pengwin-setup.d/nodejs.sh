@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if [[ ! ${SkipConfirmations} ]]; then
 
-  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 88); then
+  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
     echo "Installing NODE"
   else
     echo "Skipping NODE"
