@@ -22,7 +22,7 @@ function main()
 {
 
 echo "Uninstalling pyenv"
-local initFile tempPath
+local tempPath
 
 rem_dir "$HOME/.pyenv"
 

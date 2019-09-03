@@ -5,8 +5,6 @@ source $(dirname "$0")/uninstall-common.sh
 function main()
 {
 
-local ruby_conf="/etc/profile.d/rbenv.sh"
-
 echo "Uninstalling rbenv"
 
 rem_dir "$HOME/.rbenv"
