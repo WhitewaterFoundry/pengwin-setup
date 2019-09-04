@@ -95,6 +95,19 @@ if [[ ${menu_choice} == "N" ]] ; then
   curl -0 -L https://npmjs.com/install.sh -o install.sh
   sh install.sh
 
+  # Add n to fish shell
+  FISH_DIR='/etc/fish/conf.d'
+  FISH_CONF="$FISH_DIR/n-prefix.fish"
+  cat << EOF >> $FISH_CONF
+#!/bin/fish
+
+set -x N_PREFIX $HOME/n
+
+if not contains -- $N_PREFIX/bin $PATH
+  set PATH $N_PREFIX/bin $PATH
+end
+EOF
+
   # Add npm to bash completion
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
@@ -118,6 +131,19 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   echo "$NVM_SH" | sudo tee -a /etc/profile.d/nvm-prefix.sh
   sudo mkdir -p /etc/bash_completion.d
   echo "$NVM_COMP" | sudo tee /etc/bash_completion.d/nvm
+
+  # Add nvm to fish shell
+  FISH_DIR='/etc/fish/conf.d'
+  FISH_CONF="$FISH_DIR/nvm-prefix.fish"
+  cat << EOF >> $FISH_CONF
+#!/bin/fish
+
+set -x NVM_DIR $HOME/.nvm
+
+function nvm
+  bass . "$NVM_DIR/nvm.sh" ';' nvm $argv
+end
+EOF
 
   # Add the path for sudo
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
