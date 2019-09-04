@@ -9,8 +9,9 @@ echo "Uninstalling rbenv"
 
 rem_dir "$HOME/.rbenv"
 
-echo "Removing PATH modifier..."
+echo "Removing PATH modifier(s)..."
 sudo_rem_file "/etc/profile.d/ruby.sh"
+sudo_rem_file "/etc/fish/conf.d/ruby.sh"
 
 # Check if Ruby on RAILS previously installed
 if [[ -d "$HOME/.gem"  ]] ; then
