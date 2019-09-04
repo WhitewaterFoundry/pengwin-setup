@@ -80,8 +80,11 @@ function fish_install() {
     curl -L https://get.oh-my.fish | fish
     cd ..
 
-    #Change the default theme for one more friendly with Windows console default font
+    # Change the default theme for one more friendly with Windows console default font
     fish -c "omf install bira"
+
+    # Install bash compatibility plugin
+    fish -c "omf install bass"
 
     cleantmp
   else
