@@ -98,7 +98,9 @@ if [[ ${menu_choice} == "N" ]] ; then
   # Add n to fish shell
   FISH_DIR='/etc/fish/conf.d'
   FISH_CONF="$FISH_DIR/n-prefix.fish"
-  cat << EOF >> $FISH_CONF
+
+  sudo mkdir -p "$FISH_DIR"
+  sudo sh -c "cat > $FISH_CONF" << EOF
 #!/bin/fish
 
 set -x N_PREFIX $HOME/n
@@ -135,13 +137,23 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   # Add nvm to fish shell
   FISH_DIR='/etc/fish/conf.d'
   FISH_CONF="$FISH_DIR/nvm-prefix.fish"
-  cat << EOF >> $FISH_CONF
+
+  sudo mkdir -p "$FISH_DIR"
+  sudo sh -c "cat > $FISH_CONF" << EOF
 #!/bin/fish
 
 set -x NVM_DIR $HOME/.nvm
 
 function nvm
   bass . "$NVM_DIR/nvm.sh" ';' nvm $argv
+end
+
+function npm
+  bass . "$NVM_DIR/nvm.sh" ';' npm $argv
+end
+
+function node
+  bass . "$NVM_DIR/nvm.sh" ';' node $argv
 end
 EOF
 
