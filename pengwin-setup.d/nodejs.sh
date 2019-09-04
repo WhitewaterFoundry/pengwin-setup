@@ -15,9 +15,9 @@ fi
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 85 4 \
-    "N" "Install with n version manager (NOT fish shell compatible)" off \
-    "NVM" "Install with nvm version manager (NOT fish shell compatible)" off \
+  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 90 4 \
+    "N" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
+    "NVM" "Install with nvm version manager (fish shell compat. EXPERIMENTAL)" off \
     "LATEST" "Install latest version via APT package manager" off \
     "LTS" "Install LTS version via APT package manager" off \
 
