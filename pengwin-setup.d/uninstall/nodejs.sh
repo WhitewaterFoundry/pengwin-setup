@@ -29,8 +29,8 @@ echo "Removing PATH modifier(s)..."
 sudo_rem_file "/etc/profile.d/n-prefix.sh"
 sudo_rem_file "/etc/profile.d/nvm-prefix.sh"
 sudo_rem_file "/etc/profile.d/rm-win-npm-path.sh"
-sudo_rem_file "/etc/fish/conf.d/n-prefix.sh"
-sudo_rem_file "/etc/fish/conf.d/nvm-prefix.sh"
+sudo_rem_file "/etc/fish/conf.d/n-prefix.fish"
+sudo_rem_file "/etc/fish/conf.d/nvm-prefix.fish"
 # The .bashrc path clean shouldn't be needed on newer installs, but takes into account legacy pengwin-setup nodejs installs
 if [[ -f "$HOME/.bashrc" ]] ; then
 	echo "$HOME/.bashrc found, cleaning"
