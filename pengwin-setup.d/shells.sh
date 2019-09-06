@@ -31,7 +31,7 @@ if [ -f "/etc/zsh/zshrc" ] ; then
         # Reset after to prevent any unforeseen consequences.
         # ALTERNATIVE: "shopt -s failglob" in /etc/profile fixes bash to act more like zsh (we're currently doing reverse)
         # This would prevent issues in other shell alternatives if they appear.
-        
+
         echo "Creating fresh zshrc, modifying to add pengwin template commands and source /etc/profile"
         if [[ ! -d "/etc/zsh" ]] ; then
             echo "/etc/zsh not found, creating..."
@@ -53,8 +53,8 @@ fi
 if (whiptail --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95) then
     createtmp
     whiptail --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
-    mkdir "Type exit to return to pengwin-setup" 
-    cd "Type exit to return to pengwin-setup" 
+    mkdir "Type exit to return to pengwin-setup"
+    cd "Type exit to return to pengwin-setup"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     cd ..
 
@@ -72,21 +72,24 @@ fi
 }
 
 function fish_install() {
-  if (whiptail --title "fish" --yesno "Would you like to download and install oh-my-fish?" 8 55); then
-    createtmp
-    whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
-    mkdir "Type exit to return to pengwin-setup"
-    cd "Type exit to return to pengwin-setup"
-    curl -L https://get.oh-my.fish | fish
-    cd ..
+  createtmp
+  sudo apt install fish python -y # /usr/bin/python required for omf
 
-    #Change the default theme for one more friendly with Windows console default font
-    fish -c "omf install bira"
+  whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
 
-    cleantmp
-  else
-    echo "Skipping Oh My Fish"
-  fi
+  mkdir "Type exit to return to pengwin-setup"
+  cd "Type exit to return to pengwin-setup"
+
+  curl -L https://get.oh-my.fish | fish
+  cd ..
+
+  # Change the default theme for one more friendly with Windows console default font
+  fish -c "omf install bira"
+
+  # Install bash compatibility plugin
+  fish -c "omf install bass"
+
+  cleantmp
 
   if (confirm --title "fish" --yesno "Would you like to set fish as the default shell?" 8 55); then
     chsh -s "$(which fish)"
@@ -104,7 +107,7 @@ function installandsetshell {
 
     menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
         "ZSH" "zsh" off \
-        "FISH" "fish" off \
+        "FISH" "fish with oh-my-fish plugin manager" off \
         "CSH" "csh" off \
         "BASH-RL" "Recommended readline settings for productivity " off
 
@@ -120,7 +123,6 @@ function installandsetshell {
 
   if [[ $menu_choice == *"FISH"* ]] ; then
     echo "Installing fish..."
-    sudo apt install fish -y
     fish_install
   fi
 

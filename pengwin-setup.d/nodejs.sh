@@ -15,9 +15,9 @@ fi
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 85 4 \
-    "N" "Install with n version manager (NOT fish shell compatible)" off \
-    "NVM" "Install with nvm version manager (NOT fish shell compatible)" off \
+  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 90 4 \
+    "N" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
+    "NVM" "Install with nvm version manager (fish shell compat. EXPERIMENTAL)" off \
     "LATEST" "Install latest version via APT package manager" off \
     "LTS" "Install LTS version via APT package manager" off \
 
@@ -95,6 +95,21 @@ if [[ ${menu_choice} == "N" ]] ; then
   curl -0 -L https://npmjs.com/install.sh -o install.sh
   sh install.sh
 
+  # Add n to fish shell
+  FISH_DIR="$HOME/.config/fish/conf.d"
+  FISH_CONF="$FISH_DIR/n-prefix.fish"
+
+  sudo mkdir -p "$FISH_DIR"
+  sudo sh -c "cat > $FISH_CONF" << EOF
+#!/bin/fish
+
+set -x N_PREFIX $HOME/n
+
+if not contains -- $N_PREFIX/bin $PATH
+  set PATH $N_PREFIX/bin $PATH
+end
+EOF
+
   # Add npm to bash completion
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
@@ -118,6 +133,29 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   echo "$NVM_SH" | sudo tee -a /etc/profile.d/nvm-prefix.sh
   sudo mkdir -p /etc/bash_completion.d
   echo "$NVM_COMP" | sudo tee /etc/bash_completion.d/nvm
+
+  # Add nvm to fish shell
+  FISH_DIR="$HOME/.config/fish/conf.d"
+  FISH_CONF="$FISH_DIR/nvm-prefix.fish"
+
+  sudo mkdir -p "$FISH_DIR"
+  sudo sh -c "cat > $FISH_CONF" << EOF
+#!/bin/fish
+
+set -x NVM_DIR $HOME/.nvm
+
+function nvm
+  bass . "$NVM_DIR/nvm.sh" ';' nvm $argv
+end
+
+function npm
+  bass . "$NVM_DIR/nvm.sh" ';' npm $argv
+end
+
+function node
+  bass . "$NVM_DIR/nvm.sh" ';' node $argv
+end
+EOF
 
   # Add the path for sudo
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
