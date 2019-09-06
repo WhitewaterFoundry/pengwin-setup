@@ -96,7 +96,7 @@ if [[ ${menu_choice} == "N" ]] ; then
   sh install.sh
 
   # Add n to fish shell
-  FISH_DIR='/etc/fish/conf.d'
+  FISH_DIR="$HOME/.config/fish/conf.d"
   FISH_CONF="$FISH_DIR/n-prefix.fish"
 
   sudo mkdir -p "$FISH_DIR"
@@ -135,7 +135,7 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   echo "$NVM_COMP" | sudo tee /etc/bash_completion.d/nvm
 
   # Add nvm to fish shell
-  FISH_DIR='/etc/fish/conf.d'
+  FISH_DIR="$HOME/.config/fish/conf.d"
   FISH_CONF="$FISH_DIR/nvm-prefix.fish"
 
   sudo mkdir -p "$FISH_DIR"
