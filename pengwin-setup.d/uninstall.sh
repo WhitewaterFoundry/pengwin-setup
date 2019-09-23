@@ -31,6 +31,7 @@ function main() {
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" off \
       "KUBERNETES" "Remove Kubernetes tooling" off \
       "LAMP" "Remove LAMP stack" off \
+      "NIM" "Remove choosenim and any installed Nim components" off \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" off \
       "OPENSTACK" "Remove OpenStack CLI tools" off \
       "POWERSHELL" "Remove Powershell for Linux" off \
@@ -148,6 +149,11 @@ function main() {
   if [[ ${menu_choice} == *"LAMP"* ]] ; then
     echo "LAMP"
     bash ${UninstallDir}/lamp.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"NIM"* ]] ; then
+    echo "NIM"
+    bash ${UninstallDir}/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]] ; then

@@ -7,8 +7,6 @@ vcxsrv_dir="$wHome/.vcxsrv"
 function main()
 {
 
-local vcxsrv_conf="/etc/profile.d/vcxsrv.sh"
-
 echo "Uninstalling VcxSrv"
 
 echo "Removing $vcxsrv_dir"
