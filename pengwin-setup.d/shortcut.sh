@@ -175,7 +175,15 @@ function main() {
 
     rm "${DEST_PATH}"/*
 
-    find /usr/share/applications -name '*.desktop' | while read desktopFile; do
+    filelistarray=()
+
+    while IFS=  read -r -d $'\0'; do
+
+        filelistarray+=("$REPLY")
+
+    done < <(find /usr/share/applications -name '*.desktop' -print0)
+
+    for desktopFile in "${filelistarray[@]}"; do
 
       create_shortcut_from_desktop "${desktopFile}"
 
