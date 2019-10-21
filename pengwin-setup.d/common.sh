@@ -144,7 +144,7 @@ function setup_env() {
 
   SetupDir="/usr/local/pengwin-setup.d"
 
-  readonly GOVERSION="1.12"
+  readonly GOVERSION="1.13.3"
 }
 
 setup_env "$@"
