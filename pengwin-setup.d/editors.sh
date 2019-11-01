@@ -34,31 +34,21 @@ function code_install {
     echo "Installing CODE"
     createtmp
     echo "Downloading and unpacking Microsoft's apt repo key with curl and gpg"
-    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg 
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
     echo "Moving Microsoft's apt repo key into place with mv"
-    sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg 
+    sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
     echo "Adding Microsoft apt repo to /etc/apt/sources.list.d/vscode.list with echo"
-    sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' 
+    sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
     cleantmp
 
-    #Temporary: Fix issue with udev
-    echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
-    sudo apt-mark hold udev libudev1
+    #Reverse temporary fix with udev
+    sudo rm /etc/apt/sources.list.d/stable.list
+    sudo apt-mark unhold udev libudev1
     sudo apt-get update
 
-    #Temporary: Fix issue with udev
-    #UPDATE: Now finds latest version of udev and libudev1 specifically from stable repository
-    UdevVersion="$(apt-cache madison udev | grep ' stable' | cut -d'|' -f2 | sed 's| ||g')"
-    Libudev1Version="$(apt-cache madison libudev1 | grep ' stable' | cut -d'|' -f2 | sed 's| ||g')"
-    sudo apt-get install -y -q --allow-downgrades --allow-change-held-packages -t stable udev=$UdevVersion libudev1=$Libudev1Version
-    sudo apt-mark hold udev libudev1
-
-    echo "Installing code with dependencies: $ sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev"
-    sudo apt-get install -y -q code libxss1 libasound2 libx11-xcb-dev
-
-    #Temporary: Fix issue with Python Extention of VSCode
-    #Assuming that the stable repository is there by the udev fix
-    sudo apt-get install -y -q  -t stable libssl1.0.2
+    echo "Installing code with dependencies: "
+    sudo apt-get install -y -q code code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
+    sudo sed -i 's/export LIBGL_ALWAYS_INDIRECT=1/unset LIBGL_ALWAYS_INDIRECT/' /etc/profile.d/00-pengwin.sh
 
     INSTALLED=true
   else
@@ -93,7 +83,7 @@ function editor_menu {
   fi
 
   if [[ "${INSTALLED}" == true ]] ; then
-    bash ${SetupDir}/shortcut.sh --yes "$@"
+    bash "${SetupDir}"/shortcut.sh --yes "$@"
   fi
 }
 
