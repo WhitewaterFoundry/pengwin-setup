@@ -65,8 +65,8 @@ function create_shortcut_from_desktop() {
             if [[ -z "${cmdName}" ]]; then
               cmdName="${value} (WSL)"
             fi
-
             ;;
+
           Exec)
 
             if [[ -z "${cmdToExec}" ]]; then
@@ -84,6 +84,12 @@ function create_shortcut_from_desktop() {
                 synaptic*)
                   return
                   ;;
+                *code-insiders)
+                  cmdToExec="env DONT_PROMPT_WSL_INSTALL=1 code-insiders"
+                  ;;
+                *code)
+                  cmdToExec="env DONT_PROMPT_WSL_INSTALL=1 code"
+                  ;;
               esac
 
             fi
@@ -94,7 +100,10 @@ function create_shortcut_from_desktop() {
 
             if [[ -z "${cmdIcon}" ]]; then
 
-              if [[ ! -f "${value}" ]]; then
+              if [[ "${value}" == "com.visualstudio.code" ]]; then
+                cmdIcon="/usr/share/pixmaps/com.visualstudio.code.png"
+
+              elif [[ ! -f "${value}" ]]; then
                 cmdIcon=$(find /usr/share/pixmaps \
                   \
                   /usr/share/icons/hicolor/256x256/apps \
