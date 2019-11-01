@@ -8,6 +8,7 @@ function main()
 echo "Uninstalling VisualStudio Code"
 
 remove_package "code"
+remove_package "code-insiders"
 rem_dir "$HOME/.vscode"
 
 echo "Removing APT source..."
