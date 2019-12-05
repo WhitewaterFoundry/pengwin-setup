@@ -27,7 +27,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
 
-  eval "$(dbus-launch --auto-syntax)"
+  eval "\$(dbus-launch --auto-syntax)"
 fi
 
 EOF
