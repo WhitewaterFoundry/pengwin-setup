@@ -22,7 +22,7 @@ function create_shortcut() {
   fi
 
   echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
-  wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
+  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
 
   mkdir -p "${DEST_PATH}"
   mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${DEST_PATH}"
