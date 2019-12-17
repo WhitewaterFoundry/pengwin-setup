@@ -79,7 +79,7 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
 
 	if (whiptail --title "fcitx-autostart" --yesno "Would you like fcitx-autostart to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
 		echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
-		sudo sh -c 'echo "fcitx-autostart &>/dev/null" >> /etc/profile.d/fcitx'
+		sudo sh -c 'echo "/usr/bin/fcitx-autostart > /dev/null 2>&1" >> /etc/profile.d/fcitx.sh'
 	else
 		echo "Skipping fcitx-autostart"
 		whiptail --title "Note about fcitx-autostart" --msgbox "You will need to run $ fcitx-autostart to enable fcitx before running GUI apps." 8 85
@@ -90,7 +90,7 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
 
 	if (whiptail --title "fcitx-autostart" --yesno "Would you like to run fcitx-autostart now? Requires an X server to be running." 8 85) then
 		echo "Starting fcitx-autostart"
-		fcitx-autostart &>/dev/null
+		dbus-launch /usr/bin/fcitx-autostart > /dev/null 2>&1
 	else
 		echo "Skipping start fcitx-autostart"
 	fi
