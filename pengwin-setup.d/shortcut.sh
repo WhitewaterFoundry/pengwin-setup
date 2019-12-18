@@ -85,10 +85,10 @@ function create_shortcut_from_desktop() {
                   return
                   ;;
                 *code-insiders)
-                  cmdToExec="env DONT_PROMPT_WSL_INSTALL=1 code-insiders"
+                  cmdToExec="code-insiders"
                   ;;
                 *code)
-                  cmdToExec="env DONT_PROMPT_WSL_INSTALL=1 code"
+                  cmdToExec="code"
                   ;;
               esac
 
