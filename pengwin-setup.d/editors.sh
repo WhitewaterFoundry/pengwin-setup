@@ -48,7 +48,10 @@ function code_install {
 
     echo "Installing code with dependencies: "
     sudo apt-get install -y -q code code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
-    sudo sed -i 's/export LIBGL_ALWAYS_INDIRECT=1/unset LIBGL_ALWAYS_INDIRECT/' /etc/profile.d/00-pengwin.sh
+    sudo tee "/etc/profile.d/code.sh" << EOF
+#!/bin/bash
+export DONT_PROMPT_WSL_INSTALL=1 
+EOF
 
     INSTALLED=true
   else
