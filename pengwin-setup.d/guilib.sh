@@ -25,7 +25,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 	sudo sed -i 's$<auth>EXTERNAL</auth>$<auth>ANONYMOUS</auth>$' /usr/share/dbus-1/session.conf
 	sudo sed -i 's$</busconfig>$<allow_anonymous/></busconfig>$' /usr/share/dbus-1/session.conf
 
-	eval "$(dbus-launch --auto-syntax)"
+	eval "$(timeout 2s dbus-launch --auto-syntax)"
 
   sudo tee "/etc/profile.d/dbus.sh" << EOF
 #!/bin/bash
@@ -33,7 +33,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
 
-  eval "\$(dbus-launch --auto-syntax)"
+  eval "\$(timeout 2s dbus-launch --auto-syntax)"
 fi
 
 EOF

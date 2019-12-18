@@ -158,6 +158,11 @@ EOF
 }
 
 function main() {
+  if [[ -n ${WSL2} ]]; then
+    whiptail --title "DOCKER" --msgbox "Docker integration is not supported yet in WSL 2" 8 60
+    return
+  fi
+
   if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
 
