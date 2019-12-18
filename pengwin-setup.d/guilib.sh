@@ -8,7 +8,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 
   sudo apt-get install -y -q -t testing xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils
 
-  if [[ -z WSL2 ]]; then
+  if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
     sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
   fi
