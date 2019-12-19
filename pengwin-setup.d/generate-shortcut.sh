@@ -61,11 +61,11 @@ warn="${orange}[warn]${reset}"
 debug="${orange}${bold}[debug]${reset}"
 
 ## Windows build number constant
-readonly BN_SPR_CREATORS=15063		#1703, Redstone 2, Creators Update
-readonly BN_FAL_CREATORS=16299		#1709, Redstone 3, Fall Creators Update
-readonly BN_APR_EIGHTEEN=17134		#1803, Redstone 4, April 2018 Update
-readonly BN_OCT_EIGHTEEN=17763		#1809, Redstone 5, October 2018 Update
-readonly BN_MAY_NINETEEN=18362		#1903, 19H1, May 2019 Update
+readonly BN_SPR_CREATORS=15063          #1703, Redstone 2, Creators Update
+readonly BN_FAL_CREATORS=16299          #1709, Redstone 3, Fall Creators Update
+readonly BN_APR_EIGHTEEN=17134          #1803, Redstone 4, April 2018 Update
+readonly BN_OCT_EIGHTEEN=17763          #1809, Redstone 5, October 2018 Update
+readonly BN_MAY_NINETEEN=18362          #1903, 19H1, May 2019 Update
 
 # functions
 
@@ -142,7 +142,7 @@ if [ ! -f ~/.config/wslu/baseexec ]; then
 elif grep -q "/" ~/.config/wslu/baseexec; then
   # if baseexec is using the old linux style, regenerate
   baseexec_gen
-elif ! which "$(wslpath -u "$(cat ~/.config/wslu/baseexec)")" >/dev/null; then
+elif ! which "$(wslpath -u "$(cat ~/.config/wslu/baseexec)" 2>/dev/null )" >/dev/null; then
   # if baseexec cannnot be executed, regenerate
   baseexec_gen
 fi
