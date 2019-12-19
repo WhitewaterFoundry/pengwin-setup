@@ -192,6 +192,10 @@ function main() {
 
     done < <(find /usr/share/applications -name '*.desktop' -print0)
 
+    #Be sure the executable is updated
+
+    rm ~/.config/wslu/baseexec
+
     for desktopFile in "${filelistarray[@]}"; do
 
       create_shortcut_from_desktop "${desktopFile}"
