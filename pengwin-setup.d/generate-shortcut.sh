@@ -61,11 +61,11 @@ warn="${orange}[warn]${reset}"
 debug="${orange}${bold}[debug]${reset}"
 
 ## Windows build number constant
-readonly BN_SPR_CREATORS=15063		#1703, Redstone 2, Creators Update
-readonly BN_FAL_CREATORS=16299		#1709, Redstone 3, Fall Creators Update
-readonly BN_APR_EIGHTEEN=17134		#1803, Redstone 4, April 2018 Update
-readonly BN_OCT_EIGHTEEN=17763		#1809, Redstone 5, October 2018 Update
-readonly BN_MAY_NINETEEN=18362		#1903, 19H1, May 2019 Update
+readonly BN_SPR_CREATORS=15063          #1703, Redstone 2, Creators Update
+readonly BN_FAL_CREATORS=16299          #1709, Redstone 3, Fall Creators Update
+readonly BN_APR_EIGHTEEN=17134          #1803, Redstone 4, April 2018 Update
+readonly BN_OCT_EIGHTEEN=17763          #1809, Redstone 5, October 2018 Update
+readonly BN_MAY_NINETEEN=18362          #1903, 19H1, May 2019 Update
 
 # functions
 
@@ -107,12 +107,19 @@ function baseexec_gen {
   wslutmpbuild=$(reg.exe query "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentBuild | tail -n 2 | head -n 1 | sed -e 's|\r||g')
   wslutmpbuild=${wslutmpbuild##* }
   wslutmpbuild="$(( $wslutmpbuild + 0 ))"
-  if [ $wslutmpbuild -ge $BN_MAY_NINETEEN ]; then
-    wslu_distro_regpath=$("$(interop_prefix)"c/Windows/System32/reg.exe query "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Lxss" /s /f DistributionName 2>&1 | grep -B1 -e "$WSL_DISTRO_NAME" | head -n1 | sed -e 's|\r||g')
-    wslu_distro_packagename=$("$(interop_prefix)"c/Windows/System32/reg.exe query "$wslu_distro_regpath" /v PackageFamilyName | tail -n 2 | head -n 1 | sed -e 's|\r||g')
-    wslu_distro_packagename=${wslu_distro_packagename##* }
-    wslu_base_exec_folder_path="$(wslpath "$(double_dash_p "$(winps_exec "Write-Output \$Env:LOCALAPPDATA" | tr -d "\r")")\\Microsoft\\WindowsApps\\$wslu_distro_packagename")"
-    wslpath -w "$(find "$wslu_base_exec_folder_path" -name "*.exe")" > ~/.config/wslu/baseexec
+  wslu_distro_regpath=$("$(interop_prefix)"c/Windows/System32/reg.exe query "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Lxss" /s /f DistributionName 2>&1 | grep -B1 -e "${WSL_DISTRO_NAME:-WLinux}" | head -n1 | sed -e 's|\r||g')
+  wslu_distro_packagename=$("$(interop_prefix)"c/Windows/System32/reg.exe query "$wslu_distro_regpath" /v PackageFamilyName | tail -n 2 | head -n 1 | sed -e 's|\r||g')
+  wslu_distro_packagename=${wslu_distro_packagename##* }
+  wslu_base_exec_folder_path="$(wslpath "$(double_dash_p "$(winps_exec "Write-Output \$Env:LOCALAPPDATA" | tr -d "\r")")\\Microsoft\\WindowsApps\\$wslu_distro_packagename")"
+  wslu_base_exec_path="$(find "$wslu_base_exec_folder_path" -name "*.exe")"
+
+  if [[ -f "${wslu_base_exec_path}" ]]; then
+    if( which "$(basename "${wslu_base_exec_path}")" > /dev/null 2>&1 ) ; then
+
+      echo -n "$(basename "${wslu_base_exec_path}")" > ~/.config/wslu/baseexec
+    else
+      wslpath -w "${wslu_base_exec_path}" > ~/.config/wslu/baseexec
+    fi
   else
     echo "C:\\Windows\\System32\\wsl.exe" > ~/.config/wslu/baseexec
   fi
@@ -135,7 +142,7 @@ if [ ! -f ~/.config/wslu/baseexec ]; then
 elif grep -q "/" ~/.config/wslu/baseexec; then
   # if baseexec is using the old linux style, regenerate
   baseexec_gen
-elif ! which "$(wslpath -u "$(cat ~/.config/wslu/baseexec)")" >/dev/null; then
+elif ! which "$(wslpath -u "$(cat ~/.config/wslu/baseexec)" 2>/dev/null )" >/dev/null; then
   # if baseexec cannnot be executed, regenerate
   baseexec_gen
 fi
@@ -284,9 +291,9 @@ if [[ "$cname" != "" ]]; then
     echo "${info} the following custom variable/command will be applied: $customenv"
   fi
   if [[ "$is_gui" == "1" ]]; then
-    winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='C:\\Windows\\System32\\wscript.exe';\$s.Arguments='$script_location_win\\runHidden.vbs \"$distro_location_win\" $distro_param \"cd ~; $customenv bash -l -c $cname\"';\$s.IconLocation='$iconpath';\$s.Save();"
+    winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='C:\\Windows\\System32\\wscript.exe';\$s.Arguments='$script_location_win\\runHidden.vbs \"$distro_location_win\" $distro_param \"cd ~;$customenv bash -l -c $cname\"';\$s.IconLocation='$iconpath';\$s.Save();"
   else
-    winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='\"$distro_location_win\"';\$s.Arguments='$distro_param cd ~; $customenv bash -l -c $cname';\$s.IconLocation='$iconpath';\$s.Save();"
+    winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='\"$distro_location_win\"';\$s.Arguments='$distro_param cd ~;$customenv bash -l -c $cname';\$s.IconLocation='$iconpath';\$s.Save();"
   fi
   tpath="$(wslpath "$(wslvar -s TMP)")/$new_cname.lnk"
   mv "$tpath" "$dpath"
