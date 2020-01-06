@@ -27,8 +27,15 @@ Windows Registry Editor Version 5.00
 @="_PengwinPath_ run \\"login_shell \\\\\\"%V\\\\\\"\\""
 EOF
 
+      local icopath_win="$(wslpath "$(cmd-exe /C "echo %USERPROFILE%\\pengwin" | tr -d '\r')")"
+      if [ ! -d $icopath_win ]; then
+        mkdir -p $icopath_win
+      fi
+
+      cp /usr/local/lib/pengwin.ico "$icopath_win"
+
       local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
-      local icopath=$(cmd-exe /C "echo '%USERPROFILE%\\AppData\\Local\\Packages\\WhitewaterFoundryLtd.Co.16571368D6CFF_kd1vv0z0vy70w\\LocalState\\rootfs\\usr\\local\\lib\\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
+      local icopath=$(cmd-exe /C "echo '%USERPROFILE%\\pengwin\\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
       icopath=$(echo $icopath | tr -d "\'")
       sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
       sed -i "s/_IcoPath_/${icopath}/g" Install.reg
