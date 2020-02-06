@@ -17,7 +17,7 @@ function main() {
       "SYNAPTIC" "Install the Synaptic package manager" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
       "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " off \
-      "X410" "Configuring X410 X-server to start on Pengwin launch or view a link to the Microsoft Store" off \
+      "X410" "Configure X410 to start on Pengwin launch or view a link to the Ms Store" off \
 
   3>&1 1>&2 2>&3)
 
@@ -27,7 +27,7 @@ function main() {
 
   if [[ ${menu_choice} == *"X410"* ]] ; then
     echo "X410"
-    bash ${SetupDir}/x410.sh "$@"
+    bash ${SetupDir}/x410.sh "$@" 
   fi
 
   if [[ ${menu_choice} == *"VCXSRV"* ]] ; then
