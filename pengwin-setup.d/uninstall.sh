@@ -44,6 +44,7 @@ function main() {
       "VCXSRV" "Remove VcXsrv X-server" off \
       "VSCODE" "Remove Visual Studio Code for Linux" off \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" off \
+      "X410" "Remove the X410 X-server autostart" off \
 
   3>&1 1>&2 2>&3)
 
@@ -214,6 +215,11 @@ function main() {
   if [[ ${menu_choice} == *"WINTHEME"* ]] ; then
     echo "WINTHEME"
     bash ${UninstallDir}/theme.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"X410"* ]] ; then
+    echo "X410"
+    bash ${UninstallDir}/x410.sh "$@"
   fi
 
 }
