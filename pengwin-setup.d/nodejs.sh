@@ -107,10 +107,10 @@ if [[ ${menu_choice} == "N" ]]; then
   sh -c "cat > $FISH_CONF" <<EOF
 #!/bin/fish
 
-set -x N_PREFIX \$HOME/n
+set -x N_PREFIX "\$HOME/n"
 
-if not contains -- \$N_PREFIX/bin \$PATH
-  set PATH \$N_PREFIX/bin \$PATH
+if not contains -- \$N_PREFIX/bin "\$PATH"
+  set PATH \$N_PREFIX/bin "\$PATH"
 end
 EOF
 
