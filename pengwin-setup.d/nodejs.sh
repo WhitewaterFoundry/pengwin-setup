@@ -166,7 +166,7 @@ EOF
   #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
   echo "Installing latest Node.js release"
-  nvm install "$(nvm ls-remote | tail -1 | sed -e 's|^\s||g')" --latest-npm
+  nvm install node --latest-npm
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
