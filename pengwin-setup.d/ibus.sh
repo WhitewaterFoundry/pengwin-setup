@@ -2,94 +2,97 @@
 
 source $(dirname "$0")/common.sh "$@"
 
-if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved non-Latin input?" 8 65) then
+if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved non-Latin input via iBus?" 8 65) then
 	echo "Installing ibus"
-	echo "sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
-	sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
-	FCCHOICE=$(whiptail --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 15 65 8 \
+	echo "sudo apt-get install zenity ibus-gtk* ibus-qt* ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
+	sudo apt-get install ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
+	FCCHOICE=$(whiptail --title "iBus engines" --checklist --separate-output "Select iBus engine:" 15 65 8 \
 	"sunpinyin" "Chinese sunpinyin" off \
 	"libpinyin" "Chinese libpinyin" off \
+	"pinyin" "Chinese pinyin" off \
 	"rime" "Chinese rime" off \
-	"googlepinyin" "Chinese googlepinyin" off \
 	"chewing" "Chinese chewing" off \
 	"mozc" "Japanese mozc" on \
 	"kkc" "Japanese kkc" off \
 	"hangul" "Korean hangul" off \
 	"unikey" "Vietnamese unikey" off \
-	"sayura" "Sinhalese sayura" off \
 	"table" "Tables (Includes all available tables)" off 3>&1 1>&2 2>&3
 )
 
 	if [[ $FCCHOICE == *"sunpinyin"* ]] ; then
-		sudo apt-get install fcitx-sunpinyin -y
+		sudo apt-get install ibus-sunpinyin -y
 	fi
 
 	if [[ $FCCHOICE == *"libpinyin"* ]] ; then
-		sudo apt-get install fcitx-libpinyin -y
+		sudo apt-get install ibus-libpinyin -y
 	fi
 
 	if [[ $FCCHOICE == *"rime"* ]] ; then
-		sudo apt-get install fcitx-rime -y
+		sudo apt-get install ibus-rime -y
 	fi
 
-	if [[ $FCCHOICE == *"googlepinyin"* ]] ; then
-		sudo apt-get install fcitx-googlepinyin -y
+	if [[ $FCCHOICE == *"pinyin"* ]] ; then
+		sudo apt-get install ibus-pinyin -y
 	fi
 
 	if [[ $FCCHOICE == *"chewing"* ]] ; then
-		sudo apt-get install fcitx-chewing -y
+		sudo apt-get install ibus-chewing -y
 	fi
 
 	if [[ $FCCHOICE == *"mozc"* ]] ; then
-		sudo apt-get install fcitx-mozc -y
+		sudo apt-get install ibus-mozc mozc-utils-gui -y
 	fi
 
 	if [[ $FCCHOICE == *"kkc"* ]] ; then
-		sudo apt-get install fcitx-kkc fcitx-kkc-dev -y
+		sudo apt-get install ibus-kkc -y
 	fi
 
 	if [[ $FCCHOICE == *"hangul"* ]] ; then
-		sudo apt-get install fcitx-hangul -y
+		sudo apt-get install ibus-hangul -y
 	fi
 
 	if [[ $FCCHOICE == *"unikey"* ]] ; then
-		sudo apt-get install fcitx-unikey -y
-	fi
-
-	if [[ $FCCHOICE == *"sayura"* ]] ; then
-		sudo apt-get install fcitx-sayura -y
+		sudo apt-get install ibus-unikey -y
 	fi
 
 	if [[ $FCCHOICE == *"tables"* ]] ; then
-		sudo apt-get install fcitx-table fcitx-table-all -y
+		sudo apt-get install ibus-table ibus-table-* -y
 	fi
 
 	echo "Setting environmental variables"
-	export GTK_IM_MODULE=fcitx
-	export QT_IM_MODULE=fcitx
-	export XMODIFIERS=@im=fcitx
-	export DefaultIMModule=fcitx
+	export XIM=ibus
+	export XIM_PROGRAM=/usr/bin/ibus
+	export QT_IM_MODULE=ibus
+	export GTK_IM_MODULE=ibus
+	export XMODIFIERS=@im=ibus
+	export DefaultIMModule=ibus
 
-	echo "Saving environmental variables to /etc/profile.d/fcitx.sh"
-	sudo sh -c 'echo "export LC_CTYPE=\"zh_CN.UTF-8\"" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "export XIM=ibus" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "export XIM_PROGRAM=/usr/bin/ibus" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "export QT_IM_MODULE=ibus" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "export GTK_IM_MODULE=ibus" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "export XMODIFIERS=@im=ibus" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "export DefaultIMModule=ibus" >> /etc/profile.d/fcitx.sh'
-	sudo sh -c 'echo "ibus-daemon -drx" >> /etc/profile.d/fcitx.sh'
+	echo "Saving environmental variables to /etc/profile.d/ibus.sh"
+	sudo sh -c 'echo "export XIM=ibus" >> /etc/profile.d/ibus.sh'
+	sudo sh -c 'echo "export XIM_PROGRAM=/usr/bin/ibus" >> /etc/profile.d/ibus.sh'
+	sudo sh -c 'echo "export QT_IM_MODULE=ibus" >> /etc/profile.d/ibus.sh'
+	sudo sh -c 'echo "export GTK_IM_MODULE=ibus" >> /etc/profile.d/ibus.sh'
+	sudo sh -c 'echo "export XMODIFIERS=@im=ibus" >> /etc/profile.d/ibus.sh'
+	sudo sh -c 'echo "export DefaultIMModule=ibus" >> /etc/profile.d/ibus.sh'
 
-
-	if (whiptail --title "ibus daemon" --yesno "Would you like iBus daemon to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
-		echo "Placing fcitx-autostart in /etc/profile.d/fcitx"
-		sudo sh -c 'echo "ibus-daemon -drx > /dev/null 2>&1" >> /etc/profile.d/.sh'
+	if (whiptail --title "ibus daemon" --yesno "Would you like Setup iBus now? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
+		echo "Setting up iBus"
+		dbus-launch ibus-daemon -x -d
+		dbus-launch ibus-setup
+		pkill ibus-daemon
+		dbus-launch ibus-daemon -x -d
 	else
-		echo "Skipping fcitx-autostart"
-		whiptail --title "Note about fcitx-autostart" --msgbox "You will need to run $ fcitx-autostart to enable fcitx before running GUI apps." 8 85
+		echo "Skipping ibus setup"
+		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ dbus-launch ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
 	fi
 
-	whiptail --title "Note about fcitx-config-gtk3" --msgbox "You can configure fcitx later by running $ fcitx-config-gtk3" 8 70
+	if (whiptail --title "ibus daemon" --yesno "Would you like iBus daemon to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
+		echo "Placing ibus-daemon in /etc/profile.d/ibus.sh"
+		sudo sh -c 'echo "dbus-launch ibus-daemon -drx > /dev/null 2>&1" >> /etc/profile.d/ibus.sh'
+	else
+		echo "Skipping ibus-daemon"
+		whiptail --title "Note about ibus-daemon" --msgbox "You will need to run $ dbus-launch ibus-daemon -drx to enable iBus before running GUI apps." 8 85
+	fi
 else
-	echo "Skipping fcitx"
+	echo "Skipping ibus"
 fi
