@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved non-Latin input via iBus?" 8 65) then
 	echo "Installing ibus"
-	echo "sudo apt-get install zenity ibus-gtk* ibus-qt* ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
+	echo "sudo apt-get install ibus-gtk* ibus-qt* ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
 	sudo apt-get install ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
 	FCCHOICE=$(whiptail --title "iBus engines" --checklist --separate-output "Select iBus engine:" 15 65 8 \
 	"sunpinyin" "Chinese sunpinyin" off \
@@ -83,6 +83,14 @@ if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved
 		dbus-launch ibus-daemon -x -d
 	else
 		echo "Skipping ibus setup"
+		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ dbus-launch ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
+	fi
+
+	if (whiptail --title "ibus daemon" --yesno "Would you like Configure the default iBus input now? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
+		echo "Setting up iBus"
+		im-config
+	else
+		echo "Skipping default ibus input method"
 		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ dbus-launch ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
 	fi
 
