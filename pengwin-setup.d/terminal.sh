@@ -36,7 +36,9 @@ function main() {
   fi
 
   if [[ ${menu_choice} == *"GTERM"* ]] ; then
-    return
+    echo "GTERM"
+    sudo debconf-apt-progress -- apt-get install gnome-terminal -y
+    whiptail --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
   fi
 
   if [[ ${menu_choice} == *"XFTERM"* ]] ; then
