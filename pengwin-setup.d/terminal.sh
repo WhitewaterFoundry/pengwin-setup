@@ -21,10 +21,29 @@ function main() {
 
   if [[ ${menu_choice} == *"WINTERM"* ]] ; then
     echo "WINTERM"
-    if (whiptail --title "Windows Terminal" --yesno "Would you like to install the store version or GitHub version?" 8 80 --yes "Store" --no "GitHub") then
+    tmp_win_version=$(wslsys -B -s)
+    if [ $tmp_win_version -lt 18362 ]; then
+      whiptail --title "Unsupported Windows 10 Build" --msgbox "Windows Terminal requires Windows 10 Build 18362, but you are using $tmp_win_version. Skipping Windows Terminal." 8 56
+      return
+    fi
+
+    if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
       wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
     else
-      echo 
+      # NOT WOKRING!
+      # Here have two problem:
+      # 1. powershell require admin permission to install;
+      # 2. dirty powerhsell implementation.
+      command_check powershell.exe
+      createtmp
+
+      winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
+      wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
+      cp "WindowsTerminal.msixbundle" ${wHome}
+
+      powerhshell.exe -NonInteractive -NoProfile -Command "Add-AppxPackage -Path \"${wHomeWinPath}\\WindowsTerminal.msixbundle"
+
+      cleantmp
     fi
   fi
 
@@ -61,6 +80,10 @@ function main() {
     echo "KONSO"
     sudo debconf-apt-progress -- apt-get install dbus-x11 konsole -y
     whiptail --title "Konsole" --msgbox "Installation complete. You can start it by running $ konsole" 8 56
+  fi
+
+  if [[ "${INSTALLED}" == true ]] ; then
+    bash "${SetupDir}"/shortcut.sh --yes "$@"
   fi
 
 }
