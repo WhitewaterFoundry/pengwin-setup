@@ -31,7 +31,7 @@ function main() {
       wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
     else
       # NOT WOKRING!
-      # Here have two problem:
+      # Here has two problems:
       # 1. powershell require admin permission to install;
       # 2. dirty powerhsell implementation.
       command_check powershell.exe
