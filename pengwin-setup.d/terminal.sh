@@ -53,8 +53,10 @@ function main() {
     whiptail --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
   fi
 
-  if [[ ${menu_choice} == *"KONSOLE"* ]] ; then
-    return
+  if [[ ${menu_choice} == *"KONSO"* ]] ; then
+    echo "KONSO"
+    sudo debconf-apt-progress -- apt-get install dbus-x11 konsole -y
+    whiptail --title "Konsole" --msgbox "Installation complete. You can start it by running $ konsole" 8 56
   fi
 
 }
