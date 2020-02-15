@@ -46,7 +46,9 @@ function main() {
   fi
 
   if [[ ${menu_choice} == *"XFTERM"* ]] ; then
-    return
+    echo "XFTERM"
+    sudo debconf-apt-progress -- apt-get install xfce4-terminal -y -q
+    whiptail --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
   fi
 
   if [[ ${menu_choice} == *"TERMIN"* ]] ; then
