@@ -5,7 +5,7 @@ function main() {
   local menu_choice=$(
 
     menu --title "Terminal Menu" --checklist --separate-output "Select the terminals you want to install\n[SPACE to select, ENTER to confirm]:" 14 60 7 \
-      "WINTERMINAL" "Windows Terminal" off \
+      "WINTERM" "Windows Terminal" off \
       "WSLTTY" "WSLtty" off \
       "TILIX" "Tilix (requires X Server)" off \
       "GTERM" "Gnome Terminal (requires X Server)" off \
@@ -19,9 +19,13 @@ function main() {
     return 1
   fi
 
-  if [[ ${menu_choice} == *"WINTERMINAL"* ]] ; then
-    echo "not implement... yet"
-    return
+  if [[ ${menu_choice} == *"WINTERM"* ]] ; then
+    echo "WINTERM"
+    if (whiptail --title "Windows Terminal" --yesno "Would you like to install the store version or GitHub version?" 8 80 --yes "Store" --no "GitHub") then
+      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
+    else
+      echo 
+    fi
   fi
 
   if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
