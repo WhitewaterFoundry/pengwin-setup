@@ -31,14 +31,8 @@ function main() {
 
   if [[ ${menu_choice} == *"TILIX"* ]] ; then
     echo "TILIX"
-    
-    {
-    i=1
-    while read -r line; do
-        i=$(( $i + 1 ))
-        echo $i
-    done < <(sudo apt-get install tilix libsecret-1-0 -y)
-    } | whiptail --title "Install Progress" --gauge "Install Tilix..." 6 60 0
+    sudo debconf-apt-progress -- apt-get install tilix libsecret-1-0 -y
+    whiptail --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
   fi
 
   if [[ ${menu_choice} == *"GTERM"* ]] ; then
@@ -47,7 +41,7 @@ function main() {
 
   if [[ ${menu_choice} == *"XFTERM"* ]] ; then
     echo "XFTERM"
-    sudo debconf-apt-progress -- apt-get install xfce4-terminal -y -q
+    sudo debconf-apt-progress -- apt-get install xfce4-terminal -y
     whiptail --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
   fi
 
