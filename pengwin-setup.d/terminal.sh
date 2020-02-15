@@ -48,7 +48,9 @@ function main() {
   fi
 
   if [[ ${menu_choice} == *"TERMIN"* ]] ; then
-    return
+    echo "TERMIN"
+    sudo debconf-apt-progress -- apt-get install dbus-x11 terminator -y
+    whiptail --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
   fi
 
   if [[ ${menu_choice} == *"KONSOLE"* ]] ; then
