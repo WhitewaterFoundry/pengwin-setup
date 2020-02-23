@@ -6,7 +6,7 @@ if [ -x "$(command -v x410.exe)" ]; then
   sudo bash -c 'cat > /etc/profile.d/02-x410.sh' << EOF
 #!/bin/bash
 
-(x410.exe /wm /public &> /dev/null &)
+(cmd-exe /c x410.exe /wm /public &> /dev/null &)
 EOF
 else
   if (whiptail --title "X410" --yesno "It seems that X410 is not installed on your machine. Would you like to view a link to X410 (recommended) on the Microsoft Store?" 8 80) then
