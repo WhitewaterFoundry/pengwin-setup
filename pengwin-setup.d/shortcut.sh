@@ -117,6 +117,7 @@ function create_shortcut_from_desktop() {
                   /usr/share/icons/gnome/48x48/apps \
                   /usr/share/icons/Adwaita/512x512/places \
                   /usr/share/icons/Adwaita/256x256/devices \
+                  ${HOME}/.local/share/icons/hicolor/256x256/apps \
                   /usr/share/icons \
                   \
                   -maxdepth 1 -name "${value}*" -type f,l | head -n 1)
