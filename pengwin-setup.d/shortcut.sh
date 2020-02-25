@@ -192,7 +192,8 @@ function main() {
 
         filelistarray+=("$REPLY")
 
-    done < <(find /usr/share/applications -name '*.desktop' -print0)
+    done < <(find /usr/share/applications \
+                ${HOME}/.local/share/applications -name '*.desktop' -print0)
 
     #Be sure the executable is updated
 
