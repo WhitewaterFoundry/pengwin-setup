@@ -107,10 +107,10 @@ if [[ ${menu_choice} == "N" ]]; then
   sh -c "cat > $FISH_CONF" <<EOF
 #!/bin/fish
 
-set -x N_PREFIX $HOME/n
+set -x N_PREFIX "\$HOME/n"
 
-if not contains -- $N_PREFIX/bin $PATH
-  set PATH $N_PREFIX/bin $PATH
+if not contains -- \$N_PREFIX/bin "\$PATH"
+  set PATH "\$N_PREFIX/bin:\$PATH"
 end
 EOF
 
@@ -166,7 +166,7 @@ EOF
   #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
   echo "Installing latest Node.js release"
-  nvm install "$(nvm ls-remote | tail -1 | sed -e 's|^\s||g')" --latest-npm
+  nvm install node --latest-npm
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm

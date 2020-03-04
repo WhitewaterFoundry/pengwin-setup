@@ -29,8 +29,8 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install Py
   if [ -d ${HOME}/.config/fish ]; then
     echo "" >>${HOME}/.bashrc
     echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >>${HOME}/.config/fish/config.fish
-    echo 'status --is-interactive; and . (pyenv init -|psub)' >>${HOME}/.config/fish/config.fish
-    echo 'status --is-interactive; and . (pyenv virtualenv-init -|psub)' >>${HOME}/.config/fish/config.fish
+    echo 'status --is-interactive; and pyenv init -| source' >>${HOME}/.config/fish/config.fish
+    echo 'status --is-interactive; and pyenv virtualenv-init -| source' >>${HOME}/.config/fish/config.fish
   fi
 
   echo "installing Python 3.8"

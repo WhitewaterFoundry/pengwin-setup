@@ -23,7 +23,7 @@ else
 fi
 
 echo "Removing PATH modifier..."
-sudo_rem_file "/etc/profile.d/vcxsrv.sh"
+sudo_rem_file "/etc/profile.d/02-vcxsrv.sh"
 
 }
 
