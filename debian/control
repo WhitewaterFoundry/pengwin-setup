@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/WhitewaterFoundry/pengwin-setup.git
 
 Package: pengwin-setup
 Architecture: all
-Depends: ${misc:Depends}, git, wslu, pengwin-base (>= 0.1-175)
+Depends: ${misc:Depends}, git, p7zip-full, wslu, pengwin-base (>= 0.1-175)
 Description: Setup tool for Pengwin.
 Essential: yes
