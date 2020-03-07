@@ -16,7 +16,7 @@ if cmd-exe /C tasklist | grep -Fq 'wslbridge2.exe' ; then
 	cmd-exe /C taskkill /IM 'wslbridge2.exe' /F
 fi
 
-echo "Removing $wsltty_base_dir"
+echo "Removing directory: $wsltty_base_dir"
 if [[ -d "$wsltty_base_dir" ]] ; then
 	echo "Running unsintall script"
 	tmp_f="$(pwd)"
@@ -30,19 +30,8 @@ else
 	echo "... not found!"
 fi
 
-echo "Removing $wsltty_dir"
-if [[ -d "$wsltty_dir" ]] ; then
-	rm -rf "$wsltty_dir"
-else
-	echo "... not found!"
-fi
-
-echo "Removing $wsltty_config_dir"
-if [[ -d "$wsltty_config_dir" ]] ; then
-	rm -rf "$wsltty_config_dir"
-else
-	echo "... not found!"
-fi
+rem_dir "$wsltty_dir"
+rem_dir "$wsltty_config_dir"
 
 }
 
