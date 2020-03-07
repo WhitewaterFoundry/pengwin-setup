@@ -4,6 +4,7 @@ source $(dirname "$0")/uninstall-common.sh
 wsltty_base_dir="${wHome}/Pengwin/.wsltty"
 wsltty_dir="$(wslpath "$(wslvar -s LOCALAPPDATA)")/wsltty"
 wsltty_config_dir="$(wslpath "$(wslvar -s APPDATA)")/wsltty"
+
 function main()
 {
 
@@ -36,5 +37,7 @@ rem_dir "$wsltty_config_dir"
 }
 
 if show_warning "WSLtty" "$@" ; then
-	main "$@"
+	if whiptail --title "!! WSLtty !!" --yesno "Make sure you are not running this in WSLtty! Otherwise the uninstallation might be incomplete." 8 85 ; then
+		main "$@"
+	fi
 fi
