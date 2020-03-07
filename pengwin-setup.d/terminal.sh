@@ -51,22 +51,26 @@ function main() {
   fi
 
   if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
+    echo "WSLTTY"
+    if (confirm --title "WSLtty" --yesno "Would you like to install WSLtty?" 8 40) ; then
+      createtmp
+      [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
 
-    createtmp
-    [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
+      wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
+      wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
 
-    wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
-    wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
+      7z x wsltty.7z -o${wHome}/Pengwin/.wsltty/
+      echo "Installing WSLtty.... Please wait patiently"
+      tmp_f="$(pwd)"
+      cd "${wHome}/Pengwin/.wsltty"
+      cmd.exe /C "install.bat"
+      cd "$tmp_f"
+      unset tmp_f
 
-    7z x wsltty.7z -o${wHome}/Pengwin/.wsltty/
-    echo "Installing WSLtty.... Please wait patiently"
-    tmp_f="$(pwd)"
-    cd "${wHome}/Pengwin/.wsltty"
-    cmd.exe /C "install.bat"
-    cd "$tmp_f"
-    unset tmp_f
-    # uninstall: rm -rf "$(wslpath "$(wslvar -s LOCALAPPDATA)")/wsltty"
-    whiptail --title "WSLtty" --msgbox "Installation complete. You can find the shortcuts in your start menu.\nNote: use the Terminal unisntall to uninstall cleanly" 8 56
+      whiptail --title "WSLtty" --msgbox "Installation complete. You can find the shortcuts in your start menu.\nNote: use the Terminal unisntall to uninstall cleanly" 8 56
+    else
+      echo "Skipping WSLtty"
+    fi
   fi
 
   if [[ ${menu_choice} == *"TILIX"* ]] ; then
