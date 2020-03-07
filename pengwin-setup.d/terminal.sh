@@ -21,7 +21,7 @@ function main() {
 
   if [[ ${menu_choice} == *"WINTERM"* ]] ; then
     echo "WINTERM"
-    if (confirm --title "LAMP Stack" --yesno "Would you like to install Windows Terminal?" 10 60) ; then
+    if (confirm --title "Windows Terminal" --yesno "Would you like to install Windows Terminal?" 8 40) ; then
       tmp_win_version=$(wslsys -B -s)
       if [ $tmp_win_version -lt 18362 ]; then
         whiptail --title "Unsupported Windows 10 Build" --msgbox "Windows Terminal requires Windows 10 Build 18362, but you are using $tmp_win_version. Skipping Windows Terminal." 8 56
@@ -31,11 +31,6 @@ function main() {
       if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
         wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
       else
-        # NOT WOKRING!
-        # Here has two problems:
-        # 1. powershell require admin permission to install;
-        # 2. dirty powerhsell implementation.
-        command_check powershell.exe
         createtmp
 
         winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
@@ -43,35 +38,35 @@ function main() {
 
         [ -d "${wHome}/Pengwin/tmp" ] || mkdir -p "${wHome}/Pengwin/tmp"
         cp "WindowsTerminal.msixbundle" "${wHome}/Pengwin/tmp"
+        cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
 
-        winpwsh-exe sudo.ps1 "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle"
+        winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle\""
 
         rm -rf "${wHome}/Pengwin/tmp/WindowsTerminal.msixbundle"
         cleantmp
       fi
-    fi
-
-    if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
-
-      createtmp
-      [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
-
-      wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
-      wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
-
-      7z x wsltty.7z -o${wHome}/Pengwin/.wsltty/
-      echo "Installing WSLtty.... Please wait patiently"
-      tmp_f="$(pwd)"
-      cd "${wHome}/Pengwin/.wsltty"
-      cmd.exe /C "install.bat"
-      cd "$tmp_f"
-      unset tmp_f
-      # uninstall: rm -rf "$(wslpath "$(wslvar -s LOCALAPPDATA)")/wsltty"
-      whiptail --title "WSLtty" --msgbox "Installation complete. You can find the shortcuts in your start menu.\nNote: use the Terminal unisntall to uninstall cleanly" 8 56
-      return
     else
       echo "Skipping Windows Terminal"
     fi
+  fi
+
+  if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
+
+    createtmp
+    [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
+
+    wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
+    wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
+
+    7z x wsltty.7z -o${wHome}/Pengwin/.wsltty/
+    echo "Installing WSLtty.... Please wait patiently"
+    tmp_f="$(pwd)"
+    cd "${wHome}/Pengwin/.wsltty"
+    cmd.exe /C "install.bat"
+    cd "$tmp_f"
+    unset tmp_f
+    # uninstall: rm -rf "$(wslpath "$(wslvar -s LOCALAPPDATA)")/wsltty"
+    whiptail --title "WSLtty" --msgbox "Installation complete. You can find the shortcuts in your start menu.\nNote: use the Terminal unisntall to uninstall cleanly" 8 56
   fi
 
   if [[ ${menu_choice} == *"TILIX"* ]] ; then
