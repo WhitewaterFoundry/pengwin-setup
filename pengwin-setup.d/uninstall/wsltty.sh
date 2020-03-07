@@ -1,31 +1,51 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
-vcxsrv_dir="$wHome/.vcxsrv"
-
+wsltty_base_dir="${wHome}/Pengwin/.wsltty"
+wsltty_dir="$(wslpath "$(wslvar -s LOCALAPPDATA)")/wsltty"
+wsltty_config_dir="$(wslpath "$(wslvar -s APPDATA)")/wsltty"
 function main()
 {
 
-echo "Uninstalling VcxSrv"
+echo "Uninstalling WSLtty"
 
-echo "Removing $vcxsrv_dir"
-if [[ -d "$vcxsrv_dir" ]] ; then
-	if cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe' ; then
-		echo "vcxsrv.exe running. Killing process..."
-		cmd-exe /C taskkill /IM 'vcxsrv.exe' /F
-	fi
+if cmd-exe /C tasklist | grep -Fq 'wslbridge2.exe' ; then
+	echo "WSLtty processes running. Killing process..."
+	cmd-exe /C taskkill /IM 'cygwin-console-helper.exe' /F
+	cmd-exe /C taskkill /IM 'mintty.exe' /F
+	cmd-exe /C taskkill /IM 'wslbridge2.exe' /F
+fi
 
-	# now safe to delete
-	rm -rf "$vcxsrv_dir"
+echo "Removing $wsltty_base_dir"
+if [[ -d "$wsltty_base_dir" ]] ; then
+	echo "Running unsintall script"
+	tmp_f="$(pwd)"
+	cd "$wsltty_base_dir"
+	cmd.exe /C "uninstall.bat"
+	cd "$tmp_f"
+	unset tmp_f
+
+    rm -rf "$wsltty_base_dir"
 else
 	echo "... not found!"
 fi
 
-echo "Removing PATH modifier..."
-sudo_rem_file "/etc/profile.d/vcxsrv.sh"
+echo "Removing $wsltty_dir"
+if [[ -d "$wsltty_dir" ]] ; then
+	rm -rf "$wsltty_dir"
+else
+	echo "... not found!"
+fi
+
+echo "Removing $wsltty_config_dir"
+if [[ -d "$wsltty_config_dir" ]] ; then
+	rm -rf "$wsltty_config_dir"
+else
+	echo "... not found!"
+fi
 
 }
 
-if show_warning "vcxsrv" "$@" ; then
+if show_warning "WSLtty" "$@" ; then
 	main "$@"
 fi
