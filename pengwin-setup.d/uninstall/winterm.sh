@@ -1,31 +1,18 @@
 
 source $(dirname "$0")/uninstall-common.sh
 
-vcxsrv_dir="$wHome/.vcxsrv"
-
 function main()
 {
 
-echo "Uninstalling VcxSrv"
+echo "Uninstalling Windows Terminal"
 
-echo "Removing $vcxsrv_dir"
-if [[ -d "$vcxsrv_dir" ]] ; then
-	if cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe' ; then
-		echo "vcxsrv.exe running. Killing process..."
-		cmd-exe /C taskkill /IM 'vcxsrv.exe' /F
-	fi
+cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
 
-	# now safe to delete
-	rm -rf "$vcxsrv_dir"
-else
-	echo "... not found!"
-fi
-
-echo "Removing PATH modifier..."
-sudo_rem_file "/etc/profile.d/vcxsrv.sh"
+winterm_full_name="$(winpwsh-exe "(Get-AppxPackage Microsoft.WindowsTerminal).PackageFullName")"
+winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Remove-AppxPackage -Confirm -Package \"$winterm_full_name\""
 
 }
 
-if show_warning "vcxsrv" "$@" ; then
+if show_warning "Windows Terminal" "$@" ; then
 	main "$@"
 fi
