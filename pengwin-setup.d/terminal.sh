@@ -75,32 +75,59 @@ function main() {
 
   if [[ ${menu_choice} == *"TILIX"* ]] ; then
     echo "TILIX"
-    sudo debconf-apt-progress -- apt-get install tilix libsecret-1-0 -y
-    whiptail --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
+    if (confirm --title "Tilix" --yesno "Would you like to install Tilix?" 8 40) ; then
+      sudo debconf-apt-progress -- apt-get install tilix libsecret-1-0 -y
+      whiptail --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
+
+      INSTALLED=true
+    else
+      echo "skipping TILIX"
+    fi
   fi
 
   if [[ ${menu_choice} == *"GTERM"* ]] ; then
-    echo "GTERM"
-    sudo debconf-apt-progress -- apt-get install gnome-terminal -y
-    whiptail --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
+    if (confirm --title "GNOME Terminal" --yesno "Would you like to install GNOME Terminal?" 8 40) ; then
+      echo "GTERM"
+      sudo debconf-apt-progress -- apt-get install gnome-terminal -y
+      whiptail --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
+
+      INSTALLED=true
+    else
+      echo "skipping GTERM"
+    fi
   fi
 
   if [[ ${menu_choice} == *"XFTERM"* ]] ; then
     echo "XFTERM"
-    sudo debconf-apt-progress -- apt-get install xfce4-terminal -y
-    whiptail --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
+    if (confirm --title "Xfce Terminal" --yesno "Would you like to install Xfce Terminal?" 8 40) ; then
+      sudo debconf-apt-progress -- apt-get install xfce4-terminal -y
+      whiptail --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
+
+      INSTALLED=true
+    else
+      echo "Skipping XFTERM"
   fi
 
   if [[ ${menu_choice} == *"TERMIN"* ]] ; then
     echo "TERMIN"
-    sudo debconf-apt-progress -- apt-get install dbus-x11 terminator -y
-    whiptail --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
+    if (confirm --title "Terminator" --yesno "Would you like to install Terminator?" 8 40) ; then
+      sudo debconf-apt-progress -- apt-get install dbus-x11 terminator -y
+      whiptail --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
+
+      INSTALLED=true
+    else
+      echo "Skipping TERMIN"
   fi
 
   if [[ ${menu_choice} == *"KONSO"* ]] ; then
     echo "KONSO"
-    sudo debconf-apt-progress -- apt-get install dbus-x11 konsole -y
-    whiptail --title "Konsole" --msgbox "Installation complete. You can start it by running $ konsole" 8 56
+    if (confirm --title "Konsole" --yesno "Would you like to install Konsole?" 8 40) ; then
+      sudo debconf-apt-progress -- apt-get install dbus-x11 konsole -y
+      whiptail --title "Konsole" --msgbox "Installation complete. You can start it by running $ konsole" 8 56
+
+      INSTALLED=true
+    else
+      echo "Skipping KONSO"
   fi
 
   if [[ "${INSTALLED}" == true ]] ; then
