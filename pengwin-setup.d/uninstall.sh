@@ -43,7 +43,9 @@ function main() {
       "TERRAFORM" "Remove Terraform CLI tools" off \
       "VCXSRV" "Remove VcXsrv X-server" off \
       "VSCODE" "Remove Visual Studio Code for Linux" off \
+      "WINTERM" "Remove Windows Terminal" off \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" off \
+      "WSLTTY" "Remove WSLtty" off \
 
   3>&1 1>&2 2>&3)
 
@@ -109,6 +111,11 @@ function main() {
   if [[ ${menu_choice} == *"GO"* ]] ; then
     echo "GO"
     bash ${UninstallDir}/go.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"GTERM"* ]] ; then
+    echo "GO"
+    bash ${UninstallDir}/gterm.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"GUILIB"* ]] ; then
@@ -211,9 +218,19 @@ function main() {
     bash ${UninstallDir}/vscode.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"WINTERM"* ]] ; then
+    echo "WINTERM"
+    bash ${UninstallDir}/winterm.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"WINTHEME"* ]] ; then
     echo "WINTHEME"
     bash ${UninstallDir}/theme.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
+    echo "WSLTTY"
+    bash ${UninstallDir}/wsltty.sh "$@"
   fi
 
 }
