@@ -106,6 +106,7 @@ function main() {
       INSTALLED=true
     else
       echo "Skipping XFTERM"
+    fi
   fi
 
   if [[ ${menu_choice} == *"TERMIN"* ]] ; then
@@ -117,6 +118,7 @@ function main() {
       INSTALLED=true
     else
       echo "Skipping TERMIN"
+    fi
   fi
 
   if [[ ${menu_choice} == *"KONSO"* ]] ; then
@@ -128,6 +130,7 @@ function main() {
       INSTALLED=true
     else
       echo "Skipping KONSO"
+    fi
   fi
 
   if [[ "${INSTALLED}" == true ]] ; then
