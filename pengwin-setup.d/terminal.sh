@@ -32,6 +32,9 @@ function main() {
         wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
       else
         createtmp
+        
+        echo "Installing required install dependencies"
+        sudo debconf-apt-progress -- apt-get install -y wget
 
         winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
         wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
@@ -54,6 +57,10 @@ function main() {
     echo "WSLTTY"
     if (confirm --title "WSLtty" --yesno "Would you like to install WSLtty?" 8 40) ; then
       createtmp
+
+      echo "Installing required install dependencies"
+      sudo debconf-apt-progress -- apt-get install -y wget p7zip-full
+
       [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
 
       wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
