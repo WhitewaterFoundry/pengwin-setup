@@ -32,7 +32,7 @@ function main() {
         wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
       else
         createtmp
-        
+
         echo "Installing required install dependencies"
         sudo debconf-apt-progress -- apt-get install -y wget
 
@@ -119,7 +119,9 @@ function main() {
   if [[ ${menu_choice} == *"TERMIN"* ]] ; then
     echo "TERMIN"
     if (confirm --title "Terminator" --yesno "Would you like to install Terminator?" 8 40) ; then
-      sudo debconf-apt-progress -- apt-get install dbus-x11 terminator -y
+      echo "Install dependencies..."
+      bash "${SetupDir}"/guilib.sh --yes "$@"
+      sudo debconf-apt-progress -- apt-get install terminator -y
       whiptail --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
 
       INSTALLED=true
@@ -131,7 +133,9 @@ function main() {
   if [[ ${menu_choice} == *"KONSO"* ]] ; then
     echo "KONSO"
     if (confirm --title "Konsole" --yesno "Would you like to install Konsole?" 8 40) ; then
-      sudo debconf-apt-progress -- apt-get install dbus-x11 konsole -y
+      echo "Install dependencies..."
+      bash "${SetupDir}"/guilib.sh --yes "$@"
+      sudo debconf-apt-progress -- apt-get install konsole -y
       whiptail --title "Konsole" --msgbox "Installation complete. You can start it by running $ konsole" 8 56
 
       INSTALLED=true
