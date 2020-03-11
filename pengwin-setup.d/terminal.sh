@@ -28,26 +28,28 @@ function main() {
         return
       fi
 
-      if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
-        wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
-      else
-        createtmp
+      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
 
-        echo "Installing required install dependencies"
-        sudo debconf-apt-progress -- apt-get install -y wget
+      # if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
+      #   wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
+      # else
+      #   createtmp
 
-        winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
-        wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
+      #   echo "Installing required install dependencies"
+      #   sudo debconf-apt-progress -- apt-get install -y wget
 
-        [ -d "${wHome}/Pengwin/tmp" ] || mkdir -p "${wHome}/Pengwin/tmp"
-        cp "WindowsTerminal.msixbundle" "${wHome}/Pengwin/tmp"
-        cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
+      #   winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
+      #   wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
 
-        winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle\""
+      #   [ -d "${wHome}/Pengwin/tmp" ] || mkdir -p "${wHome}/Pengwin/tmp"
+      #   cp "WindowsTerminal.msixbundle" "${wHome}/Pengwin/tmp"
+      #   cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
 
-        rm -rf "${wHome}/Pengwin/tmp/WindowsTerminal.msixbundle"
-        cleantmp
-      fi
+      #   winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle\""
+
+      #   rm -rf "${wHome}/Pengwin/tmp/WindowsTerminal.msixbundle"
+      #   cleantmp
+      # fi
     else
       echo "Skipping Windows Terminal"
     fi
