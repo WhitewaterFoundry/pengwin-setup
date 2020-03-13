@@ -28,28 +28,35 @@ function main() {
         return
       fi
 
-      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
+      if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
+        wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
+      else
+        createtmp
 
-      # if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
-      #   wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
-      # else
-      #   createtmp
+        echo "Installing required install dependencies"
+        sudo debconf-apt-progress -- apt-get install -y wget
 
-      #   echo "Installing required install dependencies"
-      #   sudo debconf-apt-progress -- apt-get install -y wget
+        [ -d "${wHome}/Pengwin/tmp" ] || mkdir -p "${wHome}/Pengwin/tmp"
 
-      #   winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
-      #   wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
+        # # install the missing dependency
+        if [ -z "$(winpwsh-exe "Get-AppxPackage Microsoft.VCLibs.140.00.UWPDesktop")" ]; then
+          echo "Desktop Bridge VC++ v14 Redistributable not found. Downloading..."
+          wget --progress=dot "https://download.microsoft.com/download/B/E/1/BE1F235A-836D-42AC-9BC1-8F04C9DA7E9D/vc_uwpdesktop.140.exe" -O "vc_uwpdesktop.140.exe" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Desktop Bridge VC++ v14 Redistributable" --gauge "Downloading Desktop Bridge VC++ v14 Redistributable..." 7 50 0
+          cp "vc_uwpdesktop.140.exe" "${wHome}/Pengwin/tmp"
+          winpwsh-exe "Start-Process -FilePath \"${wHomeWinPath}\\Pengwin\\tmp\\vc_uwpdesktop.140.exe\" -Wait"
+        fi
 
-      #   [ -d "${wHome}/Pengwin/tmp" ] || mkdir -p "${wHome}/Pengwin/tmp"
-      #   cp "WindowsTerminal.msixbundle" "${wHome}/Pengwin/tmp"
-      #   cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
+        winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
+        wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
 
-      #   winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle\""
+        cp "WindowsTerminal.msixbundle" "${wHome}/Pengwin/tmp"
+        cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
 
-      #   rm -rf "${wHome}/Pengwin/tmp/WindowsTerminal.msixbundle"
-      #   cleantmp
-      # fi
+        winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle\""
+
+        rm -rf "${wHome}/Pengwin/tmp/"
+        cleantmp
+      fi
     else
       echo "Skipping Windows Terminal"
     fi
