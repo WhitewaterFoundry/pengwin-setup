@@ -47,7 +47,7 @@ function install_lamp() {
         echo 'Failed to download trusted package signing keys keyring file'
       fi
       sudo apt-get -y -q install software-properties-common
-      sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${menuchoice}/repo/debian stretch main"
+      sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${menu_choice}/repo/debian stretch main"
       sudo apt-get -q update
       sudo apt-get -y -q install mariadb-server mariadb-client
       apt policy mariadb-server
