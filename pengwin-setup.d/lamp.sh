@@ -7,10 +7,10 @@ function install_lamp() {
 
   if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60) ; then
 
-    echo "MariaDB Choice for KAMP Stack"
+    echo "MariaDB Choice for LAMP Stack"
     menu_choice=$(
 
-    menu --title "nodejs" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
+    menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
         "10.1" "Install MariaDB 10.1 from MariaDB" off \
         "10.2" "Install MariaDB 10.2 from MariaDB" off \
         "10.3" "Install MariaDB 10.3 from MariaDB" off \
