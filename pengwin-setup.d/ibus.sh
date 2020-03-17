@@ -77,13 +77,13 @@ if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved
 
 	if (whiptail --title "ibus daemon" --yesno "Would you like Setup iBus now? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
 		echo "Setting up iBus"
-		dbus-launch ibus-daemon -x -d
-		dbus-launch ibus-setup
+		ibus-daemon -x -d
+		ibus-setup
 		pkill ibus-daemon
-		dbus-launch ibus-daemon -x -d
+		ibus-daemon -x -d
 	else
 		echo "Skipping ibus setup"
-		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ dbus-launch ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
+		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
 	fi
 
 	if (whiptail --title "ibus daemon" --yesno "Would you like Configure the default iBus input now? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
@@ -91,15 +91,15 @@ if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved
 		im-config
 	else
 		echo "Skipping default ibus input method"
-		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ dbus-launch ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
+		whiptail --title "Note about ibus Setup" --msgbox "You will need to run \n$ ibus-daemon -drx\n$ dbus-launch ibus-setup\n to setup iBus before running GUI apps." 8 85
 	fi
 
 	if (whiptail --title "ibus daemon" --yesno "Would you like iBus daemon to run each time you open Pengwin? WARNING: Requires an X server to be running or it will generate errors." 9 70) then
 		echo "Placing ibus-daemon in /etc/profile.d/ibus.sh"
-		sudo sh -c 'echo "dbus-launch ibus-daemon -drx > /dev/null 2>&1" >> /etc/profile.d/ibus.sh'
+		sudo sh -c 'echo "ibus-daemon -drx > /dev/null 2>&1" >> /etc/profile.d/ibus.sh'
 	else
 		echo "Skipping ibus-daemon"
-		whiptail --title "Note about ibus-daemon" --msgbox "You will need to run $ dbus-launch ibus-daemon -drx to enable iBus before running GUI apps." 8 85
+		whiptail --title "Note about ibus-daemon" --msgbox "You will need to run $ ibus-daemon -drx to enable iBus before running GUI apps." 8 85
 	fi
 else
 	echo "Skipping ibus"
