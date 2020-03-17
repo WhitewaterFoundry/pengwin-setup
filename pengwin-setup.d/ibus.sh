@@ -5,7 +5,7 @@ source $(dirname "$0")/common.sh "$@"
 if (whiptail --title "ibus" --yesno "Would you like to install ibus for improved non-Latin input via iBus?" 8 65) then
 	echo "Installing ibus"
 	echo "sudo apt-get install ibus-gtk* ibus-qt* ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
-	sudo apt-get install ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
+	sudo apt-get install ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 zenity -y
 	FCCHOICE=$(whiptail --title "iBus engines" --checklist --separate-output "Select iBus engine:" 15 65 8 \
 	"sunpinyin" "Chinese sunpinyin" off \
 	"libpinyin" "Chinese libpinyin" off \
