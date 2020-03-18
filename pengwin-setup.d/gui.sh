@@ -55,7 +55,7 @@ function main() {
       fi
 
       if [[ ${nli_choice} == *"IBUS"* ]] ; then
-        echo "FCITX"
+        echo "IBUS"
         bash ${SetupDir}/ibus.sh
       fi
 
