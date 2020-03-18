@@ -44,7 +44,7 @@ function main() {
     echo "NLI"
       local nli_choice=$(
 
-        menu --title "Non-Latin Input" --radiolist --separate-output "Select one\n[SPACE to select, ENTER to confirm]:" 16 99 8 \
+        menu --title "Non-Latin Input" --radiolist --separate-output "Select your choice of input [SPACE to select, ENTER to confirm]:" 9 70 2 \
           "FCITX" "Install fcitx for improved non-Latin input support" off \
           "IBUS" "Install iBus for improved non-Latin input support" off \
 
