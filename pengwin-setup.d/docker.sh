@@ -94,11 +94,13 @@ EOF
 
   cat << 'EOF' >> docker_relay.sh
 
-# Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
-  sudo docker-relay "${PATH}"
-fi
+if [ -z "${WSL2}" ]; then
 
+  # Check if we have Windows Path
+  if ( which cmd.exe >/dev/null ); then
+    sudo docker-relay "${PATH}"
+  fi
+fi
 EOF
 
   sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
@@ -119,7 +121,15 @@ function docker_install_conf_tcp() {
   echo "Connect to Docker via TCP"
 
   cat << 'EOF' >> docker_relay.sh
-export DOCKER_HOST=tcp://0.0.0.0:2375
+# Only the default WSL user should run this script
+if ! (id -Gn | grep -c "adm.*sudo\|sudo.*adm" >/dev/null); then
+  return
+fi
+
+if [ -z "${WSL2}" ]; then
+  export DOCKER_HOST=tcp://0.0.0.0:2375
+fi
+
 EOF
   sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
 
@@ -138,17 +148,18 @@ function docker_install_conf_toolbox() {
 
   cat << 'EOF' >> docker_relay.sh
 
-# Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
-  VM=${DOCKER_MACHINE_NAME-default}
-  DOCKER_MACHINE="$(which docker-machine.exe)"
-  eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" 2>/dev/null )" > /dev/null 2>&1
+if [ -z "${WSL2}" ]; then
+  # Check if we have Windows Path
+  if ( which cmd.exe >/dev/null ); then
+    VM=${DOCKER_MACHINE_NAME-default}
+    DOCKER_MACHINE="$(which docker-machine.exe)"
+    eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" 2>/dev/null )" > /dev/null 2>&1
 
-  if [[ "${DOCKER_CERT_PATH}" != "" ]] ; then
-    export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
+    if [[ "${DOCKER_CERT_PATH}" != "" ]] ; then
+      export DOCKER_CERT_PATH="$(wslpath -u "${DOCKER_CERT_PATH}")"
+    fi
   fi
 fi
-
 EOF
   sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
 
