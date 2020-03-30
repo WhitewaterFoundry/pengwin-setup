@@ -112,9 +112,12 @@ function create_shortcut_from_desktop() {
                   /usr/share/icons/hicolor/128x128/apps \
                   /usr/share/icons/hicolor/scalable/apps \
                   /usr/share/icons/hicolor/48x48/apps \
+                  /usr/share/icons/breeze/apps/64 \
+                  /usr/share/icons/Adwaita/48x48/apps \
                   /usr/share/icons/gnome/48x48/apps \
                   /usr/share/icons/Adwaita/512x512/places \
                   /usr/share/icons/Adwaita/256x256/devices \
+                  ${HOME}/.local/share/icons/hicolor/256x256/apps \
                   /usr/share/icons \
                   \
                   -maxdepth 1 -name "${value}*" -type f,l | head -n 1)
@@ -190,7 +193,8 @@ function main() {
 
         filelistarray+=("$REPLY")
 
-    done < <(find /usr/share/applications -name '*.desktop' -print0)
+    done < <(find /usr/share/applications \
+                ${HOME}/.local/share/applications -name '*.desktop' -print0)
 
     #Be sure the executable is updated
 

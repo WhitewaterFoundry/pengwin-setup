@@ -1,8 +1,11 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
-if [[ ! ${SkipConfirmations} ]]; then
+declare SkipConfirmations
+
+if [[ ! "${SkipConfirmations}" ]]; then
 
   if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
     echo "Installing NODE"
@@ -19,11 +22,12 @@ menu_choice=$(
     "N" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
     "NVM" "Install with nvm version manager (fish shell compat. EXPERIMENTAL)" off \
     "LATEST" "Install latest version via APT package manager" off \
-    "LTS" "Install LTS version via APT package manager" off \
+    "LTS" "Install LTS version via APT package manager" off
 
-    3>&1 1>&2 2>&3)
+  3>&1 1>&2 2>&3
+)
 
-if [[ ${menu_choice} == "CANCELLED" ]] ; then
+if [[ ${menu_choice} == "CANCELLED" ]]; then
   echo "Skipping NODE"
   exit 1
 fi
@@ -40,7 +44,7 @@ if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
     exit 1
   fi
 
-  sudo tee "${NPM_WIN_PROFILE}" << EOF
+  sudo tee "${NPM_WIN_PROFILE}" <<EOF
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
@@ -68,13 +72,13 @@ EOF
   eval "$(cat "${NPM_WIN_PROFILE}")"
 fi
 
-if [[ ${menu_choice} == "N" ]] ; then
+if [[ ${menu_choice} == "N" ]]; then
   echo "Ensuring we have build-essential installed"
   sudo apt-get -y -q install build-essential
 
   echo "Installing n, Node.js version manager"
   curl -L https://git.io/n-install -o n-install.sh
-  env SHELL="$(which bash)" bash  n-install.sh -y #Force the installation to bash
+  env SHELL="$(which bash)" bash n-install.sh -y #Force the installation to bash
 
   N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
   echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
@@ -82,7 +86,7 @@ if [[ ${menu_choice} == "N" ]] ; then
 
   # Clear N from .bashrc now not needed
   filecontents=$(cat "$HOME/.bashrc" | grep -v -e '^.*N_PREFIX.*$')
-  printf '%s' "$filecontents" > "$HOME/.bashrc"
+  printf '%s' "$filecontents" >"$HOME/.bashrc"
 
   # Add the path for sudo
   SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
@@ -100,20 +104,20 @@ if [[ ${menu_choice} == "N" ]] ; then
   FISH_CONF="$FISH_DIR/n-prefix.fish"
 
   mkdir -p "$FISH_DIR"
-  sh -c "cat > $FISH_CONF" << EOF
+  sh -c "cat > $FISH_CONF" <<EOF
 #!/bin/fish
 
-set -x N_PREFIX $HOME/n
+set -x N_PREFIX "\$HOME/n"
 
-if not contains -- $N_PREFIX/bin $PATH
-  set PATH $N_PREFIX/bin $PATH
+if not contains -- \$N_PREFIX/bin "\$PATH"
+  set PATH "\$N_PREFIX/bin:\$PATH"
 end
 EOF
 
   # Add npm to bash completion
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
-elif [[ ${menu_choice} == "NVM" ]] ; then
+elif [[ ${menu_choice} == "NVM" ]]; then
   echo "Installing nvm, Node.js version manager"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 
@@ -126,7 +130,7 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
 
   # Clear nvm from .bashrc now not needed
   filecontents=$(cat "$HOME/.bashrc" | grep -v -e '^.*NVM_DIR.*$')
-  printf '%s' "$filecontents" > "$HOME/.bashrc"
+  printf '%s' "$filecontents" >"$HOME/.bashrc"
 
   # Add nvm to path, nvm to bash completion
   echo "$NVM_PATH" | sudo tee /etc/profile.d/nvm-prefix.sh
@@ -139,7 +143,7 @@ elif [[ ${menu_choice} == "NVM" ]] ; then
   FISH_CONF="$FISH_DIR/nvm-prefix.fish"
 
   mkdir -p "$FISH_DIR"
-  sh -c "cat > $FISH_CONF" << EOF
+  sh -c "cat > $FISH_CONF" <<EOF
 #!/bin/fish
 
 set -x NVM_DIR $HOME/.nvm
@@ -162,34 +166,68 @@ EOF
   #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
   echo "Installing latest Node.js release"
-  nvm install $(nvm ls-remote | tail -1 | sed -e 's|^\s||g') --latest-npm
+  nvm install node --latest-npm
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
-elif [[ ${menu_choice} == "LATEST" ]] ; then
+elif [[ ${menu_choice} == "LATEST" ]]; then
   echo "Installing latest node.js version from NodeSource repository"
+
+  major_vers=13
+  nodesrc_url="https://deb.nodesource.com/setup_${major_vers}.x"
+  #curl -sL "$nodesrc_url" -o repo-install.sh
+  #sudo bash repo-install.sh
+
+  echo 'Adding the NodeSource signing key to your keyring...'
+
+  if [ -x /usr/bin/curl ]; then
+    curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  else
+    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  fi
+
+  echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
+
+  echo "deb https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+
+  echo "Running 'apt-get update' for you..."
+
+  sudo apt-get update
+
+  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  sudo apt-get install -y -q nodejs="${version}"
+elif [[ ${menu_choice} == "LTS" ]]; then
+  echo "Installing LTS node.js version from NodeSource repository"
 
   major_vers=12
   nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
-  curl -sL "$nodesrc_url" -o repo-install.sh
-  sudo bash repo-install.sh
+  #curl -sL "$nodesrc_url" -o repo-install.sh
+  #sudo bash repo-install.sh
+
+  echo 'Adding the NodeSource signing key to your keyring...'
+
+  if [ -x /usr/bin/curl ]; then
+    curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  else
+    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  fi
+
+  echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
+
+  echo "deb https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+
+  echo "Running 'apt-get update' for you..."
+
+  sudo apt-get update
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install -y -q nodejs=$version
-elif [[ ${menu_choice} == "LTS" ]] ; then
-  echo "Installing LTS node.js version from NodeSource repository"
-
-  major_vers=10
-  nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
-  curl -sL "$nodesrc_url" -o repo-install.sh
-  sudo bash repo-install.sh
-
-  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install -y -q nodejs=$version
+  sudo apt-get install -y -q nodejs="${version}"
 fi
 cleantmp
 
-if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80) ; then
+if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list

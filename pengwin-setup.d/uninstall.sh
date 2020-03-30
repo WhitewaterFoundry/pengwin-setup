@@ -46,6 +46,7 @@ function main() {
       "WINTERM" "Remove Windows Terminal" off \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" off \
       "WSLTTY" "Remove WSLtty" off \
+      "X410" "Remove the X410 X-server autostart" off \
 
   3>&1 1>&2 2>&3)
 
@@ -231,6 +232,11 @@ function main() {
   if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
     echo "WSLTTY"
     bash ${UninstallDir}/wsltty.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"X410"* ]] ; then
+    echo "X410"
+    bash ${UninstallDir}/x410.sh "$@"
   fi
 
 }
