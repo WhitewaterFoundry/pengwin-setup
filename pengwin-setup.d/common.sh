@@ -1,64 +1,64 @@
 #!/bin/bash
 
 function process_arguments() {
-  while [[ $# -gt 0 ]]
-  do
+  while [[ $# -gt 0 ]]; do
     case "$1" in
-      --debug|-d|--verbose|-v)
-        echo "Running in debug/verbose mode"
-        set -x
-        shift
+    --debug | -d | --verbose | -v)
+      echo "Running in debug/verbose mode"
+      set -x
+      shift
       ;;
-      -y|--yes|--assume-yes)
-        echo "Skipping confirmations"
-        SkipConfirmations=1
-        shift
+    -y | --yes | --assume-yes)
+      echo "Skipping confirmations"
+      SkipConfirmations=1
+      shift
       ;;
-      --noupdate)
-        echo "Skipping updates"
-        SKIP_UPDATES=1
-        shift
+    --noupdate)
+      echo "Skipping updates"
+      SKIP_UPDATES=1
+      shift
       ;;
-      --norebuildicons)
-        echo "Skipping rebuild start menu"
-        SKIP_STARTMENU=1
-        shift
+    --norebuildicons)
+      echo "Skipping rebuild start menu"
+      SKIP_STARTMENU=1
+      shift
       ;;
-      *)
-        shift
+    *)
+      shift
+      ;;
     esac
   done
 }
 
-function createtmp {
-    echo "Saving current directory as \$CURDIR"
-    CURDIR=$(pwd)
-    TMPDIR=$(mktemp -d)
-    echo "Going to \$TMPDIR: $TMPDIR"
-    cd $TMPDIR
+function createtmp() {
+  echo "Saving current directory as \$CURDIR"
+  CURDIR=$(pwd)
+  TMPDIR=$(mktemp -d)
+  echo "Going to \$TMPDIR: $TMPDIR"
+  cd $TMPDIR
 }
 
-function cleantmp {
-    echo "Returning to $CURDIR"
-    cd "$CURDIR"
-    echo "Cleaning up $TMPDIR"
-    sudo rm -r $TMPDIR  # need to add sudo here because git clones leave behind write-protected files
+function cleantmp() {
+  echo "Returning to $CURDIR"
+  cd "$CURDIR"
+  echo "Cleaning up $TMPDIR"
+  sudo rm -r $TMPDIR # need to add sudo here because git clones leave behind write-protected files
 }
 
-function updateupgrade {
-echo "Applying available package upgrades from repositories."
-sudo apt-get upgrade -y
-echo "Removing unnecessary packages."
-sudo apt-get autoremove -y
+function updateupgrade() {
+  echo "Applying available package upgrades from repositories."
+  sudo apt-get upgrade -y
+  echo "Removing unnecessary packages."
+  sudo apt-get autoremove -y
 }
 
 function command_check() {
   # Usage: command_check <EXPECTED PATH> <ARGS (if any)>
   local execname=$(echo "$1" | sed -e "s|^.*\/||g")
-  if ("$execname" "$2") > /dev/null 2>&1 ; then
+  if ("$execname" "$2") >/dev/null 2>&1; then
     echo "Executable $execname in PATH"
     return 0
-  elif ("$1" "$2") > /dev/null 2>&1 ; then
+  elif ("$1" "$2") >/dev/null 2>&1; then
     echo "Executable '$execname' at: $1"
     return 2
   else
@@ -102,14 +102,14 @@ function menu() {
 
   local exit_status=$?
 
-  if [[ ${exit_status} != 0 ]] ; then
+  if [[ ${exit_status} != 0 ]]; then
     echo ${CANCELLED}
     return
   fi
 
-  if [[ -z "${menu_choice}" ]] ; then
+  if [[ -z "${menu_choice}" ]]; then
 
-    if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60  3>&1 1>&2 2>&3) ; then
+    if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
       menu "$@"
 
       return
@@ -125,7 +125,7 @@ function menu() {
 
 function setup_env() {
 
-  if ( ! which cmd.exe >/dev/null ); then
+  if (! which cmd.exe >/dev/null); then
     whiptail --title "Wrong user" --msgbox "pengwin-setup was ran with the user \"${USER}\".\n\nRun pengwin-setup from the default user and without sudo" 12 80
 
     exit 0
@@ -133,7 +133,7 @@ function setup_env() {
 
   process_arguments "$@"
 
-  if ( ! wslpath 'C:\' > /dev/null 2>&1 ); then
+  if (! wslpath 'C:\' >/dev/null 2>&1); then
     shopt -s expand_aliases
     alias wslpath=legacy_wslupath
   fi

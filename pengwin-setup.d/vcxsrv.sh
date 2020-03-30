@@ -4,7 +4,7 @@ source $(dirname "$0")/common.sh "$@"
 
 if (whiptail --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-server? This will be installed to your Windows home directory under .vcxsrv" 8 80) then
         echo "Installing VcXsrv"
-        VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/1.20.5.1/vcxsrv-64.1.20.5.1.installer.exe/download"
+        VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/1.20.6.0/vcxsrv-64.1.20.6.0.installer.exe/download"
 
         echo "Installing required install dependencies"
         sudo apt-get install -y -q wget unzip p7zip-full mesa-utils

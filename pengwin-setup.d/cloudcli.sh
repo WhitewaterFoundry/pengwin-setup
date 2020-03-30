@@ -14,7 +14,7 @@ function install_terraform() {
 
     createtmp
 
-    wget -O terraform.zip "https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_$(dpkg --print-architecture).zip"
+    wget -O terraform.zip "https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_$(dpkg --print-architecture).zip"
     unzip terraform.zip
     sudo mv terraform /usr/bin
     sudo chmod +x /usr/bin/terraform
@@ -247,12 +247,12 @@ function install_kubernetes() {
 
 function install_openstack() {
 
-  if (confirm --title "OpenStack CLI" --yesno "Would you like to install the OpenStack command-line clients?\n\nPython 2.7+ is required" 10 90) ; then
+  if (confirm --title "OpenStack CLI" --yesno "Would you like to install the OpenStack command-line clients?\n\nPython is required" 10 90) ; then
     echo "Installing OpenStack CLI..."
 
-    sudo apt-get -y -q install python-dev python-pip
-    sudo pip install --upgrade setuptools
-    sudo pip install --upgrade python-openstackclient
+    sudo apt-get -y -q install python3-dev python3-pip
+    sudo pip3 install --upgrade setuptools
+    sudo pip3 install --upgrade python-openstackclient
 
     echo "Installing bash-completion"
     sudo mkdir -p /etc/bash_completion.d
