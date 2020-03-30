@@ -14,6 +14,7 @@ function main() {
       "GUILIB" "Install a base set of libraries for GUI applications" off \
       "HIDPI" "Configure Qt and GTK for HiDPI displays (experimental)" off \
       "STARTMENU" "Generates Windows Start Menu shortcuts for GUI applications" off \
+      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
       "SYNAPTIC" "Install the Synaptic package manager" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
       "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " off \
@@ -63,6 +64,11 @@ function main() {
   if [[ ${menu_choice} == *"THEME"* ]] ; then
     echo "WINTHEME"
     bash ${SetupDir}/theme.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"TERMINAL"* ]] ; then
+    echo "TERMINAL"
+    bash ${SetupDir}/terminal.sh "$@"
   fi
 
 }
