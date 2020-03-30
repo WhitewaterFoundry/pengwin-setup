@@ -27,6 +27,7 @@ function main() {
       "HIDPI" "Remove Qt and GTK HiDPI modifications" off \
       "HOMEBREW" "Remove the Homebrew package manager" off \
       "IBM" "Remove IBM Cloud CLI tools" off \
+      "IBUS" "Remove all ibus improved non-Latin input support" off \
       "JAVA" "Remove SDKMan its installed Java SDKs" off \
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" off \
       "KUBERNETES" "Remove Kubernetes tooling" off \
@@ -137,6 +138,11 @@ function main() {
   if [[ ${menu_choice} == *"IBM"* ]] ; then
     echo "IBM"
     bash ${UninstallDir}/ibmcli.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"IBUS"* ]] ; then
+    echo "ibus"
+    bash ${UninstallDir}/ibus.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"JAVA"* ]] ; then
