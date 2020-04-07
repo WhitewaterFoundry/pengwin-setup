@@ -15,12 +15,12 @@ function process_arguments() {
       ;;
     --noupdate)
       echo "Skipping updates"
-      SKIP_UPDATES=1
+      export SKIP_UPDATES=1
       shift
       ;;
     --norebuildicons)
       echo "Skipping rebuild start menu"
-      SKIP_STARTMENU=1
+      export SKIP_STARTMENU=1
       shift
       ;;
     *)
@@ -103,7 +103,7 @@ function menu() {
   local exit_status=$?
 
   if [[ ${exit_status} != 0 ]]; then
-    echo ${CANCELLED}
+    echo "${CANCELLED}"
     return
   fi
 
@@ -125,7 +125,7 @@ function menu() {
 
 function setup_env() {
 
-  if (! which cmd.exe >/dev/null); then
+  if (! command -v cmd.exe >/dev/null); then
     whiptail --title "Wrong user" --msgbox "pengwin-setup was ran with the user \"${USER}\".\n\nRun pengwin-setup from the default user and without sudo" 12 80
 
     exit 0
@@ -133,6 +133,7 @@ function setup_env() {
 
   process_arguments "$@"
 
+  # shellcheck disable=SC1003
   if (! wslpath 'C:\' >/dev/null 2>&1); then
     shopt -s expand_aliases
     alias wslpath=legacy_wslupath
@@ -141,6 +142,7 @@ function setup_env() {
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
   readonly CANCELLED="CANCELLED"
+  readonly WIN_CUR_VER="$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | grep -E -o '([0-9]{5})' | cut -d ' ' -f 2)"
 
   SetupDir="/usr/local/pengwin-setup.d"
 
