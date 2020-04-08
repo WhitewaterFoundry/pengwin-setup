@@ -78,7 +78,7 @@ function ByeMessage() {
 
   if [[ ${WIN_CUR_VER} -ge 17763 && ${should_restart} ]]; then
     whiptail --title "Setup is complete." --msgbox "This window will be closed to apply the changes in the environment.\nPlease start Pengwin again \n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
-    wslconfig.exe /t WLinux
+    wslconfig.exe /t "${WSL_DISTRO_NAME:-WLinux}"
   elif [[ ${should_restart} ]]; then
     whiptail --title "Setup is complete." --msgbox "Please close this window and start Pengwin again to apply the changes in the environment.\n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
   else
