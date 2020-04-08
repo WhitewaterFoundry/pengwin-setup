@@ -27,6 +27,7 @@ function main() {
       "HIDPI" "Remove Qt and GTK HiDPI modifications" off \
       "HOMEBREW" "Remove the Homebrew package manager" off \
       "IBM" "Remove IBM Cloud CLI tools" off \
+      "IBUS" "Remove all ibus improved non-Latin input support" off \
       "JAVA" "Remove SDKMan its installed Java SDKs" off \
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" off \
       "KUBERNETES" "Remove Kubernetes tooling" off \
@@ -44,6 +45,7 @@ function main() {
       "VCXSRV" "Remove VcXsrv X-server" off \
       "VSCODE" "Remove Visual Studio Code for Linux" off \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" off \
+      "WSLTTY" "Remove WSLtty" off \
       "X410" "Remove the X410 X-server autostart" off \
 
   3>&1 1>&2 2>&3)
@@ -112,6 +114,11 @@ function main() {
     bash ${UninstallDir}/go.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"GTERM"* ]] ; then
+    echo "GO"
+    bash ${UninstallDir}/gterm.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"GUILIB"* ]] ; then
     echo "GUILIB"
     bash ${UninstallDir}/guilib.sh "$@"
@@ -130,6 +137,11 @@ function main() {
   if [[ ${menu_choice} == *"IBM"* ]] ; then
     echo "IBM"
     bash ${UninstallDir}/ibmcli.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"IBUS"* ]] ; then
+    echo "ibus"
+    bash ${UninstallDir}/ibus.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"JAVA"* ]] ; then
@@ -215,6 +227,11 @@ function main() {
   if [[ ${menu_choice} == *"WINTHEME"* ]] ; then
     echo "WINTHEME"
     bash ${UninstallDir}/theme.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
+    echo "WSLTTY"
+    bash ${UninstallDir}/wsltty.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"X410"* ]] ; then

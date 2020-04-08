@@ -10,23 +10,26 @@ source ${SetupDir}/common.sh "$@"
 declare CANCELLED
 declare SKIP_UPDATES
 
+rm -f "${HOME}"/.should-restart
+
 # define functions
 
 function check_upgrades() {
   echo "Updating package database"
 
+  # shellcheck disable=SC2155
   local debian_security_ok="$(cat /etc/apt/sources.list 2>&1 | grep -c "https://deb.debian.org/debian-security testing/updates")"
-  if [[ ${debian_security_ok} != 0 ]] ; then
+  if [[ ${debian_security_ok} != 0 ]]; then
     sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
   fi
 
   sudo apt-get update --allow-releaseinfo-change
 
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
-  if [[ -f "/etc/apt/.dist-upgrade" ]] ; then
+  if [[ -f "/etc/apt/.dist-upgrade" ]]; then
     # whiptail prompt here, delete on dist-upgrade
     echo "Distribution upgrade flag noticed! Alerting user"
-    if (whiptail --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90) ; then
+    if (whiptail --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
       sudo rm /etc/apt/.dist-upgrade
       sudo apt-get dist-upgrade -y
       exit 0
@@ -35,21 +38,22 @@ function check_upgrades() {
 
   # Check if there's any upgrades to pengwin-setup / pengwin-base
   echo "Running upgrade check..."
+  # shellcheck disable=SC2155
   local upgrd_check="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
-  if [[ "${upgrd_check}" == *"pengwin"* ]] ; then
+  if [[ "${upgrd_check}" == *"pengwin"* ]]; then
     echo "Pengwin core package upgrades found"
-    if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91) ; then
+    if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
 
       # Ensure that packages get updated without affecting other held packages like udev
-      sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
+      sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
       sudo apt-get upgrade pengwin-base pengwin-setup -y
-      exit 0
+      #exit 0
     fi
   fi
 }
 
-function WelcomePrompt {
-whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
+function WelcomePrompt() {
+  whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
 Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n
 pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
 Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
@@ -66,13 +70,25 @@ function continue_prompt() {
   fi
 }
 
-function ByeMessage {
-    whiptail --title "Setup is complete." --msgbox "You may run pengwin-setup again any time by typing $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 8 80
-    exit 0
+function ByeMessage() {
+  if [[ -f "${HOME}"/.should-restart ]]; then
+    local should_restart=0
+    rm -f "${HOME}"/.should-restart
+  fi
+
+  if [[ ${WIN_CUR_VER} -ge 17763 && ${should_restart} ]]; then
+    whiptail --title "Setup is complete." --msgbox "This window will be closed to apply the changes in the environment.\nPlease start Pengwin again \n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
+    wslconfig.exe /t "${WSL_DISTRO_NAME:-WLinux}"
+  elif [[ ${should_restart} ]]; then
+    whiptail --title "Setup is complete." --msgbox "Please close this window and start Pengwin again to apply the changes in the environment.\n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
+  else
+    whiptail --title "Setup is complete." --msgbox "You may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 10 80
+  fi
 }
 
 # main menu
 function install_menu() {
+  # shellcheck disable=SC2155
   local menu_choice=$(
 
     menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 16 99 8 \
@@ -87,63 +103,63 @@ function install_menu() {
 
   3>&1 1>&2 2>&3)
 
-  echo "Selected:" ${menu_choice}
+  echo "Selected:" "${menu_choice}"
 
-  if [[ ${menu_choice} == "${CANCELLED}" ]] ; then
+  if [[ ${menu_choice} == "${CANCELLED}" ]]; then
     return
   fi
 
   local exit_status
 
-  if [[ ${menu_choice} == *"EDITORS"* ]] ; then
+  if [[ ${menu_choice} == *"EDITORS"* ]]; then
     echo "EDITORS"
     bash ${SetupDir}/editors.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"GUI"* ]] ; then
+  if [[ ${menu_choice} == *"GUI"* ]]; then
     echo "GUI"
     bash ${SetupDir}/gui.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"MAINTENANCE"* ]] ; then
+  if [[ ${menu_choice} == *"MAINTENANCE"* ]]; then
     echo "MAINTENANCE"
     bash ${SetupDir}/maintenance.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"PROGRAMMING"* ]] ; then
+  if [[ ${menu_choice} == *"PROGRAMMING"* ]]; then
     echo "PROGRAMMING"
     bash ${SetupDir}/programming.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"SERVICES"* ]] ; then
+  if [[ ${menu_choice} == *"SERVICES"* ]]; then
     echo "SERVICES"
     bash ${SetupDir}/services.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"SETTINGS"* ]] ; then
+  if [[ ${menu_choice} == *"SETTINGS"* ]]; then
     echo "SETTINGS"
     bash ${SetupDir}/settings.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"TOOLS"* ]] ; then
+  if [[ ${menu_choice} == *"TOOLS"* ]]; then
     echo "TOOLS"
     bash ${SetupDir}/tools.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"UNINSTALL"* ]] ; then
+  if [[ ${menu_choice} == *"UNINSTALL"* ]]; then
     echo "UNINSTALL"
     bash ${SetupDir}/uninstall.sh "$@"
     exit_status=$?
   fi
 
-  if [[ ${exit_status} != 0 ]] ; then
+  if [[ ${exit_status} != 0 ]]; then
     install_menu "$@"
   fi
 }
@@ -160,14 +176,13 @@ fi
 # being updated while running other operations from pengwin-setup
 # install menu
 echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
-sudo apt-mark hold pengwin-base pengwin-setup > /dev/null 2>&1
+sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
 
 install_menu "$@"
 
 # Unhold our packages
 echo "Unholding pengwin-base & pengwin-setup"
-sudo apt-mark unhold pengwin-base pengwin-setup > /dev/null 2>&1
-
+sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
 
 ByeMessage
 exit 0

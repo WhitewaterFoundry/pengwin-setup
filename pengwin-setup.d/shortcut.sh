@@ -1,10 +1,12 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
 #Globals
 declare DEST_PATH
 declare SKIP_STARTMENU
+declare SetupDir
 readonly NO_ICON="NO_ICON"
 
 function create_shortcut() {
@@ -16,13 +18,13 @@ function create_shortcut() {
   if [[ -z "${cmdIcon}" ]]; then
     return
 
-  elif [[ "${cmdIcon}" == ${NO_ICON} ]]; then
+  elif [[ "${cmdIcon}" == "${NO_ICON}" ]]; then
 
     cmdIcon=""
   fi
 
-  echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
-  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
+  echo wslusc --name "${cmdName}" ${cmdIcon} "${gui}" "${cmdToExec}"
+  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} "${gui}" "${cmdToExec}"
 
   mkdir -p "${DEST_PATH}"
   mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${DEST_PATH}"
@@ -39,133 +41,131 @@ function create_shortcut_from_desktop() {
   local line
   local gui="--gui"
 
-  while read line; do
+  while read -r line; do
 
     case ${state} in
-      0*) #Looking for entry
+    0*) #Looking for entry
 
-        if [[ ${line} == "[Desktop Entry]" ]]; then
-          ((state++))
+      if [[ ${line} == "[Desktop Entry]" ]]; then
+        ((state++))
+      fi
+      ;;
+    1*)
+
+      if [[ ${line} == [* ]]; then
+        break
+      fi
+
+      IFS='=' read -ra keyValue <<<"${line}"
+
+      local key="${keyValue[0]}"
+      local value="${keyValue[1]}"
+
+      case "${key}" in
+      Name)
+
+        if [[ -z "${cmdName}" ]]; then
+          cmdName="${value} (WSL)"
         fi
         ;;
-      1*)
 
-        if [[ ${line} == [* ]]; then
-          break
+      Exec)
+
+        if [[ -z "${cmdToExec}" ]]; then
+
+          declare -a cmdToExecArray
+          local cmdToExecArray
+          read -ra cmdToExecArray <<<"${value}"
+
+          cmdToExec="${cmdToExecArray[0]}"
+
+          case "${cmdToExec}" in
+          *display-im6.q16)
+            return
+            ;;
+          synaptic*)
+            return
+            ;;
+          exo-*)
+            return
+            ;;
+          *code-insiders)
+            cmdToExec="code-insiders"
+            ;;
+          *code)
+            cmdToExec="code"
+            ;;
+          esac
+
         fi
 
-        IFS='=' read -ra keyValue <<< "${line}"
+        ;;
 
-        local key="${keyValue[0]}"
-        local value="${keyValue[1]}"
+      Icon)
 
-        case "${key}" in
-          Name)
+        if [[ -z "${cmdIcon}" ]]; then
 
-            if [[ -z "${cmdName}" ]]; then
-              cmdName="${value} (WSL)"
-            fi
-            ;;
+          if [[ "${value}" == "com.visualstudio.code" ]]; then
+            cmdIcon="/usr/share/pixmaps/com.visualstudio.code.png"
 
-          Exec)
+          elif [[ ! -f "${value}" ]]; then
+            cmdIcon=$(find /usr/share/pixmaps \
+              /usr/share/icons/hicolor/256x256/apps \
+              /usr/share/icons/Adwaita/256x256/apps \
+              /usr/share/icons/gnome/256x256/apps \
+              /usr/share/icons/hicolor/128x128/apps \
+              /usr/share/icons/hicolor/scalable/apps \
+              /usr/share/icons/hicolor/48x48/apps \
+              /usr/share/icons/breeze/apps/64 \
+              /usr/share/icons/Adwaita/48x48/apps \
+              /usr/share/icons/gnome/48x48/apps \
+              /usr/share/icons/Adwaita/512x512/places \
+              /usr/share/icons/Adwaita/256x256/devices \
+              "${HOME}"/.local/share/icons/hicolor/256x256/apps \
+              /usr/share/icons \
+              -maxdepth \
+              1 \
+              -name "${value}*" -type f,l | head -n 1)
+          else
+            cmdIcon="${value}"
+          fi
 
-            if [[ -z "${cmdToExec}" ]]; then
+          if [[ -n "${cmdIcon}" ]]; then
+            cmdIcon="--icon ${cmdIcon}"
+          else
+            cmdIcon="${NO_ICON}"
+          fi
+        fi
 
-              declare -a cmdToExecArray
-              local cmdToExecArray
-              read -ra cmdToExecArray <<< "${value}"
-
-              cmdToExec="${cmdToExecArray[0]}"
-
-              case "${cmdToExec}" in
-                *display-im6.q16)
-                  return
-                  ;;
-                synaptic*)
-                  return
-                  ;;
-                *code-insiders)
-                  cmdToExec="code-insiders"
-                  ;;
-                *code)
-                  cmdToExec="code"
-                  ;;
-              esac
-
-            fi
-
-            ;;
-
-          Icon)
-
-            if [[ -z "${cmdIcon}" ]]; then
-
-              if [[ "${value}" == "com.visualstudio.code" ]]; then
-                cmdIcon="/usr/share/pixmaps/com.visualstudio.code.png"
-
-              elif [[ ! -f "${value}" ]]; then
-                cmdIcon=$(find /usr/share/pixmaps \
-                  \
-                  /usr/share/icons/hicolor/256x256/apps \
-                  /usr/share/icons/Adwaita/256x256/apps \
-                  /usr/share/icons/gnome/256x256/apps \
-                  /usr/share/icons/hicolor/128x128/apps \
-                  /usr/share/icons/hicolor/scalable/apps \
-                  /usr/share/icons/hicolor/48x48/apps \
-                  /usr/share/icons/breeze/apps/64 \
-                  /usr/share/icons/Adwaita/48x48/apps \
-                  /usr/share/icons/gnome/48x48/apps \
-                  /usr/share/icons/Adwaita/512x512/places \
-                  /usr/share/icons/Adwaita/256x256/devices \
-                  ${HOME}/.local/share/icons/hicolor/256x256/apps \
-                  /usr/share/icons \
-                  \
-                  -maxdepth 1 -name "${value}*" -type f,l | head -n 1)
-              else
-                cmdIcon="${value}"
-              fi
-
-              if [[ -n "${cmdIcon}" ]]; then
-                cmdIcon="--icon ${cmdIcon}"
-              else
-                cmdIcon="${NO_ICON}"
-              fi
-            fi
-
-
-            ;;
+        ;;
 
           Type)
 
-            if [[ "${value}" != "Application" ]]; then
-              return
-            fi
+        if [[ "${value}" != "Application" ]]; then
+          return
+        fi
 
-
-            ;;
+        ;;
 
           Terminal)
 
-            if [[ "${value}" == "true" ]]; then
-              gui=""
-            fi
+        if [[ "${value}" == "true" ]]; then
+          gui=""
+        fi
 
-
-            ;;
+        ;;
 
            NoDisplay)
 
-            if [[ "${value}" == "true" ]]; then
-              return
-            fi
-
-
-            ;;
-
-          esac
-
+        if [[ "${value}" == "true" ]]; then
+          return
+        fi
 
         ;;
+
+      esac
+
+      ;;
 
       esac
   done < "${desktopFile}"
@@ -179,7 +179,11 @@ function main() {
     return
   fi
 
-  if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70) ; then
+  if [[ ${WSL_DISTRO_NAME:-WLinux} != "WLinux" ]]; then
+    return
+  fi
+
+  if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70); then
 
     echo "Generating Start Menu"
 
@@ -189,12 +193,12 @@ function main() {
 
     filelistarray=()
 
-    while IFS=  read -r -d $'\0'; do
+    while IFS= read -r -d $'\0'; do
 
-        filelistarray+=("$REPLY")
+      filelistarray+=("$REPLY")
 
     done < <(find /usr/share/applications \
-                ${HOME}/.local/share/applications -name '*.desktop' -print0)
+      "${HOME}"/.local/share/applications -name '*.desktop' -print0)
 
     #Be sure the executable is updated
 
