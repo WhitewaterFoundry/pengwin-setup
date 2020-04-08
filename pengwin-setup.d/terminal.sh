@@ -1,7 +1,14 @@
-source $(dirname "$0")/common.sh "$@"
+#!/bin/bash
+
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+declare wHome
+declare SetupDir
 
 function main() {
 
+  # shellcheck disable=SC2155
   local menu_choice=$(
 
     menu --title "Terminal Menu" --checklist --separate-output "Select the terminals you want to install\n[SPACE to select, ENTER to confirm]:" 14 60 7 \
@@ -15,56 +22,28 @@ function main() {
 
   3>&1 1>&2 2>&3)
 
-  if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
   fi
 
-  if [[ ${menu_choice} == *"WINTERM"* ]] ; then
+  if [[ ${menu_choice} == *"WINTERM"* ]]; then
     echo "WINTERM"
-    if (confirm --title "Windows Terminal" --yesno "Would you like to install Windows Terminal?" 8 40) ; then
+    if (confirm --title "Windows Terminal" --yesno "Would you like to install Windows Terminal?" 8 40); then
       tmp_win_version=$(wslsys -B -s)
-      if [ $tmp_win_version -lt 18362 ]; then
+      if [ "$tmp_win_version" -lt 18362 ]; then
         whiptail --title "Unsupported Windows 10 Build" --msgbox "Windows Terminal requires Windows 10 Build 18362, but you are using $tmp_win_version. Skipping Windows Terminal." 8 56
         return
       fi
 
-      if (whiptail --title "Windows Terminal" --yes-button "Store" --no-button "GitHub" --yesno "Would you like to install the store version or GitHub version?" 8 80) then
-        wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
-      else
-        createtmp
-
-        echo "Installing required install dependencies"
-        sudo debconf-apt-progress -- apt-get install -y wget
-
-        [ -d "${wHome}/Pengwin/tmp" ] || mkdir -p "${wHome}/Pengwin/tmp"
-
-        # # install the missing dependency
-        if [ -z "$(winpwsh-exe "Get-AppxPackage Microsoft.VCLibs.140.00.UWPDesktop")" ]; then
-          echo "Desktop Bridge VC++ v14 Redistributable not found. Downloading..."
-          wget --progress=dot "https://download.microsoft.com/download/B/E/1/BE1F235A-836D-42AC-9BC1-8F04C9DA7E9D/vc_uwpdesktop.140.exe" -O "vc_uwpdesktop.140.exe" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Desktop Bridge VC++ v14 Redistributable" --gauge "Downloading Desktop Bridge VC++ v14 Redistributable..." 7 50 0
-          cp "vc_uwpdesktop.140.exe" "${wHome}/Pengwin/tmp"
-          winpwsh-exe "Start-Process -FilePath \"${wHomeWinPath}\\Pengwin\\tmp\\vc_uwpdesktop.140.exe\" -Wait"
-        fi
-
-        winterminal_url="$(curl -s https://api.github.com/repos/microsoft/terminal/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
-        wget --progress=dot "$winterminal_url" -O "WindowsTerminal.msixbundle" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "Windows Terminal" --gauge "Downloading Windows Terminal..." 7 50 0
-
-        cp "WindowsTerminal.msixbundle" "${wHome}/Pengwin/tmp"
-        cp -f /usr/local/lib/sudo.ps1 "${wHome}/Pengwin"
-
-        winpwsh-exe "${wHomeWinPath}\\Pengwin\\sudo.ps1" "Add-AppxPackage -Path \"${wHomeWinPath}\\Pengwin\\tmp\\WindowsTerminal.msixbundle\""
-
-        rm -rf "${wHome}/Pengwin/tmp/"
-        cleantmp
-      fi
+      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
     else
       echo "Skipping Windows Terminal"
     fi
   fi
 
-  if [[ ${menu_choice} == *"WSLTTY"* ]] ; then
+  if [[ ${menu_choice} == *"WSLTTY"* ]]; then
     echo "WSLTTY"
-    if (confirm --title "WSLtty" --yesno "Would you like to install WSLtty?" 8 40) ; then
+    if (confirm --title "WSLtty" --yesno "Would you like to install WSLtty?" 8 40); then
       createtmp
 
       echo "Installing required install dependencies"
@@ -75,11 +54,13 @@ function main() {
       wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
       wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
 
-      7z x wsltty.7z -o${wHome}/Pengwin/.wsltty/
+      7z x wsltty.7z -o"${wHome}"/Pengwin/.wsltty/
       echo "Installing WSLtty.... Please wait patiently"
       tmp_f="$(pwd)"
+      # shellcheck disable=SC2164
       cd "${wHome}/Pengwin/.wsltty"
       cmd.exe /C "install.bat"
+      # shellcheck disable=SC2164
       cd "$tmp_f"
       unset tmp_f
 
@@ -89,9 +70,9 @@ function main() {
     fi
   fi
 
-  if [[ ${menu_choice} == *"TILIX"* ]] ; then
+  if [[ ${menu_choice} == *"TILIX"* ]]; then
     echo "TILIX"
-    if (confirm --title "Tilix" --yesno "Would you like to install Tilix?" 8 40) ; then
+    if (confirm --title "Tilix" --yesno "Would you like to install Tilix?" 8 40); then
       sudo debconf-apt-progress -- apt-get install tilix libsecret-1-0 -y
       whiptail --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
 
@@ -101,9 +82,12 @@ function main() {
     fi
   fi
 
-  if [[ ${menu_choice} == *"GTERM"* ]] ; then
-    if (confirm --title "GNOME Terminal" --yesno "Would you like to install GNOME Terminal?" 8 40) ; then
-      echo "GTERM"
+  if [[ ${menu_choice} == *"GTERM"* ]]; then
+    echo "GTERM"
+    if (confirm --title "GNOME Terminal" --yesno "Would you like to install GNOME Terminal?" 8 40); then
+      echo "Install dependencies..."
+      bash "${SetupDir}"/guilib.sh --yes "$@"
+
       sudo debconf-apt-progress -- apt-get install gnome-terminal -y
       whiptail --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
 
@@ -113,9 +97,9 @@ function main() {
     fi
   fi
 
-  if [[ ${menu_choice} == *"XFTERM"* ]] ; then
+  if [[ ${menu_choice} == *"XFTERM"* ]]; then
     echo "XFTERM"
-    if (confirm --title "Xfce Terminal" --yesno "Would you like to install Xfce Terminal?" 8 40) ; then
+    if (confirm --title "Xfce Terminal" --yesno "Would you like to install Xfce Terminal?" 8 40); then
       sudo debconf-apt-progress -- apt-get install xfce4-terminal -y
       whiptail --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
 
@@ -125,9 +109,9 @@ function main() {
     fi
   fi
 
-  if [[ ${menu_choice} == *"TERMIN"* ]] ; then
+  if [[ ${menu_choice} == *"TERMIN"* ]]; then
     echo "TERMIN"
-    if (confirm --title "Terminator" --yesno "Would you like to install Terminator?" 8 40) ; then
+    if (confirm --title "Terminator" --yesno "Would you like to install Terminator?" 8 40); then
       echo "Install dependencies..."
       bash "${SetupDir}"/guilib.sh --yes "$@"
       sudo debconf-apt-progress -- apt-get install terminator -y
@@ -139,13 +123,21 @@ function main() {
     fi
   fi
 
-  if [[ ${menu_choice} == *"KONSO"* ]] ; then
+  if [[ ${menu_choice} == *"KONSO"* ]]; then
     echo "KONSO"
-    if (confirm --title "Konsole" --yesno "Would you like to install Konsole?" 8 40) ; then
+    if (confirm --title "Konsole" --yesno "Would you like to install Konsole?" 8 40); then
       echo "Install dependencies..."
       bash "${SetupDir}"/guilib.sh --yes "$@"
-      sudo debconf-apt-progress -- apt-get install konsole -y
-      whiptail --title "Konsole" --msgbox "Installation complete. You can start it by running $ konsole" 8 56
+      sudo debconf-apt-progress -- apt-get install konsole breeze -y
+
+      sudo tee "/etc/profile.d/kde.sh" <<EOF
+#!/bin/bash
+
+export QT_STYLE_OVERRIDE=Breeze
+
+EOF
+
+      whiptail --title "Konsole" --msgbox "Installation complete.\n\nYou can start it by running: $ konsole" 10 56
 
       INSTALLED=true
     else
@@ -153,7 +145,7 @@ function main() {
     fi
   fi
 
-  if [[ "${INSTALLED}" == true ]] ; then
+  if [[ "${INSTALLED}" == true ]]; then
     bash "${SetupDir}"/shortcut.sh --yes "$@"
   fi
 
