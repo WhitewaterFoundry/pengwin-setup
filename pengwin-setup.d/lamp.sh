@@ -7,9 +7,51 @@ function install_lamp() {
 
   if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60) ; then
 
+    echo "MariaDB Choice for LAMP Stack"
+    menu_choice=$(
+
+    menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
+        "10.1" "Install MariaDB 10.1 from MariaDB" off \
+        "10.2" "Install MariaDB 10.2 from MariaDB" off \
+        "10.3" "Install MariaDB 10.3 from MariaDB" off \
+        "10.4" "Install MariaDB 10.4 from MariaDB" off \
+        "BUILTIN" "Install MariaDB from Debian Official Repo" off
+
+      3>&1 1>&2 2>&3
+    )
+    
     echo "Installing MariaDB Database Server"
-    sudo apt-get -y -q install mariadb-server mariadb-client
-    apt policy mariadb-server
+
+    if [[ ${menu_choice} == "CANCELLED" ]] || [[ ${menu_choice} == "BUILTIN" ]]; then
+      sudo apt-get -y -q install mariadb-server mariadb-client
+      apt policy mariadb-server
+    else
+      if curl -sSO https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg
+      then
+        if curl -sS https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg.sha256 | sha256sum -c --quiet
+        then
+          echo 'Running apt-get update...'
+          if sudo mv mariadb-keyring-2019.gpg /etc/apt/trusted.gpg.d/ &&
+            sudo apt-get -q update
+          then
+            echo 'Done adding trusted package signing keys'
+          else
+            echo 'Failed to add trusted package signing keys'
+            exit 1
+          fi
+        else
+          echo 'Failed to verify trusted package signing keys keyring file'
+          exit 1
+        fi
+      else
+        echo 'Failed to download trusted package signing keys keyring file'
+      fi
+      sudo apt-get -y -q install software-properties-common
+      sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${menu_choice}/repo/debian stretch main"
+      sudo apt-get -q update
+      sudo apt-get -y -q install mariadb-server mariadb-client
+      apt policy mariadb-server
+    fi
 
     service mariadb status
 

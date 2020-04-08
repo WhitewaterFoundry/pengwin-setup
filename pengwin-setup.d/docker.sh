@@ -3,12 +3,13 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="19.03.4"
-DOCKER_COMPOSE_VERSION="1.24.1"
+DOCKER_VERSION="19.03.8"
+DOCKER_COMPOSE_VERSION="1.25.4"
 
 # Imported from common.sh
 declare wHome
 declare GOVERSION
+declare WIN_CUR_VER
 
 #Imported global variables
 declare USER
@@ -20,15 +21,16 @@ function docker_install_build_relay() {
     echo "Checking for go"
     command_check '/usr/local/go/bin/go' 'version'
     local go_check=$?
-    if [ $go_check -eq 1 ] ; then
+    if [ $go_check -eq 1 ]; then
       echo "Downloading Go using wget."
       wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
 
+      # shellcheck disable=SC2155
       export GOROOT=$(pwd)/go
       export PATH="${GOROOT}/bin:$PATH"
     else
-      if [ $go_check -eq 2 ] ; then
+      if [ $go_check -eq 2 ]; then
         # If go was only just installed previously without shell reset,
         # makes sure to set correct env variables
         export GOROOT=/usr/local/go
@@ -37,6 +39,7 @@ function docker_install_build_relay() {
     fi
 
     mkdir gohome
+    # shellcheck disable=SC2155
     export GOPATH=$(pwd)/gohome
 
     echo "Checking for git"
@@ -65,7 +68,7 @@ function docker_install_build_relay() {
 
   sudo apt-get -y -q install socat
 
-  cat << 'EOF' >> docker-relay
+  cat <<'EOF' >>docker-relay
 #!/bin/bash
 
 #Import the Windows path
@@ -92,20 +95,19 @@ EOF
 
   echo '%sudo   ALL=NOPASSWD: /usr/bin/docker-relay' | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/docker-relay
 
-  cat << 'EOF' >> docker_relay.sh
+  cat <<'EOF' >>docker_relay.sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
   sudo docker-relay "${PATH}"
 fi
-
 EOF
 
   sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
   sudo chmod -w /usr/bin/docker-relay
 
   sudo addgroup docker
-  sudo adduser ${USER} docker
+  sudo adduser "${USER}" docker
 
   echo "Running the relay for the first time."
   sudo docker-relay
@@ -118,16 +120,22 @@ EOF
 function docker_install_conf_tcp() {
   echo "Connect to Docker via TCP"
 
-  cat << 'EOF' >> docker_relay.sh
+  cat <<'EOF' >>docker_relay.sh
+# Only the default WSL user should run this script
+if ! (id -Gn | grep -c "adm.*sudo\|sudo.*adm" >/dev/null); then
+  return
+fi
+
 export DOCKER_HOST=tcp://0.0.0.0:2375
+
 EOF
   sudo cp docker_relay.sh /etc/profile.d/docker_relay.sh
 
   export DOCKER_HOST=tcp://0.0.0.0:2375
   connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-  if [[ ${connected} != 0  ]]; then
+  if [[ ${connected} != 0 ]]; then
     whiptail --title "DOCKER" \
-    --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
+      --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
   else
     docker version
   fi
@@ -136,7 +144,7 @@ EOF
 function docker_install_conf_toolbox() {
   echo "Connect to Docker Toolbox"
 
-  cat << 'EOF' >> docker_relay.sh
+  cat <<'EOF' >>docker_relay.sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
@@ -158,10 +166,6 @@ EOF
 }
 
 function main() {
-  if [[ -n ${WSL2} ]]; then
-    whiptail --title "DOCKER" --msgbox "Docker integration is not supported yet in WSL 2" 8 60
-    return
-  fi
 
   if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
     echo "Installing the bridge to Docker."
@@ -169,14 +173,13 @@ function main() {
     local errorCheck="docker daemon is not running.\|docker.exe: command not found\|error during connect:"
     local connected
     connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
-    while [[ ${connected} != 0  ]]; do
+    while [[ ${connected} != 0 ]]; do
       if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
 
       connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
-
     done
 
     createtmp
@@ -191,12 +194,11 @@ function main() {
 
     #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
     connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
-    local currentVersion=$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | egrep -o '([0-9]{5})' | cut -d ' ' -f 2)
 
     if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
       #Install via Docker Toolbox
       docker_install_conf_toolbox
-    elif [[ ${currentVersion} -gt 17063 && ${connected} != 0  ]]; then
+    elif [[ ${WIN_CUR_VER} -gt 17063 && ${connected} != 0 ]]; then
       #Connect via Unix Sockets
       docker_install_build_relay
     else
@@ -210,14 +212,15 @@ function main() {
     sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
 
     echo "Installing docker-compose"
-    sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose"
+    sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose"
     sudo chmod +x /usr/bin/docker-compose
 
     sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose'
 
     docker-compose version
 
-    if [[ ${currentVersion} -gt 17063 && $(wslpath 'C:\') = '/mnt/c/' ]]; then
+    # shellcheck disable=SC1003
+    if [[ ${WIN_CUR_VER} -gt 17063 && $(wslpath 'C:\') == '/mnt/c/' ]]; then
 
       if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
         echo "Changing the root from /mnt to /"
@@ -229,7 +232,7 @@ function main() {
           sudo sed -i 's$\(root=\)\(.*\)$\1/$' /etc/wsl.conf
         fi
 
-        cat << 'EOF' >> create-mnt-c-link
+        cat <<'EOF' >>create-mnt-c-link
 #!/bin/bash
 
 for l in $( ls /mnt ); do
@@ -261,7 +264,7 @@ EOF
 
         echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
 
-        cat << 'EOF' >> create-mnt-c-link.sh
+        cat <<'EOF' >>create-mnt-c-link.sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
@@ -273,10 +276,10 @@ EOF
         sudo chmod -w /usr/bin/create-mnt-c-link
       fi
 
-
     fi
 
-    whiptail --title "DOCKER" --msgbox "Docker bridge is ready. Please close and re-open Pengwin" 8 60
+    touch "${HOME}"/.should-restart
+
     cleantmp
 
   else
@@ -285,4 +288,3 @@ EOF
 }
 
 main
-
