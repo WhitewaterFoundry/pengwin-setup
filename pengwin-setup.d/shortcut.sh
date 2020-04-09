@@ -23,8 +23,10 @@ function create_shortcut() {
     cmdIcon=""
   fi
 
-  echo wslusc --name "${cmdName}" ${cmdIcon} "${gui}" "${cmdToExec}"
-  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} "${gui}" "${cmdToExec}"
+  # shellcheck disable=SC2086
+  echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
+  # shellcheck disable=SC2086
+  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
 
   mkdir -p "${DEST_PATH}"
   mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${DEST_PATH}"
@@ -121,6 +123,7 @@ function create_shortcut_from_desktop() {
               /usr/share/icons/gnome/48x48/apps \
               /usr/share/icons/Adwaita/512x512/places \
               /usr/share/icons/Adwaita/256x256/devices \
+              /usr/share/icons/Adwaita/256x256/legacy \
               "${HOME}"/.local/share/icons/hicolor/256x256/apps \
               /usr/share/icons \
               -maxdepth \
