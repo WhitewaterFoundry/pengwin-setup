@@ -70,7 +70,8 @@ EOF
   fi
 
   if (whiptail --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
-    chsh -s "$(which zsh)"
+    sudo chsh -s "$(command -v zsh)" "${USER}"
+    touch "${HOME}"/.should-restart
   fi
 }
 
@@ -95,13 +96,15 @@ function fish_install() {
   cleantmp
 
   if (confirm --title "fish" --yesno "Would you like to set fish as the default shell?" 8 55); then
-    chsh -s "$(which fish)"
+    sudo chsh -s "$(command -v fish)" "${USER}"
+    touch "${HOME}"/.should-restart
   fi
 }
 
 function cshinstall() {
   if (whiptail --title "csh" --yesno "Would you like to set csh as the default shell?" 8 55); then
-    chsh -s "$(which csh)"
+    sudo chsh -s "$(command -v csh)" "${USER}"
+    touch "${HOME}"/.should-restart
   fi
 }
 
