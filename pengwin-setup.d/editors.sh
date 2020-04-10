@@ -40,6 +40,7 @@ function code_install() {
     sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
     echo "Adding Microsoft apt repo to /etc/apt/sources.list.d/vscode.list with echo"
     sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+    sudo apt-get update
     cleantmp
 
     echo "Installing code with dependencies: "
