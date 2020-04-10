@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
 
 if (whiptail --title "RUST" --yesno "Would you like to download and install the latest version of Rust via rustup?" 8 85) then
     echo "Installing rust"

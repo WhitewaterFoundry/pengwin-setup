@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source $(dirname "$0")/uninstall-common.sh
+# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 function main()
 {

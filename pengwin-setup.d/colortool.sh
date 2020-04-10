@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
 
 if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme, along with a setup script for a user-friendly theme setting method? This will be installed to your Windows home directory under .ColorTool" 10 80) then
 	echo "Installing ColorTool"

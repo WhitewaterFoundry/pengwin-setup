@@ -57,9 +57,11 @@ EOF
     createtmp
     whiptail --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
     mkdir "Type exit to return to pengwin-setup"
-    cd "Type exit to return to pengwin-setup"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    cd ..
+    (
+      # shellcheck disable=SC2164
+      cd "Type exit to return to pengwin-setup"
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    )
 
     #Change the default theme for one more friendly with Windows console default font
     sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="bira"/' "${HOME}/.zshrc"
@@ -82,10 +84,12 @@ function fish_install() {
   whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
 
   mkdir "Type exit to return to pengwin-setup"
-  cd "Type exit to return to pengwin-setup"
+  (
+    # shellcheck disable=SC2164
+    cd "Type exit to return to pengwin-setup"
 
-  curl -L https://get.oh-my.fish | fish
-  cd ..
+    curl -L https://get.oh-my.fish | fish
+  )
 
   # Change the default theme for one more friendly with Windows console default font
   fish -c "omf install bira"
@@ -108,7 +112,8 @@ function cshinstall() {
   fi
 }
 
-function installandsetshell() {
+function installAndSetShell() {
+  # shellcheck disable=SC2155
   local menu_choice=$(
 
     menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
@@ -117,9 +122,11 @@ function installandsetshell() {
       "CSH" "csh" off \
       "BASH-RL" "Recommended readline settings for productivity " off
 
-  3>&1 1>&2 2>&3)
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
+  )
 
-  echo "Selected:" ${menu_choice}
+  echo "Selected:" "${menu_choice}"
 
   if [[ $menu_choice == *"ZSH"* ]]; then
     echo "Installing zsh..."
@@ -145,4 +152,4 @@ function installandsetshell() {
 
 }
 
-installandsetshell "$@"
+installAndSetShell "$@"

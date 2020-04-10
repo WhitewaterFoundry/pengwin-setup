@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
 
 BACKUPS_DIR="${wHome}/Pengwin/backups"
 BACKUP_PATH="${BACKUPS_DIR}/pengwin_home.tgz"

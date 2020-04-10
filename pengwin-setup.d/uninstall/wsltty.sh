@@ -1,5 +1,6 @@
 
-source $(dirname "$0")/uninstall-common.sh
+# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 wsltty_base_dir="${wHome}/Pengwin/.wsltty"
 wsltty_dir="$(wslpath "$(wslvar -s LOCALAPPDATA)")/wsltty"

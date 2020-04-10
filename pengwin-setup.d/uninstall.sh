@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
 declare SetupDir
@@ -10,12 +11,12 @@ function main() {
   local UninstallDir="${SetupDir}/uninstall"
   local menu_choice=$(
 
-    menu --title "GUI Menu" --checklist --separate-output "Uninstall applications and packages installed by pengwin-setup\n[SPACE to select, ENTER to confirm]:" 20 95 12 \
+    menu --title "Uninstall Menu" --checklist --separate-output "Uninstall applications and packages installed by pengwin-setup\n[SPACE to select, ENTER to confirm]:" 20 95 12 \
       "ANSIBLE" "Remove Ansible Playbook deployment tools" off \
       "AWS" "Remove AWS CLI tools" off \
       "AZURE" "Remove Azure CLI tools" off \
       "BASH-RL" "Remove optimized Bash readline settings" off \
-      "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion" off \
+      "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " off \
       "CASSANDRA" "Remove Cassandra NoSQL server" off \
       "COLORTOOL" "Remove ColorTool console color scheme setter" off \
       "DO" "Remove Digital Ocean CLI tools" off \
