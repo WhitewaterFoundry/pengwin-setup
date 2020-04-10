@@ -3,7 +3,7 @@ version: 2
 jobs:
     buildtest:
         docker:
-            - image: debian:testing
+            - image: debian:bullseye
         environment:
             DEBEMAIL="contact@whitewaterfoundry.com"
             DEBFULLNAME="Whitewater Foundry, Ltd. Co."
@@ -13,7 +13,7 @@ jobs:
                 name: Ensure we have devscripts and debuild installed
                 command: |
                     apt-get -y -q update
-                    apt-get -y -q install devscripts debhelper 
+                    apt-get -y -q install devscripts debhelper
             - run:
                 name: Update changelog
                 command: |
