@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
 
 if (confirm --title "AZURECLI" --yesno "Would you like to download and install Azure command line tools?" 8 70); then
   echo "Installing AZURECLI"
