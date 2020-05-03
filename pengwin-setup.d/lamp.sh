@@ -5,35 +5,33 @@ source "$(dirname "$0")/common.sh" "$@"
 
 function install_lamp() {
 
-  if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60) ; then
+  if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60); then
 
     echo "MariaDB Choice for LAMP Stack"
     menu_choice=$(
 
-    menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
-        "10.1" "Install MariaDB 10.1 from MariaDB" off \
+      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
         "10.2" "Install MariaDB 10.2 from MariaDB" off \
         "10.3" "Install MariaDB 10.3 from MariaDB" off \
         "10.4" "Install MariaDB 10.4 from MariaDB" off \
+        "10.5" "Install MariaDB 10.5 from MariaDB" off \
         "BUILTIN" "Install MariaDB from Debian Official Repo" off
 
+      # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
     )
-    
+
     echo "Installing MariaDB Database Server"
 
     if [[ ${menu_choice} == "CANCELLED" ]] || [[ ${menu_choice} == "BUILTIN" ]]; then
-      sudo apt-get -y -q install mariadb-server mariadb-client
+      sudo debconf-apt-progress -- apt-get install -y mariadb-server mariadb-client
       apt policy mariadb-server
     else
-      if curl -sSO https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg
-      then
-        if curl -sS https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg.sha256 | sha256sum -c --quiet
-        then
+      if curl -sSO https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg; then
+        if curl -sS https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg.sha256 | sha256sum -c --quiet; then
           echo 'Running apt-get update...'
           if sudo mv mariadb-keyring-2019.gpg /etc/apt/trusted.gpg.d/ &&
-            sudo apt-get -q update
-          then
+            sudo apt-get -q update; then
             echo 'Done adding trusted package signing keys'
           else
             echo 'Failed to add trusted package signing keys'
@@ -47,23 +45,23 @@ function install_lamp() {
         echo 'Failed to download trusted package signing keys keyring file'
       fi
       sudo apt-get -y -q install software-properties-common
-      sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${menu_choice}/repo/debian stretch main"
+      sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${menu_choice}/repo/debian buster main"
       sudo apt-get -q update
-      sudo apt-get -y -q install mariadb-server mariadb-client
+      sudo debconf-apt-progress -- apt-get install -y -t buster mariadb-server mariadb-client
       apt policy mariadb-server
     fi
 
     service mariadb status
 
     echo "Installing Apache Web Server"
-    sudo apt-get -y -q install apache2 apache2-utils
+    sudo debconf-apt-progress -- apt-get install -y apache2 apache2-utils
     sudo service apache2 start
     sudo apache2 -v
 
     service apache2 status
 
     echo "Installing PHP"
-    sudo apt-get -y -q install php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath
+    sudo debconf-apt-progress -- apt-get install -y php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
     sudo a2enmod php7.3
 
     php -v
@@ -78,7 +76,7 @@ function install_lamp() {
 
     startLamp="/usr/bin/start-lamp"
     #local startLamp
-    sudo tee "${startLamp}" << EOF
+    sudo tee "${startLamp}" <<EOF
 #!/bin/bash
 
 mysql_status=\$(service mysql status)
@@ -98,7 +96,7 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${startLamp}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-lamp
 
     profile_start_lamp="/etc/profile.d/start-lamp.sh"
-    sudo tee "${profile_start_lamp}" << EOF
+    sudo tee "${profile_start_lamp}" <<EOF
 #!/bin/bash
 
 # Check if we have Windows Path
@@ -113,7 +111,6 @@ EOF
   else
     echo "Skipping SSH Server"
   fi
-
 
 }
 

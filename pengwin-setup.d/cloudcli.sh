@@ -9,7 +9,7 @@ declare GOVERSION
 declare wHome
 
 function install_terraform() {
-  if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40) ; then
+  if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40); then
     echo "Installing Terraform..."
 
     createtmp
@@ -32,11 +32,11 @@ function install_terraform() {
 
 function install_awscli() {
 
-  if (confirm --title "AWS CLI" --yesno "Would you like to install the AWS CLI Using the Bundled Installer?\n\nPython is required" 10 90) ; then
+  if (confirm --title "AWS CLI" --yesno "Would you like to install the AWS CLI Using the Bundled Installer?\n\nPython is required" 10 90); then
     echo "Installing AWS CLI..."
 
     if ! (python3 --version); then
-      bash ${SetupDir}/pythonpi.sh "$@"
+      bash "${SetupDir}"/pythonpi.sh "$@"
 
       if ! (python3 --version); then
         return
@@ -68,7 +68,7 @@ function install_awscli() {
 
 function install_doctl() {
 
-  if (confirm --title "Digital Ocean CTL" --yesno "Would you like to install the Digital Ocean CLI?" 8 70) ; then
+  if (confirm --title "Digital Ocean CTL" --yesno "Would you like to install the Digital Ocean CLI?" 8 70); then
     echo "Installing Digital Ocean CTL"
 
     createtmp
@@ -76,14 +76,15 @@ function install_doctl() {
     echo "Checking for go"
     command_check '/usr/local/go/bin/go' 'version'
     local go_check=$?
-    if [ $go_check -eq 1 ] ; then
+    if [ $go_check -eq 1 ]; then
       echo "Downloading Go using wget."
       wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
+      # shellcheck disable=SC2155
       export GOROOT=$(pwd)/go
       export PATH="${GOROOT}/bin:$PATH"
     else
-      if [ $go_check -eq 2 ] ; then
+      if [ $go_check -eq 2 ]; then
         # If go was only just installed previously without shell reset,
         # makes sure to set correct env variables
         export GOROOT=/usr/local/go
@@ -92,6 +93,7 @@ function install_doctl() {
     fi
 
     mkdir gohome
+    # shellcheck disable=SC2155
     export GOPATH=$(pwd)/gohome
 
     echo "Checking for git"
@@ -107,7 +109,7 @@ function install_doctl() {
 
     echo "Building doctl"
     go get -u github.com/digitalocean/doctl/cmd/doctl
-    sudo cp ${GOPATH}/bin/doctl /usr/local/bin/doctl
+    sudo cp "${GOPATH}"/bin/doctl /usr/local/bin/doctl
 
     if [[ ${git_exists} -eq 0 ]]; then
       sudo apt-get -y -q purge git
@@ -118,7 +120,7 @@ function install_doctl() {
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
 
-    doctl completion bash | sudo tee /etc/bash_completion.d/doc.bash_completion > /dev/null
+    doctl completion bash | sudo tee /etc/bash_completion.d/doc.bash_completion >/dev/null
     doctl version
 
     cleantmp
@@ -145,14 +147,14 @@ function install_kubectl() {
 }
 function install_ibmcli() {
 
-  if (confirm --title "IBM Cloud CLI" --yesno "Would you like to install the stand-alone IBM Cloud CLI?" 8 70) ; then
+  if (confirm --title "IBM Cloud CLI" --yesno "Would you like to install the stand-alone IBM Cloud CLI?" 8 70); then
     echo "Installing IBM Cloud CLI..."
 
     createtmp
 
     curl -sL https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64 | tar -xvz
 
-    cd Bluemix_CLI
+    cd Bluemix_CLI || return 1
     sudo ./install
 
     yes | ibmcloud plugin install dev -r 'IBM Cloud'
@@ -180,7 +182,7 @@ function install_ibmcli() {
 
 function install_kubernetes() {
 
-  if (confirm --title "Kubernetes tooling" --yesno "Would you like to install the Kubernetes tooling?" 10 90) ; then
+  if (confirm --title "Kubernetes tooling" --yesno "Would you like to install the Kubernetes tooling?" 10 90); then
 
     createtmp
 
@@ -210,17 +212,16 @@ function install_kubernetes() {
 
     # Add the completion script to the /etc/bash_completion.d directory.
     local base_url=https://raw.githubusercontent.com/ahmetb/kubectx/master/completion
-    curl ${base_url}/kubectx.bash | sudo tee /etc/bash_completion.d/kubectx > /dev/null
-    curl ${base_url}/kubens.bash | sudo tee /etc/bash_completion.d/kubens > /dev/null
+    curl ${base_url}/kubectx.bash | sudo tee /etc/bash_completion.d/kubectx >/dev/null
+    curl ${base_url}/kubens.bash | sudo tee /etc/bash_completion.d/kubens >/dev/null
 
-    if( ! docker version 2> /dev/null); then
+    if (! docker version 2>/dev/null); then
 
       bash "${SetupDir}/docker.sh" "$@"
     fi
 
     local kube_ctl="${wHome}/.kube/config"
 
-    local kubernetes_enabled
     while [[ ! -f ${kube_ctl} ]]; do
       if ! (whiptail --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker Desktop. Would you like to try again?" 9 75); then
         return
@@ -229,8 +230,8 @@ function install_kubernetes() {
 
     done
 
-    mkdir -p ${HOME}/.kube
-    ln -sf ${kube_ctl} ${HOME}/.kube/config
+    mkdir -p "${HOME}"/.kube
+    ln -sf "${kube_ctl}" "${HOME}"/.kube/config
 
     kubectl cluster-info
     kubens kube-system
@@ -247,7 +248,7 @@ function install_kubernetes() {
 
 function install_openstack() {
 
-  if (confirm --title "OpenStack CLI" --yesno "Would you like to install the OpenStack command-line clients?\n\nPython is required" 10 90) ; then
+  if (confirm --title "OpenStack CLI" --yesno "Would you like to install the OpenStack command-line clients?\n\nPython is required" 10 90); then
     echo "Installing OpenStack CLI..."
 
     sudo apt-get -y -q install python3-dev python3-pip
@@ -258,7 +259,7 @@ function install_openstack() {
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
 
-    openstack complete | sudo tee /etc/bash_completion.d/osc.bash_completion > /dev/null
+    openstack complete | sudo tee /etc/bash_completion.d/osc.bash_completion >/dev/null
 
     openstack --version
 
@@ -270,6 +271,7 @@ function install_openstack() {
 }
 
 function main() {
+  # shellcheck disable=SC2155
   local choice=$(
     whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
       "AWS" "AWS CLI" off \
@@ -281,48 +283,48 @@ function main() {
       "TERRAFORM" "Terraform                   " off 3>&1 1>&2 2>&3
   )
 
-  echo "Selected:" ${choice}
-  if [[ ! ${choice} ]] ; then
+  echo "Selected:" "${choice}"
+  if [[ ! ${choice} ]]; then
     return
   fi
-  
-  if [[ ${choice} == *"AZURE"* ]] ; then
+
+  if [[ ${choice} == *"AZURE"* ]]; then
 
     bash "${SetupDir}/azurecli.sh" "$@"
 
   fi
 
-  if [[ ${choice} == *"AWS"* ]] ; then
+  if [[ ${choice} == *"AWS"* ]]; then
 
     install_awscli "$@"
 
   fi
 
-  if [[ ${choice} == *"DO"* ]] ; then
+  if [[ ${choice} == *"DO"* ]]; then
 
     install_doctl "$@"
 
   fi
 
-  if [[ ${choice} == *"IBM"* ]] ; then
+  if [[ ${choice} == *"IBM"* ]]; then
 
     install_ibmcli "$@"
 
   fi
 
-  if [[ ${choice} == *"KUBERNETES"* ]] ; then
+  if [[ ${choice} == *"KUBERNETES"* ]]; then
 
     install_kubernetes "$@"
 
   fi
 
-  if [[ ${choice} == *"OPENSTACK"* ]] ; then
+  if [[ ${choice} == *"OPENSTACK"* ]]; then
 
     install_openstack "$@"
 
   fi
 
-  if [[ ${choice} == *"TERRAFORM"* ]] ; then
+  if [[ ${choice} == *"TERRAFORM"* ]]; then
 
     install_terraform "$@"
 
@@ -330,4 +332,3 @@ function main() {
 }
 
 main "$@"
-
