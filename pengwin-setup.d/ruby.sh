@@ -79,6 +79,8 @@ if (whiptail --title "RAILS" --yesno "Would you like to download and install Rai
   gem install rails -v 5.2.0
   rbenv rehash
   cleantmp
+  
+  touch "${HOME}"/.should-restart
 else
   echo "Skipping RAILS"
 fi
