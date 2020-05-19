@@ -103,28 +103,6 @@ function winps_exec {
   chcp_com 65001
 }
 
-function baseexec_gen {
-  wslutmpbuild=$(reg.exe query "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentBuild | tail -n 2 | head -n 1 | sed -e 's|\r||g')
-  wslutmpbuild=${wslutmpbuild##* }
-  wslutmpbuild="$(( $wslutmpbuild + 0 ))"
-  wslu_distro_regpath=$("$(interop_prefix)"c/Windows/System32/reg.exe query "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Lxss" /s /f DistributionName 2>&1 | grep -B1 -e "${WSL_DISTRO_NAME:-WLinux}" | head -n1 | sed -e 's|\r||g')
-  wslu_distro_packagename=$("$(interop_prefix)"c/Windows/System32/reg.exe query "$wslu_distro_regpath" /v PackageFamilyName | tail -n 2 | head -n 1 | sed -e 's|\r||g')
-  wslu_distro_packagename=${wslu_distro_packagename##* }
-  wslu_base_exec_folder_path="$(wslpath "$(double_dash_p "$(winps_exec "Write-Output \$Env:LOCALAPPDATA" | tr -d "\r")")\\Microsoft\\WindowsApps\\$wslu_distro_packagename")"
-  wslu_base_exec_path="$(find "$wslu_base_exec_folder_path" -name "*.exe")"
-
-  if [[ -f "${wslu_base_exec_path}" ]]; then
-    if( which "$(basename "${wslu_base_exec_path}")" > /dev/null 2>&1 ) ; then
-
-      echo -n "$(basename "${wslu_base_exec_path}")" > ~/.config/wslu/baseexec
-    else
-      wslpath -w "${wslu_base_exec_path}" > ~/.config/wslu/baseexec
-    fi
-  else
-    echo "C:\\Windows\\System32\\wsl.exe" > ~/.config/wslu/baseexec
-  fi
-}
-
 # first run, saving some information
 if [ ! -d ~/.config/wslu ]; then
   mkdir -p ~/.config/wslu
@@ -133,18 +111,6 @@ fi
 # generate oem codepage
 if [ ! -f ~/.config/wslu/oemcp ]; then
   "$(interop_prefix)"c/Windows/System32/reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" /v OEMCP 2>&1 | sed -n 3p | sed -e 's|\r||g' | grep -o '[[:digit:]]*' > ~/.config/wslu/oemcp
-fi
-
-# generate base exe locaiton
-if [ ! -f ~/.config/wslu/baseexec ]; then
-  # if it is not generated
-  baseexec_gen
-elif grep -q "/" ~/.config/wslu/baseexec; then
-  # if baseexec is using the old linux style, regenerate
-  baseexec_gen
-elif ! which "$(wslpath -u "$(cat ~/.config/wslu/baseexec)" 2>/dev/null )" >/dev/null; then
-  # if baseexec cannnot be executed, regenerate
-  baseexec_gen
 fi
 
 # when --debug, debug.
@@ -217,7 +183,7 @@ if [[ "$cname" != "" ]]; then
   script_location="$(wslpath "$(wslvar -s USERPROFILE)")/wslu" # Windows wslu, Linux WSL Sty.
   localfile_path="/usr/share/wslu" # WSL wslu source file location, Linux Sty.
   script_location_win="$(double_dash_p "$(wslvar -s USERPROFILE)")\\wslu" #  Windows wslu, Win Double Sty.
-  distro_location_win="$(double_dash_p "$(cat ~/.config/wslu/baseexec)")" # Distro Location, Win Double Sty.
+  distro_location_win="pengwin.exe" # Distro Location, Win Double Sty.
   # change param according to the exec.
   distro_param="run"
   if [[ "$distro_location_win" == *wsl.exe ]]; then
