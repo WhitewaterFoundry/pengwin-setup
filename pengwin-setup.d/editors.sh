@@ -44,7 +44,7 @@ function code_install() {
     cleantmp
 
     echo "Installing code with dependencies: "
-    sudo debconf-apt-progress -- apt-get -y install code code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
+    sudo debconf-apt-progress -- apt-get -y install --allow-downgrades code=1.42.1-1581432938 code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
     sudo tee "/etc/profile.d/code.sh" <<EOF
 #!/bin/bash
 export DONT_PROMPT_WSL_INSTALL=1
