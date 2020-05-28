@@ -12,25 +12,25 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install Py
 
   echo "inserting default scripts"
 
-  if [ -f ${HOME}/.bashrc ]; then
-    echo "" >>${HOME}/.bashrc
-    echo "export PATH=\"\${HOME}/.pyenv/bin:\${PATH}\"" >>${HOME}/.bashrc
-    echo "eval \"\$(pyenv init -)\"" >>${HOME}/.bashrc
-    echo "eval \"\$(pyenv virtualenv-init -)\"" >>${HOME}/.bashrc
+  if [ -f "${HOME}"/.bashrc ]; then
+    echo "" >>"${HOME}"/.bashrc
+    echo "export PATH=\"\${HOME}/.pyenv/bin:\${PATH}\"" >>"${HOME}"/.bashrc
+    echo "eval \"\$(pyenv init -)\"" >>"${HOME}"/.bashrc
+    echo "eval \"\$(pyenv virtualenv-init -)\"" >>"${HOME}"/.bashrc
   fi
 
-  if [ -f ${HOME}/.zshrc ]; then
-    echo "" >>${HOME}/.bashrc
-    echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >>${HOME}/.zshrc
-    echo "eval \"\$(pyenv init -)\"" >>${HOME}/.zshrc
-    echo "eval \"\$(pyenv virtualenv-init -)\"" >>${HOME}/.zshrc
+  if [ -f "${HOME}"/.zshrc ]; then
+    echo "" >>"${HOME}"/.bashrc
+    echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >>"${HOME}"/.zshrc
+    echo "eval \"\$(pyenv init -)\"" >>"${HOME}"/.zshrc
+    echo "eval \"\$(pyenv virtualenv-init -)\"" >>"${HOME}"/.zshrc
   fi
 
-  if [ -d ${HOME}/.config/fish ]; then
-    echo "" >>${HOME}/.bashrc
-    echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >>${HOME}/.config/fish/config.fish
-    echo 'status --is-interactive; and pyenv init -| source' >>${HOME}/.config/fish/config.fish
-    echo 'status --is-interactive; and pyenv virtualenv-init -| source' >>${HOME}/.config/fish/config.fish
+  if [ -d "${HOME}"/.config/fish ]; then
+    echo "" >>"${HOME}"/.bashrc
+    echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >>"${HOME}"/.config/fish/config.fish
+    echo 'status --is-interactive; and pyenv init -| source' >>"${HOME}"/.config/fish/config.fish
+    echo 'status --is-interactive; and pyenv virtualenv-init -| source' >>"${HOME}"/.config/fish/config.fish
   fi
 
   echo "installing Python 3.8"
@@ -44,7 +44,7 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install Py
 elif (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.8, IDLE, and the pip package manager?" 8 90); then
   echo "Installing PYTHON"
   createtmp
-  sudo apt-get -t testing install build-essential python3.8 python3.8-distutils idle-python3.8 python3-pip python3-venv -y
+  sudo apt-get install build-essential python3.8 python3.8-distutils idle-python3.8 python3-pip python3-venv -y
   pip3 install -U pip
   cleantmp
 else

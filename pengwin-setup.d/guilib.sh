@@ -6,7 +6,7 @@ source "$(dirname "$0")/common.sh" "$@"
 if (confirm --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75); then
   echo "Installing GUILIB"
 
-  sudo debconf-apt-progress -- apt-get install -y -t testing xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils libnss3 libegl1-mesa
+  sudo debconf-apt-progress -- apt-get install -y xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils libnss3 libegl1-mesa
 
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so

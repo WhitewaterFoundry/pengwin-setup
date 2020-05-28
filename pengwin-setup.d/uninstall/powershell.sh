@@ -1,23 +1,23 @@
 #!/bin/bash
 
-source $(dirname "$0")/uninstall-common.sh
+# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+source "$(dirname "$0")/uninstall-common.sh" "$@"
 
-function main()
-{
+function main() {
 
-echo "Uninstalling Powershell"
+  echo "Uninstalling Powershell"
 
-remove_package "powershell"
+  remove_package "powershell"
 
-echo "Removing APT source(s)..."
-safe_rem_microsoftsrc
-safe_rem_debianstablesrc
+  echo "Removing APT source(s)..."
+  safe_rem_microsoftsrc
+  safe_rem_debianstablesrc
 
-echo "Removing APT key..."
-safe_rem_microsoftgpg
+  echo "Removing APT key..."
+  safe_rem_microsoftgpg
 
 }
 
-if show_warning "Powershell" "$@" ; then
-	main "$@"
+if show_warning "Powershell" "$@"; then
+  main "$@"
 fi
