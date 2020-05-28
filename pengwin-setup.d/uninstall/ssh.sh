@@ -1,24 +1,24 @@
 #!/bin/bash
 
-source $(dirname "$0")/uninstall-common.sh
+# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 ssh_rgx='^[^#]*\bALL=NOPASSWD: /usr/bin/start-ssh'
 
-function main()
-{
+function main() {
 
-echo "Uninstalling SSH server"
+  echo "Uninstalling SSH server"
 
-echo "Cleaning sudoers modification..."
-sudo_clean_file "/etc/sudoers" "$ssh_rgx"
+  echo "Cleaning sudoers modification..."
+  sudo_clean_file "/etc/sudoers" "$ssh_rgx"
 
-sudo_rem_file "/usr/bin/start-ssh"
-sudo_rem_file "/etc/profile.d/start-ssh.sh"
+  sudo_rem_file "/usr/bin/start-ssh"
+  sudo_rem_file "/etc/profile.d/start-ssh.sh"
 
-remove_package "ssh"
+  remove_package "ssh"
 
 }
 
-if show_warning "SSH server" "$@" ; then
-	main "$@"
+if show_warning "SSH server" "$@"; then
+  main "$@"
 fi

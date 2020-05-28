@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
 
 if (whiptail --title "NIM" --yesno "Would you like to download and install nim using choosenim?" 8 63) then
     createtmp
@@ -9,7 +13,7 @@ if (whiptail --title "NIM" --yesno "Would you like to download and install nim u
 
     echo "Downloading and running choosenim."
     curl https://nim-lang.org/choosenim/init.sh -sSf | sh
-    
+
     echo "Setting environment variables and adding to PATH."
     export NIMPATH=$HOME/.nimble/bin
     export PATH=$NIMPATH:$PATH

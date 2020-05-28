@@ -1,40 +1,39 @@
 #!/bin/bash
 
-source $(dirname "$0")/uninstall-common.sh
+# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+source "$(dirname "$0")/uninstall-common.sh" "$@"
 sdkman_rgx1='^#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!'
 sdkman_rgx2='^[^#]*\bexport SDKMAN_DIR='
 sdkman_rgx3='^[^#]*\bsource ".*\/bin\/sdkman-init\.sh"'
 
-function multiclean_file()
-{
+function multiclean_file() {
 
-if [[ -f "$1" ]] ; then
-	echo "$1 found! Cleaning..."
-	clean_file "$1" "$sdkman_rgx1"
-	clean_file "$1" "$sdkman_rgx2"
-	clean_file "$1" "$sdkman_rgx3"
-fi
-
-}
-
-function main()
-{
-
-echo "Uninstalling SDKMAN (Java)"
-
-rem_dir "$HOME/.sdkman"
-
-echo "Removing PATH modifier(s)..."
-multiclean_file "$HOME/.bashrc"
-multiclean_file "$HOME/.zshrc"
-multiclean_file "$HOME/.profile"
-multiclean_file "$HOME/.bash_profile"
-
-echo "Removing bash completion..."
-sudo_rem_file "/etc/bash_completion.d/sdkman.bash"
+  if [[ -f "$1" ]]; then
+    echo "$1 found! Cleaning..."
+    clean_file "$1" "$sdkman_rgx1"
+    clean_file "$1" "$sdkman_rgx2"
+    clean_file "$1" "$sdkman_rgx3"
+  fi
 
 }
 
-if show_warning "SDKMAN (Java)" "$@" ; then
-	main "$@"
+function main() {
+
+  echo "Uninstalling SDKMAN (Java)"
+
+  rem_dir "$HOME/.sdkman"
+
+  echo "Removing PATH modifier(s)..."
+  multiclean_file "$HOME/.bashrc"
+  multiclean_file "$HOME/.zshrc"
+  multiclean_file "$HOME/.profile"
+  multiclean_file "$HOME/.bash_profile"
+
+  echo "Removing bash completion..."
+  sudo_rem_file "/etc/bash_completion.d/sdkman.bash"
+
+}
+
+if show_warning "SDKMAN (Java)" "$@"; then
+  main "$@"
 fi

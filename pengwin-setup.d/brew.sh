@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source $(dirname "$0")/common.sh "$@"
+# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
 
 if (whiptail --title "HOMEBREW" --yesno "Would you like to download and install the Homebrew package manager? Transitioning macOS users may find this more familiar, and others may use this to install both software not provided by APT, or newer versions of software not yet in APT repositories." 12 85) then
 	echo "Installing Homebrew"
