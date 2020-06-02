@@ -1,3 +1,4 @@
 login_shell /usr/local/bin
 pengwin-setup /usr/local/bin
 pengwin-setup.d /usr/local
+completions/* /usr/share/bash-completion/completions/
