@@ -1,0 +1,1 @@
+complete -W '--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons' pengwin-setup
