@@ -27,12 +27,10 @@ function check_upgrades() {
 
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
   if [[ -f "/etc/apt/.dist-upgrade" ]]; then
-    # whiptail prompt here, delete on dist-upgrade
     echo "Distribution upgrade flag noticed! Alerting user"
-    if (whiptail --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
+    if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
       sudo rm /etc/apt/.dist-upgrade
       sudo apt-get dist-upgrade -y
-      exit 0
     fi
   fi
 
@@ -42,22 +40,20 @@ function check_upgrades() {
   local upgrd_check="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
   if [[ "${upgrd_check}" == *"pengwin"* ]]; then
     echo "Pengwin core package upgrades found"
-    if (whiptail --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
+    if (confirm --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
 
       # Ensure that packages get updated without affecting other held packages like udev
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
       sudo apt-get upgrade pengwin-base pengwin-setup -y
-      #exit 0
     fi
   fi
 }
 
 function WelcomePrompt() {
-  whiptail --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
+  message --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
 Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n
 pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
-Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers.\
-" 17 80
+Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers." 17 80
 }
 
 function continue_prompt() {
@@ -77,12 +73,15 @@ function ByeMessage() {
   fi
 
   if [[ ${WIN_CUR_VER} -ge 17763 && ${should_restart} ]]; then
-    whiptail --title "Setup is complete." --msgbox "This window will be closed to apply the changes in the environment.\nPlease start Pengwin again \n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
-    wslconfig.exe /t "${WSL_DISTRO_NAME:-WLinux}"
+    message --title "Setup is complete." --msgbox "This window will be closed to apply the changes in the environment.\nPlease start Pengwin again \n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
+
+    if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then #No automated installation
+      wslconfig.exe /t "${WSL_DISTRO_NAME:-WLinux}"
+    fi
   elif [[ ${should_restart} ]]; then
-    whiptail --title "Setup is complete." --msgbox "Please close this window and start Pengwin again to apply the changes in the environment.\n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
+    message --title "Setup is complete." --msgbox "Please close this window and start Pengwin again to apply the changes in the environment.\n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
   else
-    whiptail --title "Setup is complete." --msgbox "You may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 10 80
+    message --title "Setup is complete." --msgbox "You may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 10 80
   fi
 }
 

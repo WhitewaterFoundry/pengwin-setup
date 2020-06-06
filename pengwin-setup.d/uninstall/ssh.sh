@@ -17,6 +17,7 @@ function main() {
 
   remove_package "ssh"
 
+  sudo service ssh stop
 }
 
 if show_warning "SSH server" "$@"; then
