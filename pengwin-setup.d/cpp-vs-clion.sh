@@ -3,6 +3,7 @@
 # shellcheck disable=SC1090
 source "$(dirname "$0")/common.sh" "$@"
 declare wHome
+declare SetupDir
 
 function main {
 
@@ -12,25 +13,27 @@ function main {
 
 
     if ! (service ssh status) ; then
-      bash ${SetupDir}/services.sh --enable-ssh --yes
+      bash "${SetupDir}"/services.sh --enable-ssh --yes "$@"
     fi
 
+    # shellcheck disable=SC2181
     if [[ $? != 0 ]] ; then
       return 1
     fi
 
-    sudo apt-get -y -q install gcc clang gdb build-essential gdbserver rsync zip
+    sudo debconf-apt-progress -- apt-get install -y gcc clang gdb build-essential gdbserver rsync zip
 
     #Installs the Microsoft version of CMake for Visual Studio
     createtmp
     echo "Installing CMake"
 
+    # shellcheck disable=SC2155
     local dist="$(uname -m)"
-    wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.13.18112701/cmake-3.13.18112701-MSVC_2-Linux-${dist/86_/}.sh"
+    wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.17.3587832/cmake-3.17.3587832-MSVC_2-Linux-${dist/86_/}.sh"
     sudo bash cmake.sh  --skip-license --prefix=/usr/local
 
     #Installs the regular version for CLion
-    sudo apt-get -y -q install pkg-config cmake
+    sudo debconf-apt-progress -- apt-get install -y pkg-config cmake
     sudo apt-get -y -q autoremove
     sudo apt-get -y -q clean
 

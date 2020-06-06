@@ -3,18 +3,20 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-#Imported from common.h
-declare SetupDir
-
-if (whiptail --title "HiDPI" --yesno "Would you like to configure Qt and GDK for HiDPI displays? (Experimental)" 8 85) then
+if (confirm --title "HiDPI" --yesno "Would you like to configure Qt and GDK for HiDPI displays? (Experimental)" 8 85) then
 	echo "Installing HiDPI"
-	export QT_SCALE_FACTOR=2
-	export GDK_SCALE=2
-	export GDK_DPI_SCALE=0.5
-	sudo sh -c 'echo "#!/bin/bash" >> /etc/profile.d/hidpi.sh'
-	sudo sh -c 'echo "export QT_SCALE_FACTOR=2" >> /etc/profile.d/hidpi.sh'
-	sudo sh -c 'echo "export GDK_SCALE=2" >> /etc/profile.d/hidpi.sh'
-	sudo sh -c 'echo "export GDK_DPI_SCALE=0.5" >> /etc/profile.d/hidpi.sh'
+	scale_factor=$(wslsys -S -s)
+	QT_SCALE_FACTOR=${scale_factor}
+	scale_factor_int=$(IFS='.' read -r -a splitted <<< "${scale_factor}"; echo -n "${splitted[0]}")
+	GDK_SCALE=${scale_factor_int}
+
+	sudo sh -c 'echo "#!/bin/bash" > /etc/profile.d/hidpi.sh'
+	sudo sh -c "echo \"export QT_SCALE_FACTOR=${QT_SCALE_FACTOR}\" >> /etc/profile.d/hidpi.sh"
+	sudo sh -c "echo \"export GDK_SCALE=${GDK_SCALE}\" >> /etc/profile.d/hidpi.sh"
+
+	unset scale_factor
+	unset QT_SCALE_FACTOR
+	unset GDK_SCALE
 else
 	echo "Skipping HiDPI"
 fi

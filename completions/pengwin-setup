@@ -1,1 +1,31 @@
-complete -W '--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons' pengwin-setup
+#! /bin/bash
+
+function _pengwin_setup() { #  By convention, the function name
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local prev=${COMP_WORDS[COMP_CWORD - 1]}
+
+  case "$prev" in
+  EDITORS)
+    mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM' -- "${cur}")
+    ;;
+  GUI)
+    mapfile -t COMPREPLY < <(compgen -W 'NLI GUILIB HIDPI STARTMENU TERMINAL SYNAPTIC VCXSRV WINTHEME X410' -- "${cur}")
+    ;;
+  TERMINAL)
+    mapfile -t COMPREPLY < <(compgen -W 'WINTERM WSLTTY TILIX GTERM XFTERM TERMINATOR KONSO' -- "${cur}")
+    ;;
+  PROGRAMMING)
+    mapfile -t COMPREPLY < <(compgen -W 'C++ DOTNET GO JAVA JOOMLA LATEX NIM NODEJS PYTHONPI RUBY RUST' -- "${cur}")
+    ;;
+  *)
+    mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
+    --quiet --noninteractive \
+    EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
+    ;;
+  esac
+
+  return 0
+}
+
+complete -F _pengwin_setup pengwin-setup
+complete -F _pengwin_setup ./pengwin-setup
