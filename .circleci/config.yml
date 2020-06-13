@@ -18,7 +18,7 @@ jobs:
                 name: Update changelog
                 command: |
                     rm ./debian/changelog
-                    dch --create --distribution buster --package "pengwin-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
+                    dch --create --distribution bullseye --package "pengwin-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
             - run:
                 name: Build the package
                 command: debuild -i -us -uc -b
