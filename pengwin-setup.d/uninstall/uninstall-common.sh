@@ -7,6 +7,10 @@ declare SetupDir
 
 function show_warning() {
 
+  if [[ -n "${SkipConfirmations}" ]]; then
+    return
+  fi
+
   # Usage: show_warning <UNINSTALL_ITEM> <PREVIOUS_ARGS>
   local uninstall_item="$1"
   shift 1

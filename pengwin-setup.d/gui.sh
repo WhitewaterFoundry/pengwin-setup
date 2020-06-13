@@ -56,12 +56,12 @@ function main() {
 
     if [[ ${nli_choice} == *"FCITX"* ]]; then
       echo "FCITX"
-      bash "${SetupDir}"/fcitx.sh
+      bash "${SetupDir}"/fcitx.sh "$@"
     fi
 
     if [[ ${nli_choice} == *"IBUS"* ]]; then
       echo "IBUS"
-      bash "${SetupDir}"/ibus.sh
+      bash "${SetupDir}"/ibus.sh "$@"
     fi
 
     if [[ ${nli_choice} == "CANCELLED" ]]; then
@@ -71,7 +71,7 @@ function main() {
 
   if [[ ${menu_choice} == *"HIDPI"* ]]; then
     echo "HIDPI"
-    bash "${SetupDir}"/hidpi.sh
+    bash "${SetupDir}"/hidpi.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"STARTMENU"* ]]; then
