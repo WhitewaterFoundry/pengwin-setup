@@ -1,5 +1,8 @@
 #!/bin/bash
 
+declare -a CMD_MENU_OPTIONS
+export CMD_MENU_OPTIONS
+
 function process_arguments() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -23,11 +26,18 @@ function process_arguments() {
       export SKIP_STARTMENU=1
       shift
       ;;
+    -q | --quiet | --noninteractive)
+      echo "Skipping confirmations"
+      export NON_INTERACTIVE=1
+      shift
+      ;;
     *)
+      CMD_MENU_OPTIONS+=("$1")
       shift
       ;;
     esac
   done
+
 }
 
 function createtmp() {
@@ -35,11 +45,13 @@ function createtmp() {
   CURDIR=$(pwd)
   TMPDIR=$(mktemp -d)
   echo "Going to \$TMPDIR: $TMPDIR"
-  cd $TMPDIR
+  # shellcheck disable=SC2164
+  cd "$TMPDIR"
 }
 
 function cleantmp() {
   echo "Returning to $CURDIR"
+  # shellcheck disable=SC2164
   cd "$CURDIR"
   echo "Cleaning up $TMPDIR"
   sudo rm -r $TMPDIR # need to add sudo here because git clones leave behind write-protected files
@@ -54,15 +66,17 @@ function updateupgrade() {
 
 function command_check() {
   # Usage: command_check <EXPECTED PATH> <ARGS (if any)>
-  local execname=$(echo "$1" | sed -e "s|^.*\/||g")
-  if ("$execname" "$2") >/dev/null 2>&1; then
-    echo "Executable $execname in PATH"
+  # shellcheck disable=SC2155
+  # shellcheck disable=SC2001
+  local exec_name=$(echo "$1" | sed -e "s|^.*\/||g")
+  if ("${exec_name}" "$2") >/dev/null 2>&1; then
+    echo "Executable ${exec_name} in PATH"
     return 0
   elif ("$1" "$2") >/dev/null 2>&1; then
-    echo "Executable '$execname' at: $1"
+    echo "Executable '${exec_name}' at: $1"
     return 2
   else
-    echo "Executable '$execname' not found"
+    echo "Executable '${exec_name}' not found"
     return 1
   fi
 }
@@ -86,6 +100,18 @@ function confirm() {
   fi
 }
 
+function message() {
+
+  if [[ ! ${NON_INTERACTIVE} ]]; then
+
+    whiptail "$@"
+
+    return $?
+  else
+    return 0
+  fi
+}
+
 #######################################
 # Display a menu using whiptail. Echo the option key or CANCELLED if the user has cancelled
 # Globals:
@@ -98,7 +124,12 @@ function confirm() {
 function menu() {
 
   local menu_choice #Splitted to preserve exit code
-  menu_choice=$(whiptail "$@" 3>&1 1>&2 2>&3)
+
+  if [[ "${#CMD_MENU_OPTIONS[*]}" == 0 ]]; then
+    menu_choice=$(whiptail "$@" 3>&1 1>&2 2>&3)
+  else
+    menu_choice="${CMD_MENU_OPTIONS[*]}"
+  fi
 
   local exit_status=$?
 

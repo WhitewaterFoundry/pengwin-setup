@@ -17,7 +17,7 @@ function main() {
       "TILIX" "Tilix (requires X Server)" off \
       "GTERM" "Gnome Terminal (requires X Server)" off \
       "XFTERM" "Xfce Terminal (requires X Server)" off \
-      "TERMIN" "Terminator (requires X Server)" off \
+      "TERMINATOR" "Terminator (requires X Server)" off \
       "KONSO" "Konsole (requires X Server)" off \
 
   3>&1 1>&2 2>&3)
@@ -31,7 +31,7 @@ function main() {
     if (confirm --title "Windows Terminal" --yesno "Would you like to install Windows Terminal?" 8 40); then
       tmp_win_version=$(wslsys -B -s)
       if [ "$tmp_win_version" -lt 18362 ]; then
-        whiptail --title "Unsupported Windows 10 Build" --msgbox "Windows Terminal requires Windows 10 Build 18362, but you are using $tmp_win_version. Skipping Windows Terminal." 8 56
+        message --title "Unsupported Windows 10 Build" --msgbox "Windows Terminal requires Windows 10 Build 18362, but you are using $tmp_win_version. Skipping Windows Terminal." 8 56
         return
       fi
 
@@ -64,7 +64,7 @@ function main() {
       cd "$tmp_f"
       unset tmp_f
 
-      whiptail --title "WSLtty" --msgbox "Installation complete. You can find the shortcuts in your start menu.\nNote: use the Terminal unisntall to uninstall cleanly" 8 56
+      message --title "WSLtty" --msgbox "Installation complete. You can find the shortcuts in your start menu.\nNote: use the Terminal unisntall to uninstall cleanly" 8 56
     else
       echo "Skipping WSLtty"
     fi
@@ -74,7 +74,7 @@ function main() {
     echo "TILIX"
     if (confirm --title "Tilix" --yesno "Would you like to install Tilix?" 8 40); then
       sudo debconf-apt-progress -- apt-get install tilix libsecret-1-0 -y
-      whiptail --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
+      message --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
 
       INSTALLED=true
     else
@@ -89,7 +89,7 @@ function main() {
       bash "${SetupDir}"/guilib.sh --yes "$@"
 
       sudo debconf-apt-progress -- apt-get install gnome-terminal -y
-      whiptail --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
+      message --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
 
       INSTALLED=true
     else
@@ -101,7 +101,7 @@ function main() {
     echo "XFTERM"
     if (confirm --title "Xfce Terminal" --yesno "Would you like to install Xfce Terminal?" 8 40); then
       sudo debconf-apt-progress -- apt-get install xfce4-terminal -y
-      whiptail --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
+      message --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
 
       INSTALLED=true
     else
@@ -109,17 +109,17 @@ function main() {
     fi
   fi
 
-  if [[ ${menu_choice} == *"TERMIN"* ]]; then
-    echo "TERMIN"
+  if [[ ${menu_choice} == *"TERMINATOR"* ]]; then
+    echo "TERMINATOR"
     if (confirm --title "Terminator" --yesno "Would you like to install Terminator?" 8 40); then
       echo "Install dependencies..."
       bash "${SetupDir}"/guilib.sh --yes "$@"
       sudo debconf-apt-progress -- apt-get install terminator -y
-      whiptail --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
+      message --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
 
       INSTALLED=true
     else
-      echo "Skipping TERMIN"
+      echo "Skipping TERMINATOR"
     fi
   fi
 
@@ -137,7 +137,7 @@ export QT_STYLE_OVERRIDE=Breeze
 
 EOF
 
-      whiptail --title "Konsole" --msgbox "Installation complete.\n\nYou can start it by running: $ konsole" 10 56
+      message --title "Konsole" --msgbox "Installation complete.\n\nYou can start it by running: $ konsole" 10 56
 
       INSTALLED=true
     else

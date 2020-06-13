@@ -9,6 +9,7 @@ function main() {
 
   echo "Uninstalling Cpp VisualStudio CLion integration"
 
+  remove_package 'cmake' 'clang'
   sudo_rem_file "$installdir/bin/cmake"
   sudo_rem_file "$installdir/bin/cpack"
   sudo_rem_file "$installdir/bin/ctest"

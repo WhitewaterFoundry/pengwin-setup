@@ -40,16 +40,28 @@ function enable_ssh() {
 
     echo "Enabling SSH Server..."
 
-    local port=$(whiptail --title "Enter the desired SSH Port" --inputbox "SSH Port: " 8 50 "2222" 3>&1 1>&2 2>&3)
-    if [[ -z ${port} ]] ; then
-      echo "Cancelled"
-      return 1
+    local port
+
+    if [[ -z "${NON_INTERACTIVE}" ]]; then
+      port=$(whiptail --title "Enter the desired SSH Port" --inputbox "SSH Port: " 8 50 "2222" 3>&1 1>&2 2>&3)
+      if [[ -z ${port} ]] ; then
+        echo "Cancelled"
+        return 1
+      fi
+    else
+      port="2222"
     fi
 
-    local address=$(whiptail --title "Enter the desired Listen Address" --inputbox "Listen Address: " 8 50 "127.0.0.1" 3>&1 1>&2 2>&3)
-    if [[ -z ${address} ]]; then
-      echo "Cancelled"
-      return 1
+    local address
+
+    if [[ -z "${NON_INTERACTIVE}" ]]; then
+      address=$(whiptail --title "Enter the desired Listen Address" --inputbox "Listen Address: " 8 50 "127.0.0.1" 3>&1 1>&2 2>&3)
+      if [[ -z ${address} ]]; then
+        echo "Cancelled"
+        return 1
+      fi
+    else
+      address='127.0.0.1'
     fi
 
     local sshd_file=/etc/ssh/sshd_config
