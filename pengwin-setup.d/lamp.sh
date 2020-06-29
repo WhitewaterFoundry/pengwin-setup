@@ -8,14 +8,15 @@ function install_lamp() {
   if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60); then
 
     echo "MariaDB Choice for LAMP Stack"
-    menu_choice=$(
+    # shellcheck disable=SC2155
+    local menu_choice=$(
 
       menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
         "10.2" "Install MariaDB 10.2 from MariaDB" off \
         "10.3" "Install MariaDB 10.3 from MariaDB" off \
         "10.4" "Install MariaDB 10.4 from MariaDB" off \
         "10.5" "Install MariaDB 10.5 from MariaDB" off \
-        "BUILTIN" "Install MariaDB from Debian Official Repo" off
+        "BUILTIN" "Install MariaDB from Debian Official Repo    " off
 
       # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
@@ -62,7 +63,7 @@ function install_lamp() {
 
     echo "Installing PHP"
     sudo debconf-apt-progress -- apt-get install -y php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
-    sudo a2enmod php7.3
+    sudo a2enmod php7.4
 
     php -v
 
