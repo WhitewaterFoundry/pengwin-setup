@@ -149,12 +149,12 @@ function main() {
 
   if [[ ${menu_choice} == *"KEYCHAIN"* ]] ; then
     echo "KEYCHAIN"
-    bash ${SetupDir}/keychain.sh "@"
+    bash ${SetupDir}/keychain.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"LAMP"* ]] ; then
     echo "LAMP"
-    bash ${SetupDir}/lamp.sh "@"
+    bash ${SetupDir}/lamp.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then

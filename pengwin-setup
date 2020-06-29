@@ -98,9 +98,11 @@ function install_menu() {
       "SERVICES" "Enable services support (SSH, rc.local)" off \
       "SETTINGS" "Change various settings in Pengwin" off \
       "TOOLS" "Install applications or servers" off \
-      "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" off \
+      "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" off
 
-  3>&1 1>&2 2>&3)
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
+  )
 
   echo "Selected:" "${menu_choice}"
 
