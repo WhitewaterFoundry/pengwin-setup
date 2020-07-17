@@ -37,8 +37,8 @@ if (whiptail --title "PYTHON" --yesno "Would you like to download and install Py
   export PATH="${HOME}/.pyenv/bin:$PATH"
   eval "$(pyenv init -)"
   eval "$(pyenv virtualenv-init -)"
-  pyenv install 3.8.1
-  pyenv global 3.8.1
+  pyenv install 3.8.3
+  pyenv global 3.8.3
 
   cleantmp
 elif (whiptail --title "PYTHON" --yesno "Would you like to download and install Python 3.8, IDLE, and the pip package manager?" 8 90); then
