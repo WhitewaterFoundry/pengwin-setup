@@ -179,6 +179,14 @@ fi
 echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
 sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
 
+#Holding glibc to avoid 2.31
+if [[ ! -v ${WSL2} ]]; then
+  echo "Holding glibc to avoid 2.31"
+  sudo apt-mark hold libc6 >/dev/null 2>&1
+else
+  sudo apt-mark unhold libc6 >/dev/null 2>&1
+fi
+
 install_menu "$@"
 
 # Unhold our packages
