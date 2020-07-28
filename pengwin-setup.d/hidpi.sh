@@ -3,7 +3,7 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-if (confirm --title "HiDPI" --yesno "Would you like to configure Qt and GDK for HiDPI displays? (Experimental)" 8 85) then
+if (confirm --title "HiDPI" --yesno "Would you like to configure Qt and GDK for HiDPI displays?" 8 85) then
   echo "Installing HiDPI"
   scale_factor=$(wslsys -S -s)
 
