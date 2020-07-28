@@ -21,8 +21,12 @@ fi
 
 EOF
 
+  
+  message --title "HiDPI" --msgbox "HiDPI has been adjusted to ${scale_factor}. If you change your resolution run this option again to update your Linux applications." 10 80
+  
   unset scale_factor
+  touch "${HOME}"/.should-restart
   
 else
-	echo "Skipping HiDPI"
+  echo "Skipping HiDPI"
 fi
