@@ -14,7 +14,7 @@ function main() {
     menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 9 \
       "NLI" "Install fcitx or iBus for improved non-Latin input support" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
-      "HIDPI" "Configure Qt and GTK for HiDPI displays (experimental)" off \
+      "HIDPI" "Configure Qt and GTK for HiDPI displays" off \
       "STARTMENU" "Generates Windows Start Menu shortcuts for GUI applications" off \
       "TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
       "SYNAPTIC" "Install the Synaptic package manager" off \
