@@ -10,10 +10,9 @@ if (confirm --title "POWERSHELL" --yesno "Would you like to download and install
   rm microsoft.gpg
   sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-buster-prod buster main" > /etc/apt/sources.list.d/microsoft.list'
 
-  #remove the old stretch repository
-  sudo rm -f /etc/apt/sources.list.d/stretch.list
+  echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
 
-  sudo apt-get update
+  sudo debconf-apt-progress -- apt-get -y update
   sudo debconf-apt-progress -- apt-get install -y powershell
 else
   echo "Skipping POWERSHELL"
