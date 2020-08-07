@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH="$PATH:stubs"   
+
 function package_installed() {
 
   # shellcheck disable=SC2155
