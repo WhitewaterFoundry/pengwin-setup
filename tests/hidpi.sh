@@ -7,7 +7,6 @@ function testDPI() {
 
   ../pengwin-setup --noupdate --assume-yes --noninteractive GUI HIDPI
   assertEquals QT_SCALE_FACTOR "1" "$(grep -c "QT_SCALE_FACTOR=${scale_factor}" /etc/profile.d/hidpi.sh)"
-  assertEquals GDK_SCALE "1" "$(grep -c "GDK_SCALE" /etc/profile.d/hidpi.sh)"
 }
 
 function testUninstall() {
