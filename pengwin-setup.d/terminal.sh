@@ -47,7 +47,7 @@ function main() {
       createtmp
 
       echo "Installing required install dependencies"
-      sudo debconf-apt-progress -- apt-get install -y wget p7zip-full
+      install_packages wget p7zip-full
 
       [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
 
@@ -73,7 +73,7 @@ function main() {
   if [[ ${menu_choice} == *"TILIX"* ]]; then
     echo "TILIX"
     if (confirm --title "Tilix" --yesno "Would you like to install Tilix?" 8 40); then
-      sudo debconf-apt-progress -- apt-get install tilix libsecret-1-0 -y
+      install_packages tilix libsecret-1-0
       message --title "Tilix" --msgbox "Installation complete. You can start it by running $ tilix" 8 56
 
       INSTALLED=true
@@ -88,7 +88,7 @@ function main() {
       echo "Install dependencies..."
       bash "${SetupDir}"/guilib.sh --yes "$@"
 
-      sudo debconf-apt-progress -- apt-get install gnome-terminal -y
+      install_packages gnome-terminal
       message --title "GNOME Terminal" --msgbox "Installation complete. You can start it by running $ gnome-terminal" 8 56
 
       INSTALLED=true
@@ -100,7 +100,7 @@ function main() {
   if [[ ${menu_choice} == *"XFTERM"* ]]; then
     echo "XFTERM"
     if (confirm --title "Xfce Terminal" --yesno "Would you like to install Xfce Terminal?" 8 40); then
-      sudo debconf-apt-progress -- apt-get install xfce4-terminal -y
+      install_packages xfce4-terminal
       message --title "Xfce Terminal" --msgbox "Installation complete. You can start it by running $ xfce4-terminal" 8 56
 
       INSTALLED=true
@@ -114,7 +114,7 @@ function main() {
     if (confirm --title "Terminator" --yesno "Would you like to install Terminator?" 8 40); then
       echo "Install dependencies..."
       bash "${SetupDir}"/guilib.sh --yes "$@"
-      sudo debconf-apt-progress -- apt-get install terminator -y
+      install_packages terminator
       message --title "Terminator" --msgbox "Installation complete. You can start it by running $ terminator" 8 56
 
       INSTALLED=true
@@ -128,7 +128,7 @@ function main() {
     if (confirm --title "Konsole" --yesno "Would you like to install Konsole?" 8 40); then
       echo "Install dependencies..."
       bash "${SetupDir}"/guilib.sh --yes "$@"
-      sudo debconf-apt-progress -- apt-get install konsole breeze -y
+      install_packages konsole breeze
 
       sudo tee "/etc/profile.d/kde.sh" <<EOF
 #!/bin/bash
