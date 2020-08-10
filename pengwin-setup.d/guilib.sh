@@ -8,7 +8,7 @@ declare WIN_CUR_VER
 if (confirm --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75); then
   echo "Installing GUILIB"
 
-  sudo debconf-apt-progress -- apt-get install -y xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils libnss3 libegl1-mesa
+  install_packages xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils libnss3 libegl1-mesa
 
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
@@ -27,7 +27,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
     sudo sed -i 's$<auth>EXTERNAL</auth>$<auth>ANONYMOUS</auth>$' /usr/share/dbus-1/session.conf
     sudo sed -i 's$</busconfig>$<allow_anonymous/></busconfig>$' /usr/share/dbus-1/session.conf
   fi
-  
+
   eval "$(timeout 2s dbus-launch --auto-syntax)"
 
   sudo tee "/etc/profile.d/dbus.sh" <<EOF

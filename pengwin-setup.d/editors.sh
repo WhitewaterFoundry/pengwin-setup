@@ -11,7 +11,7 @@ declare SetupDir
 function neovim_install() {
   if (confirm --title "NEOVIM" --yesno "Would you like to download and install neovim?" 8 50); then
     echo "Installing neovim and building tools from Debian: $ sudo apt-get install neovim build-essential"
-    sudo debconf-apt-progress -- apt-get -y install neovim build-essential
+    install_packages neovim build-essential
 
     INSTALLED=true
   else
@@ -22,7 +22,7 @@ function neovim_install() {
 function emacs_install() {
   if (confirm --title "EMACS" --yesno "Would you like to download and install emacs?" 8 50); then
     echo "Installing emacs: $ sudo apt-get install emacs -y"
-    sudo debconf-apt-progress -- apt-get -y install emacs
+    install_packages emacs
 
     INSTALLED=true
   else
@@ -45,13 +45,13 @@ function code_install() {
 
     echo "Installing code with dependencies: "
     local code_version=''
-    
+
     # Limit the version with WSL1 due to an incompatibility
     if [[ -z "${WSL2}" ]]; then
       code_version='=1.42.1-1581432938'
     fi
-    
-    sudo debconf-apt-progress -- apt-get -y install --allow-downgrades code${code_version} code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
+
+    install_packages --allow-downgrades code${code_version} code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
     sudo tee "/etc/profile.d/code.sh" <<EOF
 #!/bin/bash
 export DONT_PROMPT_WSL_INSTALL=1

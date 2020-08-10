@@ -25,7 +25,7 @@ function install_lamp() {
     echo "Installing MariaDB Database Server"
 
     if [[ ${menu_choice} == "CANCELLED" ]] || [[ ${menu_choice} == "BUILTIN" ]]; then
-      sudo debconf-apt-progress -- apt-get install -y mariadb-server mariadb-client
+      install_packages mariadb-server mariadb-client
       apt policy mariadb-server
     else
       if curl -sSO https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg; then
@@ -48,21 +48,21 @@ function install_lamp() {
       sudo apt-get -y -q install software-properties-common
       sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${menu_choice}/repo/debian buster main"
       sudo apt-get -q update
-      sudo debconf-apt-progress -- apt-get install -y -t buster mariadb-server mariadb-client
+      install_packages -t buster mariadb-server mariadb-client
       apt policy mariadb-server
     fi
 
     service mariadb status
 
     echo "Installing Apache Web Server"
-    sudo debconf-apt-progress -- apt-get install -y apache2 apache2-utils
+    install_packages apache2 apache2-utils
     sudo service apache2 start
     sudo apache2 -v
 
     service apache2 status
 
     echo "Installing PHP"
-    sudo debconf-apt-progress -- apt-get install -y php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
+    install_packages php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
     sudo a2enmod php7.4
 
     php -v

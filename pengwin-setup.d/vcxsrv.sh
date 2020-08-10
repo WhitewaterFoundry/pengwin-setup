@@ -8,7 +8,7 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/1.20.8.1/vcxsrv-64.1.20.8.1.installer.exe/download"
 
   echo "Installing required install dependencies"
-  sudo debconf-apt-progress -- apt-get -y install wget unzip p7zip-full mesa-utils
+  install_packages wget unzip p7zip-full mesa-utils
 
   wVcxsrvDir="$(cmd-exe /C "echo %USERPROFILE%\.vcxsrv" | tr -d '\r')"
   VcxsrvDir="$(wslpath "${wVcxsrvDir}")"

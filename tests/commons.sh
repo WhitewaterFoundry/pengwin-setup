@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH="$PATH:stubs"   
+export PATH="stubs:$PATH"
 
 function package_installed() {
 
@@ -12,5 +12,10 @@ function package_installed() {
   else
     return 0
   fi
+}
+
+function run_test() {
+  echo "$@"
+  "$@"
 }
 
