@@ -193,7 +193,7 @@ elif [[ ${menu_choice} == "LATEST" ]]; then
 
   echo "Running 'apt-get update' for you..."
 
-  sudo apt-get update
+  update_packages
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   sudo apt-get install -y -q nodejs="${version}"
@@ -220,7 +220,7 @@ elif [[ ${menu_choice} == "LTS" ]]; then
 
   echo "Running 'apt-get update' for you..."
 
-  sudo apt-get update
+  update_packages
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   sudo apt-get install -y -q nodejs="${version}"
@@ -231,7 +231,8 @@ if (whiptail --title "YARN" --yesno "Would you like to download and install the 
   echo "Installing YARN"
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  sudo apt-get update && sudo apt-get install yarn -y --no-install-recommends
+  update_packages
+  sudo apt-get install yarn -y --no-install-recommends
 else
   echo "Skipping YARN"
 fi

@@ -15,7 +15,7 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
   echo 'deb https://packages.microsoft.com/repos/microsoft-debian-buster-prod buster main' | sudo tee /etc/apt/sources.list.d/microsoft.list
   echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
 
-  sudo apt-get update
+  update_packages
 
   install_packages dotnet-sdk-3.1
   cleantmp
