@@ -21,7 +21,7 @@ function main {
       return 1
     fi
 
-    sudo debconf-apt-progress -- apt-get install -y gcc clang gdb build-essential gdbserver rsync zip
+    install_packages gcc clang gdb build-essential gdbserver rsync zip
 
     #Installs the Microsoft version of CMake for Visual Studio
     createtmp
@@ -29,11 +29,13 @@ function main {
 
     # shellcheck disable=SC2155
     local dist="$(uname -m)"
-    wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.17.3587832/cmake-3.17.3587832-MSVC_2-Linux-${dist/86_/}.sh"
-    sudo bash cmake.sh  --skip-license --prefix=/usr/local
+    if [[ ${dist} == "x86_64" ]] ; then
+      wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.17.3587832/cmake-3.17.3587832-MSVC_2-Linux-${dist/86_/}.sh"
+      sudo bash cmake.sh  --skip-license --prefix=/usr/local
+    fi
 
     #Installs the regular version for CLion
-    sudo debconf-apt-progress -- apt-get install -y pkg-config cmake
+    install_packages pkg-config cmake
     sudo apt-get -y -q autoremove
     sudo apt-get -y -q clean
 

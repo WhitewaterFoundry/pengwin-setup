@@ -12,8 +12,8 @@ if (confirm --title "POWERSHELL" --yesno "Would you like to download and install
 
   echo 'deb https://deb.debian.org/debian stable main' | sudo tee /etc/apt/sources.list.d/stable.list
 
-  sudo debconf-apt-progress -- apt-get -y update
-  sudo debconf-apt-progress -- apt-get install -y powershell
+  sudo apt-get -y update
+  install_packages powershell
 else
   echo "Skipping POWERSHELL"
 fi

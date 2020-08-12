@@ -12,7 +12,7 @@ if (confirm --title "AZURECLI" --yesno "Would you like to download and install A
   sudo bash -c "echo 'deb https://packages.microsoft.com/repos/azure-cli/ buster main' > /etc/apt/sources.list.d/azurecli.list"
   sudo apt-get -y -q update
 
-  sudo debconf-apt-progress -- apt-get install -y -t buster azure-cli jq
+  install_packages -t buster azure-cli jq
   cleantmp
 else
   echo "Skipping AZURECLI"
