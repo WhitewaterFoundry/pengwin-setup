@@ -23,7 +23,7 @@ function check_upgrades() {
     sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
   fi
 
-  sudo apt-get update --allow-releaseinfo-change
+  update_packages --allow-releaseinfo-change
 
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
   if [[ -f "/etc/apt/.dist-upgrade" ]]; then

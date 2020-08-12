@@ -185,7 +185,16 @@ function install_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo apt-get install -y -q "$@"
   else
-    install_packages  "$@"
+    sudo debconf-apt-progress -- apt-get install -y "$@"
+  fi
+}
+
+function update_packages() {
+
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo apt-get update -y -q "$@"
+  else
+    sudo debconf-apt-progress -- apt-get update -y "$@"
   fi
 }
 
