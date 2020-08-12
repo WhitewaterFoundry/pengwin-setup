@@ -4,7 +4,7 @@ source commons.sh
 
 function testMain() {
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING DOTNET
+  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING DOTNET > /dev/null 2>&1
 
   for i in 'dotnet-sdk-3.1' 'nuget'; do
     package_installed $i
@@ -19,7 +19,7 @@ function testMain() {
 
 function testUninstall() {
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive UNINSTALL DOTNET
+  ../pengwin-setup --noupdate --assume-yes --noninteractive UNINSTALL DOTNET > /dev/null 2>&1
 
   for i in 'dotnet-sdk-3.1' 'nuget'; do
     package_installed $i

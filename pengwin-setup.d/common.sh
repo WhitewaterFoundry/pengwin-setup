@@ -180,4 +180,13 @@ function setup_env() {
   readonly GOVERSION="1.13.3"
 }
 
+function install_packages() {
+
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo apt-get install -y -q "$@"
+  else
+    install_packages  "$@"
+  fi
+}
+
 setup_env "$@"

@@ -1,0 +1,5 @@
+#! /bin/bash
+
+if [[ "$@" == "-S -s" ]]; then
+  echo "1"
+fi
