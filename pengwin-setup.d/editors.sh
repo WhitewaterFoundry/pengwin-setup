@@ -51,6 +51,7 @@ function code_install() {
       code_version='=1.42.1-1581432938'
     fi
 
+    export NON_INTERACTIVE=1
     install_packages --allow-downgrades code${code_version} code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
     sudo tee "/etc/profile.d/code.sh" <<EOF
 #!/bin/bash
