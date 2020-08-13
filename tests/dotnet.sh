@@ -3,6 +3,11 @@
 source commons.sh
 
 function testMain() {
+  # shellcheck disable=SC2155
+  local dist="$(uname -m)"
+  if [[ ${dist} != "x86_64" ]] ; then
+    return
+  fi
 
   ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING DOTNET --debug #> /dev/null 2>&1
 
@@ -18,6 +23,11 @@ function testMain() {
 }
 
 function testUninstall() {
+  # shellcheck disable=SC2155
+  local dist="$(uname -m)"
+  if [[ ${dist} != "x86_64" ]] ; then
+    return
+  fi
 
   ../pengwin-setup --noupdate --assume-yes --noninteractive UNINSTALL DOTNET > /dev/null 2>&1
 
