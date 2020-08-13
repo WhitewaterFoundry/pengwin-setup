@@ -6,6 +6,13 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
+# shellcheck disable=SC2155
+local dist="$(uname -m)"
+if [[ ${dist} != "x86_64" ]] ; then
+  echo "Skipping DOTGET"
+  exit 0
+fi
+
 if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
   createtmp
