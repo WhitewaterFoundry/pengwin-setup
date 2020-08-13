@@ -9,7 +9,7 @@ function testMain() {
     return
   fi
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING DOTNET --debug #> /dev/null 2>&1
+  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING DOTNET > /dev/null 2>&1
 
   for i in 'dotnet-sdk-3.1' 'nuget'; do
     package_installed $i
