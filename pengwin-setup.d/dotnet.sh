@@ -7,11 +7,12 @@ source "$(dirname "$0")/common.sh" "$@"
 declare SetupDir
 
 # shellcheck disable=SC2155
-local dist="$(uname -m)"
+dist="$(uname -m)"
 if [[ ${dist} != "x86_64" ]] ; then
-  echo "Skipping DOTGET"
+  echo "Skipping DOTNET not supported in ARM64"
   exit 0
 fi
+unset dist
 
 if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
