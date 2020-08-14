@@ -1,97 +1,97 @@
 version: 2
 
 jobs:
-    buildtest:
-        docker:
-            - image: debian:bullseye
-        environment:
-            DEBEMAIL="contact@whitewaterfoundry.com"
-            DEBFULLNAME="Whitewater Foundry, Ltd. Co."
-        steps:
-            - checkout
-            - run:
-                name: Ensure we have devscripts and debuild installed
-                command: |
-                    apt-get -y -q update
-                    apt-get -y -q install devscripts debhelper
-            - run:
-                name: Update changelog
-                command: |
-                    rm ./debian/changelog
-                    dch --create --distribution bullseye --package "pengwin-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
-            - run:
-                name: Build the package
-                command: debuild -i -us -uc -b
-            - run:
-                name: Create workspace
-                command: mkdir -p /tmp/pkgs
-            - run:
-                name: Copy package to workspace
-                command: cp ../pengwin-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
-            - persist_to_workspace:
-                root: /tmp/pkgs
-                paths: .
-            - run:
-                name: Make automated tests
-                command: |
-                    # Install the pengwin image base packages
-                    apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
-                    mkdir -p /usr/local/bin/tests
-                    cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
-                    cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
-                    cp -r pengwin-setup.d /usr/local/
-                    apt-get -y -q install shunit2
-                    cd /usr/local/bin/tests && ./run_tests.sh
-    deploymasterdeb:
-        docker:
-            - image: circleci/ruby:2.3-jessie
-        steps:
-            - attach_workspace:
-                 at: /tmp/pkgs
-            - run:
-                name: Install packageloud cli
-                command: gem install package_cloud
-            - run:
-                name: Push deb package buster
-                command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
-            - run:
-                name: Push deb package bullseye
-                command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
-    deploydevdeb:
-        docker:
-            - image: circleci/ruby:2.3-jessie
-        steps:
-            - attach_workspace:
-                 at: /tmp/pkgs
-            - run:
-                name: Install packageloud cli
-                command: gem install package_cloud
-            - run:
-                name: Push deb package buster
-                command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
-            - run:
-                name: Push deb package bullseye
-                command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
+  buildtest:
+    docker:
+      - image: debian:bullseye
+    environment:
+      DEBEMAIL="contact@whitewaterfoundry.com"
+      DEBFULLNAME="Whitewater Foundry, Ltd. Co."
+    steps:
+      - checkout
+      - run:
+          name: Ensure we have devscripts and debuild installed
+          command: |
+            apt-get -y -q update
+            apt-get -y -q install devscripts debhelper
+      - run:
+          name: Update changelog
+          command: |
+            rm ./debian/changelog
+            dch --create --distribution bullseye --package "pengwin-setup" --newversion 0.1-${CIRCLE_BUILD_NUM} "Built on Circle CI"
+      - run:
+          name: Build the package
+          command: debuild -i -us -uc -b
+      - run:
+          name: Create workspace
+          command: mkdir -p /tmp/pkgs
+      - run:
+          name: Copy package to workspace
+          command: cp ../pengwin-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
+      - persist_to_workspace:
+          root: /tmp/pkgs
+          paths: .
+      - run:
+          name: Make automated tests
+          command: |
+            # Install the pengwin image base packages
+            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
+            mkdir -p /usr/local/bin/tests
+            cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
+            cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
+            cp -r pengwin-setup.d /usr/local/
+            apt-get -y -q install shunit2
+            cd /usr/local/bin/tests && ./run_tests.sh
+  deploymasterdeb:
+    docker:
+      - image: circleci/ruby:2.3-jessie
+    steps:
+      - attach_workspace:
+          at: /tmp/pkgs
+      - run:
+          name: Install packageloud cli
+          command: gem install package_cloud
+      - run:
+          name: Push deb package buster
+          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
+      - run:
+          name: Push deb package bullseye
+          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
+  deploydevdeb:
+    docker:
+      - image: circleci/ruby:2.3-jessie
+    steps:
+      - attach_workspace:
+          at: /tmp/pkgs
+      - run:
+          name: Install packageloud cli
+          command: gem install package_cloud
+      - run:
+          name: Push deb package buster
+          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
+      - run:
+          name: Push deb package bullseye
+          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
 workflows:
-    version: 2
-    testdebbuild:
-        jobs:
+  version: 2
+  testdebbuild:
+    jobs:
+      - buildtest
+  deploymasterbranch:
+    jobs:
+      - buildtest
+      - deploymasterdeb:
+          filters:
+            branches:
+              only: master
+          requires:
             - buildtest
-    deploymasterbranch:
-        jobs:
+  deploydevbranch:
+    jobs:
+      - buildtest
+      - deploydevdeb:
+          filters:
+            branches:
+              only: development
+          requires:
             - buildtest
-            - deploymasterdeb:
-                filters:
-                    branches:
-                        only: master
-                requires:
-                    - buildtest
-    deploydevbranch:
-        jobs:
-            - buildtest
-            - deploydevdeb:
-                filters:
-                    branches:
-                        only: development
-                requires:
-                    - buildtest
