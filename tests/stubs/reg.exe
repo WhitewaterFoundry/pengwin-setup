@@ -1,0 +1,9 @@
+#! /bin/bash
+
+if [[ "$@" == "query HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion /v CurrentBuild" ]]; then
+  echo 
+  echo 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion'
+  echo '    CurrentBuild    REG_SZ    19041'
+  echo
+fi
+
