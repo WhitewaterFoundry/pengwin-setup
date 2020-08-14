@@ -1,6 +1,10 @@
 #!/bin/bash
 
-export PATH="stubs:$PATH"
+function oneTimeSetUp() {
+  export PATH="stubs:$PATH"
+  export HOME="${SHUNIT_TMPDIR}/home"
+  mkdir -p "${HOME}"
+}
 
 function package_installed() {
 
@@ -15,7 +19,7 @@ function package_installed() {
 }
 
 function run_test() {
+  echo "********************************************************************"
   echo "$@"
   "$@"
 }
-
