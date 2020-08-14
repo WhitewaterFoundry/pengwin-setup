@@ -34,6 +34,8 @@ jobs:
             - run:
                 name: Make automated tests
                 command: |
+                    # Install the pengwin image base packages
+                    apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
                     mkdir -p /usr/local/bin/tests
                     cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
                     cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
