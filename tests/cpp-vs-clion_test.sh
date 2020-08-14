@@ -4,7 +4,7 @@ source commons.sh
 
 function testMain() {
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING C++ > /dev/null 2>&1
+  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING C++ --debug #> /dev/null 2>&1
 
   for i in 'gcc' 'clang' 'gdb' 'build-essential' 'gdbserver' 'rsync' 'zip' 'pkg-config' 'cmake'; do
     package_installed $i
