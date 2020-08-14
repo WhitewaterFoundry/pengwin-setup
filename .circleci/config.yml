@@ -31,6 +31,15 @@ jobs:
             - persist_to_workspace:
                 root: /tmp/pkgs
                 paths: .
+            - run:
+                name: Make automated tests
+                command: |
+                    mkdir -p /usr/local/bin/tests
+                    cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
+                    cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
+                    cp -r pengwin-setup.d /usr/local/
+                    apt-get -y -q install shunit2
+                    cd /usr/local/bin/tests && ./run_tests.sh
     deploymasterdeb:
         docker:
             - image: circleci/ruby:2.3-jessie
