@@ -1,2 +1,5 @@
 #! /bin/bash
-cmd.exe
+
+if [[ "$@" == "/c echo %HOMEDRIVE%%HOMEPATH%" ]]; then
+  echo "${HOME}/winhome"
+fi
