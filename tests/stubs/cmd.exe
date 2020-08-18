@@ -1,3 +1,6 @@
 #! /bin/bash
 
-echo "${HOME}/winhome"
+if [[ "$@" == "/c echo %HOMEDRIVE%%HOMEPATH%" ]]; then
+  mkdir -p "${HOME}/winhome"
+  echo "${HOME}/winhome"
+fi
