@@ -16,6 +16,8 @@ function testMain() {
   if [[ "$(uname -m)" == "x86_64" ]] ; then
     assertEquals "MS Cmake was not installed" "1" "$(/usr/local/bin/cmake --version | grep -c '3.17')"
   fi
+  
+  apt-cache policy libc-dev
 }
 
 function testUninstall() {
