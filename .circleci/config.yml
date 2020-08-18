@@ -114,7 +114,7 @@ workflows:
             - buildtest
   deploydevbranch:
     jobs:
-      - buildtest
+      - buildtest:
           filters:
             branches:
               only: development
