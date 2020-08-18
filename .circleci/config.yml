@@ -93,7 +93,7 @@ workflows:
   version: 2
   testdebbuild:
     jobs:
-      - buildtest
+      - buildtest:
           filters:
             branches:
               ignore: 
@@ -102,7 +102,7 @@ workflows:
 
   deploymasterbranch:
     jobs:
-      - buildtest
+      - buildtest:
           filters:
             branches:
               only: master
