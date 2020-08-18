@@ -32,10 +32,27 @@ jobs:
           root: /tmp/pkgs
           paths: .
       - run:
-          name: Make automated tests
+          name: Install pengwin-base
           command: |
             # Install the pengwin image base packages
             apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
+
+            export os=debian
+            export dist=bullseye 
+
+            curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
+
+            sudo apt-get -y -q install pengwin-base
+
+            # Remove packagecloud repository definitions
+            sudo rm /etc/apt/sources.list.d/whitewaterfoundry_*.list
+
+            # Update apt repositories
+            sudo apt-get -y -q update
+
+      - run:
+          name: Make automated tests
+          command: |
             mkdir -p /usr/local/bin/tests
             cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
             cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
@@ -77,9 +94,18 @@ workflows:
   testdebbuild:
     jobs:
       - buildtest
+          filters:
+            branches:
+              ignore: 
+                - development
+                - master
+
   deploymasterbranch:
     jobs:
       - buildtest
+          filters:
+            branches:
+              only: master
       - deploymasterdeb:
           filters:
             branches:
@@ -89,6 +115,9 @@ workflows:
   deploydevbranch:
     jobs:
       - buildtest
+          filters:
+            branches:
+              only: development
       - deploydevdeb:
           filters:
             branches:
