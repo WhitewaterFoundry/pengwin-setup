@@ -50,6 +50,7 @@ jobs:
             # Update apt repositories
             apt-get -y -q update
             apt-get install -q -y --allow-downgrades libc6=2.31-1.wsl locales=2.31-1.wsl libc-bin=2.31-1.wsl
+            apt-get -y -q update
 
       - run:
           name: Make automated tests
