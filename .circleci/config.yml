@@ -42,13 +42,14 @@ jobs:
 
             curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
 
-            sudo apt-get -y -q install pengwin-base
+            apt-get -y -q install pengwin-base
 
             # Remove packagecloud repository definitions
-            sudo rm /etc/apt/sources.list.d/whitewaterfoundry_*.list
+            rm /etc/apt/sources.list.d/whitewaterfoundry_*.list
 
             # Update apt repositories
-            sudo apt-get -y -q update
+            apt-get -y -q update
+            apt-get install -q -y --allow-downgrades libc6=2.31-1.wsl locales=2.31-1.wsl libc-bin=2.31-1.wsl
 
       - run:
           name: Make automated tests
