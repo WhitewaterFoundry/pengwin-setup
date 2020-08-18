@@ -4,9 +4,6 @@ source commons.sh
 
 function testMain() {
 
-  apt-get install -y -q libc6-dev libc-dev-bin
-  return
-  
   ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING C++ --debug #> /dev/null 2>&1
 
   for i in 'gcc' 'clang' 'gdb' 'build-essential' 'gdbserver' 'rsync' 'zip' 'pkg-config' 'cmake'; do
