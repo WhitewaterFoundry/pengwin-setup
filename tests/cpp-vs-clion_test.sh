@@ -4,6 +4,9 @@ source commons.sh
 
 function testMain() {
 
+  apt-cache policy libc6-dev
+  return
+  
   ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING C++ --debug #> /dev/null 2>&1
 
   for i in 'gcc' 'clang' 'gdb' 'build-essential' 'gdbserver' 'rsync' 'zip' 'pkg-config' 'cmake'; do
@@ -17,7 +20,6 @@ function testMain() {
     assertEquals "MS Cmake was not installed" "1" "$(/usr/local/bin/cmake --version | grep -c '3.17')"
   fi
   
-  apt-cache policy libc-dev
 }
 
 function testUninstall() {
