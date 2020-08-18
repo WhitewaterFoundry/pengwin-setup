@@ -4,7 +4,7 @@ source commons.sh
 
 function testMain() {
 
-  apt-cache policy libc6-dev
+  apt-get install -y -q libc6-dev
   return
   
   ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING C++ --debug #> /dev/null 2>&1
