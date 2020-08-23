@@ -9,7 +9,7 @@ function testMain() {
     return
   fi
 
-  run_pengwinsetup autoinstall PROGRAMMING DOTNET --debug
+  run_pengwinsetup autoinstall PROGRAMMING DOTNET
 
   for i in 'dotnet-sdk-3.1' 'nuget'; do
     package_installed $i
