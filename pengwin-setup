@@ -47,6 +47,13 @@ function check_upgrades() {
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
       sudo apt-get upgrade pengwin-base pengwin-setup -y
     fi
+  elif [[ ${JUST_UPDATE} ]]; then
+    sudo apt-get upgrade -y
+  fi
+
+  if [[ -z ${WSL2} && "${upgrd_check}" == *"libqt5"* ]]; then
+    # If WSL1 we patch libQt5Core.so
+    sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 >/dev/null 2>&1
   fi
 }
 
