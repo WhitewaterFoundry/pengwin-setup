@@ -7,7 +7,7 @@ declare SetupDir
 
 function show_warning() {
 
-  if [[ -n "${SkipConfirmations}" ]]; then
+  if [[ -n "${SKIP_CONFIMATIONS}" ]]; then
     return
   fi
 

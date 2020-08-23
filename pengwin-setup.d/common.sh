@@ -13,7 +13,7 @@ function process_arguments() {
       ;;
     -y | --yes | --assume-yes)
       echo "Skipping confirmations"
-      SkipConfirmations=1
+      export SKIP_CONFIMATIONS=1
       shift
       ;;
     --noupdate)
@@ -29,6 +29,30 @@ function process_arguments() {
     -q | --quiet | --noninteractive)
       echo "Skipping confirmations"
       export NON_INTERACTIVE=1
+      shift
+      ;;
+    update | upgrade)
+      echo "Just update packages"
+      export JUST_UPDATE=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      shift
+      ;;
+    autoinstall)
+      echo "Automatically install without prompts or updates"
+      export SKIP_UPDATES=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      export SKIP_STARTMENU=1
+      shift
+      ;;
+    startmenu)
+      echo "Regenerates the start menu"
+      export SKIP_UPDATES=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      CMD_MENU_OPTIONS+=("GUI")
+      CMD_MENU_OPTIONS+=("STARTMENU")
       shift
       ;;
     *)
@@ -90,7 +114,7 @@ function command_check() {
 
 function confirm() {
 
-  if [[ ! ${SkipConfirmations} ]]; then
+  if [[ ! ${SKIP_CONFIMATIONS} ]]; then
 
     whiptail "$@"
 

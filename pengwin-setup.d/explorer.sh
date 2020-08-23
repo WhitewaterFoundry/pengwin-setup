@@ -78,7 +78,7 @@ EOF
 
   cleantmp
 
-  SkipConfirmations=1
+  SKIP_CONFIMATIONS=1
 
   install_explorer
 }

@@ -9,6 +9,7 @@ source ${SetupDir}/common.sh "$@"
 
 declare CANCELLED
 declare SKIP_UPDATES
+declare JUST_UPDATE
 
 rm -f "${HOME}"/.should-restart
 
@@ -171,6 +172,10 @@ continue_prompt
 
 if [[ ! ${SKIP_UPDATES} ]]; then
   check_upgrades
+fi
+
+if [[ ${JUST_UPDATE} ]]; then
+  exit 0
 fi
 
 # Ensure our packages are held to prevent odd situation of
