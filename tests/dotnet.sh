@@ -9,7 +9,7 @@ function testMain() {
     return
   fi
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING DOTNET > /dev/null 2>&1
+  run_pengwinsetup autoinstall PROGRAMMING DOTNET --debug
 
   for i in 'dotnet-sdk-3.1' 'nuget'; do
     package_installed $i
@@ -29,7 +29,7 @@ function testUninstall() {
     return
   fi
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive UNINSTALL DOTNET > /dev/null 2>&1
+  run_pengwinsetup autoinstall UNINSTALL DOTNET
 
   for i in 'dotnet-sdk-3.1' 'nuget'; do
     package_installed $i
