@@ -23,3 +23,14 @@ function run_test() {
   echo "$@"
   "$@"
 }
+
+function run_pengwinsetup() {
+
+  local last_param="${!#}"
+
+  if [[ ${last_param} == "--debug" ]]; then
+    ../pengwin-setup "$@"
+  else
+    ../pengwin-setup "$@" > /dev/null 2>&1
+  fi
+}

@@ -3,9 +3,9 @@
 # shellcheck source=/usr/local/pengwin-setup.d/common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-declare SkipConfirmations
+declare SKIP_CONFIMATIONS
 
-if [[ ! "${SkipConfirmations}" ]]; then
+if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
 
   if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
     echo "Installing NODE"

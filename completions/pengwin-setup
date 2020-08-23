@@ -17,9 +17,12 @@ function _pengwin_setup() { #  By convention, the function name
   PROGRAMMING)
     mapfile -t COMPREPLY < <(compgen -W 'C++ DOTNET GO JAVA JOOMLA LATEX NIM NODEJS PYTHONPI RUBY RUST' -- "${cur}")
     ;;
+  SERVICES)
+    mapfile -t COMPREPLY < <(compgen -W 'RCLOCAL SSH' -- "${cur}")
+    ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
-    --quiet --noninteractive \
+    --quiet --noninteractive update upgrade autoinstall startmenu \
     EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
     ;;
   esac

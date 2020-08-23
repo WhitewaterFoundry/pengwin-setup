@@ -9,6 +9,7 @@ source ${SetupDir}/common.sh "$@"
 
 declare CANCELLED
 declare SKIP_UPDATES
+declare JUST_UPDATE
 
 rm -f "${HOME}"/.should-restart
 
@@ -46,6 +47,13 @@ function check_upgrades() {
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
       sudo apt-get upgrade pengwin-base pengwin-setup -y
     fi
+  elif [[ ${JUST_UPDATE} ]]; then
+    sudo apt-get upgrade -y
+  fi
+
+  if [[ -z ${WSL2} && "${upgrd_check}" == *"libqt5"* ]]; then
+    # If WSL1 we patch libQt5Core.so
+    sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 >/dev/null 2>&1
   fi
 }
 
@@ -171,6 +179,10 @@ continue_prompt
 
 if [[ ! ${SKIP_UPDATES} ]]; then
   check_upgrades
+fi
+
+if [[ ${JUST_UPDATE} ]]; then
+  exit 0
 fi
 
 # Ensure our packages are held to prevent odd situation of

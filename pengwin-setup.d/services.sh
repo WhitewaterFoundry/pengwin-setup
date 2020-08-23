@@ -10,6 +10,20 @@ function enable_rclocal() {
   if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60) ; then
     echo "Enabling rc.local..."
 
+    if [[ ! -f /etc/rc.local ]]; then
+      sudo tee "/etc/rc.local" << EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+
+if test -d /etc/boot.d ; then
+  run-parts /etc/boot.d
+fi
+
+EOF
+    fi
+
     local cmd="/bin/bash /etc/rc.local"
     echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
 
@@ -127,6 +141,7 @@ function main() {
     return
   fi
 
+  # shellcheck disable=SC2155
   local menu_choice=$(
 
     menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
@@ -136,6 +151,7 @@ function main() {
       "RCLOCAL" "Enable running scripts at startup from rc.local " off \
       "SSH" "Enable SSH server" off \
 
+  # shellcheck disable=SC2188
   3>&1 1>&2 2>&3)
 
   if [[ ${menu_choice} == "CANCELLED" ]] ; then
@@ -144,17 +160,17 @@ function main() {
 
   if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
     echo "CASSANDRA"
-    bash ${SetupDir}/cassandra.sh "$@"
+    bash "${SetupDir}"/cassandra.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"KEYCHAIN"* ]] ; then
     echo "KEYCHAIN"
-    bash ${SetupDir}/keychain.sh "$@"
+    bash "${SetupDir}"/keychain.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"LAMP"* ]] ; then
     echo "LAMP"
-    bash ${SetupDir}/lamp.sh "$@"
+    bash "${SetupDir}"/lamp.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then
