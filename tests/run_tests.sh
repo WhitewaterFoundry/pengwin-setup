@@ -4,7 +4,7 @@ source commons.sh
 
 set -e
 
-run_pengwinsetup update
+run_pengwinsetup --noninteractive update
 
 run_test ./rclocal.sh
 run_test ./cpp-vs-clion_test.sh
