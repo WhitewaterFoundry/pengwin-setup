@@ -10,7 +10,7 @@ if [ -x "$(command -v x410.exe)" ]; then
     sudo bash -c 'cat > /etc/profile.d/02-x410.sh' << EOF
 #!/bin/bash
 
-if [ -n "${WSL2}" ]; then
+if [ -n "\${WSL2}" ]; then
   (cmd-exe /c x410.exe /wm /public &> /dev/null &)
 else
   (cmd-exe /c x410.exe /wm &> /dev/null &)
