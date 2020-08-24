@@ -174,15 +174,16 @@ function install_menu() {
 }
 
 ### Main
+if [[ ${JUST_UPDATE} ]]; then
+  check_upgrades
+  exit 0
+fi
+
 WelcomePrompt
 continue_prompt
 
 if [[ ! ${SKIP_UPDATES} ]]; then
   check_upgrades
-fi
-
-if [[ ${JUST_UPDATE} ]]; then
-  exit 0
 fi
 
 # Ensure our packages are held to prevent odd situation of
