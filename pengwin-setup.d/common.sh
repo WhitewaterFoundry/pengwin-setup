@@ -34,7 +34,6 @@ function process_arguments() {
     update | upgrade)
       echo "Just update packages"
       export JUST_UPDATE=1
-      export NON_INTERACTIVE=1
       export SKIP_CONFIMATIONS=1
       shift
       ;;
