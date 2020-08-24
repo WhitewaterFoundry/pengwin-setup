@@ -3,7 +3,7 @@
 source commons.sh
 
 function testX410() {
-  run_pengwinsetup autoinstall GUI X410
+  run_pengwinsetup autoinstall GUI X410 --debug
 
   assertTrue "FILE PROFILE-X410" "[ -f /etc/profile.d/02-x410.sh ]"
 }
