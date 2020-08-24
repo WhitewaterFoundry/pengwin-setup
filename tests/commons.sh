@@ -1,9 +1,10 @@
 #!/bin/bash
 
 function oneTimeSetUp() {
-  export PATH="stubs:$PATH"
+  export PATH="$(pwd)/stubs:${PATH}"
   export HOME="${SHUNIT_TMPDIR}/home"
   mkdir -p "${HOME}"
+  export SHUNIT_TMPDIR
 }
 
 function package_installed() {
