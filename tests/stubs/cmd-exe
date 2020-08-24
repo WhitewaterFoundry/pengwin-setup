@@ -1,5 +1,3 @@
 #! /bin/bash
 
-if [[ "$@" == "/c echo %HOMEDRIVE%%HOMEPATH%" ]]; then
-  echo "${HOME}/winhome"
-fi
+cmd.exe "$@"
