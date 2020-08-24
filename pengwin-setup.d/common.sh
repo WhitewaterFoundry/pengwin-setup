@@ -222,4 +222,13 @@ function update_packages() {
   fi
 }
 
+function upgrade_packages() {
+
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo apt-get upgrade -y -q "$@"
+  else
+    sudo debconf-apt-progress -- apt-get upgrade -y "$@"
+  fi
+}
+
 setup_env "$@"
