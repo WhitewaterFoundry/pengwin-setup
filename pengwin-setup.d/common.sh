@@ -34,7 +34,6 @@ function process_arguments() {
     update | upgrade)
       echo "Just update packages"
       export JUST_UPDATE=1
-      export NON_INTERACTIVE=1
       export SKIP_CONFIMATIONS=1
       shift
       ;;
@@ -219,6 +218,15 @@ function update_packages() {
     sudo apt-get update -y -q "$@"
   else
     sudo debconf-apt-progress -- apt-get update -y "$@"
+  fi
+}
+
+function upgrade_packages() {
+
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo apt-get upgrade -y -q "$@"
+  else
+    sudo debconf-apt-progress -- apt-get upgrade -y "$@"
   fi
 }
 

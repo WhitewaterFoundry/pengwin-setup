@@ -45,10 +45,10 @@ function check_upgrades() {
 
       # Ensure that packages get updated without affecting other held packages like udev
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
-      sudo apt-get upgrade pengwin-base pengwin-setup -y
+      upgrade_packages pengwin-base pengwin-setup
     fi
   elif [[ ${JUST_UPDATE} ]]; then
-    sudo apt-get upgrade -y
+    upgrade_packages 
   fi
 
   if [[ -z ${WSL2} && "${upgrd_check}" == *"libqt5"* ]]; then
@@ -174,15 +174,16 @@ function install_menu() {
 }
 
 ### Main
+if [[ ${JUST_UPDATE} ]]; then
+  check_upgrades
+  exit 0
+fi
+
 WelcomePrompt
 continue_prompt
 
 if [[ ! ${SKIP_UPDATES} ]]; then
   check_upgrades
-fi
-
-if [[ ${JUST_UPDATE} ]]; then
-  exit 0
 fi
 
 # Ensure our packages are held to prevent odd situation of
