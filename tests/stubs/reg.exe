@@ -1,5 +1,7 @@
 #! /bin/bash
 
+source "$(dirname "$0")/../mocks.sh" "$@"
+
 if [[ "$@" == "query HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion /v CurrentBuild" ]]; then
   echo 
   echo 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion'
