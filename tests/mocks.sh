@@ -4,6 +4,7 @@ REGISTER_FILE="register.txt"
 function register_call() {
   if [[ "${SHUNIT_TMPDIR}" ]]; then
     echo "$(basename "$0") $@" >>"${SHUNIT_TMPDIR}/${REGISTER_FILE}"
+    sync
   fi
 }
 
