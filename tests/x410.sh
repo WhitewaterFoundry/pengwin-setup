@@ -12,7 +12,7 @@ function testX410() {
   verify_call "cmd.exe /c x410.exe /wm"
   assertTrue "X410 WSL1" "$?"
 
-  WSL2=1 bash -x /etc/profile.d/02-x410.sh
+  WSL2=1 bash /etc/profile.d/02-x410.sh
   verify_call "cmd.exe /c x410.exe /wm /public"
   assertTrue "X410 WSL2" "$?"
 }
