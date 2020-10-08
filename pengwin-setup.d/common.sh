@@ -210,12 +210,12 @@ function install_packages() {
 
 function update_packages() {
 
-    sudo apt-get update -y -q "$@"
+  sudo apt-get update -y -q "$@"
 }
 
 function upgrade_packages() {
-  
-    sudo apt-get upgrade -y -q "$@"
+
+  sudo apt-get upgrade -y -q "$@"
 }
 
 setup_env "$@"
