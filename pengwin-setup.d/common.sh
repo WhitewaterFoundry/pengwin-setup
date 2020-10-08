@@ -205,11 +205,7 @@ function setup_env() {
 
 function install_packages() {
 
-  if [[ ${NON_INTERACTIVE} ]]; then
-    sudo apt-get install -y -q "$@"
-  else
-    sudo debconf-apt-progress -- apt-get install -y "$@"
-  fi
+  sudo apt-get install -y -q "$@"
 }
 
 function update_packages() {
@@ -223,11 +219,7 @@ function update_packages() {
 
 function upgrade_packages() {
 
-  if [[ ${NON_INTERACTIVE} ]]; then
-    sudo apt-get upgrade -y -q "$@"
-  else
-    sudo debconf-apt-progress -- apt-get upgrade -y "$@"
-  fi
+  sudo apt-get upgrade -y -q "$@"
 }
 
 setup_env "$@"

@@ -4,14 +4,14 @@ source commons.sh
 
 function testMain() {
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive PROGRAMMING C++ > /dev/null 2>&1
+  run_pengwinsetup autoinstall PROGRAMMING C++
 
   for i in 'gcc' 'clang' 'gdb' 'build-essential' 'gdbserver' 'rsync' 'zip' 'pkg-config' 'cmake'; do
     package_installed $i
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals "Cmake was not installed" "1" "$(/usr/bin/cmake --version | grep -c '3.16')"
+  assertEquals "Cmake was not installed" "1" "$(/usr/bin/cmake --version | grep -c '3')"
 
   if [[ "$(uname -m)" == "x86_64" ]] ; then
     assertEquals "MS Cmake was not installed" "1" "$(/usr/local/bin/cmake --version | grep -c '3.17')"
