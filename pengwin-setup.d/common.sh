@@ -210,7 +210,11 @@ function install_packages() {
 
 function update_packages() {
 
-  sudo apt-get update -y -q "$@"
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo apt-get update -y -q "$@"
+  else
+    sudo debconf-apt-progress -- apt-get update -y "$@"
+  fi
 }
 
 function upgrade_packages() {
