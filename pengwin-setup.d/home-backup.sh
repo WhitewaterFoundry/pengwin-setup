@@ -29,10 +29,10 @@ function backup() {
     fi
 
     #To runs backup with a list of files to be ignored
-    if [[ -f "${BACKUP_PATH}" ]]; then
-      tar -czvf "${BACKUP_PATH}" -X ${BACKUP_IGNORE_FILE} ${HOME}
+    if [[ -f "${BACKUP_IGNORE_FILE}" ]]; then
+      tar -czvf "${BACKUP_PATH}" -X "${BACKUP_IGNORE_FILE}" "${HOME}"
     else
-      tar -czvf "${BACKUP_PATH}" ${HOME}
+      tar -czvf "${BACKUP_PATH}" "${HOME}"
     fi
 
   else
