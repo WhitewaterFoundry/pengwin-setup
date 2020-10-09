@@ -66,7 +66,7 @@ function docker_install_build_relay() {
     sudo cp npiperelay.exe "${wHome}/.npiperelay/npiperelay.exe"
   fi
 
-  sudo apt-get -y -q install socat
+  sudo apt-get -y -q install socat psmisc
 
   cat <<'EOF' >>docker-relay
 #!/bin/bash
@@ -212,6 +212,7 @@ function main() {
     sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
 
     echo "Installing docker-compose"
+    sudo rm -f /usr/bin/docker-compose
     sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose"
     sudo chmod +x /usr/bin/docker-compose
 
