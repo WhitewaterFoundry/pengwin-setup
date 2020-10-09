@@ -9,6 +9,7 @@ declare SetupDir
 BACKUPS_DIR="${wHome}/Pengwin/backups"
 BACKUP_PATH="${BACKUPS_DIR}/pengwin_home.tgz"
 BACKUP_PATH_WIN="$(wslpath -w "${BACKUP_PATH}")"
+BACKUP_IGNORE_FILE="${HOME}/.pengwinbackupignore"
 
 function backup() {
 
@@ -27,7 +28,13 @@ function backup() {
       mkdir -p "${BACKUPS_DIR}"
     fi
 
-    tar -czvf "${BACKUP_PATH}" ${HOME}
+    #To runs backup with a list of files to be ignored
+    if [[ -f "${BACKUP_PATH}" ]]; then
+      tar -czvf "${BACKUP_PATH}" -X ${BACKUP_IGNORE_FILE} ${HOME}
+    else
+      tar -czvf "${BACKUP_PATH}" ${HOME}
+    fi
+
   else
     echo "Skipping BACKUP"
   fi
