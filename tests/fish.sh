@@ -21,7 +21,7 @@ function testMain() {
 
 function testUninstall() {
   # shellcheck disable=SC2155
-  run_pengwinsetup autoinstall UNINSTALL FISH --debug
+  run_pengwinsetup autoinstall UNINSTALL FISH
 
   # shellcheck disable=SC2041
   for i in 'fish' ; do
