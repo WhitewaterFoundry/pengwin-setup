@@ -23,7 +23,7 @@ function revert_mnt_point() {
     echo "Cleaning create-mnt-c-link changes from /etc/sudoers"
     sudo_clean_file "/etc/sudoers" "$mntbin_rgx"
 
-    whiptail --title "DOCKER" --msgbox "Finished reverting root mount point. Please close and re-open Pengwin to see changes" 8 85
+    message --title "DOCKER" --msgbox "Finished reverting root mount point. Please close and re-open Pengwin to see changes" 8 85
   else
     echo "... user opted to keep docker changed mount point."
   fi

@@ -53,9 +53,9 @@ EOF
     fi
   fi
 
-  if (whiptail --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95); then
+  if (confirm --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95); then
     createtmp
-    whiptail --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
+    message --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
     mkdir "Type exit to return to pengwin-setup"
     (
       # shellcheck disable=SC2164
@@ -71,7 +71,7 @@ EOF
     echo "Skipping oh-my-zsh"
   fi
 
-  if (whiptail --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
+  if (confim --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
     sudo chsh -s "$(command -v zsh)" "${USER}"
     touch "${HOME}"/.should-restart
   fi
@@ -79,17 +79,12 @@ EOF
 
 function fish_install() {
   createtmp
-  sudo apt install fish python -y # /usr/bin/python required for omf
+  install_packages fish
 
-  whiptail --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
+  message --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
 
-  mkdir "Type exit to return to pengwin-setup"
-  (
-    # shellcheck disable=SC2164
-    cd "Type exit to return to pengwin-setup"
-
-    curl -L https://get.oh-my.fish | fish
-  )
+  curl -L https://get.oh-my.fish > install
+  fish install --path=~/.local/share/omf --config=~/.config/omf --yes --noninteractive
 
   # Change the default theme for one more friendly with Windows console default font
   fish -c "omf install bira"
@@ -106,7 +101,7 @@ function fish_install() {
 }
 
 function cshinstall() {
-  if (whiptail --title "csh" --yesno "Would you like to set csh as the default shell?" 8 55); then
+  if (confirm --title "csh" --yesno "Would you like to set csh as the default shell?" 8 55); then
     sudo chsh -s "$(command -v csh)" "${USER}"
     touch "${HOME}"/.should-restart
   fi
@@ -117,10 +112,10 @@ function installAndSetShell() {
   local menu_choice=$(
 
     menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
-      "ZSH" "zsh" off \
-      "FISH" "fish with oh-my-fish plugin manager" off \
+      "BASH-RL" "Recommended readline settings for productivity " off \
       "CSH" "csh" off \
-      "BASH-RL" "Recommended readline settings for productivity " off
+      "FISH" "fish with oh-my-fish plugin manager" off \
+      "ZSH" "zsh" off
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
@@ -130,7 +125,7 @@ function installAndSetShell() {
 
   if [[ $menu_choice == *"ZSH"* ]]; then
     echo "Installing zsh..."
-    sudo apt install zsh -y
+    install_packages zsh
     zshinstall
   fi
 
@@ -141,7 +136,7 @@ function installAndSetShell() {
 
   if [[ $menu_choice == *"CSH"* ]]; then
     echo "Installing csh..."
-    sudo apt install csh -y
+    install_packages csh
     cshinstall
   fi
 
