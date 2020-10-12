@@ -20,6 +20,12 @@ function _pengwin_setup() { #  By convention, the function name
   SERVICES)
     mapfile -t COMPREPLY < <(compgen -W 'RCLOCAL SSH' -- "${cur}")
     ;;
+  SETTINGS)
+    mapfile -t COMPREPLY < <(compgen -W 'EXPLORER COLORTOOL LANGUAGE SHELLS' -- "${cur}")
+    ;;
+  SHELLS)
+    mapfile -t COMPREPLY < <(compgen -W 'BASH-RL CSH FISH ZSH' -- "${cur}")
+    ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
     --quiet --noninteractive update upgrade autoinstall startmenu \
