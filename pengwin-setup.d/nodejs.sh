@@ -173,7 +173,7 @@ EOF
 elif [[ ${menu_choice} == "LATEST" ]]; then
   echo "Installing latest node.js version from NodeSource repository"
 
-  major_vers=13
+  major_vers=14
   nodesrc_url="https://deb.nodesource.com/setup_${major_vers}.x"
   #curl -sL "$nodesrc_url" -o repo-install.sh
   #sudo bash repo-install.sh
@@ -188,8 +188,8 @@ elif [[ ${menu_choice} == "LATEST" ]]; then
 
   echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
 
-  echo "deb https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+  echo "deb https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
 
   echo "Running 'apt-get update' for you..."
 
