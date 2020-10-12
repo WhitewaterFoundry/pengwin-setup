@@ -10,7 +10,7 @@ function oneTimeSetUp() {
 function package_installed() {
 
   # shellcheck disable=SC2155
-  local result=$(apt -qq list $1 2>/dev/null | grep -c "\[")
+  local result=$(apt -qq list $1 2>/dev/null | grep -c "\[installed")
 
   if [[ $result == 0 ]]; then
     return 1

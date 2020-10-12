@@ -24,6 +24,7 @@ function main() {
       "DOCKER" "Remove secure bridge between Pengwin and Docker Desktop" off \
       "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" off \
       "FCITX" "Remove all fcitx improved non-Latin input support" off \
+      "FISH" "Remove FISH Shell" off \
       "GO" "Remove Go language" off \
       "GUILIB" "Remove base GUI application libraries" off \
       "HIDPI" "Remove Qt and GTK HiDPI modifications" off \
@@ -111,6 +112,11 @@ function main() {
   if [[ ${menu_choice} == *"FCITX"* ]] ; then
     echo "FCITX"
     bash "${UninstallDir}"/fcitx.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"FISH"* ]] ; then
+    echo "FISH"
+    bash "${UninstallDir}"/fish.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"GO"* ]] ; then
