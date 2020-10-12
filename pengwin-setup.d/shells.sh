@@ -81,8 +81,6 @@ function fish_install() {
   createtmp
   install_packages fish
 
-  message --title "fish" --msgbox "After oh my fish is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
-
   curl -L https://get.oh-my.fish > install
   fish install --path=~/.local/share/omf --config=~/.config/omf --yes --noninteractive
 
