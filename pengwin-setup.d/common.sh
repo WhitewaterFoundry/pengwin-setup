@@ -200,7 +200,7 @@ function setup_env() {
 
   SetupDir="/usr/local/pengwin-setup.d"
 
-  readonly GOVERSION="1.13.3"
+  readonly GOVERSION="1.15.2"
 }
 
 function install_packages() {
