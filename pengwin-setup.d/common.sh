@@ -180,7 +180,7 @@ function menu() {
 function setup_env() {
 
   if (! command -v cmd.exe >/dev/null); then
-    whiptail --title "Wrong user" --msgbox "pengwin-setup was ran with the user \"${USER}\".\n\nRun pengwin-setup from the default user and without sudo" 12 80
+    whiptail --title "An environment problem was found" --msgbox "window path was not found, and pengwin-setup require it to run, to avoid the problem validate: \n\n   pengwin-setup is ruuning without sudo.\n   pengwin-setup is not running with the root user.\n\n\nIf the problem persists, you please append WindowsPath=false to the /etc/wsl.conf file" 15 100
 
     exit 0
   fi
