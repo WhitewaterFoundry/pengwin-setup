@@ -180,7 +180,7 @@ function menu() {
 function setup_env() {
 
   if (! command -v cmd.exe >/dev/null); then
-    whiptail --title "An environment problem was found" --msgbox "windows path was not found, and pengwin-setup require it to run, to avoid the problem validate: \n\n   pengwin-setup is ruuning without sudo.\n   pengwin-setup is not running with the root user.\n\n\nIf the problem persists, you please append WindowsPath=false to the /etc/wsl.conf file" 15 100
+    whiptail --title "An environment problem was found" --msgbox "The Windows PATH is not available, and pengwin-setup requires it to run. Please check that: \n\n   pengwin-setup is not running with sudo.\n   pengwin-setup wasn't run with the root user.\n   appendWindowsPath is true in /etc/wsl.conf file or is not defined. \n\n\nIf you don't want to have Windows PATH in Pengwin, enable it temporally to run pengwin-setup" 15 100
 
     exit 0
   fi
