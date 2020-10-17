@@ -4,7 +4,7 @@ source commons.sh
 
 set -e
 
-run_pengwinsetup --noninteractive update
+../pengwin-setup --noninteractive update
 
 run_test ./fish.sh
 run_test ./x410.sh
