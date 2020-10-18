@@ -56,12 +56,8 @@ EOF
   if (confirm --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95); then
     createtmp
     message --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
-    mkdir "Type exit to return to pengwin-setup"
-    (
-      # shellcheck disable=SC2164
-      cd "Type exit to return to pengwin-setup"
-      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    )
+    wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    env CHSH=no RUNZSH=no sh install.sh
 
     #Change the default theme for one more friendly with Windows console default font
     sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="bira"/' "${HOME}/.zshrc"
@@ -71,7 +67,7 @@ EOF
     echo "Skipping oh-my-zsh"
   fi
 
-  if (confim --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
+  if (confirm --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
     sudo chsh -s "$(command -v zsh)" "${USER}"
     touch "${HOME}"/.should-restart
   fi
