@@ -55,7 +55,7 @@ EOF
 
   if (confirm --title "zsh" --yesno "Would you like to download and install oh-my-zsh? This is a framework for managing your zsh installation" 8 95); then
     createtmp
-    message --title "zsh" --msgbox "After oh-my-zsh is installed and launched, type 'exit' and ENTER to return to pengwin-setup" 8 95
+
     wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
     env CHSH=no RUNZSH=no sh install.sh
 
