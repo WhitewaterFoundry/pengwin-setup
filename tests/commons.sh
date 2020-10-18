@@ -1,10 +1,28 @@
 #!/bin/bash
 
+export TEST_USER=test_user
+
 function oneTimeSetUp() {
+  # shellcheck disable=SC2155
   export PATH="$(pwd)/stubs:${PATH}"
-  export HOME="${SHUNIT_TMPDIR}/home"
-  mkdir -p "${HOME}"
+  export HOME="/home/${TEST_USER}"
+
+  sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
+  sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev ${TEST_USER}
+  echo "%${TEST_USER} ALL=(ALL) NOPASSWD:ALL" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/passwordless-sudo
+  sudo chmod +x run-pengwin-setup.sh
+  sudo chmod +x stubs/*
+
+  sudo chmod 777 -R "${SHUNIT_TMPDIR}"
+
   export SHUNIT_TMPDIR
+}
+
+function oneTimeTearDown() {
+  if id "test_user" &>/dev/null; then
+    sudo /usr/sbin/deluser ${TEST_USER} &>/dev/null
+  fi
+
 }
 
 function package_installed() {
@@ -26,12 +44,5 @@ function run_test() {
 }
 
 function run_pengwinsetup() {
-
-  local last_param="${!#}"
-
-  if [[ ${last_param} == "--debug" ]]; then
-    ../pengwin-setup "$@"
-  else
-    ../pengwin-setup "$@" > /dev/null 2>&1
-  fi
+  sudo su - -c "$(pwd)/run-pengwin-setup.sh $*" ${TEST_USER}
 }
