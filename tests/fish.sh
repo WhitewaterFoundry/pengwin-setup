@@ -2,6 +2,8 @@
 
 source commons.sh
 
+declare TEST_USER
+
 function testMain() {
   # shellcheck disable=SC2155
 
@@ -15,7 +17,7 @@ function testMain() {
 
   command -v /usr/bin/fish
   assertEquals "FISH was not installed" "0" "$?"
-  #assertEquals "Fish is not the default shell" "/usr/bin/fish" "$(grep $USER </etc/passwd | cut -f 7 -d ":")"
+  assertEquals "Fish is not the default shell" "$(command -v fish)" "$(grep ${TEST_USER} </etc/passwd | cut -f 7 -d ":")"
 
 }
 
@@ -31,7 +33,7 @@ function testUninstall() {
 
   command -v /usr/bin/fish
   assertEquals "FISH was not uninstalled" "1" "$?"
-  #assertEquals "Bash is not the default shell" "/usr/bin/bash" "$(grep $USER </etc/passwd | cut -f 7 -d ":")"
+  assertEquals "Bash is not the default shell" "$(command -v bash)" "$(grep ${TEST_USER} </etc/passwd | cut -f 7 -d ":")"
 
 }
 
