@@ -52,7 +52,7 @@ function code_install() {
     fi
 
     export NON_INTERACTIVE=1
-    install_packages --allow-downgrades code${code_version} code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils
+    install_packages --allow-downgrades code${code_version} code-insiders libxss1 libasound2 libx11-xcb-dev mesa-utils libgbm1
     sudo tee "/etc/profile.d/code.sh" <<EOF
 #!/bin/bash
 export DONT_PROMPT_WSL_INSTALL=1
