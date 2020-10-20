@@ -53,6 +53,7 @@ elif (whiptail --title "PYTHON" --yesno "Would you like to download and install 
   sudo apt-get install build-essential python3.8 python3.8-distutils idle-python3.8 python3-venv -y
   curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
   poetry self update
+  poetry completions bash > /usr/share/bash-completion/completions/poetry.bash-completion
   cleantmp
 else
   echo "Skipping PYTHON"
