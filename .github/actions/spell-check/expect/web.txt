@@ -1,0 +1,11 @@
+http
+td
+www
+rapidtables
+WCAG
+freedesktop
+ycombinator
+leonerd
+fixterms
+uk
+appshellintegration
