@@ -10,6 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2.0.0
       with:
-        fetch-depth: 1
+        # Full git history being used get a proper list of changed files within `spell-checker`
+        fetch-depth: 0
     - uses: check-spelling/check-spelling@prerelease
     
