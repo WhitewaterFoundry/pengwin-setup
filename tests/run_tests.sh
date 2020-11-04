@@ -6,6 +6,7 @@ set -e
 
 ../pengwin-setup --noninteractive update
 
+run_test ./ansible.sh
 run_test ./fish.sh
 run_test ./x410.sh
 run_test ./rclocal.sh
