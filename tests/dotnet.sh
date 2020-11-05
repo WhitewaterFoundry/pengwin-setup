@@ -16,7 +16,7 @@ function testMain() {
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals ".NET Core was not installed" "1" "$(/usr/bin/dotnet --version | grep -c '3.1')"
+  assertEquals ".NET Core was not installed" "1" "$(run_command_as_testuser /usr/bin/dotnet --version | grep -c '3.1')"
 
   command -v /usr/bin/nuget
   assertEquals "NUGet was not installed" "0" "$?"
