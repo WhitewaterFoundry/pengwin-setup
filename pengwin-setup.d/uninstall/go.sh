@@ -16,7 +16,8 @@ function main() {
   echo "Removing PATH modifier..."
   sudo_rem_file "/etc/profile.d/go.sh"
 
-  # whiptail user go directory
+  echo "Also for fish..."
+  sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/go.fish"
 
 }
 

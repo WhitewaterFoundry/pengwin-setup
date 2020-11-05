@@ -46,3 +46,7 @@ function run_test() {
 function run_pengwinsetup() {
   sudo su - -c "$(pwd)/run-pengwin-setup.sh $*" ${TEST_USER}
 }
+
+function run_command_as_testuser() {
+  sudo su - -c "$*" ${TEST_USER}
+}

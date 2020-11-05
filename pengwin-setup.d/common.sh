@@ -37,12 +37,21 @@ function process_arguments() {
       export SKIP_CONFIMATIONS=1
       shift
       ;;
-    autoinstall)
+    autoinstall | install)
       echo "Automatically install without prompts or updates"
       export SKIP_UPDATES=1
       export NON_INTERACTIVE=1
       export SKIP_CONFIMATIONS=1
       export SKIP_STARTMENU=1
+      shift
+      ;;
+    uninstall | remove)
+      echo "Automatically uninstall without prompts or updates"
+      export SKIP_UPDATES=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      export SKIP_STARTMENU=1
+      CMD_MENU_OPTIONS+=("UNINSTALL")
       shift
       ;;
     startmenu)
