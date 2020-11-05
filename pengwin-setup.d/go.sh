@@ -11,6 +11,12 @@ if (confirm --title "GO" --yesno "Would you like to download and install the lat
   sudo tar -C /usr/local -xzf go*.tar.gz
   echo "Creating ~/go/ for your projects."
   mkdir "${HOME}/go"
+
+  echo "Creating ~/go/ default structure."
+  mkdir "${HOME}/go/src"
+  mkdir "${HOME}/go/bin"
+  mkdir "${HOME}/go/pkg"
+
   echo "Setting Go environment variables GOROOT, GOPATH, and adding Go to PATH with export."
 
   echo "Saving Go environment variables to /etc/profile.d/go.sh so they will persist."
