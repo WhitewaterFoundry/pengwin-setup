@@ -4,7 +4,7 @@ source commons.sh
 source mocks.sh
 
 function testGo() {
-  run_pengwinsetup autoinstall PROGRAMMING GO
+  run_pengwinsetup autoinstall PROGRAMMING GO --debug
 
   assertTrue "FILE PROFILE-GO" "[ -f /etc/profile.d/go.sh ]"
   assertTrue "FILE FISH-GO" "[ -f /etc/fish/conf.d/go.fish ]"
