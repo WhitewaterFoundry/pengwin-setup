@@ -4,7 +4,7 @@ source commons.sh
 
 set -e
 
-../pengwin-setup --noninteractive update
+run_test ./update_pengwin.sh
 
 run_test ./go.sh
 run_test ./ansible.sh
