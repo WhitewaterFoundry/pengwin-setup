@@ -6,14 +6,6 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-# shellcheck disable=SC2155
-dist="$(uname -m)"
-if [[ ${dist} != "x86_64" ]] ; then
-  echo "Skipping DOTNET not supported in ARM64"
-  exit 0
-fi
-unset dist
-
 if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
   createtmp
@@ -24,7 +16,7 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
 
   update_packages
 
-  install_packages dotnet-sdk-3.1
+  install_packages dotnet-sdk-5.0
   cleantmp
 
   if (confirm --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) ; then
