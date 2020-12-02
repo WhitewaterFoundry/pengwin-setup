@@ -215,8 +215,8 @@ elif [[ ${menu_choice} == "LTS" ]]; then
 
   echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
 
-  echo "deb https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+  echo "deb https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
 
   echo "Running 'apt-get update' for you..."
 
