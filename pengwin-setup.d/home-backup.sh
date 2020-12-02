@@ -13,7 +13,7 @@ BACKUP_IGNORE_FILE="${HOME}/.pengwinbackupignore"
 
 function backup() {
 
-  whiptail --title "Ignore Files" --msgbox "You can exclude files and folders from the home backup by putting their names in ${BACKUP_IGNORE_FILE}." 10 70
+  whiptail --title "Ignore Files" --msgbox "You can exclude files and folders from the home backup by putting their names in ${BACKUP_IGNORE_FILE}" 10 70
 
   if (whiptail --title "BACKUP" --yesno "Would you like to backup your directory ${HOME} to ${BACKUP_PATH_WIN} ?" 8 60) ; then
     echo "Making a backup of ${HOME}"
