@@ -14,22 +14,23 @@ function install_pyenv() {
 
     echo "inserting default scripts"
 
-    if [ -f "${HOME}"/.bashrc ]; then
+    if [[ -f "${HOME}"/.bashrc && $(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.bashrc) == 0 ]]; then
       echo "" >>"${HOME}"/.bashrc
       echo "export PATH=\"\${HOME}/.pyenv/bin:\${PATH}\"" >>"${HOME}"/.bashrc
       echo "eval \"\$(pyenv init -)\"" >>"${HOME}"/.bashrc
       echo "eval \"\$(pyenv virtualenv-init -)\"" >>"${HOME}"/.bashrc
     fi
 
-    if [ -f "${HOME}"/.zshrc ]; then
-      echo "" >>"${HOME}"/.bashrc
+    if [[ -f "${HOME}"/.zshrc && $(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.zshrc) == 0 ]]; then
+      echo "" >>"${HOME}"/.zshrc
       echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >>"${HOME}"/.zshrc
       echo "eval \"\$(pyenv init -)\"" >>"${HOME}"/.zshrc
       echo "eval \"\$(pyenv virtualenv-init -)\"" >>"${HOME}"/.zshrc
     fi
 
-    if [ -d "${HOME}"/.config/fish ]; then
-      echo "" >>"${HOME}"/.bashrc
+    # shellcheck disable=SC2002
+    if [[ -d "${HOME}"/.config/fish && $(cat "${HOME}"/.config/fish/config.fish 2>/dev/null | grep -c '^[^#]*\bPATH.*/.pyenv/bin') == 0 ]]; then
+      echo "" >>"${HOME}"/.config/fish/config.fish
       echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >>"${HOME}"/.config/fish/config.fish
       echo 'status --is-interactive; and pyenv init -| source' >>"${HOME}"/.config/fish/config.fish
       echo 'status --is-interactive; and pyenv virtualenv-init -| source' >>"${HOME}"/.config/fish/config.fish
@@ -39,7 +40,7 @@ function install_pyenv() {
     export PATH="${HOME}/.pyenv/bin:$PATH"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
-    pyenv install 3.9.1
+    pyenv install -s 3.9.1
     pyenv global 3.9.1
 
     touch "${HOME}"/.should-restart
@@ -101,15 +102,15 @@ function main() {
     return 1
   fi
 
-  if [[ ${menu_choice} == "PYENV" ]]; then
+  if [[ ${menu_choice} == *"PYENV"* ]]; then
     install_pyenv
   fi
 
-  if [[ ${menu_choice} == "PYTHONPIP" ]]; then
+  if [[ ${menu_choice} == *"PYTHONPIP"* ]]; then
     install_pythonpip
   fi
 
-  if [[ ${menu_choice} == "POETRY" ]]; then
+  if [[ ${menu_choice} == *"POETRY"* ]]; then
     install_poetry
   fi
 
