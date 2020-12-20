@@ -6,7 +6,15 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET Core SDK for Linux?" 8 75) ; then
+# shellcheck disable=SC2155
+dist="$(uname -m)"
+if [[ ${dist} != "x86_64" ]] ; then
+  echo "Skipping DOTNET not supported in ARM64"
+  exit 0
+fi
+unset dist
+
+if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
   createtmp
   curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
