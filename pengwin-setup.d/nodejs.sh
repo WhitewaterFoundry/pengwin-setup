@@ -119,7 +119,7 @@ EOF
   npm completion | sudo tee /etc/bash_completion.d/npm
 elif [[ ${menu_choice} == "NVM" ]]; then
   echo "Installing nvm, Node.js version manager"
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat ${HOME}/.bashrc | grep '^export NVM_DIR=')"
@@ -173,7 +173,7 @@ EOF
 elif [[ ${menu_choice} == "LATEST" ]]; then
   echo "Installing latest node.js version from NodeSource repository"
 
-  major_vers=14
+  major_vers=15
   nodesrc_url="https://deb.nodesource.com/setup_${major_vers}.x"
   #curl -sL "$nodesrc_url" -o repo-install.sh
   #sudo bash repo-install.sh
@@ -200,7 +200,7 @@ elif [[ ${menu_choice} == "LATEST" ]]; then
 elif [[ ${menu_choice} == "LTS" ]]; then
   echo "Installing LTS node.js version from NodeSource repository"
 
-  major_vers=12
+  major_vers=14
   nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
   #curl -sL "$nodesrc_url" -o repo-install.sh
   #sudo bash repo-install.sh
@@ -215,8 +215,8 @@ elif [[ ${menu_choice} == "LTS" ]]; then
 
   echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
 
-  echo "deb https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x buster main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+  echo "deb https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
 
   echo "Running 'apt-get update' for you..."
 

@@ -10,6 +10,7 @@ function main() {
   echo "Removing dbus configuration files..."
   sudo_rem_file "/etc/dbus-1/session.conf"
   sudo_rem_file "/usr/share/dbus-1/session.conf"
+  sudo_rem_file "/etc/profile.d/dbus.sh"
 
   remove_package "xclip" "gnome-themes-standard" "gtk2-engines-murrine" "dbus-x11"
 

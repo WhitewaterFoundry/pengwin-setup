@@ -6,6 +6,7 @@ set -e
 
 run_test ./update_pengwin.sh
 
+run_test ./pythonpi.sh
 run_test ./go.sh
 run_test ./ansible.sh
 run_test ./fish.sh

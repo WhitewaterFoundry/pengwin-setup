@@ -7,6 +7,7 @@ declare SetupDir
 
 function main() {
 
+  # shellcheck disable=SC2155
   local menu_choice=$(
 
     menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 17 95 11 \
@@ -18,10 +19,11 @@ function main() {
       "LATEX" "Install TexLive for LaTeX Support" off \
       "NIM" "Install Nim from official sources using choosenim" off \
       "NODEJS" "Install Node.js and npm" off \
-      "PYTHONPI" "Install Python 3.7 and download and install latest PyPi" off \
+      "PYTHONPI" "Install Python 3.9 and download and install latest PyPi" off \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
       "RUST" "Install latest version of Rust via rustup installer" off \
 
+  # shellcheck disable=SC2188
   3>&1 1>&2 2>&3)
 
   if [[ ${menu_choice} == "CANCELLED" ]] ; then
@@ -30,57 +32,57 @@ function main() {
 
   if [[ ${menu_choice} == *"C++"* ]] ; then
     echo "C++"
-    bash ${SetupDir}/cpp-vs-clion.sh "$@"
+    bash "${SetupDir}"/cpp-vs-clion.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"DOTNET"* ]] ; then
     echo "DOTNET"
-    bash ${SetupDir}/dotnet.sh "$@"
+    bash "${SetupDir}"/dotnet.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"GO"* ]] ; then
     echo "GO"
-    bash ${SetupDir}/go.sh "$@"
+    bash "${SetupDir}"/go.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"JAVA"* ]] ; then
     echo "JAVA"
-    bash ${SetupDir}/java.sh "$@"
+    bash "${SetupDir}"/java.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"JOOMLA"* ]] ; then
     echo "JOOMLA"
-    bash ${SetupDir}/joomla.sh "$@"
+    bash "${SetupDir}"/joomla.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"LATEX"* ]] ; then
     echo "LATEX"
-    bash ${SetupDir}/latex.sh "$@"
+    bash "${SetupDir}"/latex.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NIM"* ]] ; then
     echo "nim"
-    bash ${SetupDir}/nim.sh "$@"
+    bash "${SetupDir}"/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]] ; then
     echo "NODE"
-    bash ${SetupDir}/nodejs.sh "$@"
+    bash "${SetupDir}"/nodejs.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"PYTHONPI"* ]] ; then
     echo "PYTHON"
-    bash ${SetupDir}/pythonpi.sh "$@"
+    bash "${SetupDir}"/pythonpi.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"RUBY"* ]] ; then
     echo "RUBY"
-    bash ${SetupDir}/ruby.sh "$@"
+    bash "${SetupDir}"/ruby.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"RUST"* ]] ; then
     echo "RUST"
-    bash ${SetupDir}/rust.sh "$@"
+    bash "${SetupDir}"/rust.sh "$@"
   fi
 
 
