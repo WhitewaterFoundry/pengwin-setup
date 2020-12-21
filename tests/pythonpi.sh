@@ -3,6 +3,12 @@
 source commons.sh
 
 function testPyEnv() {
+  # shellcheck disable=SC2155
+  local dist="$(uname -m)"
+  if [[ ${dist} != "x86_64" ]] ; then
+    return
+  fi
+
   run_pengwinsetup autoinstall PROGRAMMING PYTHONPI PYENV
 
   for i in 'python3' 'make'; do
@@ -16,6 +22,11 @@ function testPyEnv() {
 }
 
 function testUninstallPyEnv() {
+  # shellcheck disable=SC2155
+  local dist="$(uname -m)"
+  if [[ ${dist} != "x86_64" ]] ; then
+    return
+  fi
 
   run_pengwinsetup uninstall PYENV
 
