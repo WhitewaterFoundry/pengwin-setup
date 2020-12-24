@@ -15,8 +15,11 @@ function main() {
   fi
 
   echo "Running Homebrew uninstall script"
-  whiptail --title "Homebrew" --msgbox "Please type 'y' when requested to by the Homebrew uninstaller" 8 85
-  if ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"; then
+
+  createtmp
+
+  wget https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh
+  if /bin/bash uninstall.sh --force; then
     echo "Successfully executed script"
   else
     if ! brew; then
@@ -28,8 +31,11 @@ function main() {
     fi
   fi
 
+  cleantmp
+
   echo "Removing PATH modification..."
   sudo_rem_file "/etc/profile.d/brew.sh"
+  sudo_rem_file "/etc/fish/conf.d/brew.fish"
 
   if [ $tmp_ruby -eq 0 ]; then
     echo "Ruby temporarily installed for uninstall script, removing..."
