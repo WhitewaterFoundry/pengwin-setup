@@ -29,6 +29,9 @@ function _pengwin_setup() { #  By convention, the function name
   SHELLS)
     mapfile -t COMPREPLY < <(compgen -W 'BASH-RL CSH FISH ZSH' -- "${cur}")
     ;;
+  TOOLS)
+    mapfile -t COMPREPLY < <(compgen -W 'HOMEBREW' -- "${cur}")
+    ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
     --quiet --noninteractive update upgrade autoinstall install uninstall remove startmenu \
