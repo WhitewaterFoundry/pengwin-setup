@@ -10,7 +10,7 @@ function testMain() {
     return
   fi
 
-  #run_pengwinsetup autoinstall GUI GUILIB
+  run_pengwinsetup autoinstall GUI GUILIB
  
   for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libqt5core5a' 'binutils' 'libnss3' 'libegl1-mesa' ; do
     package_installed $i    
@@ -69,7 +69,7 @@ function testUninstall() {
 
   run_pengwinsetup autoinstall UNINSTALL GUILIB
 
-  for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libqt5core5a' 'binutils' 'libnss3' 'libegl1-mesa' ; do
+  for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus-x11' ; do
     package_installed $i    
     assertFalse "package $i is not uninstalled" "$?"
   done
@@ -80,26 +80,8 @@ function testUninstall() {
   test -f /usr/lib/${dist}-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
   assertEquals "gtk2-engines-murrine was not uninstalled" "1" "$?"
 
-  command -v /usr/bin/dbus-daemon
-  assertEquals "dbus was not uninstalled" "1" "$?"
-
   command -v /usr/bin/dbus-launch
   assertEquals "dbus-x11 was not uninstalled" "1" "$?"
-
-  command -v /usr/bin/glxdemo
-  assertEquals "mesa-utils was not uninstalled" "1" "$?"
-
-  test -f /usr/lib/${dist}-linux-gnu/libQt5Core.so.5
-  assertEquals "libqt5core5a was not uninstalled" "1" "$?"
-
-  command -v /usr/bin/gold
-  assertEquals "binutils was not uninstalled" "1" "$?"
-
-  test -f /usr/lib/${dist}-linux-gnu/libnss3.so
-  assertEquals "libnss3 was not uninstalled" "1" "$?"
-
-  test -f /usr/share/bug/libegl1-mesa/control
-  assertEquals "libegl1-mesa was not uninstalled" "1" "$?"
 
   # Our created stuff
   if [[ ${WIN_CUR_VER} -gt 17063 ]]; then
