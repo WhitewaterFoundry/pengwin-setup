@@ -17,6 +17,9 @@ function _pengwin_setup() { #  By convention, the function name
   PROGRAMMING)
     mapfile -t COMPREPLY < <(compgen -W 'C++ DOTNET GO JAVA JOOMLA LATEX NIM NODEJS PYTHONPI RUBY RUST' -- "${cur}")
     ;;
+  PYTHONPI)
+    mapfile -t COMPREPLY < <(compgen -W 'PYENV PYTHONPIP POETRY' -- "${cur}")
+    ;;
   SERVICES)
     mapfile -t COMPREPLY < <(compgen -W 'RCLOCAL SSH' -- "${cur}")
     ;;
@@ -25,6 +28,9 @@ function _pengwin_setup() { #  By convention, the function name
     ;;
   SHELLS)
     mapfile -t COMPREPLY < <(compgen -W 'BASH-RL CSH FISH ZSH' -- "${cur}")
+    ;;
+  TOOLS)
+    mapfile -t COMPREPLY < <(compgen -W 'HOMEBREW' -- "${cur}")
     ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \

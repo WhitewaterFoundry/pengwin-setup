@@ -231,4 +231,16 @@ function upgrade_packages() {
   sudo apt-get upgrade -y -q "$@"
 }
 
+function add_fish_support() {
+  echo "Also for fish."
+  sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
+
+  sudo tee "${__fish_sysconf_dir}/$1.fish" <<EOF
+#!/bin/fish
+
+bass source /etc/profile.d/$1.sh
+
+EOF
+}
+
 setup_env "$@"

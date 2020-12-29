@@ -42,7 +42,7 @@ function main() {
   unset -v '_pyenv_virtualenv_hook'
 
   echo "Showing user shell-restart warning"
-  whiptail --title "pyenv" --msgbox "Please restart your shell, or 'pyenv not found' will continue to be shown with every command issued" 8 85
+  message --title "pyenv" --msgbox "Please restart your shell, or 'pyenv not found' will continue to be shown with every command issued" 8 85
 
 }
 

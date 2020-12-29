@@ -6,6 +6,7 @@ set -e
 
 run_test ./update_pengwin.sh
 
+run_test ./pythonpi.sh
 run_test ./go.sh
 run_test ./ansible.sh
 run_test ./fish.sh
@@ -15,4 +16,5 @@ run_test ./cpp-vs-clion_test.sh
 run_test ./hidpi.sh
 run_test ./dotnet.sh
 run_test ./guilib.sh
+run_test ./brew.sh
 

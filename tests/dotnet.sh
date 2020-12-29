@@ -3,6 +3,12 @@
 source commons.sh
 
 function testMain() {
+  # shellcheck disable=SC2155
+  local dist="$(uname -m)"
+  if [[ ${dist} != "x86_64" ]] ; then
+    return
+  fi
+
   run_pengwinsetup autoinstall PROGRAMMING DOTNET
 
   for i in 'dotnet-sdk-5.0' 'nuget'; do
@@ -17,6 +23,12 @@ function testMain() {
 }
 
 function testUninstall() {
+  # shellcheck disable=SC2155
+  local dist="$(uname -m)"
+  if [[ ${dist} != "x86_64" ]] ; then
+    return
+  fi
+
   run_pengwinsetup autoinstall UNINSTALL DOTNET
 
   for i in 'dotnet-sdk-5.0' 'nuget'; do
