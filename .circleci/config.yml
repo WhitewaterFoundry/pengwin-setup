@@ -125,7 +125,7 @@ workflows:
             branches:
               only: master
           requires:
-            - buildtest
+            - build
   deploydevbranch:
     jobs:
       - build:
@@ -137,4 +137,4 @@ workflows:
             branches:
               only: development
           requires:
-            - buildtest
+            - build
