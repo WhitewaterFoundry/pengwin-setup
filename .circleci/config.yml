@@ -124,6 +124,8 @@ workflows:
           filters:
             branches:
               only: master
+          requires:
+            - test
       - test:
           filters:
             branches:
@@ -140,6 +142,8 @@ workflows:
           filters:
             branches:
               only: development
+          requires:
+            - test
       - test:
           filters:
             branches:
