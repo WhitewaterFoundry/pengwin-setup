@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  buildtest:
+  build:
     docker:
       - image: debian:bullseye
     environment:
@@ -31,10 +31,16 @@ jobs:
       - persist_to_workspace:
           root: /tmp/pkgs
           paths: .
+  test:
+    docker:
+      - image: debian:bullseye
+    steps:
+      - checkout
       - run:
           name: Install pengwin-base
           command: |
             # Install the pengwin image base packages
+            apt-get -y -q update
             apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
 
             export os=debian
@@ -95,7 +101,13 @@ workflows:
   version: 2
   testdebbuild:
     jobs:
-      - buildtest:
+      - build:
+          filters:
+            branches:
+              ignore: 
+                - development
+                - master
+      - test:
           filters:
             branches:
               ignore: 
@@ -104,7 +116,7 @@ workflows:
 
   deploymasterbranch:
     jobs:
-      - buildtest:
+      - build:
           filters:
             branches:
               only: master
@@ -116,7 +128,7 @@ workflows:
             - buildtest
   deploydevbranch:
     jobs:
-      - buildtest:
+      - build:
           filters:
             branches:
               only: development
