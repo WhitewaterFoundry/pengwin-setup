@@ -124,8 +124,6 @@ workflows:
           filters:
             branches:
               only: master
-          requires:
-            - test
       - test:
           filters:
             branches:
@@ -135,6 +133,7 @@ workflows:
             branches:
               only: master
           requires:
+            - test
             - build
   deploydevbranch:
     jobs:
@@ -142,8 +141,6 @@ workflows:
           filters:
             branches:
               only: development
-          requires:
-            - test
       - test:
           filters:
             branches:
@@ -153,4 +150,5 @@ workflows:
             branches:
               only: development
           requires:
+            - test
             - build
