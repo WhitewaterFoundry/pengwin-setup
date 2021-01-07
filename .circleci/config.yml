@@ -37,7 +37,7 @@ jobs:
   test:
     docker:
       - image: debian:bullseye
-    parallelism: 4
+    parallelism: 3
     steps:
       - checkout
       - run:
