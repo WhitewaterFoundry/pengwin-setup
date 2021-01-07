@@ -31,9 +31,13 @@ jobs:
       - persist_to_workspace:
           root: /tmp/pkgs
           paths: .
+      - store_artifacts:
+          name: Store the package as an artifact
+          path: /tmp/pkgs          
   test:
     docker:
       - image: debian:bullseye
+    parallelism: 4
     steps:
       - checkout
       - run:
