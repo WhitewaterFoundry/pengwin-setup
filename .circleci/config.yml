@@ -120,6 +120,10 @@ workflows:
           filters:
             branches:
               only: master
+      - test:
+          filters:
+            branches:
+              only: master
       - deploymasterdeb:
           filters:
             branches:
@@ -129,6 +133,10 @@ workflows:
   deploydevbranch:
     jobs:
       - build:
+          filters:
+            branches:
+              only: development
+      - test:
           filters:
             branches:
               only: development
