@@ -77,7 +77,7 @@ function fish_install() {
   createtmp
   install_packages fish
 
-  curl -L https://get.oh-my.fish > install
+  curl -L https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install > install
   fish install --path=~/.local/share/omf --config=~/.config/omf --yes --noninteractive
 
   # Change the default theme for one more friendly with Windows console default font
@@ -87,6 +87,8 @@ function fish_install() {
   fish -c "omf install bass"
 
   cleantmp
+
+  add_fish_support 'update-motd'
 
   if (confirm --title "fish" --yesno "Would you like to set fish as the default shell?" 8 55); then
     sudo chsh -s "$(command -v fish)" "${USER}"
