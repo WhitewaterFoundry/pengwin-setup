@@ -19,8 +19,8 @@ function main() {
     rm -rf "$HOME/.gem"
 
     echo "Offering nodejs uninstall"
-    if (whiptail --title "rbenv" --yesno "It seems Ruby on RAILS was previously installed, for which nodejs would have been installed. Would you like to uninstall this too?" 8 85); then
-      bash $(dirname "$0")/nodejs.sh
+    if (confirm --title "rbenv" --yesno "It seems Ruby on RAILS was previously installed, for which nodejs would have been installed. Would you like to uninstall this too?" 8 85); then
+      bash "$(dirname "$0")"/nodejs.sh
     else
       echo "... user cancelled"
     fi
