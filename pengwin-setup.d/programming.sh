@@ -15,6 +15,7 @@ function main() {
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
       "JAVA" "Install the SDKMan to manage Java SDKs" off \
+      "JETBRAINS" "Install required support to jetbrains tools" off \
       "JOOMLA" "Install development support for Joomla" off \
       "LATEX" "Install TexLive for LaTeX Support" off \
       "NIM" "Install Nim from official sources using choosenim" off \
@@ -84,7 +85,10 @@ function main() {
     echo "RUST"
     bash "${SetupDir}"/rust.sh "$@"
   fi
-
+  if [[ ${menu_choice} == *"JETBRAINS"* ]] ; then
+    echo "JETBRAINS"
+    bash "${SetupDir}"/jetbrains_support.sh "$@"
+  fi
 
 }
 
