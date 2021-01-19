@@ -47,7 +47,8 @@ EOF
 #!/bin/bash
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+# fixed GH#308
+if [[ "$(df /proc | grep proc)x" == "x" ]]; then
 
   sudo ${mountProc}
 fi
