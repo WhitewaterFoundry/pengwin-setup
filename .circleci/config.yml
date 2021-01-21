@@ -1,5 +1,7 @@
-version: 2
+version: 2.1
 
+orbs:
+  shellcheck: circleci/shellcheck@2.2.2
 jobs:
   build:
     docker:
@@ -137,6 +139,8 @@ workflows:
             - build
   deploydevbranch:
     jobs:
+      - shellcheck/check:
+          dir: ./pengwin-setup.d
       - build:
           filters:
             branches:
