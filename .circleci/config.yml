@@ -107,6 +107,9 @@ workflows:
   version: 2
   testdebbuild:
     jobs:
+      - shellcheck/check:
+          severity: error
+          
       - build:
           filters:
             branches:
@@ -122,6 +125,9 @@ workflows:
 
   deploymasterbranch:
     jobs:
+      - shellcheck/check:
+          severity: error
+          
       - build:
           filters:
             branches:
@@ -140,8 +146,8 @@ workflows:
   deploydevbranch:
     jobs:
       - shellcheck/check:
-          dir: ./pengwin-setup.d
-          severity: warning
+          severity: error
+          
       - build:
           filters:
             branches:
