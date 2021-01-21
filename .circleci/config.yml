@@ -141,6 +141,7 @@ workflows:
     jobs:
       - shellcheck/check:
           dir: ./pengwin-setup.d
+          severity: error
       - build:
           filters:
             branches:
