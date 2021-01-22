@@ -1,0 +1,12 @@
+#! /bin/bash
+
+source "$(dirname "$0")/../mocks.sh" "$@"
+
+case "${@}" in
+  'APPDATA')
+    echo "${HOME}/winhome/AppData/Roaming"
+    ;;
+  *)
+    echo 'Invalid property'
+    ;;
+esac
