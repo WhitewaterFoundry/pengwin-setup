@@ -66,6 +66,7 @@ function main() {
 
     if [[ ${nli_choice} == "CANCELLED" ]]; then
       echo "skip NLI"
+      return 1
     fi
   fi
 
