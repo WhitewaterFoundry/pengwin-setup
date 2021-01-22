@@ -119,6 +119,10 @@ function installAndSetShell() {
 
   echo "Selected:" "${menu_choice}"
 
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
+    return 1
+  fi
+
   if [[ $menu_choice == *"ZSH"* ]]; then
     echo "Installing zsh..."
     install_packages zsh
