@@ -12,6 +12,7 @@ function main() {
   local menu_choice=$(
 
     menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 9 \
+      "DESKTOP" "Install Desktops enviroments" off \
       "NLI" "Install fcitx or iBus for improved non-Latin input support" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
       "HIDPI" "Configure Qt and GTK for HiDPI displays" off \
@@ -41,6 +42,20 @@ function main() {
   if [[ ${menu_choice} == *"GUILIB"* ]]; then
     echo "GUILIB"
     bash "${SetupDir}"/guilib.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"DESKTOP"* ]]; then
+    local desktop_exit_status
+    echo "DESKTOP"
+    bash "${SetupDir}"/desktop.sh "$@"
+    desktop_exit_status=$?
+
+    if [[ ${desktop_exit_status} != 0 ]]; then
+      local gui_exit_status
+      main "$@"
+      gui_exit_status=$?
+      return $gui_exit_status
+    fi
   fi
 
   if [[ ${menu_choice} == *"NLI"* ]]; then
