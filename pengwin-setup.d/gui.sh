@@ -81,7 +81,10 @@ function main() {
 
     if [[ ${nli_choice} == "CANCELLED" ]]; then
       echo "skip NLI"
-      return 1
+      local NLI_exit_status
+      main "$@"
+      NLI_exit_status=$?
+      return $NLI_exit_status
     fi
   fi
 
