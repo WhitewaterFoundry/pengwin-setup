@@ -66,6 +66,25 @@ EOF
   else
     echo "Skipping oh-my-zsh"
   fi
+  
+  if (confirm --title "zsh" --yesno "Would you like to download and install prezto? This is a framework for configuring your zsh installation" 8 95); then
+    # Backup zshrc if exists
+    if [[ -f "${HOME}/.zshrc" ]]; then
+      mv "${HOME}/.zshrc" "${HOME}/.zshrc.back"
+    fi
+
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/*; do
+      # Check if file ends in .md
+      [[ $rcfile =~ .md$ ]] && continue
+      # Create symbolic link in home directory
+      ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.$(basename $rcfile)"
+    done
+
+  else
+    echo "Skipping prezto"
+  fi
 
   if (confirm --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
     sudo chsh -s "$(command -v zsh)" "${USER}"
