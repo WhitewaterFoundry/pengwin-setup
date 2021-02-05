@@ -5,6 +5,9 @@ source "$(dirname "$0")/common.sh" "$@"
 declare SetupDir
 
 function install_jetbrains_support() {
+
+  install_packages rsync zip
+  
   APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
   JETBRAINS_PATH="$APPDATA_PATH/JetBrains"
   if [[ -d "$JETBRAINS_PATH" ]]; then
