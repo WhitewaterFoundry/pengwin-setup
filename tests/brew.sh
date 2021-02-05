@@ -9,7 +9,7 @@ function testMain() {
     return
   fi
 
-  run_pengwinsetup install TOOLS HOMEBREW
+  run_pengwinsetup install TOOLS HOMEBREW --debug
 
   assertTrue "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
 
