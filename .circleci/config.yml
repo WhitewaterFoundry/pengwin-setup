@@ -6,6 +6,7 @@ jobs:
   build:
     docker:
       - image: debian:bullseye
+    resource_class: small
     environment:
       DEBEMAIL="contact@whitewaterfoundry.com"
       DEBFULLNAME="Whitewater Foundry, Ltd. Co."
@@ -39,6 +40,7 @@ jobs:
   test:
     docker:
       - image: debian:bullseye
+    resource_class: small
     parallelism: 3
     steps:
       - checkout
@@ -76,6 +78,7 @@ jobs:
   deploymasterdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
@@ -91,6 +94,7 @@ jobs:
   deploydevdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
