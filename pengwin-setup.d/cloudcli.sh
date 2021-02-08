@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 # Declare globals
@@ -44,7 +44,7 @@ function install_awscli() {
     fi
 
     createtmp
-    sudo apt-get -y install unzip python3-distutils
+    sudo apt-get -y install unzip python3-distutils python3-venv
     wget -O awscli-bundle.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
     unzip awscli-bundle.zip
 
