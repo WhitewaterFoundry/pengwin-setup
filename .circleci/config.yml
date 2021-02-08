@@ -1,8 +1,17 @@
 version: 2.1
 
-orbs:
-  shellcheck: circleci/shellcheck@2.2.2
 jobs:
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine:stable
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style || echo "Shellcheck has some warnings"
   build:
     docker:
       - image: debian:bullseye
@@ -111,8 +120,7 @@ workflows:
   version: 2
   testdebbuild:
     jobs:
-      - shellcheck/check:
-          severity: error
+      - shellcheck
           
       - build:
           filters:
@@ -129,8 +137,7 @@ workflows:
 
   deploymasterbranch:
     jobs:
-      - shellcheck/check:
-          severity: error
+      - shellcheck
           
       - build:
           filters:
@@ -149,8 +156,7 @@ workflows:
             - build
   deploydevbranch:
     jobs:
-      - shellcheck/check:
-          severity: error
+      - shellcheck
           
       - build:
           filters:
