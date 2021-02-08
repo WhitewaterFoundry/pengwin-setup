@@ -43,17 +43,18 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${startCassandra}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-cassandra
 
     local profile_mountproc="/etc/profile.d/mount-proc.sh"
-    sudo tee "${profile_mountproc}" << EOF
+    sudo tee "${profile_mountproc}" << 'EOF'
 #!/bin/bash
 
 # Check if we have Windows Path
 # fixed GH#308
-if [[ "$(df /proc | grep proc)x" == "x" ]]; then
-
-  sudo ${mountProc}
+if [[ "$(df /proc | grep proc | cut -c47-51)" != "/proc" ]]; then
+  sudo /usr/bin/mount-proc
 fi
 
 EOF
+
+    sudo chmod 700 "${profile_mountproc}"
 
     sudo "${mountProc}"
     sudo apt-get -y -q install cassandra
