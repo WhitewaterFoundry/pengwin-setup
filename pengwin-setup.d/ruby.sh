@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -34,6 +34,8 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   echo "Configuring ruby-build"
   # shellcheck disable=SC2016
   echo 'export PATH="${HOME}/.rbenv/plugins/ruby-build/bin:${PATH}"' | sudo tee -a "${conf_path}"
+
+  # shellcheck disable=SC1090
   source "${conf_path}"
 
   #Copy configuration to  fish
@@ -61,7 +63,7 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   unset conf_path
   unset conf_path_fish
   cleantmp
-  
+
   touch "${HOME}"/.should-restart
 else
   echo "Skipping RUBY"

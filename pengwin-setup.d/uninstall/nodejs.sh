@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+# shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 nodesource_key='9FD3 B784 BC1C 6FC3 1A8A  0A1C 1655 A0AB 6857 6280'

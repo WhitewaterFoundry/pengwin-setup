@@ -10,6 +10,7 @@ if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage a
 
   curl -s "https://get.sdkman.io" | bash
 
+  # shellcheck disable=SC1090
   source "${HOME}/.sdkman/bin/sdkman-init.sh"
 
   sdk version

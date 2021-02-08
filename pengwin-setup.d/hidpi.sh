@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 if (confirm --title "HiDPI" --yesno "Would you like to configure Qt and GDK for HiDPI displays?" 8 85) then
@@ -21,12 +21,12 @@ fi
 
 EOF
 
-  
+
   message --title "HiDPI" --msgbox "HiDPI has been adjusted to $(echo "${scale_factor} * 100 / 1" | bc)%. If you change your resolution run this option again to update your Linux applications." 10 80
-  
+
   unset scale_factor
   touch "${HOME}"/.should-restart
-  
+
 else
   echo "Skipping HiDPI"
 fi
