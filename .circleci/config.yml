@@ -4,6 +4,7 @@ jobs:
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine:stable
+    resource_class: small
     steps:
       - checkout
       - run:
