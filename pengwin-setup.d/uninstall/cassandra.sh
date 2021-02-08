@@ -16,6 +16,9 @@ function main() {
   echo "Removing Cassandra-specific changes to /etc/profile"
   sudo_clean_file "/etc/profile" "$profile_rgx"
 
+  echo "Removing Cassandra-specific changes to /etc/profile.d"
+  sudo_rem_file "/etc/profile.d/mount-proc.sh"
+
   echo "Unlinking Cassandra from user directory"
   if [[ -d "$wHome/cassandra" ]]; then
     sudo unlink "/etc/cassandra"

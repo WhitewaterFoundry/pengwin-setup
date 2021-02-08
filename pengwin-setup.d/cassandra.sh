@@ -44,11 +44,9 @@ EOF
 
     local profile_mountproc="/etc/profile.d/mount-proc.sh"
     sudo tee "${profile_mountproc}" << 'EOF'
-#!/bin/bash
+#!/bin/sh
 
-# Check if we have Windows Path
-# fixed GH#308
-if [[ "$(df /proc | grep proc | cut -c47-51)" != "/proc" ]]; then
+if [ "$(df /proc | grep proc | cut -c47-51)" != "/proc" ]; then
   sudo /usr/bin/mount-proc
 fi
 
