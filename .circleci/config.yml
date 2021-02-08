@@ -12,7 +12,7 @@ jobs:
           command: |
             find . -type f -name '*.sh' | wc -l
             find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall"
-            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style || echo "Shellcheck has some warnings" --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall"
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall" || echo "Shellcheck has some warnings" 
   build:
     docker:
       - image: debian:bullseye
