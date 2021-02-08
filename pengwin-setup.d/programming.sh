@@ -87,7 +87,7 @@ function main() {
   fi
   if [[ ${menu_choice} == *"JETBRAINS"* ]] ; then
     echo "JETBRAINS"
-    bash "${SetupDir}"/jetbrains_support.sh "$@"
+    bash "${SetupDir}"/jetbrains-support.sh "$@"
   fi
 
 }

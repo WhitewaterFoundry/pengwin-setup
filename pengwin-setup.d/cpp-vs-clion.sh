@@ -51,7 +51,7 @@ function main {
       done
     fi
 
-    bash "${SetupDir}"/jetbrains_support.sh --yes "$@"
+    bash "${SetupDir}"/jetbrains-support.sh --yes "$@"
 
     cleantmp
   else

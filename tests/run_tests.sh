@@ -15,7 +15,7 @@ if [ -z ${CIRCLE_NODE_TOTAL} ]; then
   run_test ./x410.sh
   run_test ./rclocal.sh
   run_test ./cpp-vs-clion_test.sh
-  run_test ./jetbrains_support.sh
+  run_test ./jetbrains-support.sh
   run_test ./hidpi.sh
   run_test ./dotnet.sh
   run_test ./brew.sh
@@ -34,5 +34,5 @@ elif [[ ${CIRCLE_NODE_INDEX} == 2 ]]; then
   run_test ./brew.sh
   run_test ./go.sh
   run_test ./ansible.sh
-  run_test ./jetbrains_support.sh
+  run_test ./jetbrains-support.sh
 fi
