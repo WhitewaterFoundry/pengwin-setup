@@ -10,7 +10,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 17 95 11 \
+    menu --title "Programming Menu" --checklist --separate-output "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 20 95 12 \
       "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " off \
       "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
       "GO" "Install the latest Go from Google" off \
