@@ -56,6 +56,8 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   echo "Rehashing rbenv"
   rbenv rehash
 
+  bash "${SetupDir}"/jetbrains_support.sh --yes "$@"
+
   unset conf_path
   unset conf_path_fish
   cleantmp
