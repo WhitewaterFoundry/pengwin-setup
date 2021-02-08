@@ -6,7 +6,7 @@ set -e
 
 run_test ./update_pengwin.sh
 
-if [[ -z ${CIRCLE_NODE_TOTAL} ]; then
+if [ -z ${CIRCLE_NODE_TOTAL} ]; then
 
   run_test ./pythonpi.sh
   run_test ./go.sh
