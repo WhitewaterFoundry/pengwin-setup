@@ -6,9 +6,6 @@ function testMain() {
   declare WIN_CUR_VER
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
-  if [[ ${dist} != "x86_64" ]] ; then
-    return
-  fi
 
   run_pengwinsetup autoinstall GUI GUILIB
  
@@ -63,9 +60,6 @@ function testUninstall() {
   declare WIN_CUR_VER
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
-  if [[ ${dist} != "x86_64" ]] ; then
-    return
-  fi
 
   run_pengwinsetup autoinstall UNINSTALL GUILIB
 

@@ -18,7 +18,7 @@ function testMain() {
   command -v /usr/bin/fish
   assertEquals "FISH was not installed" "0" "$?"
   assertEquals "Fish is not the default shell" "$(command -v fish)" "$(grep ${TEST_USER} </etc/passwd | cut -f 7 -d ":")"
-
+  assertTrue "FILE update-motd.fish" "[ -f /etc/fish/conf.d/update-motd.fish ]"
 }
 
 function testUninstall() {
@@ -34,6 +34,7 @@ function testUninstall() {
   command -v /usr/bin/fish
   assertEquals "FISH was not uninstalled" "1" "$?"
   assertEquals "Bash is not the default shell" "$(command -v bash)" "$(grep ${TEST_USER} </etc/passwd | cut -f 7 -d ":")"
+  assertFalse "FILE update-motd.fish" "[ -f /etc/fish/conf.d/update-motd.fish ]"
 
 }
 
