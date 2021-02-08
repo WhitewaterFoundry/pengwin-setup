@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 declare SetupDir
@@ -7,21 +8,26 @@ declare SetupDir
 function install_jetbrains_support() {
 
   install_packages rsync zip
-  
-  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
-  JETBRAINS_PATH="$APPDATA_PATH/JetBrains"
-  if [[ -d "$JETBRAINS_PATH" ]]; then
-    OPTIONS_FOLDER_LIST=$JETBRAINS_PATH/"*/options"
-    for OPTIONS_FOLDER in $OPTIONS_FOLDER_LIST; do
-      if [[ -f "$OPTIONS_FOLDER/wsl.distributions.xml" ]]; then
-        reg_exp='\(<microsoft-id>\)Pengwin\(</microsoft-id>\)'
-        for line in $OPTIONS_FOLDER/"wsl.distributions.xml"; do
+
+  # shellcheck disable=SC2155
+  local appdata_path="$(wslpath -u "$(wslvar APPDATA)")"
+  local jetbrains_path="${appdata_path}/JetBrains"
+
+  if [[ -d "${jetbrains_path}" ]]; then
+    local options_folder_list=${jetbrains_path}/"*/options"
+
+    for options_folder in ${options_folder_list}; do
+
+      if [[ -f "${options_folder}/wsl.distributions.xml" ]]; then
+        local reg_exp='\(<microsoft-id>\)Pengwin\(</microsoft-id>\)'
+
+        for line in ${options_folder}/"wsl.distributions.xml"; do
           if (grep -q ${reg_exp} <"${line}"); then
             sed -i "s#${reg_exp}#\1WLinux\2#" "${line}"
           fi
         done
       else
-        cp "$SetupDir/template-wsl.distributions.xml" "$OPTIONS_FOLDER/wsl.distributions.xml"
+        cp "${SetupDir}/template-wsl.distributions.xml" "${options_folder}/wsl.distributions.xml"
       fi
     done
   fi
