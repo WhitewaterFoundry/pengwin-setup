@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+# shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 kubectl_key1='D0BC 747F D8CA F711 7500  D6FA 3746 C208 A731 7B0F'

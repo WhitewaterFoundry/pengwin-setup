@@ -203,13 +203,24 @@ function setup_env() {
   fi
 
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
+  export wHomeWinPath
+  
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
+  export wHome
+  
   readonly CANCELLED="CANCELLED"
+  export CANCELLED
+  
   readonly WIN_CUR_VER="$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | grep -E -o '([0-9]{5})' | cut -d ' ' -f 2)"
+  export WIN_CUR_VER
+  
 
   SetupDir="/usr/local/pengwin-setup.d"
-
+  export SetupDir
+  
   readonly GOVERSION="1.15.2"
+  export GOVERSION
+  
 }
 
 function install_packages() {

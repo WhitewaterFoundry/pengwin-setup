@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -66,6 +66,7 @@ function main() {
 
     if [[ ${nli_choice} == "CANCELLED" ]]; then
       echo "skip NLI"
+      return 1
     fi
   fi
 

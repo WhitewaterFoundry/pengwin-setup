@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 declare SKIP_CONFIMATIONS
 
 if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
 
-  if (whiptail --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
+  if (confirm --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
     echo "Installing NODE"
   else
     echo "Skipping NODE"
@@ -24,6 +24,7 @@ menu_choice=$(
     "LATEST" "Install latest version via APT package manager" off \
     "LTS" "Install LTS version via APT package manager" off
 
+  # shellcheck disable=SC2188
   3>&1 1>&2 2>&3
 )
 
@@ -72,7 +73,7 @@ EOF
   eval "$(cat "${NPM_WIN_PROFILE}")"
 fi
 
-if [[ ${menu_choice} == "N" ]]; then
+if [[ ${menu_choice} == *"N"* ]]; then
   echo "Ensuring we have build-essential installed"
   sudo apt-get -y -q install build-essential
 
@@ -117,7 +118,7 @@ EOF
   # Add npm to bash completion
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
-elif [[ ${menu_choice} == "NVM" ]]; then
+elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 
@@ -170,7 +171,7 @@ EOF
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
-elif [[ ${menu_choice} == "LATEST" ]]; then
+elif [[ ${menu_choice} == *"LATEST"* ]]; then
   echo "Installing latest node.js version from NodeSource repository"
 
   major_vers=15
@@ -197,7 +198,7 @@ elif [[ ${menu_choice} == "LATEST" ]]; then
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   sudo apt-get install -y -q nodejs="${version}"
-elif [[ ${menu_choice} == "LTS" ]]; then
+elif [[ ${menu_choice} == *"LTS"* ]]; then
   echo "Installing LTS node.js version from NodeSource repository"
 
   major_vers=14
@@ -223,16 +224,16 @@ elif [[ ${menu_choice} == "LTS" ]]; then
   update_packages
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install -y -q nodejs="${version}"
+  install_packages nodejs="${version}"
 fi
 cleantmp
 
-if (whiptail --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
+if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   update_packages
-  sudo apt-get install yarn -y --no-install-recommends
+  install_packages yarn --no-install-recommends
 else
   echo "Skipping YARN"
 fi

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1090
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
+
 declare wHome
 declare wHomeWinPath
 declare USER
@@ -12,15 +13,15 @@ function main() {
 
     echo "Installing CASSANDRA"
     createtmp
-    curl https://dist.apache.org/repos/dist/release/cassandra/KEYS | gpg --dearmor > cassandra.gpg
+    curl https://dist.apache.org/repos/dist/release/cassandra/KEYS | gpg --dearmor >cassandra.gpg
     sudo cp cassandra.gpg /etc/apt/trusted.gpg.d/cassandra.gpg
     sudo chmod 644 /etc/apt/trusted.gpg.d/cassandra.gpg
     sudo bash -c "echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' > /etc/apt/sources.list.d/cassandra.list"
     sudo apt-get -y -q update
 
     local mountProc="/usr/bin/mount-proc"
-    sudo tee "${mountProc}" << EOF
-#!/bin/bash
+    sudo tee "${mountProc}" <<EOF
+#!/bin/sh
 
 mount -t proc proc /proc
 
@@ -31,8 +32,8 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${mountProc}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/mount-proc
 
     local startCassandra="/usr/bin/start-cassandra"
-    sudo tee "${startCassandra}" << EOF
-#!/bin/bash
+    sudo tee "${startCassandra}" <<EOF
+#!/bin/sh
 
 sudo -Su cassandra /usr/sbin/cassandra -f
 
@@ -43,23 +44,23 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${startCassandra}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-cassandra
 
     local profile_mountproc="/etc/profile.d/mount-proc.sh"
-    sudo tee "${profile_mountproc}" << EOF
-#!/bin/bash
+    sudo tee "${profile_mountproc}" <<'EOF'
+#!/bin/sh
 
-# Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
-
-  sudo ${mountProc}
+if [ "$(df /proc | grep proc | cut -c47-51)" != "/proc" ]; then
+  sudo /usr/bin/mount-proc
 fi
 
 EOF
 
+    sudo chmod 700 "${profile_mountproc}"
+
     sudo "${mountProc}"
     sudo apt-get -y -q install cassandra
 
-    whiptail --title "CASSANDRA" --msgbox "Cassandra must be run as user cassandra, $ sudo -u cassandra /usr/sbin/cassandra -f " 8 90
+    message --title "CASSANDRA" --msgbox "Cassandra must be run as user cassandra, $ sudo -u cassandra /usr/sbin/cassandra -f " 8 90
 
-    if (whiptail --title "CASSANDRA" --yesno "Would you like to store Cassandra configuration and logs in your Windows user home folder?" 8 95) ; then
+    if (confirm --title "CASSANDRA" --yesno "Would you like to store Cassandra configuration and logs in your Windows user home folder?" 8 95); then
 
       if [[ -d "${wHome}/cassandra" ]]; then
         echo "Backing up existing Cassandra directony"
@@ -84,7 +85,7 @@ EOF
       sudo chown -R cassandra:cassandra /var/log/cassandra/
     fi
 
-    if (whiptail --title "CASSANDRA" --yesno "Would you like to create .bat files to run Cassandra in your Windows user home folder?" 8 102) ; then
+    if (confirm --title "CASSANDRA" --yesno "Would you like to create .bat files to run Cassandra in your Windows user home folder?" 8 102); then
 
       sudo mkdir "${wHome}/cassandra/" # in case user opted to keep config on WSL
 
@@ -94,7 +95,7 @@ EOF
       local phrase3=" sudo ${startCassandra}"
       local write1="${phrase1}${phrase2}"
       local write2="${phrase1}${phrase3}"
-      cat << EOF > autorun.bat
+      cat <<EOF >autorun.bat
 @echo off
 ${write1}"
 ${write2}"
@@ -104,8 +105,9 @@ EOF
       echo "Creating installservice.bat file on Windows Desktop"
       phrase1='sc create NewService binpath= '
       phrase2='\cassandra\autorun.bat type= share start= auto displayname= Cassandra'
-      write="$phrase1${wHomeWinPath}$phrase2"
-      sudo cat << EOF > installservice.bat
+      local write="$phrase1${wHomeWinPath}$phrase2"
+
+      cat <<EOF >installservice.bat
 @echo off
 ${write}
 EOF

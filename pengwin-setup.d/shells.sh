@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -118,6 +118,10 @@ function installAndSetShell() {
   )
 
   echo "Selected:" "${menu_choice}"
+
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
+    return 1
+  fi
 
   if [[ $menu_choice == *"ZSH"* ]]; then
     echo "Installing zsh..."

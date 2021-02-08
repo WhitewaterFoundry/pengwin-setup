@@ -51,17 +51,7 @@ function main {
       done
     fi
 
-    #Apply the fix in newer paths
-    success=0
-    cd "$(wslpath -u "$(wslvar APPDATA)")" || success=1
-    if [[ ${success} ]] ; then
-      local reg_exp='\(<microsoft-id>\)Pengwin\(</microsoft-id>\)'
-      for l in JetBrains/*/options/wsl.distributions.xml; do
-        if (grep -q ${reg_exp} <"${l}") ; then
-          sed -i "s#${reg_exp}#\1WLinux\2#" "${l}"
-        fi
-      done
-    fi
+    bash "${SetupDir}"/jetbrains-support.sh --yes "$@"
 
     cleantmp
   else
