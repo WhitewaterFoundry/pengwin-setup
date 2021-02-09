@@ -11,15 +11,15 @@ jobs:
           name: Check Scripts
           command: |
             find . -type f -name '*.sh' | wc -l
-            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall"
-            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall" || echo "Shellcheck has some warnings" 
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests"
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests" || echo "Shellcheck has some warnings"
   build:
     docker:
       - image: debian:bullseye
     resource_class: small
     environment:
-      DEBEMAIL="contact@whitewaterfoundry.com"
-      DEBFULLNAME="Whitewater Foundry, Ltd. Co."
+      DEBEMAIL: "contact@whitewaterfoundry.com"
+      DEBFULLNAME: "Whitewater Foundry, Ltd. Co."
     steps:
       - checkout
       - run:
@@ -43,10 +43,10 @@ jobs:
           command: cp ../pengwin-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
       - persist_to_workspace:
           root: /tmp/pkgs
-          paths: .
+          paths: [ . ]
       - store_artifacts:
           name: Store the package as an artifact
-          path: /tmp/pkgs          
+          path: /tmp/pkgs
   test:
     docker:
       - image: debian:bullseye
@@ -62,7 +62,7 @@ jobs:
             apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
 
             export os=debian
-            export dist=bullseye 
+            export dist=bullseye
 
             curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
 
@@ -83,7 +83,7 @@ jobs:
             cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
             cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
             cp -r pengwin-setup.d /usr/local/
-            apt-get -y -q install shunit2
+            apt-get -y -q install shunit2 shellcheck
             cd /usr/local/bin/tests && ./run_tests.sh
   deploymasterdeb:
     docker:
@@ -124,28 +124,28 @@ workflows:
       - shellcheck:
           filters:
             branches:
-              ignore: 
+              ignore:
                 - development
                 - master
-          
+
       - build:
           filters:
             branches:
-              ignore: 
+              ignore:
                 - development
                 - master
           requires:
             - shellcheck
-            
+
       - test:
           filters:
             branches:
-              ignore: 
+              ignore:
                 - development
                 - master
           requires:
             - shellcheck
-            
+
 
   deploymasterbranch:
     jobs:
@@ -153,21 +153,21 @@ workflows:
           filters:
             branches:
               only: master
-          
+
       - build:
           filters:
             branches:
               only: master
           requires:
             - shellcheck
-            
+
       - test:
           filters:
             branches:
               only: master
           requires:
             - shellcheck
-            
+
       - deploymasterdeb:
           filters:
             branches:
@@ -181,21 +181,21 @@ workflows:
           filters:
             branches:
               only: development
-          
+
       - build:
           filters:
             branches:
               only: development
           requires:
             - shellcheck
-            
+
       - test:
           filters:
             branches:
               only: development
           requires:
             - shellcheck
-              
+
       - deploydevdeb:
           filters:
             branches:
