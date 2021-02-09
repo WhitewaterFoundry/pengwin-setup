@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 if (confirm --title "POWERSHELL" --yesno "Would you like to download and install Powershell?" 8 55); then
   echo "Installing POWERSHELL"
-  
+
   createtmp
-  
+
   curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
   sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 
@@ -15,7 +15,7 @@ if (confirm --title "POWERSHELL" --yesno "Would you like to download and install
 
   update_packages
   install_packages powershell
-  
+
   cleantmp
 else
   echo "Skipping POWERSHELL"

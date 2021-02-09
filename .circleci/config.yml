@@ -1,9 +1,22 @@
-version: 2
+version: 2.1
 
 jobs:
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine:stable
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall"
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall" || echo "Shellcheck has some warnings" 
   build:
     docker:
       - image: debian:bullseye
+    resource_class: small
     environment:
       DEBEMAIL="contact@whitewaterfoundry.com"
       DEBFULLNAME="Whitewater Foundry, Ltd. Co."
@@ -37,6 +50,7 @@ jobs:
   test:
     docker:
       - image: debian:bullseye
+    resource_class: medium
     parallelism: 3
     steps:
       - checkout
@@ -74,6 +88,7 @@ jobs:
   deploymasterdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
@@ -89,6 +104,7 @@ jobs:
   deploydevdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
@@ -105,29 +121,53 @@ workflows:
   version: 2
   testdebbuild:
     jobs:
+      - shellcheck:
+          filters:
+            branches:
+              ignore: 
+                - development
+                - master
+          
       - build:
           filters:
             branches:
               ignore: 
                 - development
                 - master
+          requires:
+            - shellcheck
+            
       - test:
           filters:
             branches:
               ignore: 
                 - development
                 - master
+          requires:
+            - shellcheck
+            
 
   deploymasterbranch:
     jobs:
+      - shellcheck:
+          filters:
+            branches:
+              only: master
+          
       - build:
           filters:
             branches:
               only: master
+          requires:
+            - shellcheck
+            
       - test:
           filters:
             branches:
               only: master
+          requires:
+            - shellcheck
+            
       - deploymasterdeb:
           filters:
             branches:
@@ -137,14 +177,25 @@ workflows:
             - build
   deploydevbranch:
     jobs:
+      - shellcheck:
+          filters:
+            branches:
+              only: development
+          
       - build:
           filters:
             branches:
               only: development
+          requires:
+            - shellcheck
+            
       - test:
           filters:
             branches:
               only: development
+          requires:
+            - shellcheck
+              
       - deploydevdeb:
           filters:
             branches:

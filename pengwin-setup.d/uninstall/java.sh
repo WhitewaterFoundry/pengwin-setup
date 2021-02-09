@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+# shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 sdkman_rgx1='^#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!'
 sdkman_rgx2='^[^#]*\bexport SDKMAN_DIR='

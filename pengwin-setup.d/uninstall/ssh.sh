@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+# shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 ssh_rgx='^[^#]*\bALL=NOPASSWD: /usr/bin/start-ssh'

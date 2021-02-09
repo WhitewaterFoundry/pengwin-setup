@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 function install_pyenv() {

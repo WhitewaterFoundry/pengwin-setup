@@ -1,18 +1,21 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ "${@}" ] ; then
-	cd "$(wslpath "${@}")"
+if [ "${@}" ]; then
+  # shellcheck disable=SC2164
+  cd "$(wslpath "${@}")"
 fi
 
-if echo $PATH | grep -Fqi '%SYSTEMROOT%' ; then
-	if ! echo $PATH | grep -Fqi 'AppData/Local/Microsoft/WindowsApps' ; then
-		echo "Unable to find system-drive mount point from \$PATH. Please relaunch Pengwin from the Start Menu"
-	else
-		SystemDrive="$(echo $PATH | sed 's|:|\n|g' | grep 'AppData/Local/Microsoft/WindowsApps' | cut -d$'\n' -f1 | sed 's|/Users/.*/AppData/Local/Microsoft/WindowsApps||g')"
-		SystemRoot="$SystemDrive/WINDOWS"
-		PATH="$(echo $PATH | sed 's|/%SystemRoot%|'"$SystemRoot"'|gI')"
-		export PATH
-	fi
+if echo "${PATH}" | grep -Fqi '%SYSTEMROOT%'; then
+  if ! echo "${PATH}" | grep -Fqi 'AppData/Local/Microsoft/WindowsApps'; then
+    echo "Unable to find system-drive mount point from \${PATH}. Please relaunch Pengwin from the Start Menu"
+  else
+    #The new line is on-purpose
+    SystemDrive="$(echo "${PATH}" | sed 's|:|\n|g' | grep 'AppData/Local/Microsoft/WindowsApps' | cut -d"
+" -f1 | sed 's|/Users/.*/AppData/Local/Microsoft/WindowsApps||g')"
+    SystemRoot="$SystemDrive/WINDOWS"
+    PATH="$(echo "${PATH}" | sed 's|/%SystemRoot%|'"$SystemRoot"'|gI')"
+    export PATH
+  fi
 fi
 
-$(getent passwd $LOGNAME | cut -d: -f7) --login
+$(getent passwd "${LOGNAME}" | cut -d: -f7) --login
