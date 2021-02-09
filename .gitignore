@@ -1,2 +1,5 @@
 rpm/noarch
-rpm/pengwin-setup-1.0.0.tar.gz
+rpm/pengwin-setup-*.tar.gz
+rpm/.build-*.log
+rpm/pengwin-setup*.rpm
+rpm/pengwin-setup
