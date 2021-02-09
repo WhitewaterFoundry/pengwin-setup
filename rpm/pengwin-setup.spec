@@ -30,7 +30,7 @@ BuildArch:      noarch
 Requires:       wslu
 URL:            https://github.com/WhitewaterFoundry/pengwin-setup
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-License:        Expat
+License:        MIT
 
 %description
 This package contains the setup tool for Pengwin.
@@ -62,3 +62,4 @@ echo "Type pengwin-setup to launch the Pengwin setup utility."
 %{_datadir}/bash-completion/completions/pengwin-setup
 
 %changelog
+
