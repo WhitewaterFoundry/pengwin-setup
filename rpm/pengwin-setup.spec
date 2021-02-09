@@ -1,0 +1,76 @@
+#
+# spec file for package pengwin-setup
+#
+# Copyright (c) 2019 Whitewater Foundry, Ltd. Co. <contact@whitewaterfoundry.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions: 
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+Name:           pengwin-setup
+Summary:        Setup tool for Pengwin.
+Version:        1.0.0
+Release:        0
+Source:         %{name}.%{version}.tar.gz
+BuildArch:      noarch
+BuildRequires:  libxslt
+Requires:       git,wslu,pengwin-base
+URL:            https://github.com/WhitewaterFoundry/pengwin-setup
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+License:        Expat
+
+%description
+This package contains the setup tool for Pengwin.
+
+%prep 
+%setup -q -n %{name}-%{version}
+
+%build 
+XSLTPROC_FLAGS = \
+        --nonet \
+        --stringparam man.output.quietly 1 			\
+        --stringparam funcsynopsis.style ansi 		\
+        --stringparam man.th.extra1.suppress 1 		\
+        --stringparam man.authors.section.enabled 0 \
+        --stringparam man.copyright.section.enabled 0
+cp debian/manpage.xml.ex .
+xsltproc $XSLTPROC_FLAGS http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl manpage.xml.ex
+
+%install
+mkdir -p %{buildroot}%{_usr}/local/bin
+mkdir -p %{buildroot}%{_usr}/local
+mkdir -p %{buildroot}%{_datadir}/bash-completion/completions
+mkdir -p %{buildroot}%{_datadir}/man/man1
+
+install -p -m 755 login_shell %{buildroot}%{_usr}/local/bin
+install -p -m 755 pengwin-setup %{buildroot}%{_usr}/local/bin
+install -m 700 pengwin-setup.d %{buildroot}%{_usr}/local
+install -m 700 completions/* %{buildroot}%{_datadir}/bash-completion/completions
+#install -p -m 644 pengwin-setup.1 %{buildroot}%{_datadir}/man/man1
+
+%pre
+
+
+%post
+
+%files 
+%defattr(-,root,root)
+%dir %{_usr}/local/pengwin-setup.d
+%{_usr}/local/bin/login_shell
+%{_usr}/local/bin/pengwin-setup
+%{_datadir}/bash-completion/completions/pengwin-setup
+#%{_datadir}/man/man1/pengwin-setup.1
