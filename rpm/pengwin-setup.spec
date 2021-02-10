@@ -48,13 +48,15 @@ mkdir -p %{buildroot}%{_datadir}/bash-completion/completions
 install -p -m 755 login_shell %{buildroot}%{_usr}/local/bin
 install -p -m 755 pengwin-setup %{buildroot}%{_usr}/local/bin
 cp -a pengwin-setup.d/* %{buildroot}%{_usr}/local/pengwin-setup.d
-install -m 700 completions/pengwin-setup %{buildroot}%{_datadir}/bash-completion/completions
+chmod -R 755 %{buildroot}%{_usr}/local/pengwin-setup.d
+install -m 755 completions/pengwin-setup %{buildroot}%{_datadir}/bash-completion/completions
 
 %post
 echo "Type pengwin-setup to launch the Pengwin setup utility."
 
 %files
 %defattr(-,root,root)
+%doc LICENSE
 %dir %{_usr}/local/pengwin-setup.d
 %{_usr}/local/pengwin-setup.d/*
 %{_usr}/local/bin/login_shell
@@ -62,4 +64,5 @@ echo "Type pengwin-setup to launch the Pengwin setup utility."
 %{_datadir}/bash-completion/completions/pengwin-setup
 
 %changelog
-
+* Tue Feb 9 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-1
+Initial release of the Fedora package
