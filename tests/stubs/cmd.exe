@@ -4,7 +4,8 @@
 source "$(dirname "$0")/../mocks.sh" "$@"
 
 if [[ "$*" == "/c echo %HOMEDRIVE%%HOMEPATH%" ]]; then
-  sudo mkdir -p '/mnt/c/Users/user'
+  sudo mkdir -p /mnt/c/Users/user >/dev/null
+  sudo chmod 777 -R /mnt/c/Users/user >/dev/null
   echo 'C:\Users\user'
 fi
 
