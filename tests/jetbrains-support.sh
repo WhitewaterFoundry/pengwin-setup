@@ -18,7 +18,7 @@ function test_install_with_intelliJ_installed_but_without_wsldistributions_file(
 
 function test_install_with_intelliJ_installed_and_there_is_file_with_similar_name_to_wsldistributions_file() {
 
-  APPDATA_PATH="$(wslvar APPDATA)"
+  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
   JETBRAINS_PATH="$APPDATA_PATH/JetBrains"
 
   copy_distribution_file "$JETBRAINS_PATH/Idea2020" "other.wsl.distributions.xml"
@@ -32,7 +32,7 @@ function test_install_with_intelliJ_installed_and_there_is_file_with_similar_nam
 }
 
 function test_install_with_multiple_intelliJ_tools_installed() {
-  APPDATA_PATH="$(wslvar APPDATA)"
+  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
   JETBRAINS_PATH="$APPDATA_PATH/JetBrains"
 
   copy_distribution_file "$JETBRAINS_PATH/Idea2020" "wsl.distributions.xml"
