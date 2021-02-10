@@ -4,7 +4,7 @@ source "$(dirname "$0")/../mocks.sh" "$@"
 
 case "${@}" in
   'APPDATA')
-    echo "${HOME}/winhome/AppData/Roaming"
+    echo 'C:\Users\user\AppData\Roaming'
     ;;
   *)
     echo 'Invalid property'
