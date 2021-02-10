@@ -15,6 +15,8 @@ function oneTimeSetUp() {
 
   sudo chmod 777 -R "${SHUNIT_TMPDIR}"
 
+  sudo echo "PATH=\"$(pwd)/stubs:\${PATH}\"" >> ${HOME}/.bashrc
+  
   export SHUNIT_TMPDIR
 }
 
