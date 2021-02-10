@@ -3,9 +3,11 @@
 # shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
+version="1.20.9.0"
+
 if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-server? This will be installed to your Windows home directory under .vcxsrv" 8 80); then
   echo "Installing VcXsrv"
-  VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/1.20.8.1/vcxsrv-64.1.20.8.1.installer.exe/download"
+  VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/${version}/vcxsrv-64.${version}.installer.exe/download"
 
   echo "Installing required install dependencies"
   install_packages wget unzip p7zip-full mesa-utils
@@ -24,9 +26,6 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
     mkdir vcxsrv
     7z x vcxsrvinstaller.exe -o"${VcxsrvDir}"
 
-    sudo apt-get remove -y -q p7zip-full
-    sudo apt-get autoremove -y
-
     cleantmp
   else
     echo "${VcxsrvDir} already exists, leaving in place."
@@ -44,8 +43,14 @@ else
 fi
 EOF
 
+  unset version
+  unset VcxsrvUrl
+  unset wVcxsrvDir
+  unset VcxsrvDir
+  
   # Avoid collision with the other XServer
   sudo rm -f /etc/profile.d/02-x410.sh
+  
   touch "${HOME}"/.should-restart
 else
   echo "Skipping VcxSrv"
