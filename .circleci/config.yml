@@ -51,7 +51,7 @@ jobs:
     docker:
       - image: debian:bullseye
     resource_class: medium
-    parallelism: 3
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -134,8 +134,6 @@ workflows:
               ignore:
                 - development
                 - master
-          requires:
-            - shellcheck
 
       - test:
           filters:
@@ -158,8 +156,6 @@ workflows:
           filters:
             branches:
               only: master
-          requires:
-            - shellcheck
 
       - test:
           filters:
@@ -186,8 +182,6 @@ workflows:
           filters:
             branches:
               only: development
-          requires:
-            - shellcheck
 
       - test:
           filters:
