@@ -2,9 +2,9 @@
 source commons.sh
 
 function test_install_with_intelliJ_installed_but_without_wsldistributions_file() {
-set -x
-  APPDATA_PATH="$(wslvar APPDATA)"
-  IDEA_PATH="$APPDATA_PATH/JetBrains/Ideal"
+
+  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
+  IDEA_PATH="$APPDATA_PATH/JetBrains/Idea"
   OPTIONS_FOLDER="$IDEA_PATH/options"
   run_command_as_testuser "mkdir -p $OPTIONS_FOLDER"
 
@@ -13,7 +13,7 @@ set -x
   test -f "${OPTIONS_FOLDER}/wsl.distributions.xml"
   assertTrue "The file wsl.distributions.xml was no created" "$?"
   run_command_as_testuser "rm -R $APPDATA_PATH"
-set +x
+
 }
 
 function test_install_with_intelliJ_installed_and_there_is_file_with_similar_name_to_wsldistributions_file() {
