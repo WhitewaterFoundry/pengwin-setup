@@ -6,15 +6,11 @@ function testMain() {
   run_pengwinsetup install PROGRAMMING JAVA
 
   check_script '/etc/profile.d/sdkman.sh'
-set -x
 
   assertEquals "SDKMan was not installed" "1" "$(run_command_as_testuser sdk version | grep -c 'SDKMAN 5')"
-  set +x
 }
 
 function testUninstall() {
-  chmod 777 -R "${HOME}/.sdkman"
-
   run_pengwinsetup uninstall JAVA
 
   assertFalse "FILE PROFILE-SDKMAN" "[ -f /etc/profile.d/sdkman.sh ]"
