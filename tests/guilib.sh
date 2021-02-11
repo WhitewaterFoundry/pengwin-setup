@@ -8,9 +8,9 @@ function testMain() {
   local dist="$(uname -m)"
 
   run_pengwinsetup autoinstall GUI GUILIB
- 
+
   for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libqt5core5a' 'binutils' 'libnss3' 'libegl1-mesa' ; do
-    package_installed $i    
+    package_installed $i
     assertTrue "package $i is not installed" "$?"
   done
 
@@ -52,8 +52,7 @@ function testMain() {
   #test -f /usr/share/dbus-1/session.conf
   #assertEquals "/usr/share/dbus-1/session.conf was not installed" "0" "$?"
 
-  test -f /etc/profile.d/dbus.sh
-  assertEquals "/etc/profile.d/dbus.sh was not installed" "0" "$?"  
+  check_script '/etc/profile.d/dbus.sh'
 }
 
 function testUninstall() {
@@ -64,7 +63,7 @@ function testUninstall() {
   run_pengwinsetup autoinstall UNINSTALL GUILIB
 
   for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus-x11' ; do
-    package_installed $i    
+    package_installed $i
     assertFalse "package $i is not uninstalled" "$?"
   done
 
@@ -89,7 +88,8 @@ function testUninstall() {
   #assertEquals "/usr/share/dbus-1/session.conf was not installed" "1" "$?"
 
   test -f /etc/profile.d/dbus.sh
-  assertEquals "/etc/profile.d/dbus.sh was not uninstalled" "1" "$?"  
+  assertEquals "/etc/profile.d/dbus.sh was not uninstalled" "1" "$?"
 }
 
+# shellcheck disable=SC1091
 source shunit2

@@ -3,4 +3,4 @@
 source "$(dirname "$0")/../mocks.sh" "$@"
 
 
-echo "${@: -1}"
+legacy_wslupath "$@"

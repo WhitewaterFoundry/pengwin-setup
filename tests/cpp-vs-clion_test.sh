@@ -37,4 +37,5 @@ function testUninstall() {
   fi
 }
 
+# shellcheck disable=SC1091
 source shunit2

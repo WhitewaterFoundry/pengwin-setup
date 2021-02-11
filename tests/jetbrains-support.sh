@@ -3,8 +3,8 @@ source commons.sh
 
 function test_install_with_intelliJ_installed_but_without_wsldistributions_file() {
 
-  APPDATA_PATH="$(wslvar APPDATA)"
-  IDEA_PATH="$APPDATA_PATH/JetBrains/Ideal"
+  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
+  IDEA_PATH="$APPDATA_PATH/JetBrains/Idea"
   OPTIONS_FOLDER="$IDEA_PATH/options"
   run_command_as_testuser "mkdir -p $OPTIONS_FOLDER"
 
@@ -18,7 +18,7 @@ function test_install_with_intelliJ_installed_but_without_wsldistributions_file(
 
 function test_install_with_intelliJ_installed_and_there_is_file_with_similar_name_to_wsldistributions_file() {
 
-  APPDATA_PATH="$(wslvar APPDATA)"
+  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
   JETBRAINS_PATH="$APPDATA_PATH/JetBrains"
 
   copy_distribution_file "$JETBRAINS_PATH/Idea2020" "other.wsl.distributions.xml"
@@ -32,7 +32,7 @@ function test_install_with_intelliJ_installed_and_there_is_file_with_similar_nam
 }
 
 function test_install_with_multiple_intelliJ_tools_installed() {
-  APPDATA_PATH="$(wslvar APPDATA)"
+  APPDATA_PATH="$(wslpath -u "$(wslvar APPDATA)")"
   JETBRAINS_PATH="$APPDATA_PATH/JetBrains"
 
   copy_distribution_file "$JETBRAINS_PATH/Idea2020" "wsl.distributions.xml"
@@ -53,4 +53,5 @@ function copy_distribution_file() {
   run_command_as_testuser "cp $CURRENT_FOLDER/template-wrong-value-wsl.distributions.xml $OPTIONS_FOLDER/$2"
 }
 
+# shellcheck disable=SC1091
 source shunit2

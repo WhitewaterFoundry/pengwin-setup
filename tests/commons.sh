@@ -6,6 +6,7 @@ function oneTimeSetUp() {
   # shellcheck disable=SC2155
   export PATH="$(pwd)/stubs:${PATH}"
   export HOME="/home/${TEST_USER}"
+  export TERM="xterm-256color"
 
   sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
   sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev ${TEST_USER}
@@ -14,6 +15,10 @@ function oneTimeSetUp() {
   sudo chmod +x stubs/*
 
   sudo chmod 777 -R "${SHUNIT_TMPDIR}"
+
+  # Add the stub path
+  sudo echo "PATH=\"$(pwd)/stubs:\${PATH}\"" > /etc/profile.d/00-a.sh
+  sudo echo 'TERM="xterm-256color"' >> /etc/profile.d/00-a.sh
 
   export SHUNIT_TMPDIR
 }
@@ -49,4 +54,14 @@ function run_pengwinsetup() {
 
 function run_command_as_testuser() {
   sudo su - -c "$*" ${TEST_USER}
+}
+
+function check_script() {
+  local installed_script="$1"
+
+  test -f "${installed_script}"
+  assertEquals "${installed_script} was not installed" "0" "$?"
+
+  shellcheck "${installed_script}"
+  assertEquals "shellcheck reported errors on ${installed_script}" "0" "$?"
 }
