@@ -8,6 +8,7 @@ run_test ./update_pengwin.sh
 
 if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
 
+  run_test ./java.sh
   run_test ./pythonpi.sh
   run_test ./go.sh
   run_test ./ansible.sh
@@ -22,6 +23,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./guilib.sh
 elif [[ ${CIRCLE_NODE_INDEX} == 0 ]]; then
   run_test ./pythonpi.sh
+  run_test ./java.sh
 elif [[ ${CIRCLE_NODE_INDEX} == 1 ]]; then
   run_test ./fish.sh
   run_test ./x410.sh

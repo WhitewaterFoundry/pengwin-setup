@@ -6,13 +6,23 @@ source "$(dirname "$0")/common.sh" "$@"
 if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage and install Java SDKs?" 8 52); then
 
   sudo apt-get install -y -q zip curl
-  echo "$ curl -s \"https://get.sdkman.io\" | bash"
 
-  curl -s "https://get.sdkman.io" | bash
+  curl -s "https://get.sdkman.io?rcupdate=false" | bash
+
+  sudo tee "/etc/profile.d/sdkman.sh" <<EOF
+#!/bin/sh
+
+export SDKMAN_DIR="/home/user/.sdkman"
+if [ -s "\${HOME}/.sdkman/bin/sdkman-init.sh" ]; then
+  . "\${HOME}/.sdkman/bin/sdkman-init.sh"
+fi
+
+EOF
+
+  add_fish_support 'sdkman'
 
   # shellcheck disable=SC1090
   source "${HOME}/.sdkman/bin/sdkman-init.sh"
-
   sdk version
 
   curl https://raw.githubusercontent.com/Bash-it/bash-it/master/completion/available/sdkman.completion.bash | sudo tee /etc/bash_completion.d/sdkman.bash
