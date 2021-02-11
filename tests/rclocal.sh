@@ -19,4 +19,5 @@ function testUninstall() {
   assertFalse "FILE SUDOERS-RCLOCAL" "[ -f /etc/sudoers.d/rclocal ]"
 }
 
+# shellcheck disable=SC1091
 source shunit2

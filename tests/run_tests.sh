@@ -22,8 +22,8 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./brew.sh
   run_test ./guilib.sh
 elif [[ ${CIRCLE_NODE_INDEX} == 0 ]]; then
-  run_test ./pythonpi.sh
   run_test ./java.sh
+  run_test ./pythonpi.sh
 elif [[ ${CIRCLE_NODE_INDEX} == 1 ]]; then
   run_test ./fish.sh
   run_test ./x410.sh

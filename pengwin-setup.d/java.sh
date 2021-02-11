@@ -14,6 +14,8 @@ if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage a
 
 export SDKMAN_DIR="/home/user/.sdkman"
 if [ -s "\${HOME}/.sdkman/bin/sdkman-init.sh" ]; then
+
+  # shellcheck disable=SC1090
   . "\${HOME}/.sdkman/bin/sdkman-init.sh"
 fi
 

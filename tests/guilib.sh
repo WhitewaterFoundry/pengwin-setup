@@ -91,4 +91,5 @@ function testUninstall() {
   assertEquals "/etc/profile.d/dbus.sh was not uninstalled" "1" "$?"
 }
 
+# shellcheck disable=SC1091
 source shunit2

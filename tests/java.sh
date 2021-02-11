@@ -8,10 +8,12 @@ function testMain() {
 
   check_script '/etc/profile.d/sdkman.sh'
 
+  chmod 777 -R "${HOME}/.sdkman"
   assertEquals "SDKMan was not installed" "1" "$(run_command_as_testuser sdk version | grep -c 'SDKMAN 5')"
 }
 
 function testUninstall() {
+  chmod 777 -R "${HOME}/.sdkman"
 
   run_pengwinsetup uninstall JAVA
 
@@ -20,5 +22,5 @@ function testUninstall() {
   assertEquals "SDKMan was not uninstalled" "0" "$(run_command_as_testuser sdk version | grep -c 'SDKMAN 5')"
 }
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 source shunit2
