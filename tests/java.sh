@@ -8,7 +8,6 @@ function testMain() {
   check_script '/etc/profile.d/sdkman.sh'
 set -x
 
-  sudo chmod 777 -R "${HOME}/.sdkman"
   assertEquals "SDKMan was not installed" "1" "$(run_command_as_testuser sdk version | grep -c 'SDKMAN 5')"
   set +x
 }

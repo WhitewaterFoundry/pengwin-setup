@@ -12,7 +12,7 @@ if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage a
   sudo tee "/etc/profile.d/sdkman.sh" <<EOF
 #!/bin/sh
 
-export SDKMAN_DIR="/home/user/.sdkman"
+export SDKMAN_DIR="\${HOME}/.sdkman"
 if [ -s "\${HOME}/.sdkman/bin/sdkman-init.sh" ]; then
 
   # shellcheck disable=SC1090
