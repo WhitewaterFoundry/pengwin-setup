@@ -24,7 +24,7 @@
 Name:           pengwin-setup
 Summary:        Setup tool for Pengwin
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Source:         %{name}-%{version}.tar.gz
 BuildArch:      noarch
 Requires:       wslu
@@ -41,14 +41,14 @@ This package contains the setup tool for Pengwin.
 %build
 
 %install
-mkdir -p %{buildroot}%{_usr}/local/bin
-mkdir -p %{buildroot}%{_usr}/local/pengwin-setup.d
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_datadir}/pengwin-setup.d
 mkdir -p %{buildroot}%{_datadir}/bash-completion/completions
 
-install -p -m 755 login_shell %{buildroot}%{_usr}/local/bin
-install -p -m 755 pengwin-setup %{buildroot}%{_usr}/local/bin
-cp -a pengwin-setup.d/* %{buildroot}%{_usr}/local/pengwin-setup.d
-chmod -R 755 %{buildroot}%{_usr}/local/pengwin-setup.d
+install -p -m 755 login_shell %{buildroot}%{_bindir}
+install -p -m 755 pengwin-setup %{buildroot}%{_bindir}
+cp -a pengwin-setup.d/* %{buildroot}%{_datadir}/pengwin-setup.d
+chmod -R 755 %{buildroot}%{_datadir}/pengwin-setup.d
 install -m 755 completions/pengwin-setup %{buildroot}%{_datadir}/bash-completion/completions
 
 %post
@@ -57,12 +57,15 @@ echo "Type pengwin-setup to launch the Pengwin setup utility."
 %files
 %defattr(-,root,root)
 %doc LICENSE
-%dir %{_usr}/local/pengwin-setup.d
-%{_usr}/local/pengwin-setup.d/*
-%{_usr}/local/bin/login_shell
-%{_usr}/local/bin/pengwin-setup
+%dir %{_datadir}/pengwin-setup.d
+%{_datadir}/pengwin-setup.d/*
+%{_bindir}/login_shell
+%{_bindir}/pengwin-setup
 %{_datadir}/bash-completion/completions/pengwin-setup
 
 %changelog
+* Thu Feb 11 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-2
+Updated to follow the FHS
+
 * Tue Feb 9 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-1
 Initial release of the Fedora package
