@@ -29,4 +29,5 @@ function testUninstall() {
   assertEquals "Ansible was not uninstalled" "1" "$?"
 }
 
+# shellcheck disable=SC1091
 source shunit2

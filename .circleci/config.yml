@@ -51,7 +51,7 @@ jobs:
     docker:
       - image: debian:bullseye
     resource_class: medium
-    parallelism: 3
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -59,7 +59,7 @@ jobs:
           command: |
             # Install the pengwin image base packages
             apt-get -y -q update
-            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
+            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix iproute2 psmisc rsync
 
             export os=debian
             export dist=bullseye
@@ -134,8 +134,6 @@ workflows:
               ignore:
                 - development
                 - master
-          requires:
-            - shellcheck
 
       - test:
           filters:
@@ -158,8 +156,6 @@ workflows:
           filters:
             branches:
               only: master
-          requires:
-            - shellcheck
 
       - test:
           filters:
@@ -186,8 +182,6 @@ workflows:
           filters:
             branches:
               only: development
-          requires:
-            - shellcheck
 
       - test:
           filters:

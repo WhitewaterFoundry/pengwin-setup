@@ -17,4 +17,5 @@ function testUninstall() {
   assertFalse "FILE HIDPI" "$?"
 }
 
+# shellcheck disable=SC1091
 source shunit2

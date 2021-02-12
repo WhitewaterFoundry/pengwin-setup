@@ -35,4 +35,5 @@ function testUninstallPyEnv() {
   assertEquals "Pyenv variables were not cleaned up" "0" "$(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.bashrc)"
 }
 
+# shellcheck disable=SC1091
 source shunit2
