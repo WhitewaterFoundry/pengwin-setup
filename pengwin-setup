@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SetupDir="/usr/local/pengwin-setup.d"
+SetupDir="/usr/share/pengwin-setup.d"
 
 export VERSION="1.2a"
 
@@ -19,32 +19,33 @@ function check_upgrades() {
   echo "Updating package database"
 
   # shellcheck disable=SC2155
-  local debian_security_ok="$(cat /etc/apt/sources.list 2>&1 | grep -c "https://deb.debian.org/debian-security testing/updates")"
-  if [[ ${debian_security_ok} != 0 ]]; then
-    sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
-  fi
+  #local debian_security_ok="$(cat /etc/apt/sources.list 2>&1 | grep -c "https://deb.debian.org/debian-security testing/updates")"
+  #if [[ ${debian_security_ok} != 0 ]]; then
+  #  sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
+  #fi
 
   update_packages --allow-releaseinfo-change
 
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
-  if [[ -f "/etc/apt/.dist-upgrade" ]]; then
-    echo "Distribution upgrade flag noticed! Alerting user"
-    if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
-      sudo rm /etc/apt/.dist-upgrade
-      sudo apt-get dist-upgrade -y
-    fi
-  fi
+  #if [[ -f "/etc/apt/.dist-upgrade" ]]; then
+  #  echo "Distribution upgrade flag noticed! Alerting user"
+  #  if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
+  #    sudo rm /etc/apt/.dist-upgrade
+  #    sudo apt-get dist-upgrade -y
+  #  fi
+  #fi
 
   # Check if there's any upgrades to pengwin-setup / pengwin-base
   echo "Running upgrade check..."
   # shellcheck disable=SC2155
-  local upgrd_check="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
+  local upgrd_check="$(sudo dnf check-upgrade --show-upgraded --assume-no | grep pengwin)"
   if [[ "${upgrd_check}" == *"pengwin"* ]]; then
     echo "Pengwin core package upgrades found"
     if (confirm --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
 
       # Ensure that packages get updated without affecting other held packages like udev
-      sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
+      # TODO: sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1 
+      sudo dnf versionlock delete pengwin-setup pengwin-base >/dev/null 2>&1
       upgrade_packages pengwin-base pengwin-setup
     fi
   elif [[ ${JUST_UPDATE} ]]; then
@@ -190,15 +191,18 @@ fi
 # being updated while running other operations from pengwin-setup
 # install menu
 echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
-sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
+# sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
+sudo dnf versionlock add pengwin-base pengwin-setup >/dev/null 2>&1
 
-sudo apt-mark unhold libc6 >/dev/null 2>&1
+#sudo apt-mark unhold libc6 >/dev/null 2>&1
+sudo dnf versionlock remove libc6 >/dev/null 2>&1
 
 install_menu "$@"
 
 # Unhold our packages
 echo "Unholding pengwin-base & pengwin-setup"
-sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
+#sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
+sudo dnf versionlock remove pengwin-base pengwin-setup >/dev/null 2>&1
 
 ByeMessage
 exit 0
