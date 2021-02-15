@@ -53,4 +53,5 @@ function copy_distribution_file() {
   run_command_as_testuser "cp $CURRENT_FOLDER/template-wrong-value-wsl.distributions.xml $OPTIONS_FOLDER/$2"
 }
 
+# shellcheck disable=SC1091
 source shunit2

@@ -31,7 +31,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
   eval "$(timeout 2s dbus-launch --auto-syntax)"
 
   sudo tee "/etc/profile.d/dbus.sh" <<EOF
-#!/bin/bash
+#!/bin/sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
@@ -40,6 +40,8 @@ if ( which cmd.exe >/dev/null ); then
 fi
 
 EOF
+
+  add_fish_support 'dbus'
 
   touch "${HOME}"/.should-restart
 

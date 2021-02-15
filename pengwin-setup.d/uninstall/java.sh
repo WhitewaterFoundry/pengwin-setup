@@ -29,6 +29,9 @@ function main() {
   multiclean_file "$HOME/.profile"
   multiclean_file "$HOME/.bash_profile"
 
+  sudo_rem_file "/etc/profile.d/sdkman.sh"
+  sudo_rem_file "/etc/fish/conf.d/sdkman.fish"
+
   echo "Removing bash completion..."
   sudo_rem_file "/etc/bash_completion.d/sdkman.bash"
 

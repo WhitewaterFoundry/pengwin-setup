@@ -24,7 +24,7 @@
 Name:           pengwin-setup
 Summary:        Setup tool for Pengwin
 Version:        1.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Source:         %{name}-%{version}.tar.gz
 BuildArch:      noarch
 Requires:       wslu
@@ -67,5 +67,5 @@ echo "Type pengwin-setup to launch the Pengwin setup utility."
 * Thu Feb 11 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-2
 Updated to follow the FHS
 
-* Tue Feb 9 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-1
+* Tue Feb 9 2021 Sascha Manns <sascha@whitewaterfoundry> - 1.0.0-1
 Initial release of the Fedora package

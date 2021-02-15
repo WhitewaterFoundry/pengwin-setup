@@ -91,9 +91,9 @@ function cleantmp() {
 
 function updateupgrade() {
   echo "Applying available package upgrades from repositories."
-  sudo apt-get upgrade -y
+  sudo dnf upgrade -y
   echo "Removing unnecessary packages."
-  sudo apt-get autoremove -y
+  sudo dnf autoremove -y
 }
 
 function command_check() {
@@ -215,7 +215,7 @@ function setup_env() {
   export WIN_CUR_VER
   
 
-  SetupDir="/usr/local/pengwin-setup.d"
+  SetupDir="/usr/share/pengwin-setup.d"
   export SetupDir
   
   readonly GOVERSION="1.15.2"
@@ -225,21 +225,21 @@ function setup_env() {
 
 function install_packages() {
 
-  sudo apt-get install -y -q "$@"
+  sudo dnf install -y -q "$@"
 }
 
 function update_packages() {
 
   if [[ ${NON_INTERACTIVE} ]]; then
-    sudo apt-get update -y -q "$@"
+    sudo dnf update -y -q "$@"
   else
-    sudo debconf-apt-progress -- apt-get update -y "$@"
+    sudo dnf update -y "$@"
   fi
 }
 
 function upgrade_packages() {
 
-  sudo apt-get upgrade -y -q "$@"
+  sudo dnf upgrade -y -q "$@"
 }
 
 function add_fish_support() {
