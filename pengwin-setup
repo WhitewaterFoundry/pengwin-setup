@@ -54,6 +54,13 @@ function check_upgrades() {
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
     sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 >/dev/null 2>&1
+  
+  else
+    # Force iproute2 5.8
+    if [[ $( dpkg-query -s "iproute2" 2>/dev/null | grep -c "Version: 5\.8.*" ) == 0 ]]; then
+      sudo apt install iproute2=5.8.0-1
+    fi
+
   fi
 }
 
