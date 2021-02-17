@@ -58,7 +58,7 @@ function check_upgrades() {
   else
     # Force iproute2 5.8
     if [[ $( dpkg-query -s "iproute2" 2>/dev/null | grep -c "Version: 5\.8.*" ) == 0 ]]; then
-      sudo apt install iproute2=5.8.0-1
+      sudo apt-get install -q -y --allow-downgrades iproute2=5.8.0-1
     fi
 
   fi
