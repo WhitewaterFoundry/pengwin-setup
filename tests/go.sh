@@ -16,7 +16,7 @@ function testGo() {
   command -v go
   assertEquals "GO was not installed" "0" "$?"
 
-  assertEquals "GO was not installed" "1" "$(go version | grep -c '1.15.2')"
+  assertEquals "GO was not installed" "1" "$(go version | grep -c '1.15')"
   assertTrue "FILE DEFAULT-STRUCT-GO" "[ -d /home/${TEST_USER}/go ]"
   assertTrue "FILE DEFAULT-STRUCT-GO" "[ -d /home/${TEST_USER}/go/pkg ]"
   assertTrue "FILE DEFAULT-STRUCT-GO" "[ -d /home/${TEST_USER}/go/src ]"
