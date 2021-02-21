@@ -8,3 +8,5 @@
 )
 
 export PATH="${PATH}:${HOME}/shunit2"
+
+sudo apt-get -y -q install shellcheck

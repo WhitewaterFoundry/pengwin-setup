@@ -3,6 +3,8 @@
 declare -a CMD_MENU_OPTIONS
 export CMD_MENU_OPTIONS
 
+export LANG=en_US.utf8
+
 function process_arguments() {
   while [[ $# -gt 0 ]]; do
     case "$1" in

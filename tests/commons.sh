@@ -7,6 +7,7 @@ function oneTimeSetUp() {
   export PATH="$(pwd)/stubs:${PATH}"
   export HOME="/home/${TEST_USER}"
   export TERM="xterm-256color"
+  export LANG=en_US.utf8
 
   sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
   sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev ${TEST_USER}
@@ -24,7 +25,8 @@ function oneTimeSetUp() {
 }
 
 function oneTimeTearDown() {
-  if id "test_user" &>/dev/null; then
+  if id "${TEST_USER}" &>/dev/null; then
+    sudo killall -u "${TEST_USER}"
     sudo /usr/sbin/deluser ${TEST_USER} &>/dev/null
   fi
 
