@@ -17,7 +17,7 @@ function testMain() {
   command -v /usr/bin/xclip
   assertEquals "xclip was not installed" "0" "$?"
 
-  test -f /usr/lib/${dist}-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+  test -f /usr/lib/"${dist}"-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
   assertEquals "gtk2-engines-murrine was not installed" "0" "$?"
 
   command -v /usr/bin/dbus-daemon
@@ -29,13 +29,13 @@ function testMain() {
   command -v /usr/bin/glxdemo
   assertEquals "mesa-utils was not installed" "0" "$?"
 
-  test -f /usr/lib/${dist}-linux-gnu/libQt5Core.so.5
+  test -f /usr/lib/"${dist}"-linux-gnu/libQt5Core.so.5
   assertEquals "libqt5core5a was not installed" "0" "$?"
 
   command -v /usr/bin/gold
   assertEquals "binutils was not installed" "0" "$?"
 
-  test -f /usr/lib/${dist}-linux-gnu/libnss3.so
+  test -f /usr/lib/"${dist}"-linux-gnu/libnss3.so
   assertEquals "libnss3 was not installed" "0" "$?"
 
   test -f /usr/share/bug/libegl1-mesa/control
@@ -70,7 +70,7 @@ function testUninstall() {
   command -v /usr/bin/xclip
   assertEquals "xclip was not uninstalled" "1" "$?"
 
-  test -f /usr/lib/${dist}-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+  test -f /usr/lib/"${dist}"-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
   assertEquals "gtk2-engines-murrine was not uninstalled" "1" "$?"
 
   command -v /usr/bin/dbus-launch
