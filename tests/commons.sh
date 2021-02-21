@@ -17,8 +17,8 @@ function oneTimeSetUp() {
   sudo chmod 777 -R "${SHUNIT_TMPDIR}"
 
   # Add the stub path
-  sudo echo "PATH=\"$(pwd)/stubs:\${PATH}\"" > /etc/profile.d/00-a.sh
-  sudo echo 'TERM="xterm-256color"' >> /etc/profile.d/00-a.sh
+  echo "PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
+  echo 'TERM="xterm-256color"' | sudo tee -a /etc/profile.d/00-a.sh
 
   export SHUNIT_TMPDIR
 }
@@ -43,9 +43,9 @@ function package_installed() {
 }
 
 function run_test() {
-  echo "********************************************************************"
-  echo "$@"
-  "$@"
+  echo "Start: $* *****************************************************************"
+  time "$@"
+  echo "End: $* *****************************************************************"
 }
 
 function run_pengwinsetup() {
