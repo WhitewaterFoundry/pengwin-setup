@@ -20,6 +20,7 @@ if [ -s "\${HOME}/.sdkman/bin/sdkman-init.sh" ]; then
     . "\${HOME}/.sdkman/bin/sdkman-init.sh"
   else
     # Basic support for sh
+    # shellcheck disable=SC1090
     . "/use/local/bin/sdkman-init-sh.sh"
   fi
 fi
