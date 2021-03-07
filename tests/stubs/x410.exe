@@ -1,4 +1,5 @@
 #! /bin/bash
 
+# shellcheck source=./../mocks.sh
 source "$(dirname "$0")/../mocks.sh" "$@"
 

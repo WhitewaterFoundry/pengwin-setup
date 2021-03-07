@@ -7,6 +7,7 @@ function oneTimeSetUp() {
   export PATH="$(pwd)/stubs:${PATH}"
   export HOME="/home/${TEST_USER}"
   export TERM="xterm-256color"
+  export LANG=en_US.utf8
 
   sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
   sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev ${TEST_USER}
@@ -24,7 +25,8 @@ function oneTimeSetUp() {
 }
 
 function oneTimeTearDown() {
-  if id "test_user" &>/dev/null; then
+  if id "${TEST_USER}" &>/dev/null; then
+    sudo killall -u "${TEST_USER}"
     sudo /usr/sbin/deluser ${TEST_USER} &>/dev/null
   fi
 
@@ -33,7 +35,7 @@ function oneTimeTearDown() {
 function package_installed() {
 
   # shellcheck disable=SC2155
-  local result=$(apt -qq list $1 2>/dev/null | grep -c "\[install") # so it matches english "install" and also german "installiert"
+  local result=$(apt -qq list "$1" 2>/dev/null | grep -c "\[install") # so it matches english "install" and also german "installiert"
 
   if [[ $result == 0 ]]; then
     return 1
