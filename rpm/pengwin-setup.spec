@@ -45,9 +45,9 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/pengwin-setup.d
 mkdir -p %{buildroot}%{_datadir}/bash-completion/completions
 
-install -p -m 755 fedora/login_shell %{buildroot}%{_bindir}
-install -p -m 755 fedora/pengwin-setup %{buildroot}%{_bindir}
-cp -a fedora/pengwin-setup.d/* %{buildroot}%{_datadir}/pengwin-setup.d
+install -p -m 755 rpm/login_shell %{buildroot}%{_bindir}
+install -p -m 755 rpm/pengwin-setup %{buildroot}%{_bindir}
+cp -a rpm/pengwin-setup.d/* %{buildroot}%{_datadir}/pengwin-setup.d
 chmod -R 755 %{buildroot}%{_datadir}/pengwin-setup.d
 install -m 755 completions/pengwin-setup %{buildroot}%{_datadir}/bash-completion/completions
 
@@ -65,7 +65,7 @@ echo "Type pengwin-setup to launch the Pengwin setup utility."
 
 %changelog
 * Tue Feb 16 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-3
-Moved Fedora modifications to top level dir 'fedora'
+Moved Fedora modifications to top level dir 'rpm'
 
 * Thu Feb 11 2021 Sascha Manns <sascha@whitewaterfoundry.com> - 1.0.0-2
 Updated to follow the FHS
