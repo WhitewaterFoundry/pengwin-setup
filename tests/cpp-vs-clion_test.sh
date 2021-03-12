@@ -23,8 +23,8 @@ function testUninstall() {
 
   ../pengwin-setup --noupdate --assume-yes --noninteractive UNINSTALL C++ > /dev/null 2>&1
 
-  for i in 'cmake clang'; do
-    package_installed $i
+  for i in 'cmake' 'clang'; do
+    package_installed "$i"
     assertFalse "package $i is not uninstalled" "$?"
   done
 
