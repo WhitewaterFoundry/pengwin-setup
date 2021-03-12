@@ -4,12 +4,13 @@ source commons.sh
 
 function testMain() {
   declare WIN_CUR_VER
+  declare PROCESSOR_ARCH
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
 
   run_pengwinsetup autoinstall GUI GUILIB
-
-  for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libqt5core5a' 'binutils' 'libnss3' 'libegl1-mesa' ; do
+  # xclip adwaita-gtk2-theme gtk-murrine-engine dbus dbus-x11 glx-utils qt5-qtbase binutils nss mesa-libEGL
+  for i in 'xclip' 'adwaita-gtk-theme' 'gtk-murrine-engine' 'dbus' 'dbus-x11' 'glx-utils' 'qt5-qtbase' 'binutils' 'nss' 'mesa-libEGL' ; do
     package_installed $i
     assertTrue "package $i is not installed" "$?"
   done
@@ -17,8 +18,8 @@ function testMain() {
   command -v /usr/bin/xclip
   assertEquals "xclip was not installed" "0" "$?"
 
-  test -f /usr/lib/${dist}-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
-  assertEquals "gtk2-engines-murrine was not installed" "0" "$?"
+  test -f /usr/lib64/gtk-2.0/2.10.0/engines/libmurrine.so
+  assertEquals "adwaita-gtk-theme was not installed" "0" "$?"
 
   command -v /usr/bin/dbus-daemon
   assertEquals "dbus was not installed" "0" "$?"
@@ -29,7 +30,7 @@ function testMain() {
   command -v /usr/bin/glxdemo
   assertEquals "mesa-utils was not installed" "0" "$?"
 
-  test -f /usr/lib/${dist}-linux-gnu/libQt5Core.so.5
+  test -f /usr/lib/${dist}-linux-gc/libQt5Core.so.5
   assertEquals "libqt5core5a was not installed" "0" "$?"
 
   command -v /usr/bin/gold
@@ -62,7 +63,7 @@ function testUninstall() {
 
   run_pengwinsetup autoinstall UNINSTALL GUILIB
 
-  for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus-x11' ; do
+  for i in 'xclip' 'adwaita-gtk-theme' 'gtk-murrine-engine' 'dbus-x11' ; do
     package_installed $i
     assertFalse "package $i is not uninstalled" "$?"
   done

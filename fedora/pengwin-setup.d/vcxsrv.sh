@@ -10,7 +10,7 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/${version}/vcxsrv-64.${version}.installer.exe/download"
 
   echo "Installing required install dependencies"
-  install_packages wget unzip p7zip-full mesa-utils
+  install_packages wget unzip p7zip p7zip-plugins p7zip-gui glx-utils
 
   wVcxsrvDir="$(cmd-exe /C "echo %USERPROFILE%\.vcxsrv" | tr -d '\r')"
   VcxsrvDir="$(wslpath "${wVcxsrvDir}")"

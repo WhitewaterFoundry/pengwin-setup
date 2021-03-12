@@ -214,6 +214,8 @@ function setup_env() {
   readonly WIN_CUR_VER="$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | grep -E -o '([0-9]{5})' | cut -d ' ' -f 2)"
   export WIN_CUR_VER
   
+  readonly PROCESSOR_ARCH="$(lscpu | grep Architecture | cut -d: -f2 | cut -c 21-26)"
+  export PROCESSOR_ARCH
 
   SetupDir="/usr/share/pengwin-setup.d"
   export SetupDir

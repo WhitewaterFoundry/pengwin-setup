@@ -5,52 +5,55 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SetupDir
 
-function enable_rclocal() {
+# function enable_rclocal() {
 
-  if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60) ; then
-    echo "Enabling rc.local..."
+#   if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60) ; then
+#     echo "Enabling rc.local..."
 
-    if [[ ! -f /etc/rc.local ]]; then
-      sudo tee "/etc/rc.local" << EOF
-#!/bin/sh -e
-#
-# rc.local
-#
+#     if [[ ! -f /etc/rc.local ]]; then
+#       sudo tee "/etc/rc.local" << EOF
+# #!/bin/sh -e
+# #
+# # rc.local
+# #
 
-if test -d /etc/boot.d ; then
-  run-parts /etc/boot.d
-fi
+# if test -d /etc/boot.d ; then
+#   run-parts /etc/boot.d
+# fi
 
-EOF
-    fi
+# EOF
+#     fi
 
-    local cmd="/bin/bash /etc/rc.local"
-    echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
+#     local cmd="/bin/bash /etc/rc.local"
+#     echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
 
-    local profile_rclocal="/etc/profile.d/rclocal.sh"
-    sudo tee "${profile_rclocal}" << EOF
-#!/bin/bash
+#     local profile_rclocal="/etc/profile.d/rclocal.sh"
+#     sudo tee "${profile_rclocal}" << EOF
+# #!/bin/bash
 
-# Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+# # Check if we have Windows Path
+# if ( which cmd.exe >/dev/null ); then
 
-  sudo ${cmd}
-fi
+#   sudo ${cmd}
+# fi
 
-EOF
-    sudo mkdir -p /etc/boot.d
+# EOF
+#     sudo mkdir -p /etc/boot.d
 
-  else
-    echo "Skipping rc.local"
+#   else
+#     echo "Skipping rc.local"
 
-    return 1
-  fi
+#     return 1
+#   fi
 
-}
+# }
 
 function enable_ssh() {
 
-  if (confirm --title "SSH Server" --yesno "Would you like to enable SSH Server?" 10 60) ; then
+  if (confirm --title "SSH Server" --yesno "Would you like to install and enable SSH Server?" 10 60) ; then
+
+    echo "Installing SSH Server..."
+    sudo dnf install -y openssh-server
 
     echo "Enabling SSH Server..."
 
@@ -93,11 +96,12 @@ function enable_ssh() {
     echo "UsePrivilegeSeparation no"  | sudo tee -a ${sshd_file}
     echo "PasswordAuthentication yes" | sudo tee -a ${sshd_file}
 
-    sudo service ssh --full-restart
+    sudo systemctl enable
+    sudo systemctl restart
 
     sshd_status=$(service ssh status)
     if [[ $sshd_status = *"is not running"* ]]; then
-      sudo service ssh --full-restart > /dev/null 2>&1
+      sudo  > /dev/null 2>&1
     fi
 
     local startSsh="/usr/bin/start-ssh"
@@ -145,10 +149,10 @@ function main() {
   local menu_choice=$(
 
     menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
-      "CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
-      "KEYCHAIN" "Install Keychain, the OpenSSH key manager" off \
-      "LAMP" "Install LAMP Stack" off \
-      "RCLOCAL" "Enable running scripts at startup from rc.local " off \
+      #"CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
+      #"KEYCHAIN" "Install Keychain, the OpenSSH key manager" off \
+      #"LAMP" "Install LAMP Stack" off \
+      #"RCLOCAL" "Enable running scripts at startup from rc.local " off \
       "SSH" "Enable SSH server" off \
 
   # shellcheck disable=SC2188
@@ -158,25 +162,25 @@ function main() {
     return 1
   fi
 
-  if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
-    echo "CASSANDRA"
-    bash "${SetupDir}"/cassandra.sh "$@"
-  fi
+  # if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
+  #   echo "CASSANDRA"
+  #   bash "${SetupDir}"/cassandra.sh "$@"
+  # fi
 
-  if [[ ${menu_choice} == *"KEYCHAIN"* ]] ; then
-    echo "KEYCHAIN"
-    bash "${SetupDir}"/keychain.sh "$@"
-  fi
+  # if [[ ${menu_choice} == *"KEYCHAIN"* ]] ; then
+  #   echo "KEYCHAIN"
+  #   bash "${SetupDir}"/keychain.sh "$@"
+  # fi
 
-  if [[ ${menu_choice} == *"LAMP"* ]] ; then
-    echo "LAMP"
-    bash "${SetupDir}"/lamp.sh "$@"
-  fi
+  # if [[ ${menu_choice} == *"LAMP"* ]] ; then
+  #   echo "LAMP"
+  #   bash "${SetupDir}"/lamp.sh "$@"
+  # fi
 
-  if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then
+  # if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then
 
-    enable_rclocal
-  fi
+  #   enable_rclocal
+  # fi
 
   if [[ ${menu_choice} == *"SSH"* ]] ; then
 
