@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SetupDir="/usr/share/pengwin-setup.d"
+SetupDir="/usr/local/pengwin-setup.d"
 
 export VERSION="1.2a"
 
@@ -38,7 +38,7 @@ function check_upgrades() {
   # Check if there's any upgrades to pengwin-setup / pengwin-base
   echo "Running upgrade check..."
   # shellcheck disable=SC2155
-  local upgrd_check="$(sudo dnf check-upgrade --show-upgraded --assume-no | grep pengwin)"
+  local upgrd_check="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
   if [[ "${upgrd_check}" == *"pengwin"* ]]; then
     echo "Pengwin core package upgrades found"
     if (confirm --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
@@ -48,12 +48,19 @@ function check_upgrades() {
       upgrade_packages pengwin-base pengwin-setup
     fi
   elif [[ ${JUST_UPDATE} ]]; then
-    upgrade_packages
+    upgrade_packages 
   fi
 
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
     sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 >/dev/null 2>&1
+  
+  else
+    # Force iproute2 5.8
+    if [[ $( dpkg-query -s "iproute2" 2>/dev/null | grep -c "Version: 5\.8.*" ) == 0 ]]; then
+      sudo apt-get install -q -y --allow-downgrades iproute2=5.8.0-1
+    fi
+
   fi
 }
 
