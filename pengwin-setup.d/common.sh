@@ -3,6 +3,8 @@
 declare -a CMD_MENU_OPTIONS
 export CMD_MENU_OPTIONS
 
+export LANG=en_US.utf8
+
 function process_arguments() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -204,23 +206,23 @@ function setup_env() {
 
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   export wHomeWinPath
-
+  
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
   export wHome
-
+  
   readonly CANCELLED="CANCELLED"
   export CANCELLED
-
+  
   readonly WIN_CUR_VER="$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | grep -E -o '([0-9]{5})' | cut -d ' ' -f 2)"
   export WIN_CUR_VER
+  
 
-
-  SetupDir="/usr/share/pengwin-setup.d"
+  SetupDir="/usr/local/pengwin-setup.d"
   export SetupDir
-
-  readonly GOVERSION="1.15.2"
+  
+  readonly GOVERSION="1.15.8"
   export GOVERSION
-
+  
 }
 
 function install_packages() {
@@ -233,7 +235,7 @@ function update_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo apt-get update -y -q "$@"
   else
-    sudo debconf-apt-process -- apt-get update -y "$@"
+    sudo debconf-apt-progress -- apt-get update -y "$@"
   fi
 }
 
