@@ -73,7 +73,7 @@ jobs:
 
             # Update apt repositories
             apt-get -y -q update
-            apt-get install -q -y --allow-downgrades libc6=2.31-1.wsl locales=2.31-1.wsl libc-bin=2.31-1.wsl
+            apt-get install -q -y --allow-downgrades iproute2=5.8.0-1
             apt-get -y -q autoremove
 
       - run:
@@ -96,9 +96,6 @@ jobs:
           name: Install packageloud cli
           command: gem install package_cloud
       - run:
-          name: Push deb package buster
-          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
-      - run:
           name: Push deb package bullseye
           command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
   deploydevdeb:
@@ -111,9 +108,6 @@ jobs:
       - run:
           name: Install packageloud cli
           command: gem install package_cloud
-      - run:
-          name: Push deb package buster
-          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
       - run:
           name: Push deb package bullseye
           command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
