@@ -19,21 +19,21 @@ function check_upgrades() {
   echo "Updating package database"
 
   # shellcheck disable=SC2155
-  local debian_security_ok="$(cat /etc/apt/sources.list 2>&1 | grep -c "https://deb.debian.org/debian-security testing/updates")"
-  if [[ ${debian_security_ok} != 0 ]]; then
-    sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
-  fi
+  #local debian_security_ok="$(cat /etc/apt/sources.list 2>&1 | grep -c "https://deb.debian.org/debian-security testing/updates")"
+  #if [[ ${debian_security_ok} != 0 ]]; then
+  #  sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
+  #fi
 
   update_packages --allow-releaseinfo-change
 
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
-  if [[ -f "/etc/apt/.dist-upgrade" ]]; then
-    echo "Distribution upgrade flag noticed! Alerting user"
-    if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
-      sudo rm /etc/apt/.dist-upgrade
-      sudo apt-get dist-upgrade -y
-    fi
-  fi
+  #if [[ -f "/etc/apt/.dist-upgrade" ]]; then
+  #  echo "Distribution upgrade flag noticed! Alerting user"
+  #  if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
+  #    sudo rm /etc/apt/.dist-upgrade
+  #    sudo apt-get dist-upgrade -y
+  #  fi
+  #fi
 
   # Check if there's any upgrades to pengwin-setup / pengwin-base
   echo "Running upgrade check..."
@@ -44,11 +44,12 @@ function check_upgrades() {
     if (confirm --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
 
       # Ensure that packages get updated without affecting other held packages like udev
-      sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
+      # TODO: sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1 
+      sudo dnf versionlock delete pengwin-setup pengwin-base >/dev/null 2>&1
       upgrade_packages pengwin-base pengwin-setup
     fi
   elif [[ ${JUST_UPDATE} ]]; then
-    upgrade_packages
+    upgrade_packages 
   fi
 
   if [[ -z ${WSL2} ]]; then
@@ -99,13 +100,13 @@ function install_menu() {
   local menu_choice=$(
 
     menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 16 99 8 \
-      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)    " off \
+      #"EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)    " off \
       "GUI" "Install an X server or various other GUI applications" off \
       "MAINTENANCE" "Various maintenance tasks like home backup" off \
-      "PROGRAMMING" "Install various programming languages support" off \
-      "SERVICES" "Enable services support (SSH, rc.local)" off \
-      "SETTINGS" "Change various settings in Pengwin" off \
-      "TOOLS" "Install applications or servers" off \
+      #"PROGRAMMING" "Install various programming languages support" off \
+      #"SERVICES" "Enable services support (SSH, rc.local)" off \
+      #"SETTINGS" "Change various settings in Pengwin" off \
+      #"TOOLS" "Install applications or servers" off \
       "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" off
 
     # shellcheck disable=SC2188
@@ -120,11 +121,11 @@ function install_menu() {
 
   local exit_status
 
-  if [[ ${menu_choice} == *"EDITORS"* ]]; then
-    echo "EDITORS"
-    bash ${SetupDir}/editors.sh "$@"
-    exit_status=$?
-  fi
+  # if [[ ${menu_choice} == *"EDITORS"* ]]; then
+  #   echo "EDITORS"
+  #   bash ${SetupDir}/editors.sh "$@"
+  #   exit_status=$?
+  # fi
 
   if [[ ${menu_choice} == *"GUI"* ]]; then
     echo "GUI"
@@ -138,29 +139,29 @@ function install_menu() {
     exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"PROGRAMMING"* ]]; then
-    echo "PROGRAMMING"
-    bash ${SetupDir}/programming.sh "$@"
-    exit_status=$?
-  fi
+  # if [[ ${menu_choice} == *"PROGRAMMING"* ]]; then
+  #   echo "PROGRAMMING"
+  #   bash ${SetupDir}/programming.sh "$@"
+  #   exit_status=$?
+  # fi
 
-  if [[ ${menu_choice} == *"SERVICES"* ]]; then
-    echo "SERVICES"
-    bash ${SetupDir}/services.sh "$@"
-    exit_status=$?
-  fi
+  #if [[ ${menu_choice} == *"SERVICES"* ]]; then
+  #  echo "SERVICES"
+  #  bash ${SetupDir}/services.sh "$@"
+  #  exit_status=$?
+  #fi
 
-  if [[ ${menu_choice} == *"SETTINGS"* ]]; then
-    echo "SETTINGS"
-    bash ${SetupDir}/settings.sh "$@"
-    exit_status=$?
-  fi
+  # if [[ ${menu_choice} == *"SETTINGS"* ]]; then
+  #   echo "SETTINGS"
+  #   bash ${SetupDir}/settings.sh "$@"
+  #   exit_status=$?
+  # fi
 
-  if [[ ${menu_choice} == *"TOOLS"* ]]; then
-    echo "TOOLS"
-    bash ${SetupDir}/tools.sh "$@"
-    exit_status=$?
-  fi
+  # if [[ ${menu_choice} == *"TOOLS"* ]]; then
+  #   echo "TOOLS"
+  #   bash ${SetupDir}/tools.sh "$@"
+  #   exit_status=$?
+  # fi
 
   if [[ ${menu_choice} == *"UNINSTALL"* ]]; then
     echo "UNINSTALL"
@@ -190,15 +191,18 @@ fi
 # being updated while running other operations from pengwin-setup
 # install menu
 echo "Holding pengwin-base & pengwin-setup to ensure no changes while operating"
-sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
+# sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
+sudo dnf versionlock add pengwin-setup >/dev/null 2>&1 # pengwin-base should be placed there
 
-sudo apt-mark unhold libc6 >/dev/null 2>&1
+#sudo apt-mark unhold libc6 >/dev/null 2>&1
+sudo dnf versionlock remove libc6 >/dev/null 2>&1
 
 install_menu "$@"
 
 # Unhold our packages
 echo "Unholding pengwin-base & pengwin-setup"
-sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
+#sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
+sudo dnf versionlock remove pengwin-setup >/dev/null 2>&1 # pengwin-base should be placed there
 
 ByeMessage
 exit 0

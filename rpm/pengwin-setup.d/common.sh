@@ -91,9 +91,9 @@ function cleantmp() {
 
 function updateupgrade() {
   echo "Applying available package upgrades from repositories."
-  sudo apt-get upgrade -y
+  sudo dnf upgrade -y
   echo "Removing unnecessary packages."
-  sudo apt-get autoremove -y
+  sudo dnf autoremove -y
 }
 
 function command_check() {
@@ -204,42 +204,44 @@ function setup_env() {
 
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   export wHomeWinPath
-
+  
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
   export wHome
-
+  
   readonly CANCELLED="CANCELLED"
   export CANCELLED
-
+  
   readonly WIN_CUR_VER="$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | grep -E -o '([0-9]{5})' | cut -d ' ' -f 2)"
   export WIN_CUR_VER
-
+  
+  readonly PROCESSOR_ARCH="$(lscpu | grep Architecture | cut -d: -f2 | cut -c 21-26)"
+  export PROCESSOR_ARCH
 
   SetupDir="/usr/share/pengwin-setup.d"
   export SetupDir
-
+  
   readonly GOVERSION="1.15.2"
   export GOVERSION
-
+  
 }
 
 function install_packages() {
 
-  sudo apt-get install -y -q "$@"
+  sudo dnf install -y -q "$@"
 }
 
 function update_packages() {
 
   if [[ ${NON_INTERACTIVE} ]]; then
-    sudo apt-get update -y -q "$@"
+    sudo dnf update -y -q "$@"
   else
-    sudo debconf-apt-process -- apt-get update -y "$@"
+    sudo dnf update -y "$@"
   fi
 }
 
 function upgrade_packages() {
 
-  sudo apt-get upgrade -y -q "$@"
+  sudo dnf upgrade -y -q "$@"
 }
 
 function add_fish_support() {
