@@ -41,7 +41,21 @@ fi
 
 EOF
 
-  add_fish_support 'dbus'
+  sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
+
+  sudo tee "${__fish_sysconf_dir}/dbus.fish" <<EOF
+#!/bin/fish
+
+# Check if we have Windows Path
+if which cmd.exe >/dev/null
+
+  for line in (dbus-launch | string match '*=*')
+    set -l kv (string split -m 1 = -- \$line )
+    set -gx \$kv[1] (string trim -c '\\'"' -- \$kv[2])
+  end
+end
+
+EOF
 
   touch "${HOME}"/.should-restart
 
