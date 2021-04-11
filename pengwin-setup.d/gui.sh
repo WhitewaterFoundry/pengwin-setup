@@ -8,7 +8,7 @@ declare SetupDir
 
 function main() {
 
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
     menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 9 \
@@ -45,7 +45,7 @@ function main() {
 
   if [[ ${menu_choice} == *"NLI"* ]]; then
     echo "NLI"
-    # shellcheck disable=SC2155
+    # shellcheck disable=SC2155,SC2188
     local nli_choice=$(
 
       menu --title "Non-Latin Input" --radiolist --separate-output "Select your choice of input [SPACE to select, ENTER to confirm]:" 9 70 2 \
