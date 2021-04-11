@@ -49,7 +49,7 @@ EOF
 # Check if we have Windows Path
 if which cmd.exe >/dev/null
 
-  for line in (dbus-launch | string match '*=*')
+  for line in (timeout 2s dbus-launch | string match '*=*')
     set -l kv (string split -m 1 = -- \$line )
     set -gx \$kv[1] (string trim -c '\\'"' -- \$kv[2])
   end
