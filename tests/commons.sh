@@ -18,6 +18,7 @@ function oneTimeSetUp() {
   sudo chmod 777 -R "${SHUNIT_TMPDIR}"
 
   # Add the stub path
+
   echo "PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
   echo 'TERM="xterm-256color"' | sudo tee -a /etc/profile.d/00-a.sh
 

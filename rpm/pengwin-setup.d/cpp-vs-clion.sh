@@ -30,7 +30,7 @@ function main {
     # shellcheck disable=SC2155
     local dist="$(uname -m)"
     if [[ ${dist} == "x86_64" ]] ; then
-      wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.19.4268486/cmake-3.19.4268486-MSVC_2-Linux-${dist/86_/}.sh"
+      wget -O cmake.sh "https://github.com/microsoft/CMake/releases/download/v3.17.3587832/cmake-3.17.3587832-MSVC_2-Linux-${dist/86_/}.sh"
       sudo bash cmake.sh  --skip-license --prefix=/usr/local
     fi
 

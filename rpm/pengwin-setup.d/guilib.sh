@@ -8,11 +8,12 @@ declare WIN_CUR_VER
 if (confirm --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75); then
   echo "Installing GUILIB"
 
-  install_packages xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils libnss3 libegl1-mesa
+  install_packages xclip adwaita-gtk2-theme gtk-murrine-engine dbus dbus-x11 glx-utils qt5-qtbase binutils nss mesa-libEGL
 
+  # TODO: Is this already needed?
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
-    sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+    sudo strip --remove-section=.note.ABI-tag /usr/lib64/libQt5Core.so.5
   fi
 
   echo "Configuring dbus if you already had it installed. If not, you might see some errors, and that is okay."
@@ -41,21 +42,7 @@ fi
 
 EOF
 
-  sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
-
-  sudo tee "${__fish_sysconf_dir}/dbus.fish" <<EOF
-#!/bin/fish
-
-# Check if we have Windows Path
-if which cmd.exe >/dev/null
-
-  for line in (timeout 2s dbus-launch | string match '*=*')
-    set -l kv (string split -m 1 = -- \$line )
-    set -gx \$kv[1] (string trim -c '\\'"' -- \$kv[2])
-  end
-end
-
-EOF
+  add_fish_support 'dbus'
 
   touch "${HOME}"/.should-restart
 
