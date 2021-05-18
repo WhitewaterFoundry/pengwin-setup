@@ -20,7 +20,7 @@ function main() {
       "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " off \
       "CASSANDRA" "Remove Cassandra NoSQL server" off \
       "COLORTOOL" "Remove ColorTool console color scheme setter" off \
-      "DO" "Remove Digital Ocean CLI tools" off \
+      "DIGITALOCEAN" "Remove Digital Ocean CLI tools" off \
       "DOCKER" "Remove secure bridge between Pengwin and Docker Desktop" off \
       "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" off \
       "FCITX" "Remove all fcitx improved non-Latin input support" off \
@@ -94,8 +94,8 @@ function main() {
     bash "${UninstallDir}"/colortool.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"DO"* ]] ; then
-    echo "DO"
+  if [[ ${menu_choice} == *"DIGITALOCEAN"* ]] ; then
+    echo "DIGITALOCEAN"
     bash "${UninstallDir}"/doctl.sh "$@"
   fi
 
