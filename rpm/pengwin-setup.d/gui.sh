@@ -12,14 +12,9 @@ function main() {
   local menu_choice=$(
 
     menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 9 \
-      #"NLI" "Install fcitx or iBus for improved non-Latin input support" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
       "HIDPI" "Configure Qt and GTK for HiDPI displays" off \
-      #"STARTMENU" "Generates Windows Start Menu shortcuts for GUI applications" off \
-      #"TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
-      #"SYNAPTIC" "Install the Synaptic package manager" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
-      #"WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " off \
       "X410" "Configure X410 to start on Pengwin launch or view a link to install it" off \
 
   3>&1 1>&2 2>&3)
