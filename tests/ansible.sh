@@ -13,7 +13,7 @@ function testMain() {
 
   command -v /usr/bin/ansible
   assertEquals "Ansible was not installed" "0" "$?"
-  assertEquals "Ansible was not installed" "1" "$(run_command_as_testuser /usr/bin/ansible --version | grep -c '2.9')"
+  assertEquals "Ansible was not installed" "1" "$(run_command_as_testuser /usr/bin/ansible --version | grep -c '2.10')"
 }
 
 function testUninstall() {

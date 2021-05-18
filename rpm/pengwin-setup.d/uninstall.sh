@@ -13,43 +13,9 @@ function main() {
   local menu_choice=$(
 
     menu --title "Uninstall Menu" --checklist --separate-output "Uninstall applications and packages installed by pengwin-setup\n[SPACE to select, ENTER to confirm]:" 20 95 12 \
-      #"ANSIBLE" "Remove Ansible Playbook deployment tools" off \
-      #"AWS" "Remove AWS CLI tools" off \
-      #"AZURE" "Remove Azure CLI tools" off \
-      #"BASH-RL" "Remove optimized Bash readline settings" off \
-      #"C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " off \
-      #"CASSANDRA" "Remove Cassandra NoSQL server" off \
-      #"COLORTOOL" "Remove ColorTool console color scheme setter" off \
-      #"DO" "Remove Digital Ocean CLI tools" off \
-      #"DOCKER" "Remove secure bridge between Pengwin and Docker Desktop" off \
-      #"DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" off \
-      #"FCITX" "Remove all fcitx improved non-Latin input support" off \
-      #"FISH" "Remove FISH Shell" off \
-      #"GO" "Remove Go language" off \
       "GUILIB" "Remove base GUI application libraries" off \
       "HIDPI" "Remove Qt and GTK HiDPI modifications" off \
-      #"HOMEBREW" "Remove the Homebrew package manager" off \
-      #"IBM" "Remove IBM Cloud CLI tools" off \
-      #"IBUS" "Remove all ibus improved non-Latin input support" off \
-      #"JAVA" "Remove SDKMan its installed Java SDKs" off \
-      #"KEYCHAIN" "Remove Keychain OpenSSH key manager" off \
-      #"KUBERNETES" "Remove Kubernetes tooling" off \
-      #"LAMP" "Remove LAMP stack" off \
-      #"NIM" "Remove choosenim and any installed Nim components" off \
-      #"NODEJS" "Remove Node.js, npm and Yarn (if installed)" off \
-      #"OPENSTACK" "Remove OpenStack CLI tools" off \
-      #"POWERSHELL" "Remove Powershell for Linux" off \
-      #"PYENV" "Remove pyenv, its Python version(s) and modules" off \
-      #"RCLOCAL" "Remove rclocal support (the file /etc/rc.local) is kept" off \
-      #"RUBY" "Remove rbenv, Ruby version(s) and Rails (if installed)" off \
-      #"RUST" "Remove Rust and rustup toolchain installer" off \
-      #"STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" off \
-      #"SSH" "Remove SSH server" off \
-      #"TERRAFORM" "Remove Terraform CLI tools" off \
       "VCXSRV" "Remove VcXsrv X-server" off \
-      #"VSCODE" "Remove Visual Studio Code for Linux" off \
-      #"WINTHEME" "Remove Windows 10 theme and LXAppearance" off \
-      #"WSLTTY" "Remove WSLtty" off \
       "X410" "Remove the X410 X-server autostart" off \
 
   # shellcheck disable=SC2188
