@@ -133,10 +133,10 @@ function install_doctl() {
 function install_kubectl() {
 
   echo "Installing Helm"
-  curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+  curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-  wget https://raw.githubusercontent.com/helm/helm/master/scripts/completions.bash
-  sudo cp completions.bash /etc/bash_completion.d/helm_completions.bash
+  helm completion bash | sudo tee /etc/bash_completion.d/helm
+  helm completion fish >~/.config/fish/completions/helm.fish
 
   echo "Installing kubectl"
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -223,7 +223,7 @@ function install_kubernetes() {
     local kube_ctl="${wHome}/.kube/config"
 
     while [[ ! -f ${kube_ctl} ]]; do
-      if ! (whiptail --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker Desktop. Would you like to try again?" 9 75); then
+      if ! (confirm --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker Desktop. Would you like to try again?" 9 75); then
         return
 
       fi
@@ -273,7 +273,7 @@ function install_openstack() {
 function main() {
   # shellcheck disable=SC2155
   local choice=$(
-    whiptail --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
+    menu --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
       "AWS" "AWS CLI" off \
       "AZURE" "Azure CLI" off \
       "DO" "Digital Ocean CLI" off \
