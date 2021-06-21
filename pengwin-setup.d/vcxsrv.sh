@@ -34,23 +34,28 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
 
   echo "Configuring VcxSrv to start on Pengwin launch"
   sudo bash -c 'cat > /etc/profile.d/01-vcxsrv.sh' <<EOF
-#!/bin/bash
+#!/bin/sh
 
-if [[ -n \${WSL2} ]]; then
-  (cmd.exe /C "${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac &> /dev/null &)
+if [ -n "\${WSL2}" ]; then
+  (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& C:\Users\hcram\.vcxsrv\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac >/dev/null 2>&1 &)
 else
-  (cmd.exe /C "${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl &> /dev/null &)
+  (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& C:\Users\hcram\.vcxsrv\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl >/dev/null 2>&1 &)
 fi
+
+export VCXSRV=yes
+
 EOF
+  add_fish_support '01-vcxsrv'
 
   unset version
   unset VcxsrvUrl
   unset wVcxsrvDir
   unset VcxsrvDir
-  
+
   # Avoid collision with the other XServer
   sudo rm -f /etc/profile.d/02-x410.sh
-  
+  sudo rm -f "${__fish_sysconf_dir:=/etc/fish/conf.d}/02-x410.fish"
+
   touch "${HOME}"/.should-restart
 else
   echo "Skipping VcxSrv"

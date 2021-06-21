@@ -7,6 +7,7 @@ function main() {
 
   echo "Uninstalling Qt and GTK HiDPI modifications"
   sudo_rem_file "/etc/profile.d/hidpi.sh"
+  sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/hidpi.fish"
 
 }
 

@@ -24,6 +24,7 @@ function main() {
 
   echo "Removing PATH modifier..."
   sudo_rem_file "/etc/profile.d/01-vcxsrv.sh"
+  sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/01-vcxsrv.fish"
 
 }
 
