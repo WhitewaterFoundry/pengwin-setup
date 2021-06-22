@@ -12,6 +12,8 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   echo "Installing required install dependencies"
   install_packages wget unzip p7zip-full mesa-utils
 
+  createtmp
+
   echo "Downloading VcxSrv installer"
   wget -O vcxsrvinstaller.exe "$VcxsrvUrl"
 
@@ -31,7 +33,6 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
     echo "... not found!"
   fi
   
-  createtmp
   echo "Creating vcxsrv install directory: $VcxsrvDir"
   mkdir -p "${VcxsrvDir}"
 
