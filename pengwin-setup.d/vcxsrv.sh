@@ -28,7 +28,7 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
     fi
 
     # now safe to delete
-    rm -rf "$vcxsrv_dir"
+    rm -rf "${VcxsrvDir}"
   else
     echo "... not found!"
   fi
