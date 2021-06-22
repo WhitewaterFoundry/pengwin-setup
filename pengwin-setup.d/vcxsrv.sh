@@ -29,8 +29,6 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
 
     # now safe to delete
     rm -rf "${VcxsrvDir}"
-  else
-    echo "... not found!"
   fi
   
   echo "Creating vcxsrv install directory: $VcxsrvDir"
@@ -66,6 +64,8 @@ EOF
   sudo rm -f /etc/profile.d/02-x410.sh
   sudo rm -f "${__fish_sysconf_dir:=/etc/fish/conf.d}/02-x410.fish"
 
+  source /etc/profile.d/01-vcxsrv.sh
+  
   touch "${HOME}"/.should-restart
 else
   echo "Skipping VcxSrv"
