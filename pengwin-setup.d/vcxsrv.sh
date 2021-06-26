@@ -12,25 +12,33 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   echo "Installing required install dependencies"
   install_packages wget unzip p7zip-full mesa-utils
 
+  createtmp
+
+  echo "Downloading VcxSrv installer"
+  wget -O vcxsrvinstaller.exe "$VcxsrvUrl"
+
   wVcxsrvDir="$(cmd-exe /C "echo %USERPROFILE%\.vcxsrv" | tr -d '\r')"
   VcxsrvDir="$(wslpath "${wVcxsrvDir}")"
-  if [[ ! -d "${VcxsrvDir}" ]]; then
-    createtmp
-    echo "Creating vcxsrv install directory: $VcxsrvDir"
-    mkdir -p "${VcxsrvDir}"
+  
+  if [[ -d "${VcxsrvDir}" ]]; then
+    echo "Uninstalling previous version"
+    if cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe'; then
+      echo "vcxsrv.exe running. Killing process..."
+      cmd-exe /C taskkill /IM 'vcxsrv.exe' /F
+    fi
 
-    echo "Downloading VcxSrv installer"
-    wget -O vcxsrvinstaller.exe "$VcxsrvUrl"
-
-    echo "Unpacking installer executable"
-    mkdir vcxsrv
-    7z x vcxsrvinstaller.exe -o"${VcxsrvDir}"
-
-    cleantmp
-  else
-    echo "${VcxsrvDir} already exists, leaving in place."
-    echo "To reinstall VcXsrv, please delete ${VcxsrvDir} and run this installer again"
+    # now safe to delete
+    rm -rf "${VcxsrvDir}"
   fi
+  
+  echo "Creating vcxsrv install directory: $VcxsrvDir"
+  mkdir -p "${VcxsrvDir}"
+
+  echo "Unpacking installer executable"
+  mkdir vcxsrv
+  7z x vcxsrvinstaller.exe -o"${VcxsrvDir}"
+
+  cleantmp
 
   echo "Configuring VcxSrv to start on Pengwin launch"
   sudo bash -c 'cat > /etc/profile.d/01-vcxsrv.sh' <<EOF
@@ -56,6 +64,8 @@ EOF
   sudo rm -f /etc/profile.d/02-x410.sh
   sudo rm -f "${__fish_sysconf_dir:=/etc/fish/conf.d}/02-x410.fish"
 
+  source /etc/profile.d/01-vcxsrv.sh
+  
   touch "${HOME}"/.should-restart
 else
   echo "Skipping VcxSrv"
