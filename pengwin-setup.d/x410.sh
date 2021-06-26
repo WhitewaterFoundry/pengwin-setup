@@ -19,7 +19,7 @@ fi
 export X410=yes
 
 EOF
-    add_fish_support '02-x410'
+    #add_fish_support '02-x410'
 
     # Avoid collision with the other XServer
     sudo rm -f /etc/profile.d/01-vcxsrv.sh

@@ -45,7 +45,7 @@ fi
 export VCXSRV=yes
 
 EOF
-  add_fish_support '01-vcxsrv'
+  #add_fish_support '01-vcxsrv'
 
   unset version
   unset VcxsrvUrl
