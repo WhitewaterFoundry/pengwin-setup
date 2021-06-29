@@ -17,7 +17,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 
   echo "Configuring dbus if you already had it installed. If not, you might see some errors, and that is okay."
   if [[ ${WIN_CUR_VER} -gt 17063 ]]; then
-    sudo rm /etc/dbus-1/session.conf
+    sudo rm -f /etc/dbus-1/session.conf
     sudo sed -i 's$<listen>.*</listen>$<listen>unix:tmpdir=/tmp</listen>$' /usr/share/dbus-1/session.conf
     sudo sed -i 's$<auth>ANONYMOUS</auth>$<auth>EXTERNAL</auth>$' /usr/share/dbus-1/session.conf
     sudo sed -i 's$<allow_anonymous/></busconfig>$</busconfig>$' /usr/share/dbus-1/session.conf
