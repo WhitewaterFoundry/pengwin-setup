@@ -40,8 +40,8 @@ function install_pyenv() {
     export PATH="${HOME}/.pyenv/bin:$PATH"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
-    pyenv install -s 3.9.4
-    pyenv global 3.9.4
+    pyenv install -s 3.9.6
+    pyenv global 3.9.6
 
     touch "${HOME}"/.should-restart
 
