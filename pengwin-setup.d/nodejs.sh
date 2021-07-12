@@ -19,7 +19,7 @@ echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
   menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 90 4 \
-    "N" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
+    "NVERMAN" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
     "NVM" "Install with nvm version manager (fish shell compat. EXPERIMENTAL)" off \
     "LATEST" "Install latest version via APT package manager" off \
     "LTS" "Install LTS version via APT package manager" off
@@ -73,7 +73,7 @@ EOF
   eval "$(cat "${NPM_WIN_PROFILE}")"
 fi
 
-if [[ ${menu_choice} == *"N"* ]]; then
+if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   echo "Ensuring we have build-essential installed"
   sudo apt-get -y -q install build-essential
 
@@ -118,9 +118,11 @@ EOF
   # Add npm to bash completion
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
+
+  touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat ${HOME}/.bashrc | grep '^export NVM_DIR=')"
@@ -171,10 +173,12 @@ EOF
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
+
+  touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
   echo "Installing latest node.js version from NodeSource repository"
 
-  major_vers=15
+  major_vers=16
   nodesrc_url="https://deb.nodesource.com/setup_${major_vers}.x"
   #curl -sL "$nodesrc_url" -o repo-install.sh
   #sudo bash repo-install.sh
