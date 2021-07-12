@@ -99,6 +99,8 @@ function main() {
     3>&1 1>&2 2>&3
   )
 
+  echo "Selected:" "${menu_choice}"
+
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
   fi
