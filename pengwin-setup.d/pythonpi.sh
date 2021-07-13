@@ -44,8 +44,9 @@ function install_pyenv() {
     export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
-    pyenv install -s 3.9.5
-    pyenv global 3.9.5
+
+    pyenv install -s 3.9.6
+    pyenv global 3.9.6
 
     touch "${HOME}"/.should-restart
 
@@ -102,6 +103,8 @@ function main() {
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
   )
+
+  echo "Selected:" "${menu_choice}"
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
