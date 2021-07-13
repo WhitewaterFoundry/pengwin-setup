@@ -10,11 +10,11 @@ if (confirm --title "HiDPI" --yesno "Would you like to configure Qt and GTK for 
   sudo tee "/etc/profile.d/hidpi.sh" <<EOF
 #!/bin/sh
 
-scale_factor=${scale_factor}
-
-if [ -z "\${VCXSRV}" ]; then
-  #VCXSRV automatically sets the right dpi value and it conflicts with this
+if [ -z "\${XRANDRDPI}" ] || [ "\${XRANDRDPI}" -eq 96 ]; then
+  scale_factor=${scale_factor}
   export QT_SCALE_FACTOR=\${scale_factor}
+else
+  scale_factor=$(echo "\${XRANDRDPI} / 96" | bc -l)
 fi
 
 # shellcheck disable=SC2155
