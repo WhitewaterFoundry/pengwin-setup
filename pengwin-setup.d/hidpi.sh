@@ -14,7 +14,7 @@ if [ -z "\${XRANDRDPI}" ] || [ "\${XRANDRDPI}" -eq 96 ]; then
   scale_factor=${scale_factor}
   export QT_SCALE_FACTOR=\${scale_factor}
 else
-  scale_factor=$(echo "\${XRANDRDPI} / 96" | bc -l)
+  scale_factor=\$(echo "\${XRANDRDPI} / 96" | bc -l)
 fi
 
 # shellcheck disable=SC2155
