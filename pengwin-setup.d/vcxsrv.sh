@@ -50,6 +50,7 @@ else
   (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl >/dev/null 2>&1 &)
 fi
 
+export XRANDRDPI=$(timeout 2s xdpyinfo | grep resolution | sed "s/.*resolution:[ ]*\([0-9]*\)x.*/\1/")
 export VCXSRV=yes
 
 EOF
