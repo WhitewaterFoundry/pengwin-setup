@@ -43,4 +43,5 @@ function testUninstall() {
   assertEquals "NUGet was not uninstalled" "1" "$?"
 }
 
+# shellcheck disable=SC1091
 source shunit2

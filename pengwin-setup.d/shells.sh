@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -65,6 +65,28 @@ EOF
     cleantmp
   else
     echo "Skipping oh-my-zsh"
+    local skipped_oh_my_zsh=1
+  fi
+
+  if [[ -n ${skipped_oh_my_zsh} ]]; then
+    if (confirm --title "zsh" --yesno "Would you like to download and install prezto? This is a framework for configuring your zsh installation" 8 95); then
+      # Backup zshrc if exists
+      if [[ -f "${HOME}/.zshrc" ]]; then
+        mv "${HOME}/.zshrc" "${HOME}/.zshrc.back"
+      fi
+
+      git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+      for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/*; do
+        # Check if file ends in .md
+        [[ $rcfile =~ .md$ ]] && continue
+        # Create symbolic link in home directory
+        ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.$(basename $rcfile)"
+      done
+
+    else
+      echo "Skipping prezto"
+    fi
   fi
 
   if (confirm --title "zsh" --yesno "Would you like to set zsh as the default shell?" 8 55); then
@@ -118,6 +140,10 @@ function installAndSetShell() {
   )
 
   echo "Selected:" "${menu_choice}"
+
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
+    return 1
+  fi
 
   if [[ $menu_choice == *"ZSH"* ]]; then
     echo "Installing zsh..."

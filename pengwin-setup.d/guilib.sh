@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 declare WIN_CUR_VER
@@ -17,7 +17,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 
   echo "Configuring dbus if you already had it installed. If not, you might see some errors, and that is okay."
   if [[ ${WIN_CUR_VER} -gt 17063 ]]; then
-    sudo rm /etc/dbus-1/session.conf
+    sudo rm -f /etc/dbus-1/session.conf
     sudo sed -i 's$<listen>.*</listen>$<listen>unix:tmpdir=/tmp</listen>$' /usr/share/dbus-1/session.conf
     sudo sed -i 's$<auth>ANONYMOUS</auth>$<auth>EXTERNAL</auth>$' /usr/share/dbus-1/session.conf
     sudo sed -i 's$<allow_anonymous/></busconfig>$</busconfig>$' /usr/share/dbus-1/session.conf
@@ -31,13 +31,29 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
   eval "$(timeout 2s dbus-launch --auto-syntax)"
 
   sudo tee "/etc/profile.d/dbus.sh" <<EOF
-#!/bin/bash
+#!/bin/sh
 
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
 
   eval "\$(timeout 2s dbus-launch --auto-syntax)"
 fi
+
+EOF
+
+  sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
+
+  sudo tee "${__fish_sysconf_dir}/dbus.fish" <<EOF
+#!/bin/fish
+
+# Check if we have Windows Path
+if which cmd.exe >/dev/null
+
+  for line in (timeout 2s dbus-launch | string match '*=*')
+    set -l kv (string split -m 1 = -- \$line )
+    set -gx \$kv[1] (string trim -c '\\'"' -- \$kv[2])
+  end
+end
 
 EOF
 

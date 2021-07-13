@@ -1,11 +1,15 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/uninstall/uninstall-common.sh
+# shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
-line_rgx='^[^#]*\bPATH.*/.pyenv/bin'
-line2_rgx='^[^#]*\bpyenv init -'
-line3_rgx='^[^#]*\bpyenv virtualenv-init -'
+line_rgx='^[^#]*\bPYENV_ROOT.*/.pyenv'
+line2_rgx='^[^#]*\bPATH.*PYENV_ROOT.*/bin'
+line3_rgx='^[^#]*\bpyenv init --path'
+line4_rgx='^[^#]*\bpyenv init -'
+line5_rgx='^[^#]*\bPATH.*/.pyenv/bin'
+line6_rgx='^[^#]*\bpyenv virtualenv-init -'
+
 
 function multiclean_file() {
 
@@ -14,6 +18,9 @@ function multiclean_file() {
     clean_file "$1" "$line_rgx"
     clean_file "$1" "$line2_rgx"
     clean_file "$1" "$line3_rgx"
+    clean_file "$1" "$line4_rgx"
+    clean_file "$1" "$line5_rgx"
+    clean_file "$1" "$line6_rgx"
   fi
 
 }

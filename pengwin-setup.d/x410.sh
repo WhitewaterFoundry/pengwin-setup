@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 # check if x410 exists
@@ -16,9 +16,15 @@ else
   (cmd-exe /c x410.exe /wm &> /dev/null &)
 fi
 
+export X410=yes
+
 EOF
+    #add_fish_support '02-x410'
+
     # Avoid collision with the other XServer
     sudo rm -f /etc/profile.d/01-vcxsrv.sh
+    sudo rm -f "${__fish_sysconf_dir:=/etc/fish/conf.d}/01-vcxsrv.fish"
+
     touch "${HOME}"/.should-restart
 
   else

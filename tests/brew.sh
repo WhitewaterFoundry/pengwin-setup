@@ -12,9 +12,7 @@ function testMain() {
   run_pengwinsetup install TOOLS HOMEBREW
 
   assertTrue "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
-
-  assertEquals "Brew was not installed" "1" "$(run_command_as_testuser brew --version | grep -c 'Homebrew 2')"
-
+  assertEquals "Brew was not installed" "1" "$(run_command_as_testuser brew --version | grep -c 'Homebrew 3')"
 }
 
 function testUninstall() {
@@ -28,7 +26,8 @@ function testUninstall() {
 
   assertFalse "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
 
-  assertEquals "Brew was not uninstalled" "0" "$(run_command_as_testuser brew --version | grep -c 'Homebrew 2')"
+  assertEquals "Brew was not uninstalled" "0" "$(run_command_as_testuser brew --version | grep -c 'Homebrew 3')"
 }
 
+# shellcheck disable=SC1091
 source shunit2

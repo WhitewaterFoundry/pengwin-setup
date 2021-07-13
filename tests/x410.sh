@@ -24,4 +24,5 @@ function testUninstall() {
   assertFalse "FILE PROFILE-X410" "[ -f /etc/profile.d/02-x410.sh ]"
 }
 
+# shellcheck disable=SC1091
 source shunit2

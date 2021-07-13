@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=/usr/local/pengwin-setup.d/common.sh
+# shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 function install_pyenv() {
@@ -16,32 +16,37 @@ function install_pyenv() {
 
     if [[ -f "${HOME}"/.bashrc && $(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.bashrc) == 0 ]]; then
       echo "" >>"${HOME}"/.bashrc
-      echo "export PATH=\"\${HOME}/.pyenv/bin:\${PATH}\"" >>"${HOME}"/.bashrc
+      echo "export PYENV_ROOT=\"\${HOME}/.pyenv\"" >>"${HOME}"/.bashrc
+      echo "export PATH=\"\${PYENV_ROOT}/bin:\${PATH}\"" >>"${HOME}"/.bashrc
+      echo "eval \"\$(pyenv init --path)\"" >>"${HOME}"/.bashrc
       echo "eval \"\$(pyenv init -)\"" >>"${HOME}"/.bashrc
-      echo "eval \"\$(pyenv virtualenv-init -)\"" >>"${HOME}"/.bashrc
     fi
 
     if [[ -f "${HOME}"/.zshrc && $(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.zshrc) == 0 ]]; then
       echo "" >>"${HOME}"/.zshrc
-      echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >>"${HOME}"/.zshrc
+      echo "export PYENV_ROOT=\"\${HOME}/.pyenv\"" >>"${HOME}"/.zshrc
+      echo "export PATH=\"\${PYENV_ROOT}/bin:\${PATH}\"" >>"${HOME}"/.zshrc
+      echo "eval \"\$(pyenv init --path)\"" >>"${HOME}"/.zshrc
       echo "eval \"\$(pyenv init -)\"" >>"${HOME}"/.zshrc
-      echo "eval \"\$(pyenv virtualenv-init -)\"" >>"${HOME}"/.zshrc
     fi
 
     # shellcheck disable=SC2002
     if [[ -d "${HOME}"/.config/fish && $(cat "${HOME}"/.config/fish/config.fish 2>/dev/null | grep -c '^[^#]*\bPATH.*/.pyenv/bin') == 0 ]]; then
       echo "" >>"${HOME}"/.config/fish/config.fish
-      echo "set -x PATH \"${HOME}/.pyenv/bin\" \$PATH" >>"${HOME}"/.config/fish/config.fish
+      echo "set -x PYENV_ROOT \"${HOME}/.pyenv\"" >>"${HOME}"/.config/fish/config.fish
+      echo "set -x PATH \"${PYENV_ROOT}/bin\" \$PATH" >>"${HOME}"/.config/fish/config.fish
+      echo 'status --is-interactive; and pyenv init --path| source' >>"${HOME}"/.config/fish/config.fish
       echo 'status --is-interactive; and pyenv init -| source' >>"${HOME}"/.config/fish/config.fish
-      echo 'status --is-interactive; and pyenv virtualenv-init -| source' >>"${HOME}"/.config/fish/config.fish
     fi
 
-    echo "installing Python 3.9"
-    export PATH="${HOME}/.pyenv/bin:$PATH"
+    echo "Installing Python 3.9"
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-    pyenv install -s 3.9.1
-    pyenv global 3.9.1
+
+    pyenv install -s 3.9.6
+    pyenv global 3.9.6
 
     touch "${HOME}"/.should-restart
 
@@ -74,6 +79,7 @@ function install_poetry() {
     createtmp
     install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-venv
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
+    source $HOME/.poetry/env
     poetry self update
     poetry completions bash | sudo tee /usr/share/bash-completion/completions/poetry.bash-completion
 
@@ -97,6 +103,8 @@ function main() {
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
   )
+
+  echo "Selected:" "${menu_choice}"
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1

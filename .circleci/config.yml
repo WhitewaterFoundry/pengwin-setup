@@ -1,14 +1,25 @@
 version: 2.1
 
-orbs:
-  shellcheck: circleci/shellcheck@2.2.2
 jobs:
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine:stable
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests"
+            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests" || echo "Shellcheck has some warnings"
   build:
     docker:
       - image: debian:bullseye
+    resource_class: small
     environment:
-      DEBEMAIL="contact@whitewaterfoundry.com"
-      DEBFULLNAME="Whitewater Foundry, Ltd. Co."
+      DEBEMAIL: "contact@whitewaterfoundry.com"
+      DEBFULLNAME: "Whitewater Foundry, Ltd. Co."
     steps:
       - checkout
       - run:
@@ -32,14 +43,15 @@ jobs:
           command: cp ../pengwin-setup_0.1-${CIRCLE_BUILD_NUM}_all.deb /tmp/pkgs
       - persist_to_workspace:
           root: /tmp/pkgs
-          paths: .
+          paths: [ . ]
       - store_artifacts:
           name: Store the package as an artifact
-          path: /tmp/pkgs          
+          path: /tmp/pkgs
   test:
     docker:
       - image: debian:bullseye
-    parallelism: 3
+    resource_class: medium
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -47,10 +59,10 @@ jobs:
           command: |
             # Install the pengwin image base packages
             apt-get -y -q update
-            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix
+            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix iproute2 psmisc rsync
 
             export os=debian
-            export dist=bullseye 
+            export dist=bullseye
 
             curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
 
@@ -61,7 +73,7 @@ jobs:
 
             # Update apt repositories
             apt-get -y -q update
-            apt-get install -q -y --allow-downgrades libc6=2.31-1.wsl locales=2.31-1.wsl libc-bin=2.31-1.wsl
+            apt-get install -q -y --allow-downgrades iproute2=5.8.0-1
             apt-get -y -q autoremove
 
       - run:
@@ -71,35 +83,31 @@ jobs:
             cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
             cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
             cp -r pengwin-setup.d /usr/local/
-            apt-get -y -q install shunit2
+            apt-get -y -q install shunit2 shellcheck
             cd /usr/local/bin/tests && ./run_tests.sh
   deploymasterdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
       - run:
           name: Install packageloud cli
           command: gem install package_cloud
-      - run:
-          name: Push deb package buster
-          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
       - run:
           name: Push deb package bullseye
           command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
   deploydevdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
       - run:
           name: Install packageloud cli
           command: gem install package_cloud
-      - run:
-          name: Push deb package buster
-          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/buster /tmp/pkgs/pengwin-setup_0.1-*_all.deb
       - run:
           name: Push deb package bullseye
           command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_0.1-*_all.deb
@@ -107,35 +115,49 @@ workflows:
   version: 2
   testdebbuild:
     jobs:
-      - shellcheck/check:
-          severity: error
-          
-      - build:
+      - shellcheck:
           filters:
             branches:
-              ignore: 
-                - development
-                - master
-      - test:
-          filters:
-            branches:
-              ignore: 
+              ignore:
                 - development
                 - master
 
+      - build:
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+
+      - test:
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+          requires:
+            - shellcheck
+
+
   deploymasterbranch:
     jobs:
-      - shellcheck/check:
-          severity: error
-          
+      - shellcheck:
+          filters:
+            branches:
+              only: master
+
       - build:
           filters:
             branches:
               only: master
+
       - test:
           filters:
             branches:
               only: master
+          requires:
+            - shellcheck
+
       - deploymasterdeb:
           filters:
             branches:
@@ -145,17 +167,23 @@ workflows:
             - build
   deploydevbranch:
     jobs:
-      - shellcheck/check:
-          severity: error
-          
+      - shellcheck:
+          filters:
+            branches:
+              only: development
+
       - build:
           filters:
             branches:
               only: development
+
       - test:
           filters:
             branches:
               only: development
+          requires:
+            - shellcheck
+
       - deploydevdeb:
           filters:
             branches:
