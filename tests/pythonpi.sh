@@ -12,7 +12,8 @@ function testPyEnv() {
   done
 
   assertEquals "Python was not installed" "1" "$(run_command_as_testuser "${HOME}"/.pyenv/shims/python3 --version | grep -c '3.9')"
-  assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.bashrc)"
+  assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv' "${HOME}"/.bashrc)"
+  assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin' "${HOME}"/.bashrc)"
 
 }
 
@@ -22,7 +23,8 @@ function testUninstallPyEnv() {
 
   test -f "${HOME}"/.pyenv/shims/python3
   assertFalse "Python was not uninstalled" "$?"
-  assertEquals "Pyenv variables were not cleaned up" "0" "$(grep -c '^[^#]*\bPATH.*/.pyenv/bin' "${HOME}"/.bashrc)"
+  assertEquals "Pyenv variables were not cleaned up" "0" "$(grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv' "${HOME}"/.bashrc)"
+  assertEquals "Pyenv variables were not cleaned up" "0" "$(grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin' "${HOME}"/.bashrc)"
 }
 
 # shellcheck disable=SC1091

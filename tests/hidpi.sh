@@ -7,7 +7,7 @@ function testDPI() {
   local scale_factor=$(wslsys -S -s)
 
   run_pengwinsetup autoinstall GUI HIDPI
-  assertEquals QT_SCALE_FACTOR "1" "$(grep -c "QT_SCALE_FACTOR=${scale_factor}" /etc/profile.d/hidpi.sh)"
+  assertEquals scale_factor "1" "$(grep -c "scale_factor=${scale_factor}" /etc/profile.d/hidpi.sh)"
 }
 
 function testUninstall() {
