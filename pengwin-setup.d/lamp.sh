@@ -8,21 +8,30 @@ function install_lamp() {
   if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60); then
 
     echo "MariaDB Choice for LAMP Stack"
+
+    local menu_choice
     # shellcheck disable=SC2155
-    local menu_choice=$(
+    local dist="$(uname -m)"
+    if [[ ${dist} == "x86_64" ]] ; then
 
-      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
-        "10.3" "Install MariaDB 10.3 from MariaDB" off \
-        "10.4" "Install MariaDB 10.4 from MariaDB" off \
-        "10.5" "Install MariaDB 10.5 from MariaDB" off \
-        "10.6" "Install MariaDB 10.6 from MariaDB" off \
-        "BUILTIN" "Install MariaDB from Debian Official Repo    " off
+      # shellcheck disable=SC2155
+      menu_choice=$(
 
-      # shellcheck disable=SC2188
-      3>&1 1>&2 2>&3
-    )
+        menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
+          "10.3" "Install MariaDB 10.3 from MariaDB" off \
+          "10.4" "Install MariaDB 10.4 from MariaDB" off \
+          "10.5" "Install MariaDB 10.5 from MariaDB" off \
+          "10.6" "Install MariaDB 10.6 from MariaDB" off \
+          "BUILTIN" "Install MariaDB from Debian Official Repo    " off
 
-    echo "Selected:" "${menu_choice}"
+        # shellcheck disable=SC2188
+        3>&1 1>&2 2>&3
+      )
+      echo "Selected:" "${menu_choice}"
+    else
+      menu_choice="BUILTIN" #The only way in ARM64
+    fi
+
     echo "Installing MariaDB Database Server"
 
     if [[ ${menu_choice} == "CANCELLED" ]]; then
