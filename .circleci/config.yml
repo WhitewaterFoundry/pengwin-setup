@@ -51,7 +51,7 @@ jobs:
     docker:
       - image: debian:bullseye
     resource_class: medium
-    parallelism: 4
+    parallelism: 9
     steps:
       - checkout
       - run:
