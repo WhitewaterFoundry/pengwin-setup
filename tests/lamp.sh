@@ -8,7 +8,7 @@ shift
 
 function testLAMP() {
 
-  run_pengwinsetup install SERVICES LAMP "${mariadb_version}"
+  run_pengwinsetup install SERVICES LAMP "${mariadb_version}" --debug
 
   for i in 'mariadb-server' 'mariadb-client' 'apache2' 'php' 'libdbi-perl'; do
     package_installed $i
