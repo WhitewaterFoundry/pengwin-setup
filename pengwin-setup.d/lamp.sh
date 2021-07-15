@@ -10,27 +10,21 @@ function install_lamp() {
     echo "MariaDB Choice for LAMP Stack"
 
     local menu_choice
+
     # shellcheck disable=SC2155
-    local dist="$(uname -m)"
-    if [[ ${dist} == "x86_64" ]] ; then
+    menu_choice=$(
 
-      # shellcheck disable=SC2155
-      menu_choice=$(
+      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
+        "10.3" "Install MariaDB 10.3 from MariaDB" off \
+        "10.4" "Install MariaDB 10.4 from MariaDB" off \
+        "10.5" "Install MariaDB 10.5 from MariaDB" off \
+        "10.6" "Install MariaDB 10.6 from MariaDB" off \
+        "BUILTIN" "Install MariaDB from Debian Official Repo    " off
 
-        menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
-          "10.3" "Install MariaDB 10.3 from MariaDB" off \
-          "10.4" "Install MariaDB 10.4 from MariaDB" off \
-          "10.5" "Install MariaDB 10.5 from MariaDB" off \
-          "10.6" "Install MariaDB 10.6 from MariaDB" off \
-          "BUILTIN" "Install MariaDB from Debian Official Repo    " off
-
-        # shellcheck disable=SC2188
-        3>&1 1>&2 2>&3
-      )
-      echo "Selected:" "${menu_choice}"
-    else
-      menu_choice="BUILTIN" #The only way in ARM64
-    fi
+      # shellcheck disable=SC2188
+      3>&1 1>&2 2>&3
+    )
+    echo "Selected:" "${menu_choice}"
 
     echo "Installing MariaDB Database Server"
 
@@ -40,7 +34,7 @@ function install_lamp() {
 
     # shellcheck disable=SC2155
     local selected_version=$(echo "${menu_choice##* }" | grep -E "10\.[1-6]?")
-    if [[ ${menu_choice} == *"BUILTIN"* ]]; then
+    if [[ -z ${selected_version} || ${menu_choice} == *"BUILTIN"* ]]; then
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
@@ -49,27 +43,15 @@ function install_lamp() {
       install_packages mariadb-server mariadb-client
       apt policy mariadb-server
 
-    elif [[ -n ${selected_version} ]]; then
-      if curl -sSO https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg; then
-        if curl -sS https://downloads.mariadb.com/MariaDB/mariadb-keyring-2019.gpg.sha256 | sha256sum -c --quiet; then
-          echo 'Running apt-get update...'
-          if sudo mv mariadb-keyring-2019.gpg /etc/apt/trusted.gpg.d/ &&
-            sudo apt-get -q update; then
-            echo 'Done adding trusted package signing keys'
-          else
-            echo 'Failed to add trusted package signing keys'
-            return 1
-          fi
-        else
-          echo 'Failed to verify trusted package signing keys keyring file'
-          return 1
-        fi
-      else
-        echo 'Failed to download trusted package signing keys keyring file'
-      fi
-      sudo apt-get -y -q install software-properties-common libdbi-perl
-      sudo add-apt-repository "deb http://downloads.mariadb.com/MariaDB/mariadb-${selected_version}/repo/debian buster main"
-      sudo apt-get -q update
+    else
+      createtmp
+
+      sudo sed -i '/mariadb/d' /etc/apt/sources.list
+
+      sudo apt-get -y -q install libdbi-perl
+
+      curl -LsSO https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=buster
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
@@ -79,9 +61,8 @@ function install_lamp() {
 
       install_packages -t buster mariadb-server mariadb-client mariadb-backup
       apt policy mariadb-server
-    else
-      echo "${menu_choice##* } was not found"
-      return 1
+
+      cleantmp
     fi
 
     echo "Installing Apache Web Server"

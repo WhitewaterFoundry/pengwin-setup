@@ -15,10 +15,15 @@ function main() {
   remove_package "mariadb-server" "mariadb-client" "mariadb-backup" "apache2" "apache2-utils" "php" "libapache2-mod-php" "php-cli" "php-fpm" "php-json" "php-pdo" "php-mysql" "php-zip" "php-gd" "php-mbstring" "php-curl" "php-xml" "php-pear" "php-bcmath" "libdbi-perl"
 
   sudo sed -i '/mariadb/d' /etc/apt/sources.list
+  sudo_rem_file "/etc/apt/sources.list.d/mariadb.list"
+  sudo_rem_file "/etc/apt/preferences.d/mariadb-enterprise.pref"
+
   sudo_rem_file "/etc/apt/trusted.gpg.d/mariadb-keyring-2019.gpg"
   sudo_rem_file "/var/www/html/phpinfo.php"
 
-  sudo apt-get autoremove
+  sudo apt-get -y autoremove
+
+  sudo apt-get update
 }
 
 if show_warning "LAMP stack" "$@"; then
