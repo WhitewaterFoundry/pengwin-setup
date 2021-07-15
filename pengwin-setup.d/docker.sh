@@ -3,8 +3,8 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="19.03.8"
-DOCKER_COMPOSE_VERSION="1.25.4"
+DOCKER_VERSION="20.10.0"
+DOCKER_COMPOSE_VERSION="1.27.4"
 
 # Imported from common.sh
 declare wHome
@@ -134,7 +134,7 @@ EOF
   export DOCKER_HOST=tcp://0.0.0.0:2375
   connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
   if [[ ${connected} != 0 ]]; then
-    whiptail --title "DOCKER" \
+    message --title "DOCKER" \
       --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
   else
     docker version
@@ -174,7 +174,7 @@ function main() {
     local connected
     connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     while [[ ${connected} != 0 ]]; do
-      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
+      if ! (confirm --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
@@ -223,7 +223,7 @@ function main() {
     # shellcheck disable=SC1003
     if [[ ${WIN_CUR_VER} -gt 17063 && $(wslpath 'C:\') == '/mnt/c/' ]]; then
 
-      if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
+      if (confirm --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
         echo "Changing the root from /mnt to /"
 
         if [[ $(grep -c "root" /etc/wsl.conf) -eq 0 ]]; then
