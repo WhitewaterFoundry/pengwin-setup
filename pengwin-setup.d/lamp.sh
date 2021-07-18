@@ -120,7 +120,7 @@ fi
 
 EOF
 
-    /etc/profile.d/start-lamp.sh
+    bash /etc/profile.d/start-lamp.sh
 
   else
     echo "Skipping SSH Server"
