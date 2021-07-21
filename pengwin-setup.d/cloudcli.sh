@@ -13,8 +13,7 @@ function install_terraform() {
     echo "Installing Terraform..."
 
     createtmp
-
-    wget -O terraform.zip "https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_$(dpkg --print-architecture).zip"
+    wget -O terraform.zip "https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_$(dpkg --print-architecture).zip"
     unzip terraform.zip
     sudo mv terraform /usr/bin
     sudo chmod +x /usr/bin/terraform
@@ -272,7 +271,7 @@ function install_openstack() {
 
 function main() {
   # shellcheck disable=SC2155
-  local choice=$(
+  local menu_choice=$(
     menu --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
       "AWS" "AWS CLI" off \
       "AZURE" "Azure CLI" off \
@@ -280,51 +279,54 @@ function main() {
       "IBM" "IBM Cloud CLI" off \
       "KUBERNETES" "Kubernetes tooling" off \
       "OPENSTACK" "OpenStack command-line clients      " off \
-      "TERRAFORM" "Terraform                   " off 3>&1 1>&2 2>&3
+      "TERRAFORM" "Terraform                   " off
+
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
   )
 
-  echo "Selected:" "${choice}"
-  if [[ ! ${choice} ]]; then
+  echo "Selected:" "${menu_choice}"
+  if [[ ! ${menu_choice} ]]; then
     return
   fi
 
-  if [[ ${choice} == *"AZURE"* ]]; then
+  if [[ ${menu_choice} == *"AZURE"* ]]; then
 
     bash "${SetupDir}/azurecli.sh" "$@"
 
   fi
 
-  if [[ ${choice} == *"AWS"* ]]; then
+  if [[ ${menu_choice} == *"AWS"* ]]; then
 
     install_awscli "$@"
 
   fi
 
-  if [[ ${choice} == *"DO"* ]]; then
+  if [[ ${menu_choice} == *"DO"* ]]; then
 
     install_doctl "$@"
 
   fi
 
-  if [[ ${choice} == *"IBM"* ]]; then
+  if [[ ${menu_choice} == *"IBM"* ]]; then
 
     install_ibmcli "$@"
 
   fi
 
-  if [[ ${choice} == *"KUBERNETES"* ]]; then
+  if [[ ${menu_choice} == *"KUBERNETES"* ]]; then
 
     install_kubernetes "$@"
 
   fi
 
-  if [[ ${choice} == *"OPENSTACK"* ]]; then
+  if [[ ${menu_choice} == *"OPENSTACK"* ]]; then
 
     install_openstack "$@"
 
   fi
 
-  if [[ ${choice} == *"TERRAFORM"* ]]; then
+  if [[ ${menu_choice} == *"TERRAFORM"* ]]; then
 
     install_terraform "$@"
 
