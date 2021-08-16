@@ -51,7 +51,7 @@ function install_lamp() {
       sudo apt-get -y -q install libdbi-perl
 
       curl -LsSO https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
-      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=buster
+      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=bullseye
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
@@ -59,7 +59,7 @@ function install_lamp() {
         sudo debconf-set-selections <<< "mariadb-server-${selected_version} mysql-server/root_password_again password PASS"
       fi
 
-      install_packages -t buster mariadb-server mariadb-client mariadb-backup
+      install_packages -t bullseye mariadb-server mariadb-client mariadb-backup
       apt policy mariadb-server
 
       cleantmp
