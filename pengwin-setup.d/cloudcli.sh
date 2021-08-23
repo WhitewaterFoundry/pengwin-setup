@@ -13,7 +13,7 @@ function install_terraform() {
     echo "Installing Terraform..."
 
     createtmp
-    wget -O terraform.zip "https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_$(dpkg --print-architecture).zip"
+    wget -O terraform.zip "https://releases.hashicorp.com/terraform/1.0.5/terraform_1.0.5_linux_$(dpkg --print-architecture).zip"
     unzip terraform.zip
     sudo mv terraform /usr/bin
     sudo chmod +x /usr/bin/terraform
