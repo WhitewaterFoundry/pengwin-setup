@@ -3,8 +3,8 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="20.10.0"
-DOCKER_COMPOSE_VERSION="1.27.4"
+DOCKER_VERSION="20.10.7"
+DOCKER_COMPOSE_VERSION="1.29.2"
 
 # Imported from common.sh
 declare wHome

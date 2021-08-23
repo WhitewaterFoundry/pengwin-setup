@@ -22,6 +22,9 @@ export GDK_SCALE=\$(echo "(\${scale_factor} + 0.49) / 1" | bc) #Round
 # shellcheck disable=SC2155
 export GDK_DPI_SCALE=\$(echo "\${scale_factor} / \${GDK_SCALE}" | bc -l)
 
+# Fix high dpi with GTK for WSLg
+export GDK_BACKEND=x11
+
 if [ "\$(echo "\${scale_factor} >= 2" | bc -l)" -eq 1 ]; then
   export XCURSOR_SIZE=64
 elif [ "\$(echo "\${scale_factor} >= 1.5" | bc -l)" -eq 1 ]; then
