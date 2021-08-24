@@ -182,8 +182,8 @@ if [[ "$cname" != "" ]]; then
   dpath=$(wslpath "$(wslvar -l Desktop)") # Windows Desktop, Win Sty.
   script_location="$(wslpath "$(wslvar -s USERPROFILE)")/wslu" # Windows wslu, Linux WSL Sty.
   localfile_path="/usr/share/wslu" # WSL wslu source file location, Linux Sty.
-  script_location_win="$(double_dash_p "$(wslvar -s USERPROFILE)")\\wslu" #  Windows wslu, Win Double Sty.
-  distro_location_win="pengwin.exe" # Distro Location, Win Double Sty.
+  script_location_win="%USERPROFILE%\\wslu" #  Windows wslu, Win Double Sty.
+  distro_location_win="%LOCALAPPDATA%\\Microsoft\\WindowsApps\\pengwin.exe" # Distro Location, Win Double Sty.
   # change param according to the exec.
   distro_param="run"
   if [[ "$distro_location_win" == *wsl.exe ]]; then
@@ -257,7 +257,7 @@ if [[ "$cname" != "" ]]; then
     echo "${info} the following custom variable/command will be applied: $customenv"
   fi
   if [[ "$is_gui" == "1" ]]; then
-    winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='C:\\Windows\\System32\\wscript.exe';\$s.Arguments='$script_location_win\\runHidden.vbs \"$distro_location_win\" $distro_param \"cd ~;$customenv bash -l -c $cname\"';\$s.IconLocation='$iconpath';\$s.Save();"
+    winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='wscript.exe';\$s.Arguments='$script_location_win\\runHidden.vbs \"$distro_location_win\" $distro_param \"cd ~;$customenv bash -l -c $cname\"';\$s.IconLocation='$iconpath';\$s.Save();"
   else
     winps_exec "Import-Module 'C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Utility\\Microsoft.PowerShell.Utility.psd1';\$s=(New-Object -COM WScript.Shell).CreateShortcut('$tpath\\$new_cname.lnk');\$s.TargetPath='\"$distro_location_win\"';\$s.Arguments='$distro_param cd ~;$customenv bash -l -c $cname';\$s.IconLocation='$iconpath';\$s.Save();"
   fi
