@@ -13,6 +13,17 @@ BACKUP_PATH="${BACKUPS_DIR}/pengwin_home.tgz"
 BACKUP_PATH_WIN="$(wslpath -w "${BACKUPS_DIR}")\\pengwin_home.tgz"
 BACKUP_IGNORE_FILE="${HOME}/.pengwinbackupignore"
 
+#######################################
+# description
+# Globals:
+#   BACKUPS_DIR
+#   BACKUP_IGNORE_FILE
+#   BACKUP_PATH
+#   BACKUP_PATH_WIN
+#   HOME
+# Arguments:
+#  None
+#######################################
 function backup() {
 
   message --title "Ignore Files" --msgbox "You can exclude files and folders from the home backup by putting their names in ${BACKUP_IGNORE_FILE}" 10 70
@@ -42,6 +53,17 @@ function backup() {
 
 }
 
+#######################################
+# description
+# Globals:
+#   BACKUP_PATH
+#   BACKUP_PATH_WIN
+#   HOME
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
 function restore() {
 
   if [[ ! -f "${BACKUP_PATH}" ]]; then
@@ -60,29 +82,36 @@ function restore() {
 
 }
 
-function main {
+#######################################
+# description
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
+function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
     menu --title "Backup Menu" --radiolist --separate-output "Home folder Backup / Restore options\n[SPACE to select, ENTER to confirm]:" 10 55 2 \
-        "BACKUP" 'Backups the ${HOME} directory   ' off \
-        "RESTORE" 'Restore the ${HOME} directory' off \
+      "BACKUP" 'Backups the ${HOME} directory   ' off \
+      "RESTORE" 'Restore the ${HOME} directory' off
 
     # shellcheck disable=SC2188
-    3>&1 1>&2 2>&3)
+    3>&1 1>&2 2>&3
+  )
 
-  if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
   fi
 
-  if [[ ${menu_choice} == "BACKUP" ]] ; then
+  if [[ ${menu_choice} == "BACKUP" ]]; then
     backup
   fi
 
-  if [[ ${menu_choice} == "RESTORE" ]] ; then
+  if [[ ${menu_choice} == "RESTORE" ]]; then
     restore
   fi
-
 
 }
 
