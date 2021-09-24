@@ -14,12 +14,10 @@ function install_lamp() {
     # shellcheck disable=SC2155
     menu_choice=$(
 
-      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 14 65 5 \
+      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
         "10.3" "Install MariaDB 10.3 from MariaDB" off \
-        "10.4" "Install MariaDB 10.4 from MariaDB" off \
-        "10.5" "Install MariaDB 10.5 from MariaDB" off \
-        "10.6" "Install MariaDB 10.6 from MariaDB" off \
-        "BUILTIN" "Install MariaDB from Debian Official Repo    " off
+        "BUILTIN" "Install MariaDB 10.5 from Debian Official Repo    " off \
+        "10.6" "Install MariaDB 10.6 from MariaDB" off
 
       # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
@@ -51,7 +49,7 @@ function install_lamp() {
       sudo apt-get -y -q install libdbi-perl
 
       curl -LsSO https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
-      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=bullseye
+      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=buster
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
@@ -59,7 +57,7 @@ function install_lamp() {
         sudo debconf-set-selections <<< "mariadb-server-${selected_version} mysql-server/root_password_again password PASS"
       fi
 
-      install_packages -t bullseye mariadb-server mariadb-client mariadb-backup
+      install_packages -t buster mariadb-server mariadb-client mariadb-backup
       apt policy mariadb-server
 
       cleantmp
@@ -86,14 +84,20 @@ function install_lamp() {
 
     echo "Installing LAMP as a service"
 
-    startLamp="/usr/bin/start-lamp"
-    #local startLamp
-    sudo tee "${startLamp}" <<EOF
+    local mariadb_service
+    if [[ "${selected_version}" == "10.3" ]]; then
+      mariadb_service="mysql"
+    else
+      mariadb_service="mariadb"
+    fi
+
+    local start_lamp="/usr/bin/start-lamp"
+    sudo tee "${start_lamp}" <<EOF
 #!/bin/bash
 
-mysql_status=\$(service mysql status)
+mysql_status=\$(service ${mariadb_service} status)
 if [[ \${mysql_status} = *"is stopped"* ]]; then
-  service mysql --full-restart > /dev/null 2>&1
+  service ${mariadb_service} --full-restart > /dev/null 2>&1
 fi
 
 apache2_status=\$(service apache2 status)
@@ -103,9 +107,9 @@ fi
 
 EOF
 
-    sudo chmod 700 "${startLamp}"
+    sudo chmod 700 "${start_lamp}"
 
-    echo "%sudo   ALL=NOPASSWD: ${startLamp}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-lamp
+    echo "%sudo   ALL=NOPASSWD: ${start_lamp}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-lamp
 
     profile_start_lamp="/etc/profile.d/start-lamp.sh"
     sudo tee "${profile_start_lamp}" <<EOF
@@ -114,11 +118,13 @@ EOF
 # Check if we have Windows Path
 if ( which cmd.exe >/dev/null ); then
 
-  sudo ${startLamp}
+  sudo ${start_lamp}
 
 fi
 
 EOF
+
+    touch "${HOME}"/.should-restart
 
     bash /etc/profile.d/start-lamp.sh
 

@@ -15,7 +15,17 @@ rm -f "${HOME}"/.should-restart
 
 # define functions
 
+#######################################
+# description
+# Globals:
+#   JUST_UPDATE
+#   WSL2
+# Arguments:
+#  None
+#######################################
 function check_upgrades() {
+  start_indeterminate_progress
+
   echo "Updating package database"
 
   # shellcheck disable=SC2155
@@ -64,15 +74,27 @@ function check_upgrades() {
     fi
 
   fi
+
+  stop_indeterminate_progress
 }
 
-function WelcomePrompt() {
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
+function welcome_prompt() {
   message --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
 Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n
 pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
 Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers." 17 80
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function continue_prompt() {
   if (confirm --title "Continue setup?" --yesno "Would you like to continue pengwin-setup?" 8 45); then
     echo "Starting pengwin-setup."
@@ -83,7 +105,17 @@ function continue_prompt() {
   fi
 }
 
-function ByeMessage() {
+#######################################
+# description
+# Globals:
+#   CMD_MENU_OPTIONS
+#   HOME
+#   WIN_CUR_VER
+#   WSL_DISTRO_NAME
+# Arguments:
+#  None
+#######################################
+function bye_message() {
   if [[ -f "${HOME}"/.should-restart ]]; then
     local should_restart=0
     rm -f "${HOME}"/.should-restart
@@ -188,7 +220,7 @@ if [[ ${JUST_UPDATE} ]]; then
   exit 0
 fi
 
-WelcomePrompt
+welcome_prompt
 continue_prompt
 
 if [[ ! ${SKIP_UPDATES} ]]; then
@@ -209,5 +241,5 @@ install_menu "$@"
 echo "Unholding pengwin-base & pengwin-setup"
 sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
 
-ByeMessage
+bye_message
 exit 0

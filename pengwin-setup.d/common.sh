@@ -1,10 +1,23 @@
 #!/bin/bash
 
-declare -a CMD_MENU_OPTIONS
-export CMD_MENU_OPTIONS
+declare -a -x CMD_MENU_OPTIONS
 
 export LANG=en_US.utf8
 
+declare -i -x PROGRESS_STATUS
+
+#######################################
+# description
+# Globals:
+#   CMD_MENU_OPTIONS
+#   JUST_UPDATE
+#   NON_INTERACTIVE
+#   SKIP_CONFIMATIONS
+#   SKIP_STARTMENU
+#   SKIP_UPDATES
+# Arguments:
+#  None
+#######################################
 function process_arguments() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -74,6 +87,14 @@ function process_arguments() {
 
 }
 
+#######################################
+# description
+# Globals:
+#   CURDIR
+#   TMPDIR
+# Arguments:
+#  None
+#######################################
 function createtmp() {
   echo "Saving current directory as \$CURDIR"
   CURDIR=$(pwd)
@@ -83,6 +104,14 @@ function createtmp() {
   cd "$TMPDIR"
 }
 
+#######################################
+# description
+# Globals:
+#   CURDIR
+#   TMPDIR
+# Arguments:
+#  None
+#######################################
 function cleantmp() {
   echo "Returning to $CURDIR"
   # shellcheck disable=SC2164
@@ -91,6 +120,11 @@ function cleantmp() {
   sudo rm -r $TMPDIR # need to add sudo here because git clones leave behind write-protected files
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function updateupgrade() {
   echo "Applying available package upgrades from repositories."
   sudo apt-get upgrade -y
@@ -98,6 +132,16 @@ function updateupgrade() {
   sudo apt-get autoremove -y
 }
 
+#######################################
+# description
+# Arguments:
+#   1
+#   2
+# Returns:
+#   0 ...
+#   1 ...
+#   2 ...
+#######################################
 function command_check() {
   # Usage: command_check <EXPECTED PATH> <ARGS (if any)>
   # shellcheck disable=SC2155
@@ -122,6 +166,16 @@ function command_check() {
 #echo "${execname}"
 #}
 
+#######################################
+# description
+# Globals:
+#   SKIP_CONFIMATIONS
+# Arguments:
+#  None
+# Returns:
+#   $? ...
+#   0 ...
+#######################################
 function confirm() {
 
   if [[ ! ${SKIP_CONFIMATIONS} ]]; then
@@ -134,6 +188,16 @@ function confirm() {
   fi
 }
 
+#######################################
+# description
+# Globals:
+#   NON_INTERACTIVE
+# Arguments:
+#  None
+# Returns:
+#   $? ...
+#   0 ...
+#######################################
 function message() {
 
   if [[ ! ${NON_INTERACTIVE} ]]; then
@@ -188,6 +252,18 @@ function menu() {
   echo "${menu_choice}"
 }
 
+#######################################
+# description
+# Globals:
+#   CANCELLED
+#   GOVERSION
+#   SetupDir
+#   WIN_CUR_VER
+#   wHome
+#   wHomeWinPath
+# Arguments:
+#  None
+#######################################
 function setup_env() {
 
   if (! command -v cmd.exe >/dev/null); then
@@ -225,11 +301,23 @@ function setup_env() {
   
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function install_packages() {
 
   sudo apt-get install -y -q "$@"
 }
 
+#######################################
+# description
+# Globals:
+#   NON_INTERACTIVE
+# Arguments:
+#  None
+#######################################
 function update_packages() {
 
   if [[ ${NON_INTERACTIVE} ]]; then
@@ -239,11 +327,23 @@ function update_packages() {
   fi
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function upgrade_packages() {
 
   sudo apt-get upgrade -y -q "$@"
 }
 
+#######################################
+# description
+# Globals:
+#   __fish_sysconf_dir
+# Arguments:
+#   1
+#######################################
 function add_fish_support() {
   echo "Also for fish."
   sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
@@ -254,6 +354,40 @@ function add_fish_support() {
 bass source /etc/profile.d/$1.sh
 
 EOF
+}
+
+#######################################
+# description
+# Globals:
+#   PROGRESS_STATUS
+# Arguments:
+#  None
+#######################################
+function start_indeterminate_progress() {
+
+  if [[ ${PROGRESS_STATUS} == 0 || ! ${PROGRESS_STATUS} ]]; then
+    echo -n -e '\033]9;4;3;100\033\\'
+
+    PROGRESS_STATUS=3
+  fi
+
+}
+
+#######################################
+# description
+# Globals:
+#   PROGRESS_STATUS
+# Arguments:
+#  None
+#######################################
+function stop_indeterminate_progress() {
+
+  if [[ ${PROGRESS_STATUS} != 0 ]]; then
+    echo -n -e '\033]9;4;0;100\033\\'
+
+    PROGRESS_STATUS=0
+  fi
+
 }
 
 setup_env "$@"
