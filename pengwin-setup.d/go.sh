@@ -24,7 +24,7 @@ if (confirm --title "GO" --yesno "Would you like to download and install the lat
 #!/bin/sh
 
 export GOROOT="/usr/local/go"
-export GOPATH="\${HOME}/go/"
+export GOPATH="\${HOME}/go"
 export PATH="\${GOPATH}/bin:\${GOROOT}/bin:/usr/local/go/bin:\${PATH}"
 
 EOF
@@ -36,7 +36,7 @@ EOF
 #!/bin/fish
 
 set --export GOROOT "/usr/local/go"
-set --export GOPATH "\$HOME/go/"
+set --export GOPATH "\$HOME/go"
 set --export PATH "\$GOPATH/bin:\$GOROOT/bin:/usr/local/go/bin:\$PATH"
 
 EOF
