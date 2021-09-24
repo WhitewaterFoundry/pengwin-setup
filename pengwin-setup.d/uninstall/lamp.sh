@@ -3,6 +3,11 @@
 # shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function main() {
 
   echo "Uninstalling LAMP stack"
@@ -14,7 +19,6 @@ function main() {
 
   remove_package "mariadb-server" "mariadb-client" "mariadb-backup" "apache2" "apache2-utils" "php" "libapache2-mod-php" "php-cli" "php-fpm" "php-json" "php-pdo" "php-mysql" "php-zip" "php-gd" "php-mbstring" "php-curl" "php-xml" "php-pear" "php-bcmath" "libdbi-perl"
 
-  sudo sed -i '/mariadb/d' /etc/apt/sources.list
   sudo_rem_file "/etc/apt/sources.list.d/mariadb.list"
   sudo_rem_file "/etc/apt/preferences.d/mariadb-enterprise.pref"
 

@@ -36,8 +36,6 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./ansible.sh
   run_test ./java.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
-  run_test ./lamp.sh "10.4"
-elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./brew.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./lamp.sh "10.3"
