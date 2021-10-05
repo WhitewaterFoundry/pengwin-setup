@@ -38,9 +38,9 @@ echo "Look for Windows version of npm"
 NPM_WIN_PROFILE="/etc/profile.d/rm-win-npm-path.sh"
 NPM_PROFILE="/etc/profile.d/n-prefix.sh"
 
-if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
+if [[ "$(command -v npm)" == $(wslpath 'C:\')* ]]; then
 
-  if ! (confirm --title "npm in Windows" --yesno "npm is already installed in Windows in \"$(wslpath -m "$(which npm)")\".\n\nWould you still want to install the Linux version? This will hide the Windows version inside Pengwin." 12 80); then
+  if ! (confirm --title "npm in Windows" --yesno "npm is already installed in Windows in \"$(wslpath -m "$(command -v npm)")\".\n\nWould you still want to install the Linux version? This will hide the Windows version inside Pengwin." 12 80); then
     echo "Skipping NODE"
     exit 1
   fi
@@ -48,18 +48,18 @@ if [[ "$(which npm)" == $(wslpath 'C:\')* ]]; then
   sudo tee "${NPM_WIN_PROFILE}" <<EOF
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   WIN_C_PATH="\$(wslpath 'C:\')"
 
   while [[ true ]]; do
 
-    WIN_YARN_PATH="\$(dirname "\$(which yarn)")"
+    WIN_YARN_PATH="\$(dirname "\$(command -v yarn)")"
     if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
       export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
     fi
 
-    WIN_NPM_PATH="\$(dirname "\$(which npm)")"
+    WIN_NPM_PATH="\$(dirname "\$(command -v npm)")"
     if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
       export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
     else
@@ -79,7 +79,7 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing n, Node.js version manager"
   curl -L https://git.io/n-install -o n-install.sh
-  env SHELL="$(which bash)" bash n-install.sh -y #Force the installation to bash
+  env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
 
   N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
   echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"

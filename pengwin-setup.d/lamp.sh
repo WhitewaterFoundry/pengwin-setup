@@ -3,6 +3,18 @@
 # shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
+#######################################
+# description
+# Globals:
+#   DEBIAN_FRONTEND
+#   HOME
+#   NON_INTERACTIVE
+#   profile_start_lamp
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
 function install_lamp() {
 
   if (confirm --title "LAMP Stack" --yesno "Would you like to install the LAMP Stack?" 10 60); then
@@ -116,7 +128,7 @@ EOF
 #!/bin/bash
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   sudo ${start_lamp}
 
@@ -134,6 +146,11 @@ EOF
 
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function main() {
 
   install_lamp

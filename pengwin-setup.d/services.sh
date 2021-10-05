@@ -5,6 +5,13 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SetupDir
 
+#######################################
+# description
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
 function enable_rclocal() {
 
   if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60) ; then
@@ -32,7 +39,7 @@ EOF
 #!/bin/bash
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   sudo ${cmd}
 fi
@@ -48,6 +55,16 @@ EOF
 
 }
 
+#######################################
+# description
+# Globals:
+#   NON_INTERACTIVE
+#   sshd_status
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
 function enable_ssh() {
 
   if (confirm --title "SSH Server" --yesno "Would you like to enable SSH Server?" 10 60) ; then
@@ -120,7 +137,7 @@ EOF
 #!/bin/bash
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   sudo ${startSsh}
 fi
@@ -133,6 +150,16 @@ EOF
 
 }
 
+#######################################
+# description
+# Globals:
+#   SetupDir
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#   <unknown> ...
+#######################################
 function main() {
 
   if [[ "$1" == "--enable-ssh" ]] ; then
