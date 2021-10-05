@@ -66,11 +66,9 @@ function check_upgrades() {
     sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 >/dev/null 2>&1
   
   else
-    # Force iproute2 5.8
-    if [[ $( dpkg-query -s "iproute2" 2>/dev/null | grep -c "Version: 5\.8.*" ) == 0 ]]; then
+    if [[ $( dpkg-query -s "iproute2" 2>/dev/null | grep -c "Version: 5\.8.*" ) != 0 ]]; then
       sudo apt-mark unhold iproute2
-      sudo apt-get install -q -y --allow-downgrades iproute2=5.8.0-1
-      sudo apt-mark hold iproute2
+      sudo apt-get install -q -y iproute2
     fi
 
   fi
