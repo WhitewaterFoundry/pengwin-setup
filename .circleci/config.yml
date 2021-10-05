@@ -73,7 +73,6 @@ jobs:
 
             # Update apt repositories
             apt-get -y -q update
-            apt-get install -q -y --allow-downgrades iproute2=5.8.0-1
             apt-get -y -q autoremove
 
       - run:
