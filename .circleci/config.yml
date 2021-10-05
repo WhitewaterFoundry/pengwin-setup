@@ -82,7 +82,7 @@ jobs:
             cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
             cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
             cp -r pengwin-setup.d /usr/local/
-            apt-get -y -q -t testing install shunit2 shellcheck
+            apt-get -y -q install shunit2 shellcheck
             cd /usr/local/bin/tests && ./run_tests.sh
   deploymasterdeb:
     docker:
