@@ -46,6 +46,7 @@ if [[ "$(command -v npm)" == $(wslpath 'C:\')* ]]; then
   fi
 
   sudo tee "${NPM_WIN_PROFILE}" <<EOF
+#!/bin/bash
 
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then

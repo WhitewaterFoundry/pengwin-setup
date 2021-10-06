@@ -125,7 +125,7 @@ EOF
 
     profile_start_lamp="/etc/profile.d/start-lamp.sh"
     sudo tee "${profile_start_lamp}" <<EOF
-#!/bin/bash
+#!/bin/sh
 
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then

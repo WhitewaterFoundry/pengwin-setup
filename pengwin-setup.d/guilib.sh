@@ -47,7 +47,7 @@ EOF
 #!/bin/fish
 
 # Check if we have Windows Path
-if command -v cmd.exe >/dev/null
+if command -q cmd.exe
 
   for line in (timeout 2s dbus-launch | string match '*=*')
     set -l kv (string split -m 1 = -- \$line )

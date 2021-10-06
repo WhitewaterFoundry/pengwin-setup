@@ -36,7 +36,7 @@ EOF
 
     local profile_rclocal="/etc/profile.d/rclocal.sh"
     sudo tee "${profile_rclocal}" << EOF
-#!/bin/bash
+#!/bin/sh
 
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then
@@ -134,7 +134,7 @@ EOF
 
     local profile_startssh="/etc/profile.d/start-ssh.sh"
     sudo tee "${profile_startssh}" << EOF
-#!/bin/bash
+#!/bin/sh
 
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then
