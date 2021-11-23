@@ -45,8 +45,8 @@ function install_pyenv() {
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 
-    pyenv install -s 3.9.7
-    pyenv global 3.9.7
+    pyenv install -s 3.10.0
+    pyenv global 3.10.0
 
     touch "${HOME}"/.should-restart
 
