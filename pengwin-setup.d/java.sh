@@ -12,7 +12,7 @@ if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage a
   sudo tee "/etc/profile.d/sdkman.sh" <<EOF
 #!/bin/sh
 
-if [ -n "${XRDP_SESSION}" ]; then
+if [ -n "\${XRDP_SESSION}" ]; then
   return
 fi
 
