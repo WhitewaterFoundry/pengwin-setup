@@ -24,7 +24,7 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
 
   update_packages
 
-  install_packages dotnet-sdk-5.0
+  install_packages dotnet-sdk-6.0
   cleantmp
 
   if (confirm --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) ; then

@@ -48,6 +48,16 @@ declare SetupDir
 
 # }
 
+#######################################
+# description
+# Globals:
+#   NON_INTERACTIVE
+#   sshd_status
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
 function enable_ssh() {
 
   if (confirm --title "SSH Server" --yesno "Would you like to install and enable SSH Server?" 10 60) ; then
@@ -121,10 +131,10 @@ EOF
 
     local profile_startssh="/etc/profile.d/start-ssh.sh"
     sudo tee "${profile_startssh}" << EOF
-#!/bin/bash
+#!/bin/sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   sudo ${startSsh}
 fi
@@ -137,6 +147,14 @@ EOF
 
 }
 
+#######################################
+# description
+# Arguments:
+#   1
+# Returns:
+#   1 ...
+#   <unknown> ...
+#######################################
 function main() {
 
   if [[ "$1" == "--enable-ssh" ]] ; then

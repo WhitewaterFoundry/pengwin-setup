@@ -34,7 +34,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 #!/bin/sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   eval "\$(timeout 2s dbus-launch --auto-syntax)"
 fi
@@ -47,7 +47,7 @@ EOF
 #!/bin/fish
 
 # Check if we have Windows Path
-if which cmd.exe >/dev/null
+if command -q cmd.exe
 
   for line in (timeout 2s dbus-launch | string match '*=*')
     set -l kv (string split -m 1 = -- \$line )

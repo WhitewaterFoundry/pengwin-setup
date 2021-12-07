@@ -10,7 +10,7 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/${version}/vcxsrv-64.${version}.installer.exe/download"
 
   echo "Installing required install dependencies"
-  install_packages wget unzip p7zip-full mesa-utils
+  install_packages wget unzip p7zip-full mesa-utils x11-utils
 
   createtmp
 

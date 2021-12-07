@@ -14,6 +14,18 @@ declare WIN_CUR_VER
 #Imported global variables
 declare USER
 
+#######################################
+# description
+# Globals:
+#   GOPATH
+#   GOROOT
+#   GOVERSION
+#   PATH
+#   USER
+#   wHome
+# Arguments:
+#  None
+#######################################
 function docker_install_build_relay() {
   #Build the relay
   if [[ ! -f "${wHome}/.npiperelay/npiperelay.exe" ]]; then
@@ -75,7 +87,7 @@ function docker_install_build_relay() {
 PATH="$1"
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   connected=$(docker version 2>&1 | grep -c "daemon\|error")
   if [[ ${connected} != 0  ]]; then
@@ -98,7 +110,7 @@ EOF
   cat <<'EOF' >>docker_relay.sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
   sudo docker-relay "${PATH}"
 fi
 EOF
@@ -117,6 +129,14 @@ EOF
   sudo docker version
 }
 
+#######################################
+# description
+# Globals:
+#   DOCKER_HOST
+#   connected
+# Arguments:
+#  None
+#######################################
 function docker_install_conf_tcp() {
   echo "Connect to Docker via TCP"
 
@@ -141,15 +161,20 @@ EOF
   fi
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function docker_install_conf_toolbox() {
   echo "Connect to Docker Toolbox"
 
   cat <<'EOF' >>docker_relay.sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
   VM=${DOCKER_MACHINE_NAME-default}
-  DOCKER_MACHINE="$(which docker-machine.exe)"
+  DOCKER_MACHINE="$(command -v docker-machine.exe)"
   eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" 2>/dev/null )" > /dev/null 2>&1
 
   if [[ "${DOCKER_CERT_PATH}" != "" ]] ; then
@@ -165,6 +190,18 @@ EOF
   docker version
 }
 
+#######################################
+# description
+# Globals:
+#   DOCKER_COMPOSE_VERSION
+#   DOCKER_VERSION
+#   HOME
+#   WIN_CUR_VER
+# Arguments:
+#  None
+# Returns:
+#   <unknown> ...
+#######################################
 function main() {
 
   if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
@@ -268,7 +305,7 @@ EOF
         cat <<'EOF' >>create-mnt-c-link.sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
   sudo create-mnt-c-link
 fi
 

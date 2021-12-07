@@ -8,7 +8,7 @@ if [ -x "$(command -v x410.exe)" ]; then
   if (confirm --title "X410" --yesno "It seems that X410 is already installed on your machine. Would you like to start it every time that Pengwin launches?" 10 80) then
     echo "Configuring X410 to start on Pengwin launch"
     sudo bash -c 'cat > /etc/profile.d/02-x410.sh' << EOF
-#!/bin/bash
+#!/bin/sh
 
 if [ -n "\${WSL2}" ]; then
   (cmd-exe /c x410.exe /wm /public &> /dev/null &)

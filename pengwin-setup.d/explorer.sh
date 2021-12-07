@@ -7,6 +7,13 @@ source "$(dirname "$0")/common.sh" "$@"
 declare SetupDir
 
 
+#######################################
+# description
+# Globals:
+#   wHome
+# Arguments:
+#  None
+#######################################
 function install_explorer() {
 
   local exec_name='pengwin.exe'
@@ -37,7 +44,7 @@ EOF
 
       cp /usr/local/lib/pengwin.ico "${wHome}/Pengwin"
 
-      local fullexec=$(wslpath -m "$(which ${exec_name})" | sed 's$/$\\\\\\\\$g')
+      local fullexec=$(wslpath -m "$(command -v ${exec_name})" | sed 's$/$\\\\\\\\$g')
       local icopath=$(cmd-exe /C "echo '%USERPROFILE%\\Pengwin\\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
       icopath=$(echo $icopath | tr -d "\'")
       sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
@@ -62,6 +69,13 @@ EOF
   fi
 }
 
+#######################################
+# description
+# Globals:
+#   SKIP_CONFIMATIONS
+# Arguments:
+#  None
+#######################################
 function upgrade_explorer() {
 
   local plain_name='WLinux'
@@ -83,6 +97,11 @@ EOF
   install_explorer
 }
 
+#######################################
+# description
+# Arguments:
+#   1
+#######################################
 function main() {
 
   if [[ $# -gt 0 && "$1" == "--upgrade" ]]; then

@@ -6,6 +6,19 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
+#######################################
+# description
+# Globals:
+#   HOME
+#   USER
+#   ZDOTDIR
+#   ZSH_INSTALLED
+#   ZSH_SETUP
+#   dt
+#   rcfile
+# Arguments:
+#  None
+#######################################
 function zshinstall() {
   ZSH_SETUP=".zsh_pengwin"
 
@@ -95,6 +108,14 @@ EOF
   fi
 }
 
+#######################################
+# description
+# Globals:
+#   HOME
+#   USER
+# Arguments:
+#  None
+#######################################
 function fish_install() {
   createtmp
   install_packages fish
@@ -118,6 +139,14 @@ function fish_install() {
   fi
 }
 
+#######################################
+# description
+# Globals:
+#   HOME
+#   USER
+# Arguments:
+#  None
+#######################################
 function cshinstall() {
   if (confirm --title "csh" --yesno "Would you like to set csh as the default shell?" 8 55); then
     sudo chsh -s "$(command -v csh)" "${USER}"
@@ -125,6 +154,15 @@ function cshinstall() {
   fi
 }
 
+#######################################
+# description
+# Globals:
+#   SetupDir
+# Arguments:
+#  None
+# Returns:
+#   1 ...
+#######################################
 function installAndSetShell() {
   # shellcheck disable=SC2155
   local menu_choice=$(
