@@ -58,10 +58,10 @@ function install_pyenv() {
 
 function install_pythonpip() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.10, IDLE, and the pip package manager?" 8 90); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.9, IDLE, and the pip package manager?" 8 90); then
     echo "Installing PYTHONPIP"
     createtmp
-    install_packages build-essential python3.10 python3.10-distutils idle-python3.10 python3-pip python3-venv
+    install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-pip python3-venv
     pip3 install -U pip
 
     touch "${HOME}"/.should-restart
@@ -74,10 +74,10 @@ function install_pythonpip() {
 
 function install_poetry() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.10, IDLE, and the poetry package manager?" 9 90); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.9, IDLE, and the poetry package manager?" 9 90); then
     echo "Installing POETRY"
     createtmp
-    install_packages build-essential python3.10 python3.10-distutils idle-python3.10 python3-venv
+    install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-venv
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
     source $HOME/.poetry/env
     poetry self update
@@ -97,8 +97,8 @@ function main() {
 
     menu --title "Python" --radiolist --separate-output "Python install options\n[SPACE to select, ENTER to confirm]:" 12 75 3 \
       "PYENV" 'Python 3.10 with pyenv   ' off \
-      "PYTHONPIP" 'Python 3.10, IDLE, and the pip package manager ' off \
-      "POETRY" 'Python 3.10, IDLE, and the poetry package manager ' off
+      "PYTHONPIP" 'Python 3.9, IDLE, and the pip package manager ' off \
+      "POETRY" 'Python 3.9, IDLE, and the poetry package manager ' off
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
