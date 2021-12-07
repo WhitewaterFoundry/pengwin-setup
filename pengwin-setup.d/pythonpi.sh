@@ -78,8 +78,9 @@ function install_poetry() {
     echo "Installing POETRY"
     createtmp
     install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-venv
-    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
-    source $HOME/.poetry/env
+    curl -sSL https://install.python-poetry.org | python3 -
+
+    source "${HOME}"/.poetry/env
     poetry self update
     poetry completions bash | sudo tee /usr/share/bash-completion/completions/poetry.bash-completion
 
