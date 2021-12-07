@@ -62,7 +62,7 @@ function install_pythonpip() {
     echo "Installing PYTHONPIP"
     createtmp
     install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-pip python3-venv
-    pip3 install -U pip
+    pip3 install -U pip --no-warn-script-location
 
     touch "${HOME}"/.should-restart
 
