@@ -39,7 +39,9 @@ EOF
 
   curl https://raw.githubusercontent.com/Bash-it/bash-it/master/completion/available/sdkman.completion.bash | sudo tee /etc/bash_completion.d/sdkman.bash
 
-  message --title "SDKMan" --msgbox "To install Java use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 15 60
+  sdk install java
+
+  message --title "SDKMan" --msgbox "$(sdk c java)\n\nTo install other Java versions use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 17 60
 
   touch "${HOME}"/.should-restart
 else
