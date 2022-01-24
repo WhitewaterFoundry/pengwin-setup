@@ -44,17 +44,19 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   sudo bash -c 'cat > /etc/profile.d/01-vcxsrv.sh' <<EOF
 #!/bin/sh
 
-if [ -n "\${WSL2}" ]; then
-  (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac >/dev/null 2>&1 &)
-else
-  (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl >/dev/null 2>&1 &)
+if ! cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe'; then
+  if [ -n "\${WSL2}" ]; then
+    (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac >/dev/null 2>&1 &)
+  else
+    (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl >/dev/null 2>&1 &)
+  fi
+  sleep 1 # Wait for the server to start
 fi
 
 export XRANDRDPI=\$(timeout 2s xdpyinfo | grep resolution | sed "s/.*resolution:[ ]*\([0-9]*\)x.*/\1/")
 export VCXSRV=yes
 
 EOF
-  #add_fish_support '01-vcxsrv'
 
   unset version
   unset VcxsrvUrl
@@ -63,6 +65,8 @@ EOF
 
   # Avoid collision with the other XServer
   sudo rm -f /etc/profile.d/02-x410.sh
+
+  #add_fish_support '01-vcxsrv'
   sudo rm -f "${__fish_sysconf_dir:=/etc/fish/conf.d}/02-x410.fish"
 
   source /etc/profile.d/01-vcxsrv.sh
