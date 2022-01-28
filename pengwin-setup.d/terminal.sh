@@ -59,7 +59,7 @@ function main() {
       tmp_f="$(pwd)"
       # shellcheck disable=SC2164
       cd "${wHome}/Pengwin/.wsltty"
-      cmd.exe /C "install.bat"
+      cmd-exe /C "install.bat"
       # shellcheck disable=SC2164
       cd "$tmp_f"
       unset tmp_f
