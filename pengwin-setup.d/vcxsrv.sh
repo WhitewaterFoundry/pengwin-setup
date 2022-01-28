@@ -46,9 +46,9 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
 
 if ! cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe'; then
   if [ -n "\${WSL2}" ]; then
-    (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac >/dev/null 2>&1 &)
+    (cmd-exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac >/dev/null 2>&1 &)
   else
-    (cmd.exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl >/dev/null 2>&1 &)
+    (cmd-exe /V /C "set __COMPAT_LAYER=HighDpiAware&& ${wVcxsrvDir}\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl >/dev/null 2>&1 &)
   fi
   sleep 1 # Wait for the server to start
 fi
