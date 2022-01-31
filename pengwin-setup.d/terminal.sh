@@ -35,7 +35,7 @@ function main() {
         return
       fi
 
-      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
+      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701&mode=mini"
     else
       echo "Skipping Windows Terminal"
     fi
