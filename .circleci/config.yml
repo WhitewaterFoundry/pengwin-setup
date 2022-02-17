@@ -114,6 +114,9 @@ jobs:
       - run:
           name: Push deb package bullseye
           command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
+      - run:
+          name: Push deb package bookworm
+          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
 workflows:
   version: 2
   testdebbuild:
