@@ -35,7 +35,7 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
 #!/bin/sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   eval "\$(timeout 2s dbus-launch --auto-syntax)"
 fi

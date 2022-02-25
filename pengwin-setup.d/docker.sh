@@ -3,8 +3,8 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="19.03.8"
-DOCKER_COMPOSE_VERSION="1.25.4"
+DOCKER_VERSION="20.10.7"
+DOCKER_COMPOSE_VERSION="1.29.2"
 
 # Imported from common.sh
 declare wHome
@@ -14,6 +14,18 @@ declare WIN_CUR_VER
 #Imported global variables
 declare USER
 
+#######################################
+# description
+# Globals:
+#   GOPATH
+#   GOROOT
+#   GOVERSION
+#   PATH
+#   USER
+#   wHome
+# Arguments:
+#  None
+#######################################
 function docker_install_build_relay() {
   #Build the relay
   if [[ ! -f "${wHome}/.npiperelay/npiperelay.exe" ]]; then
@@ -75,7 +87,7 @@ function docker_install_build_relay() {
 PATH="$1"
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
 
   connected=$(docker version 2>&1 | grep -c "daemon\|error")
   if [[ ${connected} != 0  ]]; then
@@ -98,7 +110,7 @@ EOF
   cat <<'EOF' >>docker_relay.sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
   sudo docker-relay "${PATH}"
 fi
 EOF
@@ -117,6 +129,14 @@ EOF
   sudo docker version
 }
 
+#######################################
+# description
+# Globals:
+#   DOCKER_HOST
+#   connected
+# Arguments:
+#  None
+#######################################
 function docker_install_conf_tcp() {
   echo "Connect to Docker via TCP"
 
@@ -134,22 +154,27 @@ EOF
   export DOCKER_HOST=tcp://0.0.0.0:2375
   connected=$(docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
   if [[ ${connected} != 0 ]]; then
-    whiptail --title "DOCKER" \
+    message --title "DOCKER" \
       --msgbox "Please go to Docker Desktop -> Settings -> General and enable 'Expose daemon on tcp://localhost:2375 without TLS' or upgrade your Windows version and run this script again." 9 75
   else
     docker version
   fi
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function docker_install_conf_toolbox() {
   echo "Connect to Docker Toolbox"
 
   cat <<'EOF' >>docker_relay.sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
   VM=${DOCKER_MACHINE_NAME-default}
-  DOCKER_MACHINE="$(which docker-machine.exe)"
+  DOCKER_MACHINE="$(command -v docker-machine.exe)"
   eval "$("${DOCKER_MACHINE}" env --shell=bash --no-proxy "${VM}" 2>/dev/null )" > /dev/null 2>&1
 
   if [[ "${DOCKER_CERT_PATH}" != "" ]] ; then
@@ -165,6 +190,18 @@ EOF
   docker version
 }
 
+#######################################
+# description
+# Globals:
+#   DOCKER_COMPOSE_VERSION
+#   DOCKER_VERSION
+#   HOME
+#   WIN_CUR_VER
+# Arguments:
+#  None
+# Returns:
+#   <unknown> ...
+#######################################
 function main() {
 
   if (confirm --title "DOCKER" --yesno "Would you like to install the bridge to Docker?" 8 55); then
@@ -174,7 +211,7 @@ function main() {
     local connected
     connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     while [[ ${connected} != 0 ]]; do
-      if ! (whiptail --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
+      if ! (confirm --title "DOCKER" --yesno "Docker Desktop or Docker Toolbox appears not to be running, please check it and ensure that it is running correctly. Would you like to try again?" 9 75); then
         return
 
       fi
@@ -223,7 +260,7 @@ function main() {
     # shellcheck disable=SC1003
     if [[ ${WIN_CUR_VER} -gt 17063 && $(wslpath 'C:\') == '/mnt/c/' ]]; then
 
-      if (whiptail --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
+      if (confirm --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
         echo "Changing the root from /mnt to /"
 
         if [[ $(grep -c "root" /etc/wsl.conf) -eq 0 ]]; then
@@ -268,7 +305,7 @@ EOF
         cat <<'EOF' >>create-mnt-c-link.sh
 
 # Check if we have Windows Path
-if ( which cmd.exe >/dev/null ); then
+if ( command -v cmd.exe >/dev/null ); then
   sudo create-mnt-c-link
 fi
 

@@ -5,7 +5,7 @@ source "$(dirname "$0")/common.sh" "$@"
 
 function install_pyenv() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.9 with pyenv?" 8 70); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.10 with pyenv?" 8 70); then
     echo "Installing PYENV"
     createtmp
     install_packages make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
@@ -39,14 +39,14 @@ function install_pyenv() {
       echo 'status --is-interactive; and pyenv init -| source' >>"${HOME}"/.config/fish/config.fish
     fi
 
-    echo "Installing Python 3.9"
+    echo "Installing Python 3.10"
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 
-    pyenv install -s 3.9.6
-    pyenv global 3.9.6
+    pyenv install -s 3.10.2
+    pyenv global 3.10.2
 
     touch "${HOME}"/.should-restart
 
@@ -62,7 +62,7 @@ function install_pythonpip() {
     echo "Installing PYTHONPIP"
     createtmp
     install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-pip python3-venv
-    pip3 install -U pip
+    pip3 install -U pip --no-warn-script-location
 
     touch "${HOME}"/.should-restart
 
@@ -78,8 +78,9 @@ function install_poetry() {
     echo "Installing POETRY"
     createtmp
     install_packages build-essential python3.9 python3.9-distutils idle-python3.9 python3-venv
-    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
-    source $HOME/.poetry/env
+    curl -sSL https://install.python-poetry.org | python3 -
+
+    source "${HOME}"/.poetry/env
     poetry self update
     poetry completions bash | sudo tee /usr/share/bash-completion/completions/poetry.bash-completion
 
@@ -96,7 +97,7 @@ function main() {
   local menu_choice=$(
 
     menu --title "Python" --radiolist --separate-output "Python install options\n[SPACE to select, ENTER to confirm]:" 12 75 3 \
-      "PYENV" 'Python 3.9 with pyenv   ' off \
+      "PYENV" 'Python 3.10 with pyenv   ' off \
       "PYTHONPIP" 'Python 3.9, IDLE, and the pip package manager ' off \
       "POETRY" 'Python 3.9, IDLE, and the poetry package manager ' off
 

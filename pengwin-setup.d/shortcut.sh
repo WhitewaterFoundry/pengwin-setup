@@ -42,6 +42,7 @@ function create_shortcut_from_desktop() {
   local cmdIcon
   local line
   local gui="--gui"
+  local -a key_value
 
   while read -r line; do
 
@@ -58,10 +59,11 @@ function create_shortcut_from_desktop() {
         break
       fi
 
-      IFS='=' read -ra keyValue <<<"${line}"
 
-      local key="${keyValue[0]}"
-      local value="${keyValue[1]}"
+      IFS='=' read -ra key_value <<<"${line}"
+
+      local key="${key_value[0]}"
+      local value="${key_value[1]}"
 
       case "${key}" in
       Name)
@@ -188,17 +190,19 @@ function main() {
 
   if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70); then
 
+    start_indeterminate_progress
+
     echo "Generating Start Menu"
 
     DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
 
     rm "${DEST_PATH}"/*
 
-    filelistarray=()
+    local file_list_array=()
 
     while IFS= read -r -d $'\0'; do
 
-      filelistarray+=("$REPLY")
+      file_list_array+=("$REPLY")
 
     done < <(find /usr/share/applications \
       "${HOME}"/.local/share/applications -name '*.desktop' -print0)
@@ -207,11 +211,13 @@ function main() {
 
     rm ~/.config/wslu/baseexec
 
-    for desktopFile in "${filelistarray[@]}"; do
+    for desktopFile in "${file_list_array[@]}"; do
 
       create_shortcut_from_desktop "${desktopFile}"
 
     done
+
+    stop_indeterminate_progress
 
   else
     echo "Skipping Start Menu Generation"

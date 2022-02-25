@@ -12,6 +12,10 @@ if (confirm --title "Java" --yesno "Would you like to Install SDKMan to manage a
   sudo tee "/etc/profile.d/sdkman.sh" <<EOF
 #!/bin/sh
 
+if [ -n "\${XRDP_SESSION}" ]; then
+  return
+fi
+
 export SDKMAN_DIR="\${HOME}/.sdkman"
 if [ -s "\${HOME}/.sdkman/bin/sdkman-init.sh" ]; then
 
@@ -35,7 +39,9 @@ EOF
 
   curl https://raw.githubusercontent.com/Bash-it/bash-it/master/completion/available/sdkman.completion.bash | sudo tee /etc/bash_completion.d/sdkman.bash
 
-  message --title "SDKMan" --msgbox "To install Java use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 15 60
+  sdk install java
+
+  message --title "SDKMan" --msgbox "$(sdk c java)\n\nTo install other Java versions use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 17 60
 
   touch "${HOME}"/.should-restart
 else

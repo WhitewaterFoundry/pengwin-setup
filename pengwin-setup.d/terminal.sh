@@ -35,7 +35,7 @@ function main() {
         return
       fi
 
-      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701"
+      wslview "ms-windows-store://pdp/?ProductId=9n0dx20hk701&mode=mini"
     else
       echo "Skipping Windows Terminal"
     fi
@@ -59,7 +59,7 @@ function main() {
       tmp_f="$(pwd)"
       # shellcheck disable=SC2164
       cd "${wHome}/Pengwin/.wsltty"
-      cmd.exe /C "install.bat"
+      cmd-exe /C "install.bat"
       # shellcheck disable=SC2164
       cd "$tmp_f"
       unset tmp_f
