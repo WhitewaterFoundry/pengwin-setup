@@ -68,6 +68,10 @@ function install_xrdp() {
   install_packages xrdp xorgxrdp
   
   sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
+  
+  # Fix the thinclient_drives error, also not needed in WSL
+  sudo sed -i "s/^\(FuseMountName=\)\(thinclient_drives\)$/\1\/tmp\/%u\/\2/" /etc/xrdp/sesman.ini 
+  
   sudo /etc/init.d/xrdp start
   
   sudo tee '/usr/local/bin/remote_desktop.sh' << EOF
