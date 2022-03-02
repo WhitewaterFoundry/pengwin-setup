@@ -5,7 +5,6 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-
 function create_shortcut() {
   local cmdName="$1"
   local cmdToExec="$2"
@@ -41,7 +40,7 @@ function install_dependencies() {
   if [[ -f /etc/profile.d/dbus.sh ]]; then
     bash "${SetupDir}"/hidpi.sh --yes "$@"
     if [[ -f /etc/profile.d/hidpi.sh ]]; then
-        dependencies_instaled=0
+      dependencies_instaled=0
     else
       dependencies_instaled=1
       echo "There is a problem installing hidpi"
@@ -54,26 +53,38 @@ function install_dependencies() {
 }
 
 function install_xrdp() {
-  install_packages xrdp
-  install_packages xorgxrdp
-  sudo sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
+  local port
+
+  if [[ -z "${NON_INTERACTIVE}" ]]; then
+    port=$(whiptail --title "Enter the desired RDP Port" --inputbox "RDP Port: " 8 50 "3395" 3>&1 1>&2 2>&3)
+    if [[ -z ${port} ]] ; then
+      echo "Cancelled"
+      return 1
+    fi
+  else
+    port="3395"
+  fi
+
+  install_packages xrdp xorgxrdp
+  
+  sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
   sudo /etc/init.d/xrdp start
   
-  sudo bash -c 'cat > /usr/local/bin/remote_desktop.sh' << EOF
+  sudo tee '/usr/local/bin/remote_desktop.sh' << EOF
 #!/bin/bash
 
 function execute_remote_desktop(){
-    host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
-    user_name=\$(whoami)
-    echo "username:s:\$user_name" > /tmp/remote_desktop_config.rdp
-    cd /tmp
-    mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:3390 /f
+  host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
+  user_name=\$(whoami)
+  echo "username:s:\$user_name" > /tmp/remote_desktop_config.rdp
+  cd /tmp
+  mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:$port /f
 }
 
 execute_remote_desktop
 EOF
 
-    sudo bash -c 'cat > /usr/local/bin/start-xrdp' << EOF
+    sudo tee '/usr/local/bin/start-xrdp' << EOF
 #!/bin/bash
 
 sudo service xrdp start >/dev/null 2>&1 
@@ -94,9 +105,15 @@ xrdp
 
 function install_xfce() {
   if install_dependencies "$@" ; then
-    install_packages xfce4-terminal
-    install_packages xfce4
     install_xrdp
+    local exit_status=$?
+
+    if [[ ${exit_status} != 0 ]]; then
+      return ${exit_status}
+    fi
+
+    install_packages xfce4 xfce4-terminal
+ 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
       create_shortcut "Xfce desktop (WSL)" "/usr/local/bin/remote_desktop.sh" "/usr/share/pixmaps/xfce4_xicon.png"
     else
