@@ -35,7 +35,7 @@ function package_installed() {
 
 function install_dependencies() {
   local dependencies_instaled
-  echo "installing dependencies"
+  echo "Installing dependencies"
   bash "${SetupDir}"/guilib.sh --yes "$@"
   if [[ -f /etc/profile.d/dbus.sh ]]; then
     bash "${SetupDir}"/hidpi.sh --yes "$@"
@@ -77,7 +77,7 @@ function install_xrdp() {
   sudo tee '/usr/local/bin/remote_desktop.sh' << EOF
 #!/bin/bash
 
-function execute_remote_desktop(){
+function execute_remote_desktop() {
   host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
   user_name=\$(whoami)
   echo "username:s:\$user_name" > /tmp/remote_desktop_config.rdp
@@ -121,7 +121,7 @@ function install_xfce() {
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
       create_shortcut "Xfce desktop (WSL)" "/usr/local/bin/remote_desktop.sh" "/usr/share/pixmaps/xfce4_xicon.png"
     else
-      echo "There is a problem with xfce4 instalation"
+      echo "There is a problem with xfce4 installation"
     fi
   fi
 
@@ -130,8 +130,8 @@ function install_xfce() {
 function main() {
   local menu_choice=$(
 
-    menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 8 50 2 \
-      "XFCE" "Install XFCE Desktop environment" off \
+    menu --title "Desktop Menu" --checklist --separate-output "Install Desktop environments\n[SPACE to select, ENTER to confirm]:" 10 55 1 \
+      "XFCE" "Install XFCE Desktop environment" on \
 
 
   3>&1 1>&2 2>&3)

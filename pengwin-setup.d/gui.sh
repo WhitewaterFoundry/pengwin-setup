@@ -12,7 +12,7 @@ function main() {
   local menu_choice=$(
 
     menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 9 \
-      "DESKTOP" "Install Desktops enviroments" off \
+      "DESKTOP" "Install Desktop environments" off \
       "NLI" "Install fcitx or iBus for improved non-Latin input support" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
       "HIDPI" "Configure Qt and GTK for HiDPI displays" off \
