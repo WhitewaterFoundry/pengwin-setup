@@ -38,7 +38,7 @@ function install_dependencies() {
   echo "Installing dependencies"
   bash "${SetupDir}"/guilib.sh --yes "$@"
   if [[ -f /etc/profile.d/dbus.sh ]]; then
-    bash "${SetupDir}"/hidpi.sh --yes "$@"
+    bash "${SetupDir}"/hidpi.sh --yes --quiet "$@"
     if [[ -f /etc/profile.d/hidpi.sh ]]; then
       dependencies_instaled=0
     else
