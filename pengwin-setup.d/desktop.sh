@@ -80,7 +80,8 @@ function install_xrdp() {
 function execute_remote_desktop() {
   host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
   user_name=\$(whoami)
-  echo "username:s:\$user_name" > /tmp/remote_desktop_config.rdp
+  echo -e "username:s:\$user_name\nsession bpp:i:32\nallow desktop composition:i:1\nconnection type:i:6\n" > /tmp/remote_desktop_config.rdp
+  echo -e "networkautodetect:i:0\nbandwidthautodetect:i:1\n" >> /tmp/remote_desktop_config.rdp
   cd /tmp
   mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:$port /f
 }
