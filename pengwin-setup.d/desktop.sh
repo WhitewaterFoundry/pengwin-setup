@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -9,6 +10,7 @@ function create_shortcut() {
   local cmdName="$1"
   local cmdToExec="$2"
   local cmdIcon="$3"
+  # shellcheck disable=SC2155
   local DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
 
   # shellcheck disable=SC2086
@@ -66,14 +68,14 @@ function install_xrdp() {
   fi
 
   install_packages xrdp xorgxrdp
-  
+
   sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
-  
+
   # Fix the thinclient_drives error, also not needed in WSL
-  sudo sed -i "s/^\(FuseMountName=\)\(thinclient_drives\)$/\1\/tmp\/%u\/\2/" /etc/xrdp/sesman.ini 
-  
+  sudo sed -i "s/^\(FuseMountName=\)\(thinclient_drives\)$/\1\/tmp\/%u\/\2/" /etc/xrdp/sesman.ini
+
   sudo /etc/init.d/xrdp start
-  
+
   sudo tee '/usr/local/bin/remote_desktop.sh' << EOF
 #!/bin/bash
 
@@ -83,16 +85,16 @@ function execute_remote_desktop() {
   echo -e "username:s:\$user_name\nsession bpp:i:32\nallow desktop composition:i:1\nconnection type:i:6\n" > /tmp/remote_desktop_config.rdp
   echo -e "networkautodetect:i:0\nbandwidthautodetect:i:1\n" >> /tmp/remote_desktop_config.rdp
   cd /tmp
-  mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:$port /f
+  mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:$port "\$@"
 }
 
-execute_remote_desktop
+execute_remote_desktop "\$@"
 EOF
 
     sudo tee '/usr/local/bin/start-xrdp' << EOF
 #!/bin/bash
 
-sudo service xrdp start >/dev/null 2>&1 
+sudo service xrdp start >/dev/null 2>&1
 EOF
 
     sudo tee '/etc/profile.d/start-xrdp.sh' << EOF
@@ -118,9 +120,12 @@ function install_xfce() {
     fi
 
     install_packages xfce4 xfce4-terminal
- 
+
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
-      create_shortcut "Xfce desktop (WSL)" "/usr/local/bin/remote_desktop.sh" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - Full Screen" "'/usr/local/bin/remote_desktop.sh /f'" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - 1024x768" "'/usr/local/bin/remote_desktop.sh /w:1024 /h:768'" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - 1366x768" "'/usr/local/bin/remote_desktop.sh /w:1366 /h:768'" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - 1920x1080" "'/usr/local/bin/remote_desktop.sh /w:1920 /h:1080'" "/usr/share/pixmaps/xfce4_xicon.png"
     else
       echo "There is a problem with xfce4 installation"
     fi
