@@ -184,7 +184,7 @@ if [[ "$cname" != "" ]]; then
   localfile_path="/usr/share/wslu" # WSL wslu source file location, Linux Sty.
   script_location_win="%USERPROFILE%\\wslu" #  Windows wslu, Win Double Sty.
   if [[ "$is_gui" == "1" ]]; then
-    distro_location_win="%LOCALAPPDATA%\\Microsoft\\WindowsApps\\pengwin.exe" # Distro Location, Win Double Sty.
+    distro_location_win="%LOCALAPPDATA%\\Microsoft\\WindowsApps\\pengwinw.exe" # Distro Location, Win Double Sty.
   else
     distro_location_win="%LOCALAPPDATA%\\Microsoft\\WindowsApps\\pengwin.exe" # Distro Location, Win Double Sty.
   fi
