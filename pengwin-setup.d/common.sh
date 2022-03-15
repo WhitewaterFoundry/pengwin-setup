@@ -274,31 +274,37 @@ function setup_env() {
 
   process_arguments "$@"
 
-  # shellcheck disable=SC1003
+  # shellcheck disable=SC1003,SC2262
   if (! wslpath 'C:\' >/dev/null 2>&1); then
     shopt -s expand_aliases
     alias wslpath=legacy_wslupath
   fi
 
+  # shellcheck disable=SC2155
   readonly wHomeWinPath=$(cmd-exe /c 'echo %HOMEDRIVE%%HOMEPATH%' | tr -d '\r')
   export wHomeWinPath
-  
+
+  # shellcheck disable=SC2263,SC2155
   readonly wHome=$(wslpath -u "${wHomeWinPath}")
   export wHome
-  
+
   readonly CANCELLED="CANCELLED"
   export CANCELLED
-  
+
+  # shellcheck disable=SC2155
   readonly WIN_CUR_VER="$(reg.exe query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v "CurrentBuild" 2>&1 | grep -E -o '([0-9]{5})' | cut -d ' ' -f 2)"
   export WIN_CUR_VER
-  
+
+  # bashsupport disable=BP2001
+  readonly SHORTCUTS_FOLDER="Pengwin Applications"
+  export SHORTCUTS_FOLDER
 
   SetupDir="/usr/local/pengwin-setup.d"
   export SetupDir
-  
+
   readonly GOVERSION="1.15.8"
   export GOVERSION
-  
+
 }
 
 #######################################
