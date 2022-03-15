@@ -51,6 +51,7 @@ function main() {
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" off \
       "WSLTTY" "Remove WSLtty" off \
       "X410" "Remove the X410 X-server autostart" off \
+      "XFCE" "Remove XFCE Desktop environment" off \
 
   # shellcheck disable=SC2188
   3>&1 1>&2 2>&3)
@@ -253,6 +254,12 @@ function main() {
     echo "X410"
     bash "${UninstallDir}"/x410.sh "$@"
   fi
+
+  if [[ ${menu_choice} == *"XFCE"* ]] ; then
+    echo "XFCE"
+    bash "${UninstallDir}"/desktop.sh "$@"
+  fi
+  
 
 }
 
