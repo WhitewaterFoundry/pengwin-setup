@@ -196,7 +196,7 @@ function main() {
 
     DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
 
-    rm "${DEST_PATH}"/*
+    rm "${DEST_PATH}"/*\ \(WSL\).lnk
 
     local file_list_array=()
 
