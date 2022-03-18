@@ -80,7 +80,7 @@ function install_xrdp() {
 #!/bin/bash
 
 function execute_remote_desktop() {
-  if [ -z "${WSL2}" ]; then
+  if [ -z "\${WSL2}" ]; then
     host_ip=127.0.0.1
   else
     host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
