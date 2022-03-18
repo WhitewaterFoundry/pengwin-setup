@@ -11,15 +11,15 @@ function create_shortcut() {
   local cmdToExec="$2"
   local cmdIcon="$3"
   # shellcheck disable=SC2155
-  local DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
+  local dest_path=$(wslpath "$(wslvar -l Programs)")/"${SHORTCUTS_FOLDER}"
 
   # shellcheck disable=SC2086
   echo wslusc --name "${cmdName}" --icon "${cmdIcon}" --gui "${cmdToExec}"
   # shellcheck disable=SC2086
   bash "${SetupDir}"/generate-shortcut.sh --gui --name "${cmdName}" --icon "${cmdIcon}"  "${cmdToExec}"
 
-  mkdir -p "${DEST_PATH}"
-  mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${DEST_PATH}"
+  mkdir -p "${dest_path}"
+  mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${dest_path}"
 }
 
 function package_installed() {
@@ -80,7 +80,12 @@ function install_xrdp() {
 #!/bin/bash
 
 function execute_remote_desktop() {
-  host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
+  if [ -z "${WSL2}" ]; then
+    host_ip=127.0.0.1
+  else
+    host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
+  fi
+
   user_name=\$(whoami)
   echo -e "username:s:\$user_name\nsession bpp:i:32\nallow desktop composition:i:1\nconnection type:i:6\n" > /tmp/remote_desktop_config.rdp
   echo -e "networkautodetect:i:0\nbandwidthautodetect:i:1\n" >> /tmp/remote_desktop_config.rdp
@@ -134,6 +139,7 @@ function install_xfce() {
 }
 
 function main() {
+  # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
     menu --title "Desktop Menu" --checklist --separate-output "Install Desktop environments\n[SPACE to select, ENTER to confirm]:" 10 55 1 \

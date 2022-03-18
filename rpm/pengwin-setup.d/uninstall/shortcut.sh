@@ -3,7 +3,7 @@
 # shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
-shortcut_path=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
+shortcut_path=$(wslpath "$(wslvar -l Programs)")/"${SHORTCUTS_FOLDER}"
 
 function main() {
 
