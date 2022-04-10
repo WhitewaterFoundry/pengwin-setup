@@ -45,8 +45,9 @@ function install_pyenv() {
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 
-    pyenv install -s 3.10.2
-    pyenv global 3.10.2
+    local python_target="3.10.2"
+    pyenv install -s "$python_target"
+    pyenv global "$python_target"
 
     touch "${HOME}"/.should-restart
 
