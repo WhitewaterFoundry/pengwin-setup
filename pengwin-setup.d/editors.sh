@@ -31,7 +31,7 @@ function emacs_install() {
 }
 
 function code_install() {
-  if (confirm --title "CODE" --yesno "Would you like to download and install Code from Microsoft?" 8 65); then
+  if (confirm --title "CODE" --yesno "Would you like to download and install Code from Microsoft (Linux version)?" 8 65); then
     echo "Installing CODE"
     createtmp
     echo "Downloading and unpacking Microsoft's apt repo key with curl and gpg"
@@ -69,8 +69,8 @@ function editor_menu() {
   # shellcheck disable=SC2155
   local editor_choice=$(
 
-    menu --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
-      "CODE" "Visual Studio Code (requires X)   " off \
+    menu --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
+      "CODE" "Visual Studio Code (Linux version, requires X)   " off \
       "EMACS" "Emacs" off \
       "NEOVIM" "Neovim" off
 
