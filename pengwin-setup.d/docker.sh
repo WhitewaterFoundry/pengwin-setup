@@ -246,7 +246,7 @@ function main() {
     echo "Installing bash-completion"
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get -y -q install bash-completion
-    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
+    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/cli/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
 
     echo "Installing docker-compose"
     sudo rm -f /usr/bin/docker-compose
