@@ -17,10 +17,11 @@ if [ -n "\${XRDP_SESSION}" ]; then
 fi
 
 export SDKMAN_DIR="\${HOME}/.sdkman"
+
 if [ -s "\${HOME}/.sdkman/bin/sdkman-init.sh" ]; then
 
   if [ "\${SHELL}" != "/bin/sh" ]; then
-    # shellcheck disable=SC1090
+    # shellcheck disable=SC1090,SC1091
     . "\${HOME}/.sdkman/bin/sdkman-init.sh"
   else
     # Basic support for sh
