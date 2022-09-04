@@ -6,6 +6,16 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
+#######################################
+# Creates the Start Menu shortcut to start the remote desktop
+# Globals:
+#   SHORTCUTS_FOLDER
+#   SetupDir
+# Arguments:
+#   1 The name of the shortcut
+#   2 The command to execute
+#   3 The shortcut icon
+#######################################
 function create_shortcut() {
   local cmdName="$1"
   local cmdToExec="$2"
@@ -16,7 +26,7 @@ function create_shortcut() {
   # shellcheck disable=SC2086
   echo wslusc --name "${cmdName}" --icon "${cmdIcon}" --gui "${cmdToExec}"
   # shellcheck disable=SC2086
-  bash "${SetupDir}"/generate-shortcut.sh --gui --name "${cmdName}" --icon "${cmdIcon}"  "${cmdToExec}"
+  bash "${SetupDir}"/generate-shortcut.sh --gui --name "${cmdName}" --icon "${cmdIcon}" "${cmdToExec}"
 
   mkdir -p "${dest_path}"
   mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${dest_path}"
@@ -33,7 +43,6 @@ function package_installed() {
     return 0
   fi
 }
-
 
 function install_dependencies() {
   local dependencies_instaled
@@ -59,7 +68,7 @@ function install_xrdp() {
 
   if [[ -z "${NON_INTERACTIVE}" ]]; then
     port=$(whiptail --title "Enter the desired RDP Port" --inputbox "RDP Port: " 8 50 "3395" 3>&1 1>&2 2>&3)
-    if [[ -z ${port} ]] ; then
+    if [[ -z ${port} ]]; then
       echo "Cancelled"
       return 1
     fi
@@ -70,13 +79,21 @@ function install_xrdp() {
   install_packages xrdp xorgxrdp
 
   sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(bitmap_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(bulk_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(max_bpp=\)\(32\)$/\124/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(#\)\(ls_title=\)\(.*\)$/\2Welcome to Pengwin/" /etc/xrdp/xrdp.ini
+
+  # shellcheck disable=SC2155
+  local sesman_port=$(echo "${port} - 50" | bc)
 
   # Fix the thinclient_drives error, also not needed in WSL
   sudo sed -i "s/^\(FuseMountName=\)\(thinclient_drives\)$/\1\/tmp\/%u\/\2/" /etc/xrdp/sesman.ini
+  sudo sed -i "s/^\(ListenPort=\)\([0-9]*\)$/\1${sesman_port}/" /etc/xrdp/sesman.ini
 
   sudo /etc/init.d/xrdp start
 
-  sudo tee '/usr/local/bin/remote_desktop.sh' << EOF
+  sudo tee '/usr/local/bin/remote_desktop.sh' <<EOF
 #!/bin/bash
 
 function execute_remote_desktop() {
@@ -96,13 +113,13 @@ function execute_remote_desktop() {
 execute_remote_desktop "\$@"
 EOF
 
-    sudo tee '/usr/local/bin/start-xrdp' << EOF
+  sudo tee '/usr/local/bin/start-xrdp' <<EOF
 #!/bin/bash
 
 sudo service xrdp start >/dev/null 2>&1
 EOF
 
-    sudo tee '/etc/profile.d/start-xrdp.sh' << EOF
+  sudo tee '/etc/profile.d/start-xrdp.sh' <<EOF
 #!/bin/sh
 
 sudo /usr/local/bin/start-xrdp
@@ -113,10 +130,9 @@ EOF
   echo '%sudo   ALL=NOPASSWD: /usr/local/bin/start-xrdp' | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/start-xrdp
 
 }
-xrdp
 
 function install_xfce() {
-  if install_dependencies "$@" ; then
+  if install_dependencies "$@"; then
     install_xrdp
     local exit_status=$?
 
@@ -131,6 +147,15 @@ function install_xfce() {
       create_shortcut "Xfce desktop - 1024x768" "'/usr/local/bin/remote_desktop.sh /w:1024 /h:768'" "/usr/share/pixmaps/xfce4_xicon.png"
       create_shortcut "Xfce desktop - 1366x768" "'/usr/local/bin/remote_desktop.sh /w:1366 /h:768'" "/usr/share/pixmaps/xfce4_xicon.png"
       create_shortcut "Xfce desktop - 1920x1080" "'/usr/local/bin/remote_desktop.sh /w:1920 /h:1080'" "/usr/share/pixmaps/xfce4_xicon.png"
+
+      message --title "Desktop installation" --msgbox "Your desktop is installed. To use it there are new Start Menu shortcuts:
+
+      Xfce desktop - 1024x768
+      Xfce desktop - 1366x768
+      Xfce desktop - 1920x1080
+      Xfce desktop - Full Screen
+
+Just click on one of them and login with your Pengwin credentials." 15 80
     else
       echo "There is a problem with xfce4 installation"
     fi
@@ -143,10 +168,10 @@ function main() {
   local menu_choice=$(
 
     menu --title "Desktop Menu" --checklist --separate-output "Install Desktop environments\n[SPACE to select, ENTER to confirm]:" 10 55 1 \
-      "XFCE" "Install XFCE Desktop environment" on \
+      "XFCE" "Install XFCE Desktop environment" on
 
-
-  3>&1 1>&2 2>&3)
+    3>&1 1>&2 2>&3
+  )
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
