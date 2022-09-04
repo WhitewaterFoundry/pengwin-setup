@@ -3,7 +3,7 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="20.10.7"
+DOCKER_VERSION="20.10.15"
 DOCKER_COMPOSE_VERSION="1.29.2"
 
 # Imported from common.sh
@@ -246,14 +246,14 @@ function main() {
     echo "Installing bash-completion"
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get -y -q install bash-completion
-    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
+    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/cli/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker'
 
     echo "Installing docker-compose"
     sudo rm -f /usr/bin/docker-compose
     sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose"
     sudo chmod +x /usr/bin/docker-compose
 
-    sudo sh -c 'curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose'
+    sudo sh -c 'curl -SL https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose'
 
     docker-compose version
 

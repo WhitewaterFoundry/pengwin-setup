@@ -194,9 +194,9 @@ function main() {
 
     echo "Generating Start Menu"
 
-    DEST_PATH=$(wslpath "$(wslvar -l Programs)")/Pengwin\ Applications
+    DEST_PATH=$(wslpath "$(wslvar -l Programs)")/"${SHORTCUTS_FOLDER}"
 
-    rm "${DEST_PATH}"/*
+    rm "${DEST_PATH}"/*\ \(WSL\).lnk
 
     local file_list_array=()
 

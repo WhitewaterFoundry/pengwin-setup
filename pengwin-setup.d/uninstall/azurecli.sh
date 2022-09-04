@@ -19,6 +19,8 @@ function main() {
   echo "Removing APT key..."
   safe_rem_microsoftgpg
 
+  echo "Restoring wslview as the default browser"
+  wslview -r
 }
 
 if show_warning "Azure CLI" "$@"; then

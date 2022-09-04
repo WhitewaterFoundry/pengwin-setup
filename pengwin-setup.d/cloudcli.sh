@@ -132,9 +132,11 @@ function install_doctl() {
 function install_kubectl() {
 
   echo "Installing Helm"
-  curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
   helm completion bash | sudo tee /etc/bash_completion.d/helm
+  
+  mkdir -p ~/.config/fish/completions
   helm completion fish >~/.config/fish/completions/helm.fish
 
   echo "Installing kubectl"
@@ -143,7 +145,10 @@ function install_kubectl() {
   sudo apt-get -y -q update
   sudo apt-get -y -q install kubectl
 
+  kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl
+  kubectl completion fish >~/.config/fish/completions/kubectl.fish
 }
+
 function install_ibmcli() {
 
   if (confirm --title "IBM Cloud CLI" --yesno "Would you like to install the stand-alone IBM Cloud CLI?" 8 70); then
