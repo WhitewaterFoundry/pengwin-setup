@@ -14,6 +14,8 @@ function install_terraform() {
 
     local terraform_version="1.2.8"
 
+    sudo apt-get install -yq bash-completion unzip
+
     createtmp
     wget -O terraform.zip "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_$(dpkg --print-architecture).zip"
     unzip terraform.zip
@@ -22,7 +24,7 @@ function install_terraform() {
 
     echo "Installing bash-completion"
     sudo mkdir -p /etc/bash_completion.d
-    sudo apt-get install -yq bash-completion
+
 
     terraform -install-autocomplete
     cleantmp
@@ -137,7 +139,7 @@ function install_kubectl() {
   curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
   helm completion bash | sudo tee /etc/bash_completion.d/helm
-  
+
   mkdir -p ~/.config/fish/completions
   helm completion fish >~/.config/fish/completions/helm.fish
 
