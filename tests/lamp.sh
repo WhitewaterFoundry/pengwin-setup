@@ -6,7 +6,15 @@ source mocks.sh
 mariadb_version="${1:-BUILTIN}"
 shift
 
-function testLAMP() {
+#######################################
+# Test LAMP installation
+# Globals:
+#   i
+#   mariadb_version
+# Arguments:
+#  None
+#######################################
+function test_lamp() {
 
   run_pengwinsetup install SERVICES LAMP "${mariadb_version}"
 
@@ -25,11 +33,7 @@ function testLAMP() {
   fi
 
   local mariadb_command
-  if [[ "${mariadb_version_number}" == "10.3" ]]; then
-    mariadb_command="/usr/bin/mysql"
-  else
-    mariadb_command="/usr/bin/mariadb"
-  fi
+  mariadb_command="/usr/bin/mariadb"
 
   assertTrue "MySQL was not installed" "[ -x ${mariadb_command} ]"
 
@@ -37,7 +41,15 @@ function testLAMP() {
   assertEquals "MySQL was not installed" "1" "$("${mariadb_command}" --version | grep -c "${mariadb_version_number}")"
 }
 
-function testUninstall() {
+#######################################
+# Test LAMP uninstall
+# Globals:
+#   i
+#   mariadb_version
+# Arguments:
+#  None
+#######################################
+function test_uninstall() {
   run_pengwinsetup uninstall LAMP
 
   for i in 'mariadb-server' 'mariadb-client' 'apache2' 'php' 'libdbi-perl'; do

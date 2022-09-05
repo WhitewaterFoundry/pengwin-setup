@@ -40,7 +40,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./brew.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
-  run_test ./lamp.sh "10.3"
+  run_test ./lamp.sh "10.9"
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./dotnet.sh
   run_test ./guilib.sh
