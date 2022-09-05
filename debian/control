@@ -10,6 +10,11 @@ Vcs-Git: https://github.com/WhitewaterFoundry/pengwin-setup.git
 
 Package: pengwin-setup
 Architecture: all
-Depends: ${misc:Depends}, git, wslu, pengwin-base (>= 1.0-887), pulseaudio-utils, x11-utils, imagemagick, graphicsmagick-imagemagick-compat, imagemagick-6.q16
+Depends: ${misc:Depends},
+  git, wslu, pengwin-base (>= 1.0-887),
+  pulseaudio-utils, x11-utils, imagemagick
+Suggests: unzip,
+  git,
+  bash-completion
 Description: Setup tool for Pengwin.
 Essential: yes
