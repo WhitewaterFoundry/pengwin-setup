@@ -27,9 +27,11 @@ function install_lamp() {
     menu_choice=$(
 
       menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
-        "10.3" "Install MariaDB 10.3 from MariaDB" off \
         "BUILTIN" "Install MariaDB 10.5 from Debian Official Repo    " off \
-        "10.6" "Install MariaDB 10.6 from MariaDB" off
+        "10.6" "Install MariaDB 10.6 from MariaDB" off \
+        "10.7" "Install MariaDB 10.7 from MariaDB" off \
+        "10.8" "Install MariaDB 10.8 from MariaDB" off \
+        "10.9" "Install MariaDB 10.9 from MariaDB" off
 
       # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
@@ -43,7 +45,7 @@ function install_lamp() {
     fi
 
     # shellcheck disable=SC2155
-    local selected_version=$(echo "${menu_choice##* }" | grep -E "10\.[1-6]?")
+    local selected_version=$(echo "${menu_choice##* }" | grep -E "10\.[6-9]?")
     if [[ -z ${selected_version} || ${menu_choice} == *"BUILTIN"* ]]; then
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
@@ -61,15 +63,15 @@ function install_lamp() {
       sudo apt-get -y -q install libdbi-perl
 
       curl -LsSO https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
-      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=buster
+      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=bullseye
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
-        sudo debconf-set-selections <<< "mariadb-server-${selected_version} mysql-server/root_password password PASS"
-        sudo debconf-set-selections <<< "mariadb-server-${selected_version} mysql-server/root_password_again password PASS"
+        sudo debconf-set-selections <<<"mariadb-server-${selected_version} mysql-server/root_password password PASS"
+        sudo debconf-set-selections <<<"mariadb-server-${selected_version} mysql-server/root_password_again password PASS"
       fi
 
-      install_packages -t buster mariadb-server mariadb-client mariadb-backup
+      install_packages -t bullseye mariadb-server mariadb-client mariadb-backup
       apt policy mariadb-server
 
       cleantmp
@@ -97,11 +99,7 @@ function install_lamp() {
     echo "Installing LAMP as a service"
 
     local mariadb_service
-    if [[ "${selected_version}" == "10.3" ]]; then
-      mariadb_service="mysql"
-    else
-      mariadb_service="mariadb"
-    fi
+    mariadb_service="mariadb"
 
     local start_lamp="/usr/bin/start-lamp"
     sudo tee "${start_lamp}" <<EOF

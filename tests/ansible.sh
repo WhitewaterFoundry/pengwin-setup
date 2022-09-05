@@ -2,7 +2,7 @@
 
 source commons.sh
 
-function testMain() {
+function test_main() {
   run_pengwinsetup autoinstall TOOLS ANSIBLE
 
   # shellcheck disable=SC2041
@@ -16,7 +16,7 @@ function testMain() {
   assertEquals "Ansible was not installed" "1" "$(run_command_as_testuser /usr/bin/ansible --version | grep -c '2.10')"
 }
 
-function testUninstall() {
+function test_uninstall() {
   run_pengwinsetup autoinstall UNINSTALL ANSIBLE
 
   # shellcheck disable=SC2041
