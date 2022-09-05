@@ -23,6 +23,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./brew.sh
   run_test ./guilib.sh
   run_test ./desktop.sh
+  run_test ./terraform.sh
   run_test ./lamp.sh "10.6"
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./pythonpi.sh
@@ -38,6 +39,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./ansible.sh
   run_test ./java.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
+  run_test ./terraform.sh
   run_test ./brew.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./lamp.sh "10.9"
