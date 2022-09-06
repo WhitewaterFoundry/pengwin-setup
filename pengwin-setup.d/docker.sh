@@ -219,28 +219,33 @@ function main() {
       connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     done
 
-    createtmp
+    errorCheck="docker daemon is not running.\|docker: command not found\|error during connect:"
+    local do_not_install_relay
+    do_not_install_relay=$(docker version 2>&1 | grep -c "${errorCheck}")
+    if [[ ${do_not_install_relay} != 0 ]]; then
+      createtmp
 
-    sudo apt-get -y -q update
+      sudo apt-get -y -q update
 
-    wget -c "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz"
-    sudo tar -xzvf docker-${DOCKER_VERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
+      wget -c "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz"
+      sudo tar -xzvf docker-${DOCKER_VERSION}.tgz --overwrite --directory /usr/bin/ --strip-components 1 docker/docker
 
-    sudo chmod 755 /usr/bin/docker
-    sudo chown root:root /usr/bin/docker
+      sudo chmod 755 /usr/bin/docker
+      sudo chown root:root /usr/bin/docker
 
-    #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
-    connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
+      #Checks if the Windows 10 version supports Unix Sockets and that the tcp port without TLS is not already open
+      connected=$(env DOCKER_HOST=tcp://0.0.0.0:2375 docker version 2>&1 | grep -c "Cannot connect to the Docker daemon")
 
-    if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
-      #Install via Docker Toolbox
-      docker_install_conf_toolbox
-    elif [[ ${WIN_CUR_VER} -gt 17063 && ${connected} != 0 ]]; then
-      #Connect via Unix Sockets
-      docker_install_build_relay
-    else
-      #Connect via TCP
-      docker_install_conf_tcp
+      if [[ $(docker-machine.exe active | grep -c "default") != 0 && ${connected} != 0 ]]; then
+        #Install via Docker Toolbox
+        docker_install_conf_toolbox
+      elif [[ ${WIN_CUR_VER} -gt 17063 && ${connected} != 0 ]]; then
+        #Connect via Unix Sockets
+        docker_install_build_relay
+      else
+        #Connect via TCP
+        docker_install_conf_tcp
+      fi
     fi
 
     echo "Installing bash-completion"
@@ -257,20 +262,21 @@ function main() {
 
     docker-compose version
 
-    # shellcheck disable=SC1003
-    if [[ ${WIN_CUR_VER} -gt 17063 && $(wslpath 'C:\') == '/mnt/c/' ]]; then
+    if [[ ${do_not_install_relay} != 0 ]]; then
+      # shellcheck disable=SC1003
+      if [[ ${WIN_CUR_VER} -gt 17063 && $(wslpath 'C:\') == '/mnt/c/' ]]; then
 
-      if (confirm --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
-        echo "Changing the root from /mnt to /"
+        if (confirm --title "DOCKER" --yesno "To correctly integrate the volume mounting between docker Linux and Windows, your root mount point must be changed from /mnt/c to /c. Continue?" 10 80); then
+          echo "Changing the root from /mnt to /"
 
-        if [[ $(grep -c "root" /etc/wsl.conf) -eq 0 ]]; then
-          sudo sed -i 's$\[automount\]$\0\nroot=/$' /etc/wsl.conf
+          if [[ $(grep -c "root" /etc/wsl.conf) -eq 0 ]]; then
+            sudo sed -i 's$\[automount\]$\0\nroot=/$' /etc/wsl.conf
 
-        else
-          sudo sed -i 's$\(root=\)\(.*\)$\1/$' /etc/wsl.conf
-        fi
+          else
+            sudo sed -i 's$\(root=\)\(.*\)$\1/$' /etc/wsl.conf
+          fi
 
-        cat <<'EOF' >>create-mnt-c-link
+          cat <<'EOF' >>create-mnt-c-link
 #!/bin/bash
 
 for l in $( ls /mnt ); do
@@ -297,12 +303,12 @@ for l in $( ls /mnt ); do
 done
 
 EOF
-        sudo cp create-mnt-c-link /usr/bin/create-mnt-c-link
-        sudo chmod u+x /usr/bin/create-mnt-c-link
+          sudo cp create-mnt-c-link /usr/bin/create-mnt-c-link
+          sudo chmod u+x /usr/bin/create-mnt-c-link
 
-        echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
+          echo '%sudo   ALL=NOPASSWD: /usr/bin/create-mnt-c-link' | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/create-mnt-c-link
 
-        cat <<'EOF' >>create-mnt-c-link.sh
+          cat <<'EOF' >>create-mnt-c-link.sh
 
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then
@@ -310,10 +316,11 @@ if ( command -v cmd.exe >/dev/null ); then
 fi
 
 EOF
-        sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
-        sudo chmod -w /usr/bin/create-mnt-c-link
-      fi
+          sudo cp create-mnt-c-link.sh /etc/profile.d/create-mnt-c-link.sh
+          sudo chmod -w /usr/bin/create-mnt-c-link
+        fi
 
+      fi
     fi
 
     touch "${HOME}"/.should-restart
