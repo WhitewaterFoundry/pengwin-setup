@@ -76,7 +76,7 @@ function install_xrdp() {
     port="3395"
   fi
 
-  install_packages xrdp xorgxrdp
+  install_packages xrdp xorgxrdp pulseaudio
 
   sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(bitmap_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
