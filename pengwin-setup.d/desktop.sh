@@ -106,6 +106,7 @@ function execute_remote_desktop() {
   user_name=\$(whoami)
   echo -e "username:s:\$user_name\nsession bpp:i:32\nallow desktop composition:i:1\nconnection type:i:6\n" > /tmp/remote_desktop_config.rdp
   echo -e "networkautodetect:i:0\nbandwidthautodetect:i:1\n" >> /tmp/remote_desktop_config.rdp
+  echo -e "audiocapturemode:i:1\naudiomode:i:0\n" >> /tmp/remote_desktop_config.rdp
   cd /tmp
   mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:$port "\$@"
 }

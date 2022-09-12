@@ -223,19 +223,22 @@ function install_kubernetes() {
     curl ${base_url}/kubectx.bash | sudo tee /etc/bash_completion.d/kubectx >/dev/null
     curl ${base_url}/kubens.bash | sudo tee /etc/bash_completion.d/kubens >/dev/null
 
-    if (! docker version 2>/dev/null); then
+    cleantmp
 
+    if ! (confirm --title "KUBERNETES" --yesno "Would you like to link the tools to a local cluster in Docker or Rancher Desktop?" 9 75); then
+      return
+    fi
+
+    if (! docker version 2>/dev/null); then
       bash "${SetupDir}/docker.sh" "$@"
     fi
 
     local kube_ctl="${wHome}/.kube/config"
 
     while [[ ! -f ${kube_ctl} ]]; do
-      if ! (confirm --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker Desktop. Would you like to try again?" 9 75); then
+      if ! (confirm --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker or Rancher Desktop. Would you like to try again?" 9 75); then
         return
-
       fi
-
     done
 
     mkdir -p "${HOME}"/.kube
@@ -245,7 +248,6 @@ function install_kubernetes() {
     kubens kube-system
     kubectl get pods
 
-    cleantmp
 
   else
     echo "Skipping Kubernetes tooling"
@@ -286,7 +288,7 @@ function main() {
       "AZURE" "Azure CLI" off \
       "DO" "Digital Ocean CLI" off \
       "IBM" "IBM Cloud CLI" off \
-      "KUBERNETES" "Kubernetes tooling" off \
+      "KUBERNETES" "Kubernetes tooling (kubectl, helm)" off \
       "OPENSTACK" "OpenStack command-line clients      " off \
       "TERRAFORM" "Terraform                   " off
 
