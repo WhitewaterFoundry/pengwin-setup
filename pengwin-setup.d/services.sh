@@ -179,6 +179,7 @@ function enable_systemd() {
       sudo sed -i 's/^systemd.*=.*$/systemd=true/' "${wsl_conf}"
     fi
 
+    touch "${HOME}"/.should-restart
   else
     echo "Skipping SystemD"
 
