@@ -159,6 +159,11 @@ EOF
 #######################################
 function enable_systemd() {
 
+  if [[ -z "${WSL2}" ]]; then
+    message --title "SystemD" --msgbox "SystemD is only available in WSL2\n\nIf you want to start services in WSL1 you can use the \"service\" or the \"wslsystemctl\" commands." 11 60
+    return 0
+  fi
+
   if (confirm --title "SystemD" --yesno "Would you like to enable SystemD support for this distro?" 10 60) ; then
     echo "Enabling SystemD..."
 
