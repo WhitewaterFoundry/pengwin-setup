@@ -151,6 +151,49 @@ EOF
 }
 
 #######################################
+# Enables the SystemD support in the wsl.conf file
+# Arguments:
+#  None
+# Returns:
+#   1 If the user cancels the operation
+#######################################
+function enable_systemd() {
+
+  if [[ -z "${WSL2}" ]]; then
+    message --title "SystemD" --msgbox "SystemD is only available in WSL2\n\nIf you want to start services in WSL1 you can use the \"service\" or the \"wslsystemctl\" commands." 11 60
+    return 0
+  fi
+
+  if (confirm --title "SystemD" --yesno "Would you like to enable SystemD support for this distro?" 10 60) ; then
+    echo "Enabling SystemD..."
+
+    local wsl_conf="/etc/wsl.conf"
+
+    # shellcheck disable=SC2155
+    local systemd_exists=$(grep -c -E "^systemd.*=.*$" "${wsl_conf}")
+    if [[ ${systemd_exists} -eq 0 ]]; then
+
+      # shellcheck disable=SC2155
+      local boot_section_exists=$(grep -c "\[boot\]" "${wsl_conf}")
+      if [[ ${boot_section_exists} -eq 0 ]]; then
+        echo -e "\n[boot]" | sudo tee -a "${wsl_conf}"
+      fi
+
+      sudo sed -i 's/\[boot\]/\0\nsystemd=true/' "${wsl_conf}"
+    else
+      sudo sed -i 's/^systemd.*=.*$/systemd=true/' "${wsl_conf}"
+    fi
+
+    touch "${HOME}"/.should-restart
+  else
+    echo "Skipping SystemD"
+
+    return 1
+  fi
+
+}
+
+#######################################
 # description
 # Globals:
 #   SetupDir
@@ -171,12 +214,13 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
+    menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
       "CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
       "KEYCHAIN" "Install Keychain, the OpenSSH key manager" off \
       "LAMP" "Install LAMP Stack" off \
       "RCLOCAL" "Enable running scripts at startup from rc.local " off \
       "SSH" "Enable SSH server" off \
+      "SYSTEMD" "Enable SystemD support" off \
 
   # shellcheck disable=SC2188
   3>&1 1>&2 2>&3)
@@ -208,6 +252,11 @@ function main() {
   if [[ ${menu_choice} == *"SSH"* ]] ; then
 
     enable_ssh
+  fi
+
+  if [[ ${menu_choice} == *"SYSTEMD"* ]] ; then
+    echo "SYSTEMD"
+    enable_systemd
   fi
 }
 
