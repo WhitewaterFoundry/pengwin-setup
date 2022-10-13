@@ -45,6 +45,7 @@ function main() {
       "RUST" "Remove Rust and rustup toolchain installer" off \
       "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" off \
       "SSH" "Remove SSH server" off \
+      "SYSTEMD" "Disable SystemD support" off \
       "TERRAFORM" "Remove Terraform CLI tools" off \
       "VCXSRV" "Remove VcXsrv X-server" off \
       "VSCODE" "Remove Visual Studio Code for Linux" off \
@@ -225,6 +226,11 @@ function main() {
     bash "${UninstallDir}"/ssh.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"SYSTEMD"* ]] ; then
+    echo "SYSTEMD"
+    bash "${UninstallDir}"/systemd.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"TERRAFORM"* ]] ; then
     echo "TERRAFORM"
     bash "${UninstallDir}"/terraform.sh "$@"
@@ -259,7 +265,6 @@ function main() {
     echo "XFCE"
     bash "${UninstallDir}"/desktop.sh "$@"
   fi
-  
 
 }
 
