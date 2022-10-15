@@ -24,10 +24,10 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'PYENV PYTHONPIP POETRY' -- "${cur}")
     ;;
   SERVICES)
-    mapfile -t COMPREPLY < <(compgen -W 'RCLOCAL SSH LAMP' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'LAMP RCLOCAL SSH SYSTEMD' -- "${cur}")
     ;;
   LAMP)
-    mapfile -t COMPREPLY < <(compgen -W 'BUILTIN 10.3 10.4 10.5 10.6' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'BUILTIN 10.6 10.7 10.8 10.9' -- "${cur}")
     ;;
   SETTINGS)
     mapfile -t COMPREPLY < <(compgen -W 'EXPLORER COLORTOOL LANGUAGE SHELLS' -- "${cur}")
