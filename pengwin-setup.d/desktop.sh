@@ -24,9 +24,9 @@ function create_shortcut() {
   local dest_path=$(wslpath "$(wslvar -l Programs)")/"${SHORTCUTS_FOLDER}"
 
   # shellcheck disable=SC2086
-  echo wslusc --name "${cmdName}" --icon "${cmdIcon}" --gui "${cmdToExec}"
+  echo wslusc --gui --name "${cmdName}" --icon "${cmdIcon}" --env "env PENGWIN_REMOTE_DESKTOP='${cmdToExec}'" echo
   # shellcheck disable=SC2086
-  bash "${SetupDir}"/generate-shortcut.sh --gui --name "${cmdName}" --icon "${cmdIcon}" "${cmdToExec}"
+  bash "${SetupDir}"/generate-shortcut.sh --gui --name "${cmdName}" --icon "${cmdIcon}" --env "env PENGWIN_REMOTE_DESKTOP='${cmdToExec}'" echo
 
   mkdir -p "${dest_path}"
   mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${dest_path}"
@@ -98,17 +98,18 @@ function install_xrdp() {
 
 function execute_remote_desktop() {
   if [ -z "\${WSL2}" ]; then
-    host_ip=127.0.0.1
+    local host_ip=127.0.0.1
   else
-    host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
+    # shellcheck disable=SC2155
+    local host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
   fi
 
-  user_name=\$(whoami)
-  echo -e "username:s:\$user_name\nsession bpp:i:32\nallow desktop composition:i:1\nconnection type:i:6\n" > /tmp/remote_desktop_config.rdp
+  local user_name=\$(whoami)
+  echo -e "username:s:\${user_name}\nsession bpp:i:32\nallow desktop composition:i:1\nconnection type:i:6\n" > /tmp/remote_desktop_config.rdp
   echo -e "networkautodetect:i:0\nbandwidthautodetect:i:1\n" >> /tmp/remote_desktop_config.rdp
   echo -e "audiocapturemode:i:1\naudiomode:i:0\n" >> /tmp/remote_desktop_config.rdp
-  cd /tmp
-  mstsc.exe remote_desktop_config.rdp  /v:\$host_ip:$port "\$@"
+  cd /tmp || return
+  mstsc.exe remote_desktop_config.rdp  /v:"\${host_ip}":${port} "\$@"
 }
 
 execute_remote_desktop "\$@"
@@ -123,7 +124,21 @@ EOF
   sudo tee '/etc/profile.d/start-xrdp.sh' <<EOF
 #!/bin/sh
 
+if [ -n "\${XRDP_SESSION}" ]; then
+  return
+fi
+
+saved_param="\${PENGWIN_REMOTE_DESKTOP}"
+unset PENGWIN_REMOTE_DESKTOP
+
 sudo /usr/local/bin/start-xrdp
+
+if [ -n "\${saved_param}" ]; then
+  /usr/local/bin/remote_desktop.sh \${saved_param}
+
+  unset saved_param
+fi
+
 EOF
 
   sudo chmod +x /usr/local/bin/start-xrdp
@@ -144,10 +159,10 @@ function install_xfce() {
     install_packages xfce4 xfce4-terminal
 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
-      create_shortcut "Xfce desktop - Full Screen" "'/usr/local/bin/remote_desktop.sh /f'" "/usr/share/pixmaps/xfce4_xicon.png"
-      create_shortcut "Xfce desktop - 1024x768" "'/usr/local/bin/remote_desktop.sh /w:1024 /h:768'" "/usr/share/pixmaps/xfce4_xicon.png"
-      create_shortcut "Xfce desktop - 1366x768" "'/usr/local/bin/remote_desktop.sh /w:1366 /h:768'" "/usr/share/pixmaps/xfce4_xicon.png"
-      create_shortcut "Xfce desktop - 1920x1080" "'/usr/local/bin/remote_desktop.sh /w:1920 /h:1080'" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - Full Screen" "/f" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - 1024x768" "/w:1024 /h:768" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - 1366x768" "/w:1366 /h:768" "/usr/share/pixmaps/xfce4_xicon.png"
+      create_shortcut "Xfce desktop - 1920x1080" "/w:1920 /h:1080" "/usr/share/pixmaps/xfce4_xicon.png"
 
       message --title "Desktop installation" --msgbox "Your desktop is installed. To use it there are new Start Menu shortcuts:
 
