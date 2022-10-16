@@ -19,7 +19,7 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
 
   wVcxsrvDir="$(cmd-exe /C "echo %USERPROFILE%\.vcxsrv" | tr -d '\r')"
   VcxsrvDir="$(wslpath "${wVcxsrvDir}")"
-  
+
   if [[ -d "${VcxsrvDir}" ]]; then
     echo "Uninstalling previous version"
     if cmd-exe /C tasklist | grep -Fq 'vcxsrv.exe'; then
@@ -30,7 +30,7 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
     # now safe to delete
     rm -rf "${VcxsrvDir}"
   fi
-  
+
   echo "Creating vcxsrv install directory: $VcxsrvDir"
   mkdir -p "${VcxsrvDir}"
 
@@ -63,6 +63,9 @@ EOF
   unset wVcxsrvDir
   unset VcxsrvDir
 
+  #Make sure that DISPLAY points to the gateway IP address
+  rm -f "${HOME}/.config/pengwin/display_ip_from_dns"
+
   # Avoid collision with the other XServer
   sudo rm -f /etc/profile.d/02-x410.sh
 
@@ -70,7 +73,7 @@ EOF
   sudo rm -f "${__fish_sysconf_dir:=/etc/fish/conf.d}/02-x410.fish"
 
   source /etc/profile.d/01-vcxsrv.sh
-  
+
   touch "${HOME}"/.should-restart
 else
   echo "Skipping VcxSrv"
