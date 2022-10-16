@@ -10,16 +10,16 @@ if [ -x "$(command -v x410.exe)" ]; then
     sudo bash -c 'cat > /etc/profile.d/02-x410.sh' << EOF
 #!/bin/sh
 
-if [ -n "\${WSL2}" ]; then
-  (cmd-exe /c x410.exe /wm /public &> /dev/null &)
-else
-  (cmd-exe /c x410.exe /wm &> /dev/null &)
-fi
+(cmd-exe /c x410.exe /wm &> /dev/null &)
 
 export X410=yes
 
 EOF
     #add_fish_support '02-x410'
+
+    #Make sure that DISPLAY points to the internal IP address
+    mkdir -p "${HOME}/.config/pengwin"
+    touch "${HOME}/.config/pengwin/display_ip_from_dns"
 
     # Avoid collision with the other XServer
     sudo rm -f /etc/profile.d/01-vcxsrv.sh
