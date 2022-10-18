@@ -24,9 +24,9 @@ function create_shortcut() {
   fi
 
   # shellcheck disable=SC2086
-  echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
+  echo wslusc --name "${cmdName}" ${cmdIcon} ${gui} --env "env PENGWIN_COMMAND='${cmdToExec}'" echo
   # shellcheck disable=SC2086
-  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} ${gui} "${cmdToExec}"
+  bash "${SetupDir}"/generate-shortcut.sh --name "${cmdName}" ${cmdIcon} ${gui} --env "env PENGWIN_COMMAND='${cmdToExec}'" echo
 
   mkdir -p "${DEST_PATH}"
   mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${DEST_PATH}"
@@ -69,7 +69,7 @@ function create_shortcut_from_desktop() {
       Name)
 
         if [[ -z "${cmdName}" ]]; then
-          cmdName="${value} (WSL)"
+          cmdName="${value} (Pengwin)"
         fi
         ;;
 
