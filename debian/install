@@ -3,3 +3,4 @@ pengwin-setup /usr/local/bin
 pengwin-setup.d /usr/local
 completions/* /usr/share/bash-completion/completions/
 sdkman-init-sh.sh /usr/local/bin
+images/* /usr/share/images/
