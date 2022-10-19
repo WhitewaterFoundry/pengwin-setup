@@ -82,7 +82,10 @@ function install_xrdp() {
   sudo sed -i "s/^\(bitmap_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(bulk_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(max_bpp=\)\(32\)$/\124/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(blue=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(#\)\(ls_title=\)\(.*\)$/\2Welcome to Pengwin/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(ls_top_window_bg_color=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s|^\(ls_logo_filename=\)\(.*\)$|\1/usr/share/images/pengwin-xrdp.bmp|" /etc/xrdp/xrdp.ini
 
   # shellcheck disable=SC2155
   local sesman_port=$(echo "${port} - 50" | bc)
