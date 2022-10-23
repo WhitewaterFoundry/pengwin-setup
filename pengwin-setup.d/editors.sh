@@ -70,7 +70,7 @@ function editor_menu() {
   local editor_choice=$(
 
     menu --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
-      "CODE" "Visual Studio Code (Linux version, requires X)   " off \
+      "CODE" "Visual Studio Code Linux version${REQUIRES_X}   " off \
       "EMACS" "Emacs" off \
       "NEOVIM" "Neovim" off
 

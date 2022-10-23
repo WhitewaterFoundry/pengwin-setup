@@ -14,11 +14,11 @@ function main() {
     menu --title "Terminal Menu" --checklist --separate-output "Select the terminals you want to install\n[SPACE to select, ENTER to confirm]:" 14 60 7 \
       "WINTERM" "Windows Terminal" off \
       "WSLTTY" "WSLtty" off \
-      "TILIX" "Tilix (requires X Server)" off \
-      "GTERM" "Gnome Terminal (requires X Server)" off \
-      "XFTERM" "Xfce Terminal (requires X Server)" off \
-      "TERMINATOR" "Terminator (requires X Server)" off \
-      "KONSO" "Konsole (requires X Server)" off \
+      "TILIX" "Tilix${REQUIRES_X}" off \
+      "GTERM" "Gnome Terminal${REQUIRES_X}" off \
+      "XFTERM" "Xfce Terminal${REQUIRES_X}" off \
+      "TERMINATOR" "Terminator${REQUIRES_X}" off \
+      "KONSO" "Konsole${REQUIRES_X}" off \
 
   3>&1 1>&2 2>&3)
 

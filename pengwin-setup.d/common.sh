@@ -3,6 +3,30 @@
 declare -a -x CMD_MENU_OPTIONS
 
 export LANG=en_US.utf8
+export NEWT_COLORS='
+    root=lightgray,black
+    roottext=lightgray,black
+    shadow=black,gray
+    title=magenta,lightgray
+    actcheckbox=lightgray,magenta
+    emptyscale=lightgray,blue
+    fullscale=lightgray,magenta
+    button=lightgray,magenta
+    actbutton=magenta,lightgray
+    compactbutton=magenta,lightgray
+'
+
+readonly PENGWIN_SETUP_TITLE="Pengwin Setup"
+
+declare WSL2
+# shellcheck disable=SC2155
+declare -i -r WSLG=3
+
+if [[ "${WSL2}" == "${WSLG}" ]]; then
+  readonly REQUIRES_X="             "
+else
+  readonly REQUIRES_X=" (requires X)"
+fi
 
 declare -i -x PROGRESS_STATUS
 
@@ -21,67 +45,67 @@ declare -i -x PROGRESS_STATUS
 function process_arguments() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    --debug | -d | --verbose | -v)
-      echo "Running in debug/verbose mode"
-      set -x
-      shift
-      ;;
-    -y | --yes | --assume-yes)
-      echo "Skipping confirmations"
-      export SKIP_CONFIMATIONS=1
-      shift
-      ;;
-    --noupdate)
-      echo "Skipping updates"
-      export SKIP_UPDATES=1
-      shift
-      ;;
-    --norebuildicons)
-      echo "Skipping rebuild start menu"
-      export SKIP_STARTMENU=1
-      shift
-      ;;
-    -q | --quiet | --noninteractive)
-      echo "Skipping confirmations"
-      export NON_INTERACTIVE=1
-      shift
-      ;;
-    update | upgrade)
-      echo "Just update packages"
-      export JUST_UPDATE=1
-      export SKIP_CONFIMATIONS=1
-      shift
-      ;;
-    autoinstall | install)
-      echo "Automatically install without prompts or updates"
-      export SKIP_UPDATES=1
-      export NON_INTERACTIVE=1
-      export SKIP_CONFIMATIONS=1
-      export SKIP_STARTMENU=1
-      shift
-      ;;
-    uninstall | remove)
-      echo "Automatically uninstall without prompts or updates"
-      export SKIP_UPDATES=1
-      export NON_INTERACTIVE=1
-      export SKIP_CONFIMATIONS=1
-      export SKIP_STARTMENU=1
-      CMD_MENU_OPTIONS+=("UNINSTALL")
-      shift
-      ;;
-    startmenu)
-      echo "Regenerates the start menu"
-      export SKIP_UPDATES=1
-      export NON_INTERACTIVE=1
-      export SKIP_CONFIMATIONS=1
-      CMD_MENU_OPTIONS+=("GUI")
-      CMD_MENU_OPTIONS+=("STARTMENU")
-      shift
-      ;;
-    *)
-      CMD_MENU_OPTIONS+=("$1")
-      shift
-      ;;
+      --debug | -d | --verbose | -v)
+        echo "Running in debug/verbose mode"
+        set -x
+        shift
+        ;;
+      -y | --yes | --assume-yes)
+        echo "Skipping confirmations"
+        export SKIP_CONFIMATIONS=1
+        shift
+        ;;
+      --noupdate)
+        echo "Skipping updates"
+        export SKIP_UPDATES=1
+        shift
+        ;;
+      --norebuildicons)
+        echo "Skipping rebuild start menu"
+        export SKIP_STARTMENU=1
+        shift
+        ;;
+      -q | --quiet | --noninteractive)
+        echo "Skipping confirmations"
+        export NON_INTERACTIVE=1
+        shift
+        ;;
+      update | upgrade)
+        echo "Just update packages"
+        export JUST_UPDATE=1
+        export SKIP_CONFIMATIONS=1
+        shift
+        ;;
+      autoinstall | install)
+        echo "Automatically install without prompts or updates"
+        export SKIP_UPDATES=1
+        export NON_INTERACTIVE=1
+        export SKIP_CONFIMATIONS=1
+        export SKIP_STARTMENU=1
+        shift
+        ;;
+      uninstall | remove)
+        echo "Automatically uninstall without prompts or updates"
+        export SKIP_UPDATES=1
+        export NON_INTERACTIVE=1
+        export SKIP_CONFIMATIONS=1
+        export SKIP_STARTMENU=1
+        CMD_MENU_OPTIONS+=("UNINSTALL")
+        shift
+        ;;
+      startmenu)
+        echo "Regenerates the start menu"
+        export SKIP_UPDATES=1
+        export NON_INTERACTIVE=1
+        export SKIP_CONFIMATIONS=1
+        CMD_MENU_OPTIONS+=("GUI")
+        CMD_MENU_OPTIONS+=("STARTMENU")
+        shift
+        ;;
+      *)
+        CMD_MENU_OPTIONS+=("$1")
+        shift
+        ;;
     esac
   done
 
@@ -96,7 +120,7 @@ function process_arguments() {
 #  None
 #######################################
 function createtmp() {
-  echo "Saving current directory as \$CURDIR"
+  echo 'Saving current directory as $CURDIR'
   CURDIR=$(pwd)
   TMPDIR=$(mktemp -d)
   echo "Going to \$TMPDIR: $TMPDIR"
@@ -180,7 +204,7 @@ function confirm() {
 
   if [[ ! ${SKIP_CONFIMATIONS} ]]; then
 
-    whiptail "$@"
+    whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
 
     return $?
   else
@@ -202,7 +226,7 @@ function message() {
 
   if [[ ! ${NON_INTERACTIVE} ]]; then
 
-    whiptail "$@"
+    whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
 
     return $?
   else
@@ -223,8 +247,8 @@ function menu() {
 
   local menu_choice #Splitted to preserve exit code
 
-  if [[ "${#CMD_MENU_OPTIONS[*]}" == 0 ]]; then
-    menu_choice=$(whiptail "$@" 3>&1 1>&2 2>&3)
+  if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then
+    menu_choice=$(whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
   else
     menu_choice="${CMD_MENU_OPTIONS[*]}"
   fi
@@ -236,9 +260,9 @@ function menu() {
     return
   fi
 
-  if [[ -z "${menu_choice}" ]]; then
+  if [[ -z ${menu_choice} ]]; then
 
-    if (whiptail --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
+    if (whiptail --backtitle "${PENGWIN_SETUP_TITLE}" --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
       menu "$@"
 
       return
@@ -267,7 +291,7 @@ function menu() {
 function setup_env() {
 
   if (! command -v cmd.exe >/dev/null); then
-    whiptail --title "An environment problem was found" --msgbox "The Windows PATH is not available, and pengwin-setup requires it to run. Please check that: \n\n   pengwin-setup is not running with sudo.\n   pengwin-setup wasn't run with the root user.\n   appendWindowsPath is true in /etc/wsl.conf file or is not defined. \n\n\nIf you don't want to have Windows PATH in Pengwin, enable it temporally to run pengwin-setup" 15 100
+    whiptail --backtitle "${PENGWIN_SETUP_TITLE}" --title "An environment problem was found" --msgbox "The Windows PATH is not available, and pengwin-setup requires it to run. Please check that: \n\n   pengwin-setup is not running with sudo.\n   pengwin-setup wasn't run with the root user.\n   appendWindowsPath is true in /etc/wsl.conf file or is not defined. \n\n\nIf you don't want to have Windows PATH in Pengwin, enable it temporally to run pengwin-setup" 15 100
 
     exit 0
   fi
@@ -329,7 +353,7 @@ function update_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo apt-get update -y -q "$@"
   else
-    sudo debconf-apt-progress -- apt-get update -y "$@"
+    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y "$@"
   fi
 }
 

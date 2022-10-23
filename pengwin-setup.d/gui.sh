@@ -11,14 +11,15 @@ function main() {
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 10 \
+    menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" 17 99 11 \
+      "CONFIGURE" "Configure GUI (Check this first)" off \
       "DESKTOP" "Install Desktop environments" off \
-      "NLI" "Install fcitx or iBus for improved non-Latin input support" off \
       "GUILIB" "Install a base set of libraries for GUI applications" off \
       "HIDPI" "Configure Qt and GTK for HiDPI displays" off \
-      "STARTMENU" "Generates Windows Start Menu shortcuts for GUI applications" off \
-      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
+      "NLI" "Install fcitx or iBus for improved non-Latin input support" off \
+      "STARTMENU" "Generates 'Windows Start Menu' shortcuts for GUI applications" off \
       "SYNAPTIC" "Install the Synaptic package manager" off \
+      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
       "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " off \
       "X410" "Configure X410 to start on Pengwin launch or view a link to install it" off \
@@ -27,6 +28,11 @@ function main() {
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
+  fi
+
+  if [[ ${menu_choice} == *"CONFIGURE"* ]]; then
+    echo "CONFIGURE"
+    configure_gui "$@"
   fi
 
   if [[ ${menu_choice} == *"X410"* ]]; then
