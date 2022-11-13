@@ -188,6 +188,10 @@ function main() {
     return
   fi
 
+  if [[ "${WSL2}" == "${WSLG}" ]]; then
+    return
+  fi
+
   if (confirm --title "Start Menu" --yesno "Would you like to generate / regenerate the Start Menu shortcuts for the GUI applications installed in Pengwin?\n\nThe applications will be placed in the 'Pengwin Applications' folder in Windows Start Menu." 12 70); then
 
     start_indeterminate_progress

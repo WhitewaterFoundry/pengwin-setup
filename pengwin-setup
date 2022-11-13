@@ -10,6 +10,7 @@ source ${SetupDir}/common.sh "$@"
 declare CANCELLED
 declare SKIP_UPDATES
 declare JUST_UPDATE
+declare REQUIRES_X
 
 rm -f "${HOME}"/.should-restart
 
@@ -138,7 +139,7 @@ function install_menu() {
   local menu_choice=$(
 
     menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 16 99 8 \
-      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code (requires X)    " off \
+      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}    " off \
       "GUI" "Install an X server or various other GUI applications" off \
       "MAINTENANCE" "Various maintenance tasks like home backup" off \
       "PROGRAMMING" "Install various programming languages support" off \

@@ -9,7 +9,10 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM' -- "${cur}")
     ;;
   GUI)
-    mapfile -t COMPREPLY < <(compgen -W 'DESKTOP NLI GUILIB HIDPI STARTMENU TERMINAL SYNAPTIC VCXSRV WINTHEME X410' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'CONFIGURATION DESKTOP NLI GUILIB HIDPI TERMINAL SYNAPTIC WINTHEME WSLG' -- "${cur}")
+    ;;
+  CONFIGURE)
+    mapfile -t COMPREPLY < <(compgen -W 'DISPLAY STARTMENU VCXSRV X410' -- "${cur}")
     ;;
   DESKTOP)
     mapfile -t COMPREPLY < <(compgen -W 'XFCE' -- "${cur}")
