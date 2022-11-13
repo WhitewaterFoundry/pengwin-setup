@@ -30,6 +30,8 @@ fi
 
 declare -i -x PROGRESS_STATUS
 
+readonly PENGWIN_CONFIG_DIR="${HOME}/.config/pengwin"
+
 #######################################
 # description
 # Globals:
@@ -418,6 +420,28 @@ function stop_indeterminate_progress() {
     PROGRESS_STATUS=0
   fi
 
+}
+
+#######################################
+# Instruct to pengwin-setup to terminate the Pengwin instance
+# Globals:
+#   HOME
+# Arguments:
+#  None
+#######################################
+function enable_should_restart() {
+  touch "${HOME}"/.should-restart
+}
+
+#######################################
+# Creates the config dir for pengwin in the user home
+# Globals:
+#   PENGWIN_CONFIG_DIR
+# Arguments:
+#  None
+#######################################
+function setup_pengwin_config() {
+  mkdir -p "${PENGWIN_CONFIG_DIR}"
 }
 
 setup_env "$@"
