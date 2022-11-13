@@ -63,17 +63,22 @@ function configure_display() {
 function configure_gui() {
 
   local display_ip_from_dns_flag="${PENGWIN_CONFIG_DIR}/display_ip_from_dns"
+  local -i more=0
 
-  if [[ -f "${display_ip_from_dns_flag}" ]]; then
+  if [[ -z ${WSL2} ]]; then #WSL1
+    local -a display_ip_from_dns_option
+  elif [[ -f "${display_ip_from_dns_flag}" ]]; then
     local -a display_ip_from_dns_option=("DISPLAY" "Get the IP for DISPLAY from the Host (best for VcXSrv)" off)
+    more=$((more+1))
   else
     local -a display_ip_from_dns_option=("DISPLAY" "Get the IP for DISPLAY from the resolv.conf (best for X410)" off)
+    more=$((more+1))
   fi
 
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --checklist --separate-output "Install an X server or start menu shortcuts\n[SPACE to select, ENTER to confirm]:" 11 99 4 \
+    menu --title "GUI Menu" --checklist --separate-output "Install an X server or start menu shortcuts\n[SPACE to select, ENTER to confirm]:" $((10+more)) 99 $((3+more)) \
       "${display_ip_from_dns_option[@]}" \
       "STARTMENU" "Generates 'Windows Start Menu' shortcuts for GUI applications" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \

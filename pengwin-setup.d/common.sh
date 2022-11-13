@@ -8,12 +8,17 @@ export NEWT_COLORS='
     roottext=lightgray,black
     shadow=black,gray
     title=magenta,lightgray
+    checkbox=lightgray,blue
     actcheckbox=lightgray,magenta
     emptyscale=lightgray,blue
     fullscale=lightgray,magenta
     button=lightgray,magenta
     actbutton=magenta,lightgray
     compactbutton=magenta,lightgray
+    listbox=lightgray,blue
+    actlistbox=lightgray,magenta
+    sellistbox=lightgray,magenta
+    actsellistbox=lightgray,magenta
 '
 
 readonly PENGWIN_SETUP_TITLE="Pengwin Setup"
@@ -340,7 +345,7 @@ function setup_env() {
 #######################################
 function install_packages() {
 
-  sudo apt-get install -y -q "$@"
+  sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
 }
 
 #######################################
