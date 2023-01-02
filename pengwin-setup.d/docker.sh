@@ -219,7 +219,7 @@ function main() {
       connected=$(docker.exe version 2>&1 | grep -c "${errorCheck}")
     done
 
-    errorCheck="docker daemon is not running.\|docker: command not found\|error during connect:"
+    errorCheck="docker daemon is not running.\|docker: command not found\|error during connect:\|The command 'docker' could not be found in this WSL 2 distro"
     local do_not_install_relay
     do_not_install_relay=$(docker version 2>&1 | grep -c "${errorCheck}")
     if [[ ${do_not_install_relay} != 0 ]]; then
