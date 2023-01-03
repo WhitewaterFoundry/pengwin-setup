@@ -5,10 +5,10 @@ source "$(dirname "$0")/common.sh" "$@"
 
 DOCKER_VERSION="20.10.15"
 DOCKER_COMPOSE_VERSION="1.29.2"
+GOVERSION="1.15.15"
 
 # Imported from common.sh
 declare wHome
-declare GOVERSION
 declare WIN_CUR_VER
 
 #Imported global variables
