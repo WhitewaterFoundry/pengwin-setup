@@ -5,7 +5,6 @@ source "$(dirname "$0")/common.sh" "$@"
 
 DOCKER_VERSION="20.10.15"
 DOCKER_COMPOSE_VERSION="1.29.2"
-GOVERSION="1.13.15"
 
 # Imported from common.sh
 declare wHome
@@ -19,7 +18,6 @@ declare USER
 # Globals:
 #   GOPATH
 #   GOROOT
-#   GOVERSION
 #   PATH
 #   USER
 #   wHome
@@ -35,7 +33,7 @@ function docker_install_build_relay() {
     local go_check=$?
     if [ $go_check -eq 1 ]; then
       echo "Downloading Go using wget."
-      wget -c "https://dl.google.com/go/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz"
+      wget -c "https://dl.google.com/go/go1.13.15.linux-$(dpkg --print-architecture).tar.gz"
       tar -xzf go*.tar.gz
 
       # shellcheck disable=SC2155
