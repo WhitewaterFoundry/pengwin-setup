@@ -5,7 +5,7 @@ source "$(dirname "$0")/common.sh" "$@"
 
 DOCKER_VERSION="20.10.15"
 DOCKER_COMPOSE_VERSION="1.29.2"
-GOVERSION="1.15.15"
+GOVERSION="1.13.15"
 
 # Imported from common.sh
 declare wHome
