@@ -3,7 +3,7 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-DOCKER_VERSION="20.10.15"
+DOCKER_VERSION="20.10.22"
 DOCKER_COMPOSE_VERSION="1.29.2"
 
 # Imported from common.sh
