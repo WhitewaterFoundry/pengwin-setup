@@ -159,6 +159,8 @@ function install_xfce() {
       return ${exit_status}
     fi
 
+    start_indeterminate_progress
+
     install_packages xfce4 xfce4-terminal
 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
@@ -178,6 +180,8 @@ Just click on one of them and login with your Pengwin credentials." 15 80
     else
       echo "There is a problem with xfce4 installation"
     fi
+
+    stop_indeterminate_progress
   fi
 
 }
