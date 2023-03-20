@@ -3,7 +3,7 @@
 source commons.sh
 
 function testMain() {
-  run_pengwinsetup install PROGRAMMING JAVA
+  run_pengwinsetup install PROGRAMMING JAVA --debug
 
   check_script '/etc/profile.d/sdkman.sh'
 
