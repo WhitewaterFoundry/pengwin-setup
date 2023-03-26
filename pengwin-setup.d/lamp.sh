@@ -26,12 +26,13 @@ function install_lamp() {
     # shellcheck disable=SC2155
     menu_choice=$(
 
-      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 12 70 3 \
+      menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
         "BUILTIN" "Install MariaDB 10.5 from Debian Official Repo    " off \
         "10.6" "Install MariaDB 10.6 from MariaDB" off \
         "10.7" "Install MariaDB 10.7 from MariaDB" off \
         "10.8" "Install MariaDB 10.8 from MariaDB" off \
-        "10.9" "Install MariaDB 10.9 from MariaDB" off
+        "10.9" "Install MariaDB 10.9 from MariaDB" off \
+        "10.11" "Install MariaDB 10.11 from MariaDB" off
 
       # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
