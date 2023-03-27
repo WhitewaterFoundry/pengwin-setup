@@ -35,7 +35,7 @@ jobs:
           name: Update changelog
           command: |
             rm ./debian/changelog
-            dch --create --distribution bullseye --package "pengwin-setup" --newversion << pipeline.parameters.package-version >>-${CIRCLE_BUILD_NUM} "Built on Circle CI"
+            dch --create --distribution bookworm --package "pengwin-setup" --newversion << pipeline.parameters.package-version >>-${CIRCLE_BUILD_NUM} "Built on Circle CI"
       - run:
           name: Build the package
           command: debuild -i -us -uc -b
@@ -66,7 +66,7 @@ jobs:
             apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix iproute2 psmisc rsync
 
             export os=debian
-            export dist=bullseye
+            export dist=bookworm
 
             curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
 
@@ -99,8 +99,8 @@ jobs:
           name: Install packageloud cli
           command: gem install package_cloud
       - run:
-          name: Push deb package bullseye
-          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
+          name: Push deb package bookworm
+          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
   deploydevdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
@@ -111,9 +111,6 @@ jobs:
       - run:
           name: Install packageloud cli
           command: gem install package_cloud
-      - run:
-          name: Push deb package bullseye
-          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
       - run:
           name: Push deb package bookworm
           command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
@@ -127,6 +124,7 @@ workflows:
               ignore:
                 - development
                 - master
+                - bookworm
 
       - build:
           filters:
@@ -134,6 +132,7 @@ workflows:
               ignore:
                 - development
                 - master
+                - bookworm
 
       - test:
           filters:
@@ -141,6 +140,7 @@ workflows:
               ignore:
                 - development
                 - master
+                - bookworm
           requires:
             - shellcheck
 
@@ -150,24 +150,24 @@ workflows:
       - shellcheck:
           filters:
             branches:
-              only: master
+              only: bookworm
 
       - build:
           filters:
             branches:
-              only: master
+              only: bookworm
 
       - test:
           filters:
             branches:
-              only: master
+              only: bookworm
           requires:
             - shellcheck
 
       - deploymasterdeb:
           filters:
             branches:
-              only: master
+              only: bookworm
           requires:
             - test
             - build
