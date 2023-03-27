@@ -27,7 +27,7 @@ function test_lamp() {
   local mariadb_version_number
 
   if [[ "${mariadb_version}" == "BUILTIN" ]]; then
-    mariadb_version_number="10.5"
+    mariadb_version_number="10.*MariaDB"
   else
     mariadb_version_number="${mariadb_version}"
   fi
