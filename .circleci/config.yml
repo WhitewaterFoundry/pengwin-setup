@@ -63,7 +63,7 @@ jobs:
           command: |
             # Install the pengwin image base packages
             apt-get -y -q update
-            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat iputils-ping dos2unix iproute2 psmisc rsync
+            apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-12-base iputils-ping dos2unix iproute2 psmisc rsync
 
             export os=debian
             export dist=bookworm
