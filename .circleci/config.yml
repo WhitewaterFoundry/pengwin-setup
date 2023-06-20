@@ -53,7 +53,7 @@ jobs:
           path: /tmp/pkgs
   test:
     docker:
-      - image: debian:bullseye
+      - image: debian:bookworm
     resource_class: medium
     parallelism: 7
     steps:
@@ -66,7 +66,7 @@ jobs:
             apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-9-base iputils-ping dos2unix iproute2 psmisc rsync
 
             export os=debian
-            export dist=bullseye
+            export dist=bookworm
 
             curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
 
@@ -101,6 +101,9 @@ jobs:
       - run:
           name: Push deb package bullseye
           command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
+      - run:
+          name: Push deb package bookworm
+          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
   deploydevdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
