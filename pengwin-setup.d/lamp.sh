@@ -27,7 +27,7 @@ function install_lamp() {
     menu_choice=$(
 
       menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
-        "BUILTIN" "Install MariaDB 10.5 from Debian Official Repo    " off \
+        "BUILTIN" "Install MariaDB 10.11 from Debian Official Repo    " off \
         "10.6" "Install MariaDB 10.6 from MariaDB" off \
         "10.7" "Install MariaDB 10.7 from MariaDB" off \
         "10.8" "Install MariaDB 10.8 from MariaDB" off \
