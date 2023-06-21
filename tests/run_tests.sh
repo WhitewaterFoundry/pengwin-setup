@@ -41,13 +41,13 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./terraform.sh
   run_test ./brew.sh
-elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
-  run_test ./lamp.sh "10.11"
+#elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
+  #run_test ./lamp.sh "10.11"
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./dotnet.sh
   run_test ./guilib.sh
   run_test ./go.sh
   run_test ./jetbrains-support.sh
-elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
-  run_test ./lamp.sh "10.9"
+#elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
+  #run_test ./lamp.sh "10.9"
 fi

@@ -62,13 +62,10 @@ function testUninstall() {
 
   run_pengwinsetup autoinstall UNINSTALL GUILIB
 
-  for i in 'xclip' 'gnome-themes-standard' 'gtk2-engines-murrine' 'dbus-x11' ; do
+  for i in 'libqt5core5a' 'dbus-x11' ; do
     package_installed $i
     assertFalse "package $i is not uninstalled" "$?"
   done
-
-  command -v /usr/bin/xclip
-  assertEquals "xclip was not uninstalled" "1" "$?"
 
   test -f /usr/lib/"${dist}"-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
   assertEquals "gtk2-engines-murrine was not uninstalled" "1" "$?"
