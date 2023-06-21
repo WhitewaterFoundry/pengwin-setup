@@ -56,7 +56,7 @@ function check_upgrades() {
 
       # Ensure that packages get updated without affecting other held packages like udev
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
-      upgrade_packages pengwin-base pengwin-setup
+      upgrade_packages --allow-downgrades pengwin-base pengwin-setup
     fi
   elif [[ ${JUST_UPDATE} ]]; then
     upgrade_packages 
