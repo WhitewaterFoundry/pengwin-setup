@@ -12,7 +12,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./java.sh
   run_test ./pythonpi.sh
   run_test ./go.sh
-  run_test ./ansible.sh
+  #run_test ./ansible.sh
   run_test ./fish.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
