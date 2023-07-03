@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup autoinstall TOOLS ANSIBLE
+  run_pengwinsetup install TOOLS ANSIBLE
 
   # shellcheck disable=SC2041
   for i in 'ansible' ; do
@@ -12,12 +12,16 @@ function test_main() {
   done
 
   command -v /usr/bin/ansible
+
+  export LANG="en_US.UTF-8"
+  export LC_CTYPE="en.US.UTF-8"
+
   assertEquals "Ansible was not installed" "0" "$?"
   assertEquals "Ansible was not installed" "1" "$(run_command_as_testuser /usr/bin/ansible --version | grep -c 'ansible \[core 2')"
 }
 
 function test_uninstall() {
-  run_pengwinsetup autoinstall UNINSTALL ANSIBLE
+  run_pengwinsetup install UNINSTALL ANSIBLE
 
   # shellcheck disable=SC2041
   for i in 'ansible' ; do
