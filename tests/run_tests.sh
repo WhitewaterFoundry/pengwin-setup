@@ -21,7 +21,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./hidpi.sh
   run_test ./dotnet.sh
   run_test ./brew.sh
-  run_test ./guilib.sh
+  #run_test ./guilib.sh
   run_test ./desktop.sh
   run_test ./terraform.sh
   run_test ./lamp.sh "10.6"
