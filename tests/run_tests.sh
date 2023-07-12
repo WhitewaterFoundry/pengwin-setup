@@ -13,6 +13,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./pythonpi.sh
   run_test ./go.sh
   #run_test ./ansible.sh
+  run_test ./nodejs_n.sh
   run_test ./fish.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
@@ -41,7 +42,8 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./terraform.sh
   run_test ./brew.sh
-#elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
+elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
+  run_test ./nodejs_n.sh
   #run_test ./lamp.sh "10.11"
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then
   run_test ./dotnet.sh

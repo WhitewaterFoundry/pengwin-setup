@@ -36,7 +36,6 @@ fi
 createtmp
 echo "Look for Windows version of npm"
 NPM_WIN_PROFILE="/etc/profile.d/rm-win-npm-path.sh"
-NPM_PROFILE="/etc/profile.d/n-prefix.sh"
 
 if [[ "$(command -v npm)" == $(wslpath 'C:\')* ]]; then
 
@@ -82,8 +81,8 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   curl -L https://git.io/n-install -o n-install.sh
   env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
 
-  N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
-  echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
+  N_PATH="$(cat "${HOME}"/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
+  echo "${N_PATH}" | sudo tee "/etc/profile.d/n-prefix.sh"
   eval "${N_PATH}"
 
   # Clear N from .bashrc now not needed
@@ -96,10 +95,6 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing latest node.js release"
   n latest
-
-  echo "Installing npm"
-  curl -0 -L https://npmjs.com/install.sh -o install.sh
-  sh install.sh
 
   # Add n to fish shell
   FISH_DIR="$HOME/.config/fish/conf.d"
@@ -199,6 +194,7 @@ elif [[ ${menu_choice} == *"LATEST"* ]]; then
 
   echo "Running 'apt-get update' for you..."
 
+  # shellcheck disable=SC2119
   update_packages
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
@@ -226,6 +222,7 @@ elif [[ ${menu_choice} == *"LTS"* ]]; then
 
   echo "Running 'apt-get update' for you..."
 
+  # shellcheck disable=SC2119
   update_packages
 
   version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
@@ -237,6 +234,8 @@ if (confirm --title "YARN" --yesno "Would you like to download and install the Y
   echo "Installing YARN"
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
+  # shellcheck disable=SC2119
   update_packages
   install_packages yarn --no-install-recommends
 else

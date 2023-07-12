@@ -2,6 +2,18 @@
 
 export TEST_USER=test_user
 
+#######################################
+# description
+# Globals:
+#   HOME
+#   LANG
+#   PATH
+#   SHUNIT_TMPDIR
+#   TERM
+#   TEST_USER
+# Arguments:
+#  None
+#######################################
 function oneTimeSetUp() {
   # shellcheck disable=SC2155
   export PATH="$(pwd)/stubs:${PATH}"
@@ -25,6 +37,13 @@ function oneTimeSetUp() {
   export SHUNIT_TMPDIR
 }
 
+#######################################
+# description
+# Globals:
+#   TEST_USER
+# Arguments:
+#  None
+#######################################
 function oneTimeTearDown() {
   if id "${TEST_USER}" &>/dev/null; then
     sudo killall -u "${TEST_USER}"
@@ -33,6 +52,14 @@ function oneTimeTearDown() {
 
 }
 
+#######################################
+# description
+# Arguments:
+#   1
+# Returns:
+#   0 ...
+#   1 ...
+#######################################
 function package_installed() {
 
   # shellcheck disable=SC2155
@@ -45,20 +72,44 @@ function package_installed() {
   fi
 }
 
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
 function run_test() {
   echo "Start: $* *****************************************************************"
   time "$@"
   echo "End: $* *****************************************************************"
 }
 
+#######################################
+# description
+# Globals:
+#   TEST_USER
+# Arguments:
+#  None
+#######################################
 function run_pengwinsetup() {
   sudo su - -c "$(pwd)/run-pengwin-setup.sh $*" ${TEST_USER}
 }
 
+#######################################
+# description
+# Globals:
+#   TEST_USER
+# Arguments:
+#  None
+#######################################
 function run_command_as_testuser() {
-  sudo su - -c "$*" ${TEST_USER}
+  sudo su - -c "$*" ${TEST_USER} 2>/dev/null
 }
 
+#######################################
+# description
+# Arguments:
+#   1
+#######################################
 function check_script() {
   local installed_script="$1"
 

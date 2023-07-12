@@ -21,6 +21,11 @@ function main() {
     fi
   fi
 
+  if [[ -n "${N_PREFIX}" && -x "${N_PREFIX}"/bin/n-uninstall ]]; then
+    echo "Using first the native N uninstaller"
+    "${N_PREFIX}"/bin/n-uninstall -y
+  fi
+
   rem_dir "$HOME/n"
   rem_dir "$HOME/.npm"
   rem_dir "$HOME/.nvm"
@@ -33,7 +38,7 @@ function main() {
   sudo_rem_file "/etc/profile.d/nvm-prefix.sh"
 
   # Fish config reomval
-  fish_conf_dir="$HOME/.config/fish/conf.d"
+  local fish_conf_dir="$HOME/.config/fish/conf.d"
   rem_file "$fish_conf_dir/n-prefix.fish"
   rem_file "$fish_conf_dir/nvm-prefix.fish"
 
