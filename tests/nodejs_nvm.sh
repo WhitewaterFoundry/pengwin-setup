@@ -8,16 +8,15 @@ source commons.sh
 #  None
 #######################################
 function test_main() {
-  run_pengwinsetup install PROGRAMMING NODEJS NVERMAN
+  run_pengwinsetup install PROGRAMMING NODEJS NVM
 
-  assertTrue "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
+  assertTrue "FILE PROFILE-NVM" "[ -f /etc/profile.d/nvm-prefix.sh ]"
 
-  source /etc/profile.d/n-prefix.sh
+  source /etc/profile.d/nvm-prefix.sh
 
-  assertEquals "N was not installed" "1" "$(run_command_as_testuser n --version | grep -c 'v9')"
+  assertEquals "NVM was not installed" "1" "$(run_command_as_testuser nvm --version | grep -c '0\.39')"
   assertEquals "npm was not installed" "1" "$(run_command_as_testuser npm --version | grep -c '9')"
   assertEquals "nodejs latest was not installed" "1" "$(run_command_as_testuser node --version | grep -c 'v20')"
-  assertEquals "nodejs lts was not installed" "1" "$(run_command_as_testuser n list | grep -c 'node/18')"
 
   run_command_as_testuser command -v yarn >/dev/null
   assertTrue "package yarn is not installed" "$?"
@@ -31,12 +30,11 @@ function test_main() {
 function test_uninstall() {
   run_pengwinsetup uninstall NODEJS
 
-  assertFalse "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
+  assertFalse "FILE PROFILE-NVM" "[ -f /etc/profile.d/nvm-prefix.sh ]"
 
-  assertEquals "N was not uninstalled" "0" "$(run_command_as_testuser n --version | grep -c 'v9')"
+  assertEquals "NVM was not uninstalled" "0" "$(run_command_as_testuser nvm --version | grep -c '0\.39')"
   assertEquals "npm was not uninstalled" "0" "$(run_command_as_testuser npm --version | grep -c '9')"
   assertEquals "nodejs latest was not uninstalled" "0" "$(run_command_as_testuser node --version | grep -c 'v20')"
-  assertEquals "nodejs lts was not uninstalled" "0" "$(run_command_as_testuser n list | grep -c 'node/18')"
 
   run_command_as_testuser command -v yarn 2>/dev/null
   assertFalse "package yarn was not uninstalled" "$?"

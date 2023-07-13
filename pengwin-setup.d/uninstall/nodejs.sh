@@ -37,7 +37,7 @@ function main() {
   sudo_rem_file "/etc/profile.d/n-prefix.sh"
   sudo_rem_file "/etc/profile.d/nvm-prefix.sh"
 
-  # Fish config reomval
+  # Fish config removal
   local fish_conf_dir="$HOME/.config/fish/conf.d"
   rem_file "$fish_conf_dir/n-prefix.fish"
   rem_file "$fish_conf_dir/nvm-prefix.fish"
