@@ -5,6 +5,40 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SKIP_CONFIMATIONS
 
+
+#######################################
+# Install the packaged version of NodeJS from nodesource repos
+# Arguments:
+#   Major node version to install
+#######################################
+function install_nodejs_nodesource() {
+  echo "Installing latest node.js version from NodeSource repository"
+
+  local major_vers=${1}
+
+  echo 'Adding the NodeSource signing key to your keyring...'
+
+  local keyring=/usr/share/keyrings/nodesource.gpg
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | sudo tee "${keyring}" >/dev/null
+  gpg --no-default-keyring --keyring "$keyring" --list-keys
+  chmod a+r "${keyring}"
+
+  echo "Creating apt sources list file for the NodeSource repo..."
+
+  local distro=bookworm
+
+  echo "deb [signed-by=$keyring] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "#deb-src [signed-by=$keyring] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+
+  echo "Running 'apt-get update' for you..."
+
+  # shellcheck disable=SC2119
+  update_packages
+
+  local version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  install_packages nodejs="${version}"
+}
+
 if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
 
   if (confirm --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
@@ -15,14 +49,17 @@ if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
   fi
 fi
 
+NODEJS_LATEST_VERSION=20
+NODEJS_LTS_VERSION=18
+
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
   menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 90 4 \
-    "NVERMAN" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
-    "NVM" "Install with nvm version manager (fish shell compat. EXPERIMENTAL)" off \
-    "LATEST" "Install latest version via APT package manager" off \
-    "LTS" "Install LTS version via APT package manager" off
+    "NVERMAN" "Install with n version manager (RECOMMENDED)" off \
+    "NVM" "Install with nvm version manager" off \
+    "LATEST" "Install latest version (${NODEJS_LATEST_VERSION}) via APT package manager" off \
+    "LTS" "Install LTS version (${NODEJS_LTS_VERSION}) via APT package manager" off
 
   # shellcheck disable=SC2188
   3>&1 1>&2 2>&3
@@ -172,60 +209,11 @@ EOF
 
   touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
-  echo "Installing latest node.js version from NodeSource repository"
-
-  major_vers=20
-
-  echo 'Adding the NodeSource signing key to your keyring...'
-
-  KEYRING=/usr/share/keyrings/nodesource.gpg
-  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | sudo tee "$KEYRING" >/dev/null
-  gpg --no-default-keyring --keyring "$KEYRING" --list-keys
-  chmod a+r /usr/share/keyrings/nodesource.gpg
-
-  echo "Creating apt sources list file for the NodeSource repo..."
-
-  distro=bookworm
-
-  echo "deb [signed-by=$KEYRING] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "#deb-src [signed-by=$KEYRING] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-
-  echo "Running 'apt-get update' for you..."
-
-  # shellcheck disable=SC2119
-  update_packages
-
-  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  install_packages nodejs="${version}"
+  install_nodejs_nodesource ${NODEJS_LATEST_VERSION}
 elif [[ ${menu_choice} == *"LTS"* ]]; then
-  echo "Installing LTS node.js version from NodeSource repository"
-
-  major_vers=14
-  nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
-  #curl -sL "$nodesrc_url" -o repo-install.sh
-  #sudo bash repo-install.sh
-
-  echo 'Adding the NodeSource signing key to your keyring...'
-
-  if [ -x /usr/bin/curl ]; then
-    curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  else
-    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  fi
-
-  echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
-
-  echo "deb https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-
-  echo "Running 'apt-get update' for you..."
-
-  # shellcheck disable=SC2119
-  update_packages
-
-  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  install_packages nodejs="${version}"
+  install_nodejs_nodesource ${NODEJS_LTS_VERSION}
 fi
+
 cleantmp
 
 if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
@@ -248,3 +236,4 @@ if (confirm --title "YARN" --yesno "Would you like to download and install the Y
 else
   echo "Skipping YARN"
 fi
+
