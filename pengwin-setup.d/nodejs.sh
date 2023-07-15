@@ -5,6 +5,40 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SKIP_CONFIMATIONS
 
+
+#######################################
+# Install the packaged version of NodeJS from nodesource repos
+# Arguments:
+#   Major node version to install
+#######################################
+function install_nodejs_nodesource() {
+  echo "Installing latest node.js version from NodeSource repository"
+
+  local major_vers=${1}
+
+  echo 'Adding the NodeSource signing key to your keyring...'
+
+  local keyring=/usr/share/keyrings/nodesource.gpg
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | sudo tee "${keyring}" >/dev/null
+  gpg --no-default-keyring --keyring "$keyring" --list-keys
+  chmod a+r "${keyring}"
+
+  echo "Creating apt sources list file for the NodeSource repo..."
+
+  local distro=bookworm
+
+  echo "deb [signed-by=$keyring] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "#deb-src [signed-by=$keyring] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+
+  echo "Running 'apt-get update' for you..."
+
+  # shellcheck disable=SC2119
+  update_packages
+
+  local version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  install_packages nodejs="${version}"
+}
+
 if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
 
   if (confirm --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
@@ -15,14 +49,17 @@ if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
   fi
 fi
 
+NODEJS_LATEST_VERSION=20
+NODEJS_LTS_VERSION=18
+
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 90 4 \
-    "NVERMAN" "Install with n version manager (fish shell compat. EXPERIMENTAL)" off \
-    "NVM" "Install with nvm version manager (fish shell compat. EXPERIMENTAL)" off \
-    "LATEST" "Install latest version via APT package manager" off \
-    "LTS" "Install LTS version via APT package manager" off
+  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
+    "NVERMAN" "Install with n version manager (RECOMMENDED)" off \
+    "NVM" "Install with nvm version manager" off \
+    "LATEST" "Install latest version (${NODEJS_LATEST_VERSION}) via APT package manager   " off \
+    "LTS" "Install LTS version (${NODEJS_LTS_VERSION}) via APT package manager" off
 
   # shellcheck disable=SC2188
   3>&1 1>&2 2>&3
@@ -36,7 +73,6 @@ fi
 createtmp
 echo "Look for Windows version of npm"
 NPM_WIN_PROFILE="/etc/profile.d/rm-win-npm-path.sh"
-NPM_PROFILE="/etc/profile.d/n-prefix.sh"
 
 if [[ "$(command -v npm)" == $(wslpath 'C:\')* ]]; then
 
@@ -82,8 +118,8 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   curl -L https://git.io/n-install -o n-install.sh
   env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
 
-  N_PATH="$(cat ${HOME}/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
-  echo "${N_PATH}" | sudo tee "${NPM_PROFILE}"
+  N_PATH="$(cat "${HOME}"/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
+  echo "${N_PATH}" | sudo tee "/etc/profile.d/n-prefix.sh"
   eval "${N_PATH}"
 
   # Clear N from .bashrc now not needed
@@ -96,10 +132,6 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing latest node.js release"
   n latest
-
-  echo "Installing npm"
-  curl -0 -L https://npmjs.com/install.sh -o install.sh
-  sh install.sh
 
   # Add n to fish shell
   FISH_DIR="$HOME/.config/fish/conf.d"
@@ -123,12 +155,12 @@ EOF
   touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 
   # Set NVM_DIR variable and load nvm
-  NVM_PATH="$(cat ${HOME}/.bashrc | grep '^export NVM_DIR=')"
-  NVM_SH="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/nvm.sh.*$')"
-  NVM_COMP="$(cat ${HOME}/.bashrc | grep '^.*$NVM_DIR/bash_completion.*$')"
+  NVM_PATH="$(cat "${HOME}"/.bashrc | grep '^export NVM_DIR=')"
+  NVM_SH="$(cat "${HOME}"/.bashrc | grep '^.*$NVM_DIR/nvm.sh.*$')"
+  NVM_COMP="$(cat "${HOME}"/.bashrc | grep '^.*$NVM_DIR/bash_completion.*$')"
   eval "$NVM_PATH"
   eval "$NVM_SH"
 
@@ -177,68 +209,31 @@ EOF
 
   touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
-  echo "Installing latest node.js version from NodeSource repository"
-
-  major_vers=16
-  nodesrc_url="https://deb.nodesource.com/setup_${major_vers}.x"
-  #curl -sL "$nodesrc_url" -o repo-install.sh
-  #sudo bash repo-install.sh
-
-  echo 'Adding the NodeSource signing key to your keyring...'
-
-  if [ -x /usr/bin/curl ]; then
-    curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  else
-    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  fi
-
-  echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
-
-  echo "deb https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-
-  echo "Running 'apt-get update' for you..."
-
-  update_packages
-
-  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  sudo apt-get install -y -q nodejs="${version}"
+  install_nodejs_nodesource ${NODEJS_LATEST_VERSION}
 elif [[ ${menu_choice} == *"LTS"* ]]; then
-  echo "Installing LTS node.js version from NodeSource repository"
-
-  major_vers=14
-  nodesrc_url="https://deb.nodesource.com/setup_$major_vers.x"
-  #curl -sL "$nodesrc_url" -o repo-install.sh
-  #sudo bash repo-install.sh
-
-  echo 'Adding the NodeSource signing key to your keyring...'
-
-  if [ -x /usr/bin/curl ]; then
-    curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  else
-    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-  fi
-
-  echo "Creating apt sources list file for the NodeSource ${NODENAME} repo..."
-
-  echo "deb https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "deb-src https://deb.nodesource.com/node_${major_vers}.x bullseye main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-
-  echo "Running 'apt-get update' for you..."
-
-  update_packages
-
-  version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
-  install_packages nodejs="${version}"
+  install_nodejs_nodesource ${NODEJS_LTS_VERSION}
 fi
+
 cleantmp
 
 if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
-  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  update_packages
-  install_packages yarn --no-install-recommends
+
+  if command -v yarn; then
+    sudo apt-get remove -y -q yarn --autoremove 2>/dev/null
+    sudo rm -f /etc/apt/sources.list.d/yarn.list
+
+    # shellcheck disable=SC2119
+    update_packages
+  fi
+
+  if ! corepack enable; then
+    sudo corepack enable
+  fi
+
+  corepack prepare yarn@stable --activate
+
 else
   echo "Skipping YARN"
 fi
+

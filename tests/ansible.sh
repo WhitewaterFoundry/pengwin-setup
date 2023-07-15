@@ -12,11 +12,10 @@ function test_main() {
   done
 
   command -v /usr/bin/ansible
+  assertEquals "Ansible was not installed" "0" "$?"
 
   export LANG="en_US.UTF-8"
   export LC_CTYPE="en.US.UTF-8"
-
-  assertEquals "Ansible was not installed" "0" "$?"
   assertEquals "Ansible was not installed" "1" "$(run_command_as_testuser /usr/bin/ansible --version | grep -c 'ansible \[core 2')"
 }
 

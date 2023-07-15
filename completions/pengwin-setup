@@ -23,6 +23,9 @@ function _pengwin_setup() { #  By convention, the function name
   PROGRAMMING)
     mapfile -t COMPREPLY < <(compgen -W 'C++ DOTNET GO JAVA JETBRAINS JOOMLA LATEX NIM NODEJS PYTHONPI RUBY RUST' -- "${cur}")
     ;;
+  NODEJS)
+    mapfile -t COMPREPLY < <(compgen -W 'NVERMAN NVM LATEST LTS' -- "${cur}")
+    ;;
   PYTHONPI)
     mapfile -t COMPREPLY < <(compgen -W 'PYENV PYTHONPIP POETRY' -- "${cur}")
     ;;

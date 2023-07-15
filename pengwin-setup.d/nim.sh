@@ -6,7 +6,7 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-if (whiptail --title "NIM" --yesno "Would you like to download and install nim using choosenim?" 8 63) then
+if (confirm --title "NIM" --yesno "Would you like to download and install nim using choosenim?" 8 63) then
     createtmp
     echo "Installing choosenim dependencies."
     sudo apt-get -y install xz-utils gcc
