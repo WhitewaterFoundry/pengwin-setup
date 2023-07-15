@@ -55,10 +55,10 @@ NODEJS_LTS_VERSION=18
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
 
-  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 90 4 \
+  menu --title "nodejs" --radiolist "Choose Node.js install method\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
     "NVERMAN" "Install with n version manager (RECOMMENDED)" off \
     "NVM" "Install with nvm version manager" off \
-    "LATEST" "Install latest version (${NODEJS_LATEST_VERSION}) via APT package manager" off \
+    "LATEST" "Install latest version (${NODEJS_LATEST_VERSION}) via APT package manager   " off \
     "LTS" "Install LTS version (${NODEJS_LTS_VERSION}) via APT package manager" off
 
   # shellcheck disable=SC2188
