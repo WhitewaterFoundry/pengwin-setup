@@ -8,7 +8,7 @@ jobs:
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine:stable
-    resource_class: small
+    resource_class: medium
     steps:
       - checkout
       - run:
@@ -20,7 +20,7 @@ jobs:
   build:
     docker:
       - image: debian:bullseye
-    resource_class: small
+    resource_class: medium
     environment:
       DEBEMAIL: "contact@whitewaterfoundry.com"
       DEBFULLNAME: "Whitewater Foundry, Ltd. Co."
@@ -91,7 +91,7 @@ jobs:
   deploymasterdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
-    resource_class: small
+    resource_class: medium
     steps:
       - attach_workspace:
           at: /tmp/pkgs
@@ -107,7 +107,7 @@ jobs:
   deploydevdeb:
     docker:
       - image: circleci/ruby:2.3-jessie
-    resource_class: small
+    resource_class: medium
     steps:
       - attach_workspace:
           at: /tmp/pkgs
