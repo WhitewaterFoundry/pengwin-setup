@@ -55,7 +55,7 @@ jobs:
     docker:
       - image: debian:bookworm
     resource_class: small
-    parallelism: 7
+    parallelism: 10
     steps:
       - checkout
       - run:
