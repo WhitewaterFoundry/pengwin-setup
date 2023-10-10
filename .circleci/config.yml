@@ -144,9 +144,6 @@ workflows:
               ignore:
                 - development
                 - master
-          requires:
-            - shellcheck
-
 
   deploymasterbranch:
     jobs:
@@ -164,8 +161,6 @@ workflows:
           filters:
             branches:
               only: master
-          requires:
-            - shellcheck
 
       - deploymasterdeb:
           filters:
@@ -174,6 +169,7 @@ workflows:
           requires:
             - test
             - build
+            - shellcheck
   deploydevbranch:
     jobs:
       - shellcheck:
@@ -190,8 +186,6 @@ workflows:
           filters:
             branches:
               only: development
-          requires:
-            - shellcheck
 
       - deploydevdeb:
           filters:
@@ -200,3 +194,4 @@ workflows:
           requires:
             - test
             - build
+            - shellcheck
