@@ -8,7 +8,7 @@ jobs:
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine:stable
-    resource_class: medium
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -19,8 +19,8 @@ jobs:
             find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests" || echo "Shellcheck has some warnings"
   build:
     docker:
-      - image: debian:bullseye
-    resource_class: medium
+      - image: debian:bookworm
+    resource_class: small
     environment:
       DEBEMAIL: "contact@whitewaterfoundry.com"
       DEBFULLNAME: "Whitewater Foundry, Ltd. Co."
@@ -54,7 +54,7 @@ jobs:
   test:
     docker:
       - image: debian:bookworm
-    resource_class: medium
+    resource_class: large
     parallelism: 7
     steps:
       - checkout
@@ -90,8 +90,8 @@ jobs:
             cd /usr/local/bin/tests && ./run_tests.sh
   deploymasterdeb:
     docker:
-      - image: circleci/ruby:2.3-jessie
-    resource_class: medium
+      - image: cimg/ruby:2.7
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
@@ -106,8 +106,8 @@ jobs:
           command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
   deploydevdeb:
     docker:
-      - image: circleci/ruby:2.3-jessie
-    resource_class: medium
+      - image: cimg/ruby:2.7
+    resource_class: small
     steps:
       - attach_workspace:
           at: /tmp/pkgs
