@@ -10,7 +10,7 @@ source commons.sh
 function test_main() {
   run_pengwinsetup install PROGRAMMING NODEJS LTS
 
-  assertEquals "npm was not installed" "1" "$(run_command_as_testuser npm --version | grep -c '10')"
+  assertEquals "npm was not installed" "1" "$(run_command_as_testuser npm --version | grep -c '9')"
   assertEquals "nodejs LTS was not installed" "1" "$(run_command_as_testuser node --version | grep -c 'v18')"
 
   run_command_as_testuser command -v yarn >/dev/null
@@ -27,7 +27,7 @@ function test_uninstall() {
 
   assertFalse "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
 
-  assertEquals "npm was not uninstalled" "0" "$(run_command_as_testuser npm --version | grep -c '10')"
+  assertEquals "npm was not uninstalled" "0" "$(run_command_as_testuser npm --version | grep -c '9')"
   assertEquals "nodejs LTS was not uninstalled" "0" "$(run_command_as_testuser node --version | grep -c 'v18')"
 
   run_command_as_testuser command -v yarn 2>/dev/null
