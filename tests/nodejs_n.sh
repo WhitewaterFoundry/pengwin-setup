@@ -15,7 +15,7 @@ function test_main() {
   source /etc/profile.d/n-prefix.sh
 
   assertEquals "N was not installed" "1" "$(run_command_as_testuser n --version | grep -c 'v9')"
-  assertEquals "npm was not installed" "1" "$(run_command_as_testuser npm --version | grep -c '9')"
+  assertEquals "npm was not installed" "1" "$(run_command_as_testuser npm --version | grep -c '10')"
   assertEquals "nodejs latest was not installed" "1" "$(run_command_as_testuser node --version | grep -c 'v20')"
   assertEquals "nodejs lts was not installed" "1" "$(run_command_as_testuser n list | grep -c 'node/18')"
 
@@ -34,7 +34,7 @@ function test_uninstall() {
   assertFalse "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
 
   assertEquals "N was not uninstalled" "0" "$(run_command_as_testuser n --version | grep -c 'v9')"
-  assertEquals "npm was not uninstalled" "0" "$(run_command_as_testuser npm --version | grep -c '9')"
+  assertEquals "npm was not uninstalled" "0" "$(run_command_as_testuser npm --version | grep -c '10')"
   assertEquals "nodejs latest was not uninstalled" "0" "$(run_command_as_testuser node --version | grep -c 'v20')"
   assertEquals "nodejs lts was not uninstalled" "0" "$(run_command_as_testuser n list | grep -c 'node/18')"
 
