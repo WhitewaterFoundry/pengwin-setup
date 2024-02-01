@@ -11,7 +11,7 @@ function testPyEnv() {
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals "Python was not installed" "1" "$(run_command_as_testuser "${HOME}"/.pyenv/shims/python3 --version | grep -c '3.10')"
+  assertEquals "Python was not installed" "1" "$(run_command_as_testuser "${HOME}"/.pyenv/shims/python3 --version | grep -c '3.12')"
   assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv' "${HOME}"/.bashrc)"
   assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin' "${HOME}"/.bashrc)"
 

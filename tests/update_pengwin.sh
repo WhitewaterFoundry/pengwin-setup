@@ -2,7 +2,9 @@
 
 source commons.sh
 
-function testRCLOCAL() {
-  run_pengwinsetup update
-
+function testPengwinSetupUpdate() {
+  run_pengwinsetup update --noninteractive
 }
+
+# shellcheck disable=SC1091
+source shunit2
