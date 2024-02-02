@@ -53,8 +53,8 @@ function oneTimeSetUp() {
 function oneTimeTearDown() {
   if id "${TEST_USER}" &>/dev/null; then
     sudo killall -u "${TEST_USER}"
-    sudo /usr/sbin/deluser ${TEST_USER} &>/dev/null
-    sudo /usr/sbin/groupdel ${TEST_USER} &>/dev/null
+    sudo /usr/sbin/deluser ${TEST_USER}
+    sudo /usr/sbin/groupdel ${TEST_USER}
   fi
 
 }
