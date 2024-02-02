@@ -20,8 +20,8 @@ function install_nodejs_nodesource() {
 
   local keyring=/usr/share/keyrings/nodesource.gpg
   curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | sudo tee "${keyring}" >/dev/null
-  gpg --no-default-keyring --keyring "$keyring" --list-keys
-  chmod a+r "${keyring}"
+  sudo gpg --no-default-keyring --keyring "$keyring" --list-keys
+  sudo chmod a+r "${keyring}"
 
   echo "Creating apt sources list file for the NodeSource repo..."
 
@@ -50,7 +50,7 @@ if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
 fi
 
 NODEJS_LATEST_VERSION=20
-NODEJS_LTS_VERSION=18
+NODEJS_LTS_VERSION=20
 
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(

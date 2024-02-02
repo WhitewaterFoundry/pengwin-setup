@@ -7,7 +7,7 @@ function test_main() {
 
   command -v /usr/bin/terraform
   assertEquals "Terraform was not installed" "0" "$?"
-  assertEquals "Terraform was not installed" "1" "$(run_command_as_testuser /usr/bin/terraform --version | grep -c '1.2')"
+  assertEquals "Terraform was not installed" "1" "$(run /usr/bin/terraform --version | grep -c '1.2')"
 }
 
 function test_uninstall() {

@@ -7,7 +7,7 @@ function testMain() {
 
   check_script '/etc/profile.d/sdkman.sh'
 
-  assertEquals "SDKMan was not installed" "1" "$(run_command_as_testuser sdk version | grep -c 'SDKMAN!')"
+  assertEquals "SDKMan was not installed" "1" "$(run sdk version | grep -c 'SDKMAN!')"
 }
 
 function testUninstall() {
@@ -15,7 +15,7 @@ function testUninstall() {
 
   assertFalse "FILE PROFILE-SDKMAN" "[ -f /etc/profile.d/sdkman.sh ]"
 
-  assertEquals "SDKMan was not uninstalled" "0" "$(run_command_as_testuser sdk version | grep -c 'SDKMAN!')"
+  assertEquals "SDKMan was not uninstalled" "0" "$(run sdk version | grep -c 'SDKMAN!')"
 }
 
 # shellcheck disable=SC1091

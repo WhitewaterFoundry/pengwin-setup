@@ -6,15 +6,15 @@ function testPyEnv() {
 
   run_pengwinsetup autoinstall PROGRAMMING PYTHONPI PYENV
 
+  local i
   for i in 'python3' 'make'; do
     package_installed $i
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals "Python was not installed" "1" "$(run_command_as_testuser "${HOME}"/.pyenv/shims/python3 --version | grep -c '3.10')"
-  assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv' "${HOME}"/.bashrc)"
-  assertEquals "Pyenv variables are not setup" "1" "$(grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin' "${HOME}"/.bashrc)"
-
+  assertEquals "Python was not installed" "1" "$(run "${HOME}"/.pyenv/shims/python3 --version | grep -c '3.12')"
+  assertEquals "Pyenv variables are not setup" "1" "$(run cat "${HOME}"/.bashrc | grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv')"
+  assertEquals "Pyenv variables are not setup" "1" "$(run cat "${HOME}"/.bashrc | grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin')"
 }
 
 function testUninstallPyEnv() {
@@ -23,8 +23,8 @@ function testUninstallPyEnv() {
 
   test -f "${HOME}"/.pyenv/shims/python3
   assertFalse "Python was not uninstalled" "$?"
-  assertEquals "Pyenv variables were not cleaned up" "0" "$(grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv' "${HOME}"/.bashrc)"
-  assertEquals "Pyenv variables were not cleaned up" "0" "$(grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin' "${HOME}"/.bashrc)"
+  assertEquals "Pyenv variables were not cleaned up" "0" "$(run cat "${HOME}"/.bashrc | grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv')"
+  assertEquals "Pyenv variables were not cleaned up" "0" "$(run cat "${HOME}"/.bashrc | grep -c '^[^#]*\bPATH.*PYENV_ROOT.*/bin')"
 }
 
 # shellcheck disable=SC1091

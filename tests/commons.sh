@@ -23,6 +23,12 @@ function oneTimeSetUp() {
 
   sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
   sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev ${TEST_USER}
+
+  if [[ -n "${USER}" ]]; then
+    sudo /usr/sbin/usermod -aG "${USER}" ${TEST_USER}
+    sudo /usr/sbin/usermod -aG ${TEST_USER} "${USER}"
+  fi
+
   echo "%${TEST_USER} ALL=(ALL) NOPASSWD:ALL" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/passwordless-sudo
   sudo chmod +x run-pengwin-setup.sh
   sudo chmod +x stubs/*
@@ -47,9 +53,12 @@ function oneTimeSetUp() {
 function oneTimeTearDown() {
   if id "${TEST_USER}" &>/dev/null; then
     sudo killall -u "${TEST_USER}"
-    sudo /usr/sbin/deluser ${TEST_USER} &>/dev/null
-  fi
+    sudo /usr/sbin/deluser ${TEST_USER}
 
+    if [[ $(cat /etc/group | grep -c "${TEST_USER}") != 0 ]]; then
+      sudo /usr/sbin/groupdel ${TEST_USER}
+    fi
+  fi
 }
 
 #######################################
@@ -101,7 +110,7 @@ function run_pengwinsetup() {
 # Arguments:
 #  None
 #######################################
-function run_command_as_testuser() {
+function run() {
   sudo su - -c "$*" ${TEST_USER} 2>/dev/null
 }
 
