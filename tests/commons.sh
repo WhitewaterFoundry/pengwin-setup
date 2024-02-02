@@ -55,7 +55,7 @@ function oneTimeTearDown() {
     sudo killall -u "${TEST_USER}"
     sudo /usr/sbin/deluser ${TEST_USER}
 
-    if [[ $(groups "${TEST_USER}" | grep -c) != 0 ]]; then
+    if [[ $(groups | grep -c "${TEST_USER}") != 0 ]]; then
       sudo /usr/sbin/groupdel ${TEST_USER}
     fi
   fi
