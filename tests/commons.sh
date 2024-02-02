@@ -21,15 +21,16 @@ function oneTimeSetUp() {
   export TERM="xterm-256color"
   export LANG=en_US.utf8
 
+  set -x
   sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
   sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev,"${USER}" ${TEST_USER}
-  sudo /usr/sbin/usermod -aG "${TEST_USER}" ${USER}
+  sudo /usr/sbin/usermod -aG "${TEST_USER}" "${USER}"
   echo "%${TEST_USER} ALL=(ALL) NOPASSWD:ALL" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/passwordless-sudo
   sudo chmod +x run-pengwin-setup.sh
   sudo chmod +x stubs/*
 
   sudo chmod 777 -R "${SHUNIT_TMPDIR}"
-
+  set +x
   # Add the stub path
 
   echo "PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
