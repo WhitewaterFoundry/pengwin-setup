@@ -10,6 +10,9 @@ source commons.sh
 function test_main() {
   run_pengwinsetup install PROGRAMMING NODEJS LATEST
 
+  run npm --version
+  run node --version
+
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '9')"
   assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v20')"
 
@@ -28,7 +31,7 @@ function test_uninstall() {
   assertFalse "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
 
   assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '9')"
-  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v20')"
+  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v21')"
 
   run command -v yarn 2>/dev/null
   assertFalse "package yarn was not uninstalled" "$?"
