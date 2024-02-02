@@ -11,10 +11,10 @@ function testMain() {
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals "Cmake was not installed" "1" "$(run_command_as_testuser /usr/bin/cmake --version | grep -c '3')"
+  assertEquals "Cmake was not installed" "1" "$(run /usr/bin/cmake --version | grep -c '3')"
 
   if [[ "$(uname -m)" == "x86_64" ]] ; then
-    assertEquals "MS Cmake was not installed" "1" "$(run_command_as_testuser /usr/local/bin/cmake --version | grep -c '3.1')"
+    assertEquals "MS Cmake was not installed" "1" "$(run /usr/local/bin/cmake --version | grep -c '3.1')"
   fi
 
 }
