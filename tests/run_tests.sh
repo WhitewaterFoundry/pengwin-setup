@@ -47,6 +47,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #5
   run_test ./dotnet.sh
   #run_test ./guilib.sh
   run_test ./jetbrains-support.sh
+  run_test ./pythonpi-poetry.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #6
   #run_test ./lamp.sh "10.9"
   run_test ./brew.sh

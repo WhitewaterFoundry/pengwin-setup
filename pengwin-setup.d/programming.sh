@@ -22,74 +22,98 @@ function main() {
       "NODEJS" "Install Node.js and npm" off \
       "PYTHONPI" "Install Python 3.9 and download and install latest PyPi" off \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
-      "RUST" "Install latest version of Rust via rustup installer" off \
+      "RUST" "Install latest version of Rust via rustup installer" off
 
-  # shellcheck disable=SC2188
-  3>&1 1>&2 2>&3)
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
+  )
 
   if [[ ${menu_choice} == "CANCELLED" ]] ; then
     return 1
   fi
 
-  if [[ ${menu_choice} == *"C++"* ]] ; then
+  local exit_status
+
+  if [[ ${menu_choice} == *"C++"* ]]; then
     echo "C++"
     bash "${SetupDir}"/cpp-vs-clion.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"DOTNET"* ]] ; then
+  if [[ ${menu_choice} == *"DOTNET"* ]]; then
     echo "DOTNET"
     bash "${SetupDir}"/dotnet.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"GO"* ]] ; then
+  if [[ ${menu_choice} == *"GO"* ]]; then
     echo "GO"
     bash "${SetupDir}"/go.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"JAVA"* ]] ; then
+  if [[ ${menu_choice} == *"JAVA"* ]]; then
     echo "JAVA"
     bash "${SetupDir}"/java.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"JOOMLA"* ]] ; then
+  if [[ ${menu_choice} == *"JOOMLA"* ]]; then
     echo "JOOMLA"
     bash "${SetupDir}"/joomla.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"LATEX"* ]] ; then
+  if [[ ${menu_choice} == *"LATEX"* ]]; then
     echo "LATEX"
     bash "${SetupDir}"/latex.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"NIM"* ]] ; then
+  if [[ ${menu_choice} == *"NIM"* ]]; then
     echo "nim"
     bash "${SetupDir}"/nim.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"NODEJS"* ]] ; then
+  if [[ ${menu_choice} == *"NODEJS"* ]]; then
     echo "NODE"
     bash "${SetupDir}"/nodejs.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"PYTHONPI"* ]] ; then
+  if [[ ${menu_choice} == *"PYTHONPI"* ]]; then
     echo "PYTHON"
     bash "${SetupDir}"/pythonpi.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"RUBY"* ]] ; then
+  if [[ ${menu_choice} == *"RUBY"* ]]; then
     echo "RUBY"
     bash "${SetupDir}"/ruby.sh "$@"
+    exit_status=$?
   fi
 
-  if [[ ${menu_choice} == *"RUST"* ]] ; then
+  if [[ ${menu_choice} == *"RUST"* ]]; then
     echo "RUST"
     bash "${SetupDir}"/rust.sh "$@"
-  fi
-  if [[ ${menu_choice} == *"JETBRAINS"* ]] ; then
-    echo "JETBRAINS"
-    bash "${SetupDir}"/jetbrains-support.sh "$@"
+    exit_status=$?
   fi
 
+  if [[ ${menu_choice} == *"JETBRAINS"* ]]; then
+    echo "JETBRAINS"
+    bash "${SetupDir}"/jetbrains-support.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${exit_status} != 0 ]]; then
+    local status
+    main "$@"
+    status=$?
+    return $status
+  fi
+
+  return ${exit_status}
 }
 
 main "$@"
