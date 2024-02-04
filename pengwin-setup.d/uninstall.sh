@@ -38,6 +38,7 @@ function main() {
       "NIM" "Remove choosenim and any installed Nim components" off \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" off \
       "OPENSTACK" "Remove OpenStack CLI tools" off \
+      "POETRY" "Remove Poetry" off \
       "POWERSHELL" "Remove Powershell for Linux" off \
       "PYENV" "Remove pyenv, its Python version(s) and modules" off \
       "RCLOCAL" "Remove rclocal support (the file /etc/rc.local) is kept" off \
@@ -199,6 +200,11 @@ function main() {
   if [[ ${menu_choice} == *"PYENV"* ]] ; then
     echo "PYENV"
     bash "${UninstallDir}"/pyenv.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"POETRY"* ]] ; then
+    echo "POETRY"
+    bash "${UninstallDir}"/poetry.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then

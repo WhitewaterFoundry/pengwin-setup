@@ -4,7 +4,7 @@ SetupDir="/usr/local/pengwin-setup.d"
 
 export VERSION="1.2a"
 
-# shellcheck disable=SC1090
+# shellcheck source=pengwin-setup.d/common.sh
 source ${SetupDir}/common.sh "$@"
 
 declare CANCELLED
@@ -35,7 +35,8 @@ function check_upgrades() {
     sudo sed -i 's$debian-security testing/updates$debian-security testing-security$g' /etc/apt/sources.list
   fi
 
-  update_packages --allow-releaseinfo-change
+  # shellcheck disable=SC2119
+  update_packages
 
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
   if [[ -f "/etc/apt/.dist-upgrade" ]]; then
@@ -52,7 +53,7 @@ function check_upgrades() {
   local upgrd_check="$(sudo apt-get upgrade --show-upgraded --assume-no | grep pengwin)"
   if [[ "${upgrd_check}" == *"pengwin"* ]]; then
     echo "Pengwin core package upgrades found"
-    if (confirm --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended. Note: Pengwin-setup will close after installation complete." 10 91); then
+    if (confirm --title "Upgrades Available" --yesno "Updates have been detected for Pengwin core packages. Would you like to update them? This is highly recommended." 10 91); then
 
       # Ensure that packages get updated without affecting other held packages like udev
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1

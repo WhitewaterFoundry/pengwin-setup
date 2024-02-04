@@ -106,8 +106,8 @@ function install_poetry() {
 
     source "${HOME}"/.poetry/env
     poetry self update
-    poetry completions bash | sudo tee /usr/share/bash-completion/completions/poetry
 
+    poetry completions bash | sudo tee /usr/share/bash-completion/completions/poetry
     mkdir -p ~/.config/fish/completions && poetry completions fish > ~/.config/fish/completions/poetry.fish
 
     touch "${HOME}"/.should-restart

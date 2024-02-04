@@ -39,16 +39,6 @@ function install_nodejs_nodesource() {
   install_packages nodejs="${version}"
 }
 
-if [[ ! "${SKIP_CONFIMATIONS}" ]]; then
-
-  if (confirm --title "NODE" --yesno "Would you like to download and install Node.js (with npm)?" 8 65); then
-    echo "Installing NODE"
-  else
-    echo "Skipping NODE"
-    exit 1
-  fi
-fi
-
 NODEJS_LATEST_VERSION=20
 NODEJS_LTS_VERSION=20
 
