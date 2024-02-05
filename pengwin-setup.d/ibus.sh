@@ -6,9 +6,9 @@ source "$(dirname "$0")/common.sh" "$@"
 
 if (confirm --title "ibus" --yesno "Would you like to install ibus for improved non-Latin input via iBus?" 8 65); then
   echo "Installing ibus"
-  echo "sudo apt-get install ibus-gtk* ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 zenity -y"
-  sudo apt-get install ibus ibus-gtk ibus-gtk3 fonts-noto-cjk fonts-noto-color-emoji dbus-x11 zenity -y
-  sudo apt-get install ibus-gtk4 -y >/dev/null 2>&1
+
+  install_packages ibus ibus-gtk ibus-gtk3 fonts-noto-cjk fonts-noto-color-emoji dbus-x11 zenity -y
+  install_packages ibus-gtk4 -y >/dev/null 2>&1
 
   FCCHOICE=$(
     menu --title "iBus engines" --checklist --separate-output "Select iBus engine:" 17 65 10 \
@@ -21,47 +21,50 @@ if (confirm --title "ibus" --yesno "Would you like to install ibus for improved 
       "kkc" "Japanese kkc" off \
       "hangul" "Korean hangul" off \
       "unikey" "Vietnamese unikey" off \
-      "table" "Tables (Includes all available tables)  " off 3>&1 1>&2 2>&3
+      "table" "Tables (Includes all available tables)  " off
+
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
   )
 
   if [[ $FCCHOICE == *"sunpinyin"* ]]; then
-    sudo apt-get install ibus-sunpinyin -y
+    install_packages ibus-sunpinyin
   fi
 
   if [[ $FCCHOICE == *"libpinyin"* ]]; then
-    sudo apt-get install ibus-libpinyin -y
+    install_packages ibus-libpinyin
   fi
 
   if [[ $FCCHOICE == *"rime"* ]]; then
-    sudo apt-get install ibus-rime -y
+    install_packages ibus-rime
   fi
 
   if [[ $FCCHOICE == *"pinyin"* ]]; then
-    sudo apt-get install ibus-pinyin -y
+    install_packages ibus-pinyin
   fi
 
   if [[ $FCCHOICE == *"chewing"* ]]; then
-    sudo apt-get install ibus-chewing -y
+    install_packages ibus-chewing
   fi
 
   if [[ $FCCHOICE == *"mozc"* ]]; then
-    sudo apt-get install ibus-mozc mozc-utils-gui -y
+    install_packages ibus-mozc mozc-utils-gui
   fi
 
   if [[ $FCCHOICE == *"kkc"* ]]; then
-    sudo apt-get install ibus-kkc -y
+    install_packages ibus-kkc
   fi
 
   if [[ $FCCHOICE == *"hangul"* ]]; then
-    sudo apt-get install ibus-hangul -y
+    install_packages ibus-hangul
   fi
 
   if [[ $FCCHOICE == *"unikey"* ]]; then
-    sudo apt-get install ibus-unikey -y
+    install_packages ibus-unikey
   fi
 
   if [[ $FCCHOICE == *"tables"* ]]; then
-    sudo apt-get install ibus-table '^ibus-table-*' -y
+    install_packages ibus-table '^ibus-table-*'
   fi
 
   echo "Setting environmental variables"
