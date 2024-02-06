@@ -84,10 +84,7 @@ function check_upgrades() {
 #  None
 #######################################
 function welcome_prompt() {
-  message --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n
-Pengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n
-pengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings. \n
-Many more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers." 17 80
+  message --title "Welcome to Pengwin" --msgbox "Thank you for supporting sustainable independent open source development.\n\nPengwin comes with a core set of useful packages pre-installed, such as curl, git, and wslu.\n\npengwin-setup allows you to install additional hand-curated selections for Pengwin and configure optional WSL-specific settings.\n\nMany more packages are available via the apt package manager and optional pip, npm, and RubyGems package managers." 17 80
 }
 
 #######################################
@@ -139,7 +136,7 @@ function install_menu() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "pengwin-setup" --checklist --separate-output "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 16 99 8 \
+    menu --title "pengwin-setup" --separate-output --checklist "\nHand-curated add-ons [SPACE to select, ENTER to confirm]:" 16 99 8 \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}    " off \
       "GUI" "Install an X server or various other GUI applications" off \
       "MAINTENANCE" "Various maintenance tasks like home backup" off \

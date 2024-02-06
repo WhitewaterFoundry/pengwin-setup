@@ -11,7 +11,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Settings Menu" --checklist --separate-output "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 12 97 4 \
+    menu --title "Settings Menu" --separate-output --checklist "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 12 97 4 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
       "COLORTOOL" "Install ColorTool to set Windows console color schemes" off \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \

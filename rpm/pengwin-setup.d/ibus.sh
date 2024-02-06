@@ -6,7 +6,7 @@ if (confirm --title "ibus" --yesno "Would you like to install ibus for improved 
   echo "Installing ibus"
   echo "sudo apt-get install ibus-gtk* ibus fonts-noto-cjk fonts-noto-color-emoji dbus-x11 zenity -y"
   sudo apt-get install ibus '^ibus-gtk*' fonts-noto-cjk fonts-noto-color-emoji dbus-x11 zenity -y
-  FCCHOICE=$(whiptail --title "iBus engines" --checklist --separate-output "Select iBus engine:" 15 65 8 \
+  FCCHOICE=$(whiptail --title "iBus engines" --separate-output --checklist "Select iBus engine:" 15 65 8 \
   "sunpinyin" "Chinese sunpinyin" off \
   "libpinyin" "Chinese libpinyin" off \
   "pinyin" "Chinese pinyin" off \

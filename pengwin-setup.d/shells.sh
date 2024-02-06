@@ -167,7 +167,7 @@ function installAndSetShell() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Shell Menu" --checklist --separate-output "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
+    menu --title "Shell Menu" --separate-output --checklist "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 80 4 \
       "BASH-RL" "Recommended readline settings for productivity " off \
       "CSH" "csh" off \
       "FISH" "fish with oh-my-fish plugin manager" off \

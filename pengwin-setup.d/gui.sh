@@ -78,7 +78,7 @@ function configure_gui() {
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --checklist --separate-output "Install an X server or start menu shortcuts\n[SPACE to select, ENTER to confirm]:" $((10+more)) 99 $((3+more)) \
+    menu --title "GUI Menu" --separate-output --checklist "Install an X server or start menu shortcuts\n[SPACE to select, ENTER to confirm]:" $((10+more)) 99 $((3+more)) \
       "${display_ip_from_dns_option[@]}" \
       "STARTMENU" "Generates 'Windows Start Menu' shortcuts for GUI applications" off \
       "VCXSRV" "Install the VcXsrv open source X-server" off \
@@ -146,7 +146,7 @@ function main() {
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --checklist --separate-output "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((14+more)) 99 $((7+more)) \
+    menu --title "GUI Menu" --separate-output --checklist "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((14+more)) 99 $((7+more)) \
       "${disable_wslg[@]}" \
       "${show_configure[@]}" \
       "DESKTOP" "Install Desktop environments" off \

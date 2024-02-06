@@ -211,7 +211,8 @@ function confirm() {
 
   if [[ ! ${SKIP_CONFIMATIONS} ]]; then
 
-    whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    #whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
 
     return $?
   else
@@ -233,7 +234,8 @@ function message() {
 
   if [[ ! ${NON_INTERACTIVE} ]]; then
 
-    whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    #whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
 
     return $?
   else
@@ -255,7 +257,8 @@ function menu() {
   local menu_choice #Splitted to preserve exit code
 
   if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then
-    menu_choice=$(whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
+    #menu_choice=$(whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
+    menu_choice=$(dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
   else
     menu_choice="${CMD_MENU_OPTIONS[*]}"
   fi
@@ -269,7 +272,7 @@ function menu() {
 
   if [[ -z ${menu_choice} ]]; then
 
-    if (whiptail --backtitle "${PENGWIN_SETUP_TITLE}" --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
+    if (dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
       menu "$@"
 
       return

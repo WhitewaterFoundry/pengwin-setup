@@ -10,7 +10,7 @@ if (whiptail --title "fcitx" --yesno "Would you like to install fcitx for improv
 	echo "Installing fcitx"
 	echo "sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
 	sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y
-	FCCHOICE=$(whiptail --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 15 65 8 \
+	FCCHOICE=$(whiptail --title "fcitx engines" --separate-output --checklist "Select fcitx engine:" 15 65 8 \
 	"sunpinyin" "Chinese sunpinyin" off \
 	"libpinyin" "Chinese libpinyin" off \
 	"rime" "Chinese rime" off \

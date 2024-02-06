@@ -11,7 +11,7 @@ if (confirm --title "ibus" --yesno "Would you like to install ibus for improved 
   install_packages ibus-gtk4 -y >/dev/null 2>&1
 
   FCCHOICE=$(
-    menu --title "iBus engines" --checklist --separate-output "Select iBus engine:" 17 65 10 \
+    menu --title "iBus engines" --separate-output --checklist "Select iBus engine:" 17 65 10 \
       "sunpinyin" "Chinese sunpinyin" off \
       "libpinyin" "Chinese libpinyin" off \
       "pinyin" "Chinese pinyin" off \
