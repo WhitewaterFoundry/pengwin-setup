@@ -27,7 +27,7 @@ declare WSL2
 # shellcheck disable=SC2155
 declare -i -r WSLG=3
 
-if [[ "${WSL2}" == "${WSLG}" ]]; then
+if [[ ${WSL2} == "${WSLG}" ]]; then
   readonly REQUIRES_X="             "
 else
   readonly REQUIRES_X=" (requires X)"
@@ -75,6 +75,12 @@ function process_arguments() {
       -q | --quiet | --noninteractive)
         echo "Skipping confirmations"
         export NON_INTERACTIVE=1
+        shift
+        ;;
+      --ncurses | --dialog)
+        echo "Use dialog instead of whiptail"
+        export DIALOG_COMMAND="dialog --keep-tite --erase-on-exit --ignore"
+        #export DIALOGRC="${SetupDir}/dialogrc"
         shift
         ;;
       update | upgrade)
@@ -211,8 +217,7 @@ function confirm() {
 
   if [[ ! ${SKIP_CONFIMATIONS} ]]; then
 
-    #whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
-    dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    ${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
 
     return $?
   else
@@ -234,8 +239,7 @@ function message() {
 
   if [[ ! ${NON_INTERACTIVE} ]]; then
 
-    #whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
-    dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    ${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
 
     return $?
   else
@@ -257,8 +261,7 @@ function menu() {
   local menu_choice #Splitted to preserve exit code
 
   if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then
-    #menu_choice=$(whiptail --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
-    menu_choice=$(dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
+    menu_choice=$(${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
   else
     menu_choice="${CMD_MENU_OPTIONS[*]}"
   fi
@@ -272,7 +275,7 @@ function menu() {
 
   if [[ -z ${menu_choice} ]]; then
 
-    if (dialog --keep-tite --erase-on-exit --ignore --backtitle "${PENGWIN_SETUP_TITLE}" --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
+    if (${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
       menu "$@"
 
       return
@@ -306,6 +309,11 @@ function setup_env() {
     exit 0
   fi
 
+  export DIALOG_COMMAND="whiptail"
+
+  SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+  export SetupDir
+
   process_arguments "$@"
 
   # shellcheck disable=SC1003,SC2262
@@ -332,9 +340,6 @@ function setup_env() {
   # bashsupport disable=BP2001
   readonly SHORTCUTS_FOLDER="Pengwin Applications"
   export SHORTCUTS_FOLDER
-
-  SetupDir="/usr/local/pengwin-setup.d"
-  export SetupDir
 
   readonly GOVERSION="1.19.4"
   export GOVERSION
