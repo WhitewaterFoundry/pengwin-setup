@@ -129,7 +129,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Python" --radiolist --separate-output "Python install options\n[SPACE to select, ENTER to confirm]:" 12 75 3 \
+    menu --title "Python" --radiolist "Python install options\n[SPACE to select, ENTER to confirm]:" 12 75 3 \
       "PYENV" 'Python 3.12 with pyenv   ' off \
       "PYTHONPIP" 'Python 3.11, IDLE, and the pip package manager ' off \
       "POETRY" 'Python 3.11, IDLE, and the poetry package manager ' off

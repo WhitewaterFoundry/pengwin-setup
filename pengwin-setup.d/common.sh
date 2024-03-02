@@ -133,7 +133,7 @@ function process_arguments() {
 #  None
 #######################################
 function createtmp() {
-  echo 'Saving current directory as $CURDIR'
+  echo "Saving current directory as \$CURDIR"
   CURDIR=$(pwd)
   TMPDIR=$(mktemp -d)
   echo "Going to \$TMPDIR: $TMPDIR"
@@ -258,7 +258,7 @@ function message() {
 #######################################
 function menu() {
 
-  local menu_choice #Splitted to preserve exit code
+  local menu_choice #Split to preserve exit code
 
   if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then
     menu_choice=$(${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
