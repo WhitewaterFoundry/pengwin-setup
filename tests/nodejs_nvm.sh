@@ -8,7 +8,7 @@ source commons.sh
 #  None
 #######################################
 function test_main() {
-  run_pengwinsetup install PROGRAMMING NODEJS NVM --debug
+  run_pengwinsetup install PROGRAMMING NODEJS NVM
 
   assertTrue "FILE PROFILE-NVM" "[ -f /etc/profile.d/nvm-prefix.sh ]"
 
