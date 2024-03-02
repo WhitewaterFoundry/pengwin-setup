@@ -1,8 +1,7 @@
 #!/bin/bash
 
-SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/pengwin-setup.d"
 export SetupDir
-
 export VERSION="1.2a"
 
 # shellcheck source=pengwin-setup.d/common.sh
