@@ -6,7 +6,6 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-
 #######################################
 # description
 # Globals:
@@ -21,10 +20,10 @@ function install_explorer() {
   local plain_name='Pengwin'
 
   if (confirm --title "EXPLORER" --yesno "Would you like to enable Windows Explorer shell integration?" 8 65); then
-      echo "Enabling Windows Explorer shell integration."
-      createtmp
+    echo "Enabling Windows Explorer shell integration."
+    createtmp
 
-      cat << EOF >> Install.reg
+    cat <<EOF >>Install.reg
 Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\Pengwin]
 @="Open with Pengwin"
@@ -38,34 +37,34 @@ Windows Registry Editor Version 5.00
 @="_PengwinPath_ run \\"login_shell \\\\\\"%V\\\\\\"\\""
 EOF
 
-      if [ ! -d "${wHome}/Pengwin" ]; then
-        mkdir -p "${wHome}/Pengwin"
-      fi
+    if [ ! -d "${wHome}/Pengwin" ]; then
+      mkdir -p "${wHome}/Pengwin"
+    fi
 
-      cp /usr/local/lib/pengwin.ico "${wHome}/Pengwin"
+    cp /usr/local/lib/pengwin.ico "${wHome}/Pengwin"
 
-      local fullexec=$(wslpath -m "$(command -v ${exec_name})" | sed 's$/$\\\\\\\\$g')
-      local icopath=$(cmd-exe /C "echo '%USERPROFILE%\\Pengwin\\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
-      icopath=$(echo $icopath | tr -d "\'")
-      sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
-      sed -i "s/_IcoPath_/${icopath}/g" Install.reg
-      cp Install.reg $(wslpath "$(cmd-exe /c 'echo %TEMP%' | tr -d '\r')")/Install.reg
-      cmd-exe /C "Reg import %TEMP%\Install.reg"
+    local fullexec=$(wslpath -m "$(command -v ${exec_name})" | sed 's$/$\\\\\\\\$g')
+    local icopath=$(cmd-exe /C "echo '%USERPROFILE%\\Pengwin\\pengwin.ico'" | tr -d '\r' | sed 's$\\$\\\\\\\\$g')
+    icopath=$(echo $icopath | tr -d "\'")
+    sed -i "s/_${plain_name}Path_/${fullexec}/g" Install.reg
+    sed -i "s/_IcoPath_/${icopath}/g" Install.reg
+    cp Install.reg $(wslpath "$(cmd-exe /c 'echo %TEMP%' | tr -d '\r')")/Install.reg
+    cmd-exe /C "Reg import %TEMP%\Install.reg"
 
-      cleantmp
-   else
-      echo "Disabling Windows Explorer shell integration."
-      createtmp
+    cleantmp
+  else
+    echo "Disabling Windows Explorer shell integration."
+    createtmp
 
-      cat << EOF >> Uninstall.reg
+    cat <<EOF >>Uninstall.reg
 Windows Registry Editor Version 5.00
 [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\${plain_name}]
 [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\\${plain_name}]
 EOF
-      cp Uninstall.reg $(wslpath "$(cmd-exe /c 'echo %TEMP%' | tr -d '\r')")/Uninstall.reg
-      cmd-exe /C "Reg import %TEMP%\Uninstall.reg"
+    cp Uninstall.reg $(wslpath "$(cmd-exe /c 'echo %TEMP%' | tr -d '\r')")/Uninstall.reg
+    cmd-exe /C "Reg import %TEMP%\Uninstall.reg"
 
-      cleantmp
+    cleantmp
   fi
 }
 
@@ -82,7 +81,7 @@ function upgrade_explorer() {
 
   createtmp
 
-  cat << EOF >> Uninstall.reg
+  cat <<EOF >>Uninstall.reg
 Windows Registry Editor Version 5.00
 [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\${plain_name}]
 [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\\${plain_name}]
@@ -104,7 +103,7 @@ EOF
 #######################################
 function main() {
 
-  if [[ $# -gt 0 && "$1" == "--upgrade" ]]; then
+  if [[ $# -gt 0 && $1 == "--upgrade" ]]; then
 
     local exit_code_1
     local exit_code_2

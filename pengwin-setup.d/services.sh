@@ -214,7 +214,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
+    menu --title "Services Menu" --separate-output --checklist "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
       "CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
       "KEYCHAIN" "Install Keychain, the OpenSSH key manager" off \
       "LAMP" "Install LAMP Stack" off \

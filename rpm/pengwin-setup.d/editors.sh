@@ -69,7 +69,7 @@ function editor_menu() {
   # shellcheck disable=SC2155
   local editor_choice=$(
 
-    menu --title "Editor Menu" --checklist --separate-output "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
+    menu --title "Editor Menu" --separate-output --checklist "Custom editors (nano and vi included)\n[SPACE to select, ENTER to confirm]:" 12 55 3 \
       "CODE" "Visual Studio Code (requires X)   " off \
       "EMACS" "Emacs" off \
       "NEOVIM" "Neovim" off

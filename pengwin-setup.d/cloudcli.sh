@@ -283,7 +283,7 @@ function install_openstack() {
 function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
-    menu --title "Cloud Management Menu" --checklist --separate-output "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
+    menu --title "Cloud Management Menu" --separate-output --checklist "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
       "AWS" "AWS CLI" off \
       "AZURE" "Azure CLI" off \
       "DO" "Digital Ocean CLI" off \

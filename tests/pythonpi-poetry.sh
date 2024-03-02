@@ -2,7 +2,13 @@
 
 source commons.sh
 
-function testPyPoetry() {
+#######################################
+# Globals:
+#   HOME
+# Arguments:
+#  None
+#######################################
+function test_py_poetry() {
 
   run_pengwinsetup autoinstall PROGRAMMING PYTHONPI POETRY
 
@@ -16,11 +22,17 @@ function testPyPoetry() {
   run "${HOME}"/.local/bin/poetry --version
 
   assertEquals "Python was not installed" "1" "$(run python3 --version | grep -c '3.11')"
-  assertEquals "Poetry was not installed" "1" "$(run "${HOME}"/.local/bin/poetry --version | grep -c '1.7')"
+  assertEquals "Poetry was not installed" "1" "$(run "${HOME}"/.local/bin/poetry --version | grep -c '1.8')"
 
 }
 
-function testUninstallPyPoetry() {
+#######################################
+# Globals:
+#   HOME
+# Arguments:
+#  None
+#######################################
+function test_uninstall_py_poetry() {
 
   run_pengwinsetup uninstall POETRY
 

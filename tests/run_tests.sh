@@ -26,8 +26,10 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./desktop.sh
   run_test ./terraform.sh
   run_test ./lamp.sh "10.6"
+  run_test ./motd_settings.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
+  run_test ./motd_settings.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #1
   run_test ./desktop.sh
   run_test ./lamp.sh "BUILTIN"

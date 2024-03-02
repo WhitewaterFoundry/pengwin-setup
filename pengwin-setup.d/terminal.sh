@@ -11,7 +11,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Terminal Menu" --checklist --separate-output "Select the terminals you want to install\n[SPACE to select, ENTER to confirm]:" 14 60 7 \
+    menu --title "Terminal Menu" --separate-output --checklist "Select the terminals you want to install\n[SPACE to select, ENTER to confirm]:" 14 60 7 \
       "WINTERM" "Windows Terminal" off \
       "WSLTTY" "WSLtty" off \
       "TILIX" "Tilix${REQUIRES_X}" off \

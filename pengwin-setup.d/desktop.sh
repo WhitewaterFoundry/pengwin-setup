@@ -190,7 +190,7 @@ function main() {
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "Desktop Menu" --checklist --separate-output "Install Desktop environments\n[SPACE to select, ENTER to confirm]:" 10 55 1 \
+    menu --title "Desktop Menu" --separate-output --checklist "Install Desktop environments\n[SPACE to select, ENTER to confirm]:" 10 55 1 \
       "XFCE" "Install XFCE Desktop environment" on
 
     3>&1 1>&2 2>&3

@@ -6,7 +6,7 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme, along with a setup script for a user-friendly theme setting method? This will be installed to your Windows home directory under .ColorTool" 10 80) then
+if (confirm --title "COLORTOOL" --yesno "Would you like to install Microsoft's ColorTool for easily changing the Windows console color scheme, along with a setup script for a user-friendly theme setting method? This will be installed to your Windows home directory under .ColorTool" 10 80) then
 	echo "Installing ColorTool"
 	ColortoolUrl="https://github.com/microsoft/Terminal/releases/download/1904.29002/ColorTool.zip"
 
@@ -30,7 +30,7 @@ if (whiptail --title "COLORTOOL" --yesno "Would you like to install Microsoft's 
 		echo "Setting ColorTool.exe permissions"
 		chmod +x "${ColortoolDir}/ColorTool.exe"
 
-		if (whiptail --title "COLORTOOL" --yesno "Would you like to install a collection of iTerm2 color schemes compatible with Microsoft ColorTool?" 8 85) then
+		if (confirm --title "COLORTOOL" --yesno "Would you like to install a collection of iTerm2 color schemes compatible with Microsoft ColorTool?" 8 85) then
 			echo "Installing iTerm themes for ColorTool"
 			ColorschemesUrl="https://github.com/mbadolato/iTerm2-Color-Schemes/archive/master.zip"
 
@@ -190,7 +190,7 @@ main "\$@"
 exit $?
 EOF
 		sudo chmod +x /usr/local/bin/colortool
-		whiptail --title "COLORTOOL" --msgbox "Finished installing. You can view and set installed schemes with 'colortool'" 8 80
+		message --title "COLORTOOL" --msgbox "Finished installing. You can view and set installed schemes with 'colortool'" 8 80
 
 		else
 		# Download failed
@@ -200,8 +200,9 @@ EOF
 		cleantmp
 	else
 		echo "${ColortoolDir} already exists, leaving in place."
-		whiptail --title "COLORTOOL" --msgbox "ColorTool install already exists, leaving in place.\nTo reinstall ColorTool, please delete '${ColortoolDir}' and run this installer again." 10 85
+		message --title "COLORTOOL" --msgbox "ColorTool install already exists, leaving in place.\nTo reinstall ColorTool, please delete '${ColortoolDir}' and run this installer again." 10 85
 	fi
 else
 	echo "Skipping ColorTool"
+	return 1
 fi

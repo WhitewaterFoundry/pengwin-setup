@@ -166,7 +166,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Services Menu" --checklist --separate-output "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
+    menu --title "Services Menu" --separate-output --checklist "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 5 \
       "SSH" "Enable SSH server" off \
 
   # shellcheck disable=SC2188

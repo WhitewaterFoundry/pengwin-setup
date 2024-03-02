@@ -10,7 +10,7 @@ function main() {
 
   local menu_choice=$(
 
-    menu --title "Maintenance Menu" --checklist --separate-output "Various maintenance tasks like home backup\n[SPACE to select, ENTER to confirm]:" 10 70 1 \
+    menu --title "Maintenance Menu" --separate-output --checklist "Various maintenance tasks like home backup\n[SPACE to select, ENTER to confirm]:" 10 70 1 \
       "HOMEBACKUP" 'Backups and restore the ${HOME} directory    ' on \
 
   3>&1 1>&2 2>&3)

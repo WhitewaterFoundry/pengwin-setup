@@ -11,7 +11,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Tools Menu" --checklist --separate-output "Install applications or servers\n[SPACE to select, ENTER to confirm]:" 12 87 5 \
+    menu --title "Tools Menu" --separate-output --checklist "Install applications or servers\n[SPACE to select, ENTER to confirm]:" 12 87 5 \
       "ANSIBLE" "Install tools to deploy Ansible Playbooks" off \
       "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " off \
       "DOCKER" "Install a secure bridge to Docker Desktop" off \

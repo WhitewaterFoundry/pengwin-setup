@@ -18,7 +18,7 @@ done
 
 let width=85
 let height=7+count
-execstr="whiptail --title \"KEYCHAIN\" --checklist --separate-output \"Pick an SSH key to automatically load:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
+execstr="whiptail --title \"KEYCHAIN\" --separate-output --checklist \"Pick an SSH key to automatically load:\" $height $width $count $option_list 3>&1 1>&2 2>&3"
 result=$(eval $execstr)
 
 if [[ $? != 0 ]] ; then

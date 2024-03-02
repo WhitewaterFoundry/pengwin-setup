@@ -11,7 +11,7 @@ if (confirm --title "fcitx" --yesno "Would you like to install fcitx for improve
   echo "sudo apt-get install fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11 -y"
   install_packages fcitx fonts-noto-cjk fonts-noto-color-emoji dbus-x11
   FCCHOICE=$(
-    menu --title "fcitx engines" --checklist --separate-output "Select fcitx engine:" 18 65 11 \
+    menu --title "fcitx engines" --separate-output --checklist "Select fcitx engine:" 18 65 11 \
       "sunpinyin" "Chinese sunpinyin" off \
       "libpinyin" "Chinese libpinyin" off \
       "rime" "Chinese rime" off \
