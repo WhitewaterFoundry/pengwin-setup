@@ -6,7 +6,7 @@ export VERSION="1.2a"
 
 # shellcheck source=pengwin-setup.d/common.sh
 source "${SetupDir}"/common.sh "$@"
-
+echo "SetupDir ${SetupDir}"
 declare CANCELLED
 declare SKIP_UPDATES
 declare JUST_UPDATE
