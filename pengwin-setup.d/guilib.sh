@@ -37,13 +37,13 @@ if ! ( command -v cmd.exe >/dev/null ); then
 fi
 
 # Enabled via systemd
-if [[ -n "\${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ]; then
   return
 fi
 
 dbus_pid="\$(pidof dbus-daemon | cut -d' ' -f1)"
 
-if [[ -z "\${dbus_pid}" ]]; then
+if [ -z "\${dbus_pid}" ]; then
   dbus_env="\$(timeout 2s dbus-launch --auto-syntax)"
   eval "\${dbus_env}"
 
