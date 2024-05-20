@@ -62,6 +62,7 @@ function main() {
   sudo apt-key del "$yarn_key"
   sudo apt-key del "$nodesource_key"
   sudo rm -f /usr/share/keyrings/nodesource.gpg
+  sudo rm -r /etc/apt/keyrings/nodesource.gpg
 }
 
 if show_warning "nodejs" "$@"; then

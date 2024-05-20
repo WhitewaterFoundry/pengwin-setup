@@ -11,35 +11,18 @@ declare SKIP_CONFIMATIONS
 # Arguments:
 #   Major node version to install
 #######################################
+# shellcheck disable=SC2155
 function install_nodejs_nodesource() {
   echo "Installing latest node.js version from NodeSource repository"
 
   local major_vers=${1}
 
-  echo 'Adding the NodeSource signing key to your keyring...'
-
-  local keyring=/usr/share/keyrings/nodesource.gpg
-  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | sudo tee "${keyring}" >/dev/null
-  sudo gpg --no-default-keyring --keyring "$keyring" --list-keys
-  sudo chmod a+r "${keyring}"
-
-  echo "Creating apt sources list file for the NodeSource repo..."
-
-  local distro=bookworm
-
-  echo "deb [signed-by=$keyring] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  echo "#deb-src [signed-by=$keyring] https://deb.nodesource.com/node_$major_vers.x $distro main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-
-  echo "Running 'apt-get update' for you..."
-
-  # shellcheck disable=SC2119
-  update_packages
-
-  local version=$(apt-cache madison nodejs | grep 'nodesource' | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  curl -fsSL "https://deb.nodesource.com/setup_${major_vers}.x" | sudo -E bash - &&\
+  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   install_packages nodejs="${version}"
 }
 
-NODEJS_LATEST_VERSION=21
+NODEJS_LATEST_VERSION=22
 NODEJS_LTS_VERSION=20
 
 echo "Offering user n / nvm version manager choice"
