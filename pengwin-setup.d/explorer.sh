@@ -86,7 +86,7 @@ Windows Registry Editor Version 5.00
 [-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\\${plain_name}]
 [-HKEY_CURRENT_USER\Software\Classes\Directory\shell\\${plain_name}]
 EOF
-  cp Uninstall.reg $(wslpath "$(cmd-exe /c 'echo %TEMP%' | tr -d '\r')")/Uninstall.reg
+  cp Uninstall.reg "$(wslpath "$(cmd-exe /c 'echo %TEMP%' | tr -d '\r')")"/Uninstall.reg
   cmd-exe /C "Reg import %TEMP%\Uninstall.reg"
 
   cleantmp
