@@ -14,7 +14,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "MOTD" --radiolist --separate-output "Message Of The Day Settings\n[SPACE to select, ENTER to confirm]:" 12 78 3 \
+    menu --title "MOTD" --radiolist "Message Of The Day Settings\n[SPACE to select, ENTER to confirm]:" 12 78 3 \
       "MOTD_ONCE_PER_DAY" 'Only shows the message once per day (default)  ' off \
       "MOTD_ALWAYS" 'Shows the message in every login ' off \
       "MOTD_NEVER" 'Never shows the message ' off

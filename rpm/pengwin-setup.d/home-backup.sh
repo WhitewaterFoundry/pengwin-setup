@@ -64,7 +64,7 @@ function main {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Backup Menu" --radiolist --separate-output "Home folder Backup / Restore options\n[SPACE to select, ENTER to confirm]:" 10 55 2 \
+    menu --title "Backup Menu" --radiolist "Home folder Backup / Restore options\n[SPACE to select, ENTER to confirm]:" 10 55 2 \
         "BACKUP" 'Backups the ${HOME} directory   ' off \
         "RESTORE" 'Restore the ${HOME} directory' off \
 

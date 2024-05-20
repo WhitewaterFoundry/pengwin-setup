@@ -10,7 +10,7 @@ source commons.sh
 #######################################
 function test_py_poetry() {
 
-  run_pengwinsetup autoinstall PROGRAMMING PYTHONPI POETRY
+  run_pengwinsetup install PROGRAMMING PYTHONPI POETRY
 
   local i
   for i in 'python3' 'make'; do

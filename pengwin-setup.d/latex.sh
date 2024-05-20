@@ -9,7 +9,7 @@ declare SetupDir
 
 latex_choice=$(
 
-menu --title "LaTeX" --radiolist --separate-output "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 12 74 4 \
+menu --title "LaTeX" --radiolist "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 12 74 4 \
     "FULL" "Install all TexLive packages" on \
     "BASE" "Install essential TexLive packages " off \
     "RECOMMENDED" "Install recommended TexLive packages" off \

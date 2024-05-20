@@ -28,18 +28,36 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
     sudo sed -i 's$</busconfig>$<allow_anonymous/></busconfig>$' /usr/share/dbus-1/session.conf
   fi
 
-  eval "$(timeout 2s dbus-launch --auto-syntax)"
-
   sudo tee "/etc/profile.d/dbus.sh" <<EOF
 #!/bin/sh
 
 # Check if we have Windows Path
-if ( command -v cmd.exe >/dev/null ); then
-
-  eval "\$(timeout 2s dbus-launch --auto-syntax)"
+if ! ( command -v cmd.exe >/dev/null ); then
+  return
 fi
 
+# Enabled via systemd
+if [[ -n "\${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+  return
+fi
+
+dbus_pid="\$(pidof dbus-daemon | cut -d' ' -f1)"
+
+if [[ -z "\${dbus_pid}" ]]; then
+  dbus_env="\$(timeout 2s dbus-launch --auto-syntax)"
+  eval "\${dbus_env}"
+
+  echo "\${dbus_env}">"/tmp/dbus_env_\${DBUS_SESSION_BUS_PID}"
+
+  unset dbus_env
+else # Running from a previous session
+  eval "\$(cat "/tmp/dbus_env_\${dbus_pid}")"
+fi
+unset dbus_pid
+
 EOF
+
+  source /etc/profile.d/dbus.sh
 
   sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
 
