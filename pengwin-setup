@@ -44,6 +44,11 @@ function check_upgrades() {
   # shellcheck disable=SC2119
   update_packages
 
+  if [[ -z ${WSL2} ]]; then
+    # If WSL1 fix systemd upgrades
+    sudo apt-get install -q -y opensysusers
+  fi
+
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
   if [[ -f "/etc/apt/.dist-upgrade" ]]; then
     echo "Distribution upgrade flag noticed! Alerting user"
@@ -72,7 +77,6 @@ function check_upgrades() {
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
     sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 >/dev/null 2>&1
-
   else
     if [[ $( dpkg-query -s "iproute2" 2>/dev/null | grep -c "Version: 5\.8.*" ) != 0 ]]; then
       sudo apt-mark unhold iproute2
