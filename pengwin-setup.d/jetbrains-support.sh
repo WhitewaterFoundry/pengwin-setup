@@ -32,7 +32,7 @@ function install_jetbrains_support() {
     done
   fi
 
-  if [[ "${1}"=="--no-toolbox" ]]; then
+  if [[ "${1}" == "--no-toolbox" ]]; then
     return
   fi
 
@@ -47,7 +47,7 @@ function install_jetbrains_support() {
 }
 
 if (confirm --title "JetBrains support" --yesno "Would you like to install support to JetBrains tools?" 8 52); then
-  install_jetbrains_support
+  install_jetbrains_support ""
 else
   echo "Skipping Jetbrains support"
 fi
