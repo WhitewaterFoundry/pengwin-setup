@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup install TOOLS CLOUDCLI KUBERNETES
+  run_pengwinsetup install TOOLS CLOUDCLI KUBERNETES --debug
 
   command -v /usr/local/bin/helm
   assertEquals "helm was not installed" "0" "$?"

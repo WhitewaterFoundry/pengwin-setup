@@ -4,7 +4,7 @@ source commons.sh
 
 function testMain() {
 
-  run_pengwinsetup autoinstall PROGRAMMING C++
+  run_pengwinsetup install PROGRAMMING C++ --debug
 
   for i in 'gcc' 'clang' 'gdb' 'build-essential' 'gdbserver' 'rsync' 'zip' 'pkg-config' 'cmake'; do
     package_installed $i
@@ -21,7 +21,7 @@ function testMain() {
 
 function testUninstall() {
 
-  ../pengwin-setup --noupdate --assume-yes --noninteractive UNINSTALL C++ > /dev/null 2>&1
+  run_pengwinsetup uninstall C++ > /dev/null 2>&1
 
   for i in 'cmake' 'clang'; do
     package_installed "$i"
