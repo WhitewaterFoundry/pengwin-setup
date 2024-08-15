@@ -58,7 +58,7 @@ function main() {
     exit_status=$?
   fi
 
-  if [[ ${exit_status} != 0 ]]; then
+  if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
     local status
     main "$@"
     status=$?

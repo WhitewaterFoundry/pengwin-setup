@@ -4,7 +4,7 @@ source commons.sh
 
 function testMain() {
 
-  run_pengwinsetup install PROGRAMMING C++ --debug
+  run_pengwinsetup install PROGRAMMING C++
 
   for i in 'gcc' 'clang' 'gdb' 'build-essential' 'gdbserver' 'rsync' 'zip' 'pkg-config' 'cmake'; do
     package_installed $i

@@ -155,7 +155,7 @@ function install_xfce() {
     install_xrdp
     local exit_status=$?
 
-    if [[ ${exit_status} != 0 ]]; then
+    if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
       return ${exit_status}
     fi
 
