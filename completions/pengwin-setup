@@ -45,7 +45,7 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'HOMEBREW CLOUDCLI' -- "${cur}")
     ;;
   CLOUDCLI)
-    mapfile -t COMPREPLY < <(compgen -W 'TERRAFORM' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'TERRAFORM' 'KUBERNETES' -- "${cur}")
     ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \

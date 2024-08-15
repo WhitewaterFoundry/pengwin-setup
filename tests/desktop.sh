@@ -15,5 +15,4 @@ function disable_test_install_mate() {
   assertTrue "package mate is not installed" "$?"
 }
 
-
 source shunit2

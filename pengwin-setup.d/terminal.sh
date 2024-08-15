@@ -11,16 +11,17 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Terminal Menu" --separate-output --checklist "Select the terminals you want to install\n[SPACE to select, ENTER to confirm]:" 14 60 7 \
-      "WINTERM" "Windows Terminal" off \
-      "WSLTTY" "WSLtty" off \
-      "TILIX" "Tilix${REQUIRES_X}" off \
-      "GTERM" "Gnome Terminal${REQUIRES_X}" off \
-      "XFTERM" "Xfce Terminal${REQUIRES_X}" off \
-      "TERMINATOR" "Terminator${REQUIRES_X}" off \
-      "KONSO" "Konsole${REQUIRES_X}" off \
+    menu --title "Terminal Menu" --menu "Select the terminals you want to install\n[ENTER to confirm]:" 16 60 7 \
+      "WINTERM" "Windows Terminal" \
+      "WSLTTY" "WSLtty" \
+      "TILIX" "Tilix${REQUIRES_X}" \
+      "GTERM" "Gnome Terminal${REQUIRES_X}" \
+      "XFTERM" "Xfce Terminal${REQUIRES_X}" \
+      "TERMINATOR" "Terminator${REQUIRES_X}" \
+      "KONSO" "Konsole${REQUIRES_X}"
 
-  3>&1 1>&2 2>&3)
+    3>&1 1>&2 2>&3
+  )
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1

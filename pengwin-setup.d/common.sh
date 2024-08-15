@@ -83,6 +83,10 @@ function process_arguments() {
         #export DIALOGRC="${SetupDir}/dialogrc"
         shift
         ;;
+      --help)
+        export SHOW_HELP=1
+        shift
+        ;;
       update | upgrade)
         echo "Just update packages"
         export JUST_UPDATE=1
@@ -95,6 +99,7 @@ function process_arguments() {
         export NON_INTERACTIVE=1
         export SKIP_CONFIMATIONS=1
         export SKIP_STARTMENU=1
+        expectMenuOptions=1
         shift
         ;;
       uninstall | remove)
@@ -103,6 +108,7 @@ function process_arguments() {
         export NON_INTERACTIVE=1
         export SKIP_CONFIMATIONS=1
         export SKIP_STARTMENU=1
+        expectMenuOptions=1
         CMD_MENU_OPTIONS+=("UNINSTALL")
         shift
         ;;
@@ -116,7 +122,9 @@ function process_arguments() {
         shift
         ;;
       *)
-        CMD_MENU_OPTIONS+=("$1")
+        if [[ ${expectMenuOptions} ]]; then
+          CMD_MENU_OPTIONS+=("$1")
+        fi
         shift
         ;;
     esac
@@ -366,9 +374,9 @@ function install_packages() {
 function update_packages() {
 
   if [[ ${NON_INTERACTIVE} ]]; then
-    sudo apt-get update -y -q "$@"
+    sudo apt-get update -y -q
   else
-    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y "$@"
+    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
   fi
 }
 

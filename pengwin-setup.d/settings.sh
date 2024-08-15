@@ -11,12 +11,12 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Settings Menu" --separate-output --checklist "Change various settings in Pengwin\n[SPACE to select, ENTER to confirm]:" 12 97 5 \
-      "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " off \
-      "COLORTOOL" "Install ColorTool to set Windows console color schemes" off \
-      "LANGUAGE" "Change default language and keyboard setting in Pengwin" off \
-      "MOTD" "Configures the Message Of The Day behaviour" off \
-      "SHELLS" "Install and configure zsh, csh, fish or readline improvements" off
+    menu --title "Settings Menu" --menu "Change various settings in Pengwin\n[ENTER to confirm]:" 14 97 5 \
+      "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " \
+      "COLORTOOL" "Install ColorTool to set Windows console color schemes" \
+      "LANGUAGE" "Change default language and keyboard setting in Pengwin" \
+      "MOTD" "Configures the Message Of The Day behaviour" \
+      "SHELLS" "Install and configure zsh, csh, fish or readline improvements"
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3

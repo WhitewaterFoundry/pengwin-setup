@@ -11,12 +11,12 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Tools Menu" --separate-output --checklist "Install applications or servers\n[SPACE to select, ENTER to confirm]:" 12 87 5 \
-      "ANSIBLE" "Install tools to deploy Ansible Playbooks" off \
-      "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " off \
-      "DOCKER" "Install a secure bridge to Docker Desktop" off \
-      "HOMEBREW" "Install the Homebrew package manager" off \
-      "POWERSHELL" "Install PowerShell for Linux" off
+    menu --title "Tools Menu" --menu "Install applications or servers\n[ENTER to confirm]:" 14 87 5 \
+      "ANSIBLE" "Install tools to deploy Ansible Playbooks" \
+      "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " \
+      "DOCKER" "Install a secure bridge to Docker Desktop" \
+      "HOMEBREW" "Install the Homebrew package manager" \
+      "POWERSHELL" "Install PowerShell for Linux"
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
@@ -26,31 +26,44 @@ function main() {
     return 1
   fi
 
+  local exit_status
+
   if [[ ${menu_choice} == *"ANSIBLE"* ]]; then
     echo "ANSIBLE"
     bash "${SetupDir}"/ansible.sh "$@"
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"CLOUDCLI"* ]]; then
     echo "CLOUDCLI"
     bash "${SetupDir}"/cloudcli.sh "$@"
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"DOCKER"* ]]; then
     echo "DOCKER"
     bash "${SetupDir}"/docker.sh "$@"
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"HOMEBREW"* ]]; then
     echo "HOMEBREW"
     bash "${SetupDir}"/brew.sh "$@"
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"POWERSHELL"* ]]; then
     echo "POWERSHELL"
     bash "${SetupDir}"/powershell.sh "$@"
+    exit_status=$?
   fi
 
+  if [[ ${exit_status} != 0 ]]; then
+    local status
+    main "$@"
+    status=$?
+    return $status
+  fi
 }
 
 main "$@"

@@ -11,6 +11,8 @@ function main() {
 
   echo "Cleaning changes from /etc/wsl.conf"
   sudo_clean_file "/etc/wsl.conf" "${wslconf_rgx}"
+
+  enable_should_restart
 }
 
 if show_warning "SystemD support" "$@"; then

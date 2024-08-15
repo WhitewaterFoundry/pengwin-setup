@@ -14,11 +14,11 @@ declare SetupDir
 #######################################
 function enable_rclocal() {
 
-  if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60) ; then
+  if (confirm --title "rc.local" --yesno "Would you like to enable rc.local support for running scripts at Pengwin launch?" 10 60); then
     echo "Enabling rc.local..."
 
     if [[ ! -f /etc/rc.local ]]; then
-      sudo tee "/etc/rc.local" << EOF
+      sudo tee "/etc/rc.local" <<EOF
 #!/bin/sh -e
 #
 # rc.local
@@ -35,7 +35,7 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${cmd}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/rclocal
 
     local profile_rclocal="/etc/profile.d/rclocal.sh"
-    sudo tee "${profile_rclocal}" << EOF
+    sudo tee "${profile_rclocal}" <<EOF
 #!/bin/sh
 
 # Check if we have Windows Path
@@ -67,7 +67,7 @@ EOF
 #######################################
 function enable_ssh() {
 
-  if (confirm --title "SSH Server" --yesno "Would you like to enable SSH Server?" 10 60) ; then
+  if (confirm --title "SSH Server" --yesno "Would you like to enable SSH Server?" 10 60); then
 
     echo "Enabling SSH Server..."
 
@@ -75,7 +75,7 @@ function enable_ssh() {
 
     if [[ -z "${NON_INTERACTIVE}" ]]; then
       port=$(whiptail --title "Enter the desired SSH Port" --inputbox "SSH Port: " 8 50 "2222" 3>&1 1>&2 2>&3)
-      if [[ -z ${port} ]] ; then
+      if [[ -z ${port} ]]; then
         echo "Cancelled"
         return 1
       fi
@@ -104,21 +104,21 @@ function enable_ssh() {
     sudo sed -i '/^Port/ d' ${sshd_file}
     sudo sed -i '/^UsePrivilegeSeparation/ d' ${sshd_file}
     sudo sed -i '/^PasswordAuthentication/ d' ${sshd_file}
-    echo "# configured by Pengwin"      | sudo tee -a ${sshd_file}
-    echo "ListenAddress ${address}"	| sudo tee -a ${sshd_file}
-    echo "Port ${port}"          | sudo tee -a ${sshd_file}
-    echo "UsePrivilegeSeparation no"  | sudo tee -a ${sshd_file}
+    echo "# configured by Pengwin" | sudo tee -a ${sshd_file}
+    echo "ListenAddress ${address}" | sudo tee -a ${sshd_file}
+    echo "Port ${port}" | sudo tee -a ${sshd_file}
+    echo "UsePrivilegeSeparation no" | sudo tee -a ${sshd_file}
     echo "PasswordAuthentication yes" | sudo tee -a ${sshd_file}
 
     sudo service ssh --full-restart
 
     sshd_status=$(service ssh status)
     if [[ $sshd_status = *"is not running"* ]]; then
-      sudo service ssh --full-restart > /dev/null 2>&1
+      sudo service ssh --full-restart >/dev/null 2>&1
     fi
 
     local startSsh="/usr/bin/start-ssh"
-    sudo tee "${startSsh}" << EOF
+    sudo tee "${startSsh}" <<EOF
 #!/bin/bash
 
 sshd_status=\$(service ssh status)
@@ -133,7 +133,7 @@ EOF
     echo "%sudo   ALL=NOPASSWD: ${startSsh}" | sudo EDITOR='tee -a' visudo --quiet --file=/etc/sudoers.d/start-ssh
 
     local profile_startssh="/etc/profile.d/start-ssh.sh"
-    sudo tee "${profile_startssh}" << EOF
+    sudo tee "${profile_startssh}" <<EOF
 #!/bin/sh
 
 # Check if we have Windows Path
@@ -164,7 +164,7 @@ function enable_systemd() {
     return 0
   fi
 
-  if (confirm --title "SystemD" --yesno "Would you like to enable SystemD support for this distro?" 10 60) ; then
+  if (confirm --title "SystemD" --yesno "Would you like to enable SystemD support for this distro?" 10 60); then
     echo "Enabling SystemD..."
 
     local wsl_conf="/etc/wsl.conf"
@@ -205,7 +205,7 @@ function enable_systemd() {
 #######################################
 function main() {
 
-  if [[ "$1" == "--enable-ssh" ]] ; then
+  if [[ "$1" == "--enable-ssh" ]]; then
     enable_ssh
 
     return
@@ -214,47 +214,48 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Services Menu" --separate-output --checklist "Enables various services\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
-      "CASSANDRA" "Install the NoSQL server Cassandra from Apache " off \
-      "KEYCHAIN" "Install Keychain, the OpenSSH key manager" off \
-      "LAMP" "Install LAMP Stack" off \
-      "RCLOCAL" "Enable running scripts at startup from rc.local " off \
-      "SSH" "Enable SSH server" off \
-      "SYSTEMD" "Enable SystemD support" off \
+    menu --title "Services Menu" --menu "Enables various services\n[ENTER to confirm]:" 14 70 6 \
+      "CASSANDRA" "Install the NoSQL server Cassandra from Apache " \
+      "KEYCHAIN" "Install Keychain, the OpenSSH key manager" \
+      "LAMP" "Install LAMP Stack" \
+      "RCLOCAL" "Enable running scripts at startup from rc.local " \
+      "SSH" "Enable SSH server" \
+      "SYSTEMD" "Enable SystemD support"
 
-  # shellcheck disable=SC2188
-  3>&1 1>&2 2>&3)
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
+  )
 
-  if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
   fi
 
-  if [[ ${menu_choice} == *"CASSANDRA"* ]] ; then
+  if [[ ${menu_choice} == *"CASSANDRA"* ]]; then
     echo "CASSANDRA"
     bash "${SetupDir}"/cassandra.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"KEYCHAIN"* ]] ; then
+  if [[ ${menu_choice} == *"KEYCHAIN"* ]]; then
     echo "KEYCHAIN"
     bash "${SetupDir}"/keychain.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"LAMP"* ]] ; then
+  if [[ ${menu_choice} == *"LAMP"* ]]; then
     echo "LAMP"
     bash "${SetupDir}"/lamp.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"RCLOCAL"* ]] ; then
+  if [[ ${menu_choice} == *"RCLOCAL"* ]]; then
 
     enable_rclocal
   fi
 
-  if [[ ${menu_choice} == *"SSH"* ]] ; then
+  if [[ ${menu_choice} == *"SSH"* ]]; then
 
     enable_ssh
   fi
 
-  if [[ ${menu_choice} == *"SYSTEMD"* ]] ; then
+  if [[ ${menu_choice} == *"SYSTEMD"* ]]; then
     echo "SYSTEMD"
     enable_systemd
   fi

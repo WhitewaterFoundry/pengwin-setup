@@ -18,7 +18,7 @@ function test_main() {
   run npm --version
   run node --version
 
-  assertEquals "NVM was not installed" "1" "$(run nvm --version | grep -c '0\.39')"
+  assertEquals "NVM was not installed" "1" "$(run nvm --version | grep -c '0\.40')"
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '10')"
   assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v22')"
 
