@@ -80,7 +80,7 @@ function process_arguments() {
       --ncurses | --dialog)
         echo "Use dialog instead of whiptail"
         export DIALOG_COMMAND="dialog --keep-tite --erase-on-exit --ignore"
-        #export DIALOGRC="${SetupDir}/dialogrc"
+        export DIALOGRC="${SetupDir}/dialogrc"
         shift
         ;;
       --help)

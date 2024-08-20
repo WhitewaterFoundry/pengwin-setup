@@ -33,10 +33,10 @@ use_shadow = ON
 use_colors = ON
 
 # Screen color
-screen_color = (WHITE,BLUE,OFF)
+screen_color = (DEFAULT,DEFAULT,OFF)
 
 # Shadow color
-shadow_color = (BLACK,BLACK,ON)
+shadow_color = (DEFAULT,BLACK,OFF)
 
 # Dialog box color
 dialog_color = (BLACK,WHITE,OFF)
@@ -66,7 +66,7 @@ button_label_active_color = (WHITE,MAGENTA,OFF)
 button_label_inactive_color = (BLACK,WHITE,ON)
 
 # Input box color
-inputbox_color = dialog_color
+inputbox_color = (DEFAULT,BLUE,OFF)
 
 # Input box border color
 inputbox_border_color = dialog_color
@@ -84,31 +84,31 @@ searchbox_border_color = border_color
 position_indicator_color = title_color
 
 # Menu box color
-menubox_color = dialog_color
+menubox_color = (DEFAULT,BLUE,OFF)
 
 # Menu box border color
 menubox_border_color = border_color
 
 # Item color
-item_color = dialog_color
+item_color = (DEFAULT,BLUE,OFF)
 
 # Selected item color
 item_selected_color = button_active_color
 
 # Tag color
-tag_color = title_color
+tag_color = item_color
 
 # Selected tag color
 tag_selected_color = button_label_active_color
 
 # Tag key color
-tag_key_color = button_key_inactive_color
+tag_key_color = (WHITE,BLUE,ON)
 
 # Selected tag key color
 tag_key_selected_color = (WHITE,MAGENTA,ON)
 
 # Check box color
-check_color = dialog_color
+check_color = item_color
 
 # Selected check box color
 check_selected_color = button_active_color

@@ -53,7 +53,7 @@ function main() {
       [ -d "${wHome}/Pengwin/.wsltty" ] || mkdir -p "${wHome}/Pengwin/.wsltty"
 
       wsltty_url="$(curl -s https://api.github.com/repos/mintty/wsltty/releases | grep 'browser_' | head -1 | cut -d\" -f4)"
-      wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | whiptail --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
+      wget --progress=dot "$wsltty_url" -O "wsltty.7z" 2>&1 | sed -un 's/.* \([0-9]\+\)% .*/\1/p' | ${DIALOG_COMMAND} --title "WSLtty" --gauge "Downloading WSLtty..." 7 50 0
 
       7z x wsltty.7z -o"${wHome}"/Pengwin/.wsltty/
       echo "Installing WSLtty.... Please wait patiently"

@@ -74,7 +74,7 @@ function enable_ssh() {
     local port
 
     if [[ -z "${NON_INTERACTIVE}" ]]; then
-      port=$(whiptail --title "Enter the desired SSH Port" --inputbox "SSH Port: " 8 50 "2222" 3>&1 1>&2 2>&3)
+      port=$(${DIALOG_COMMAND} --title "Enter the desired SSH Port" --inputbox "SSH Port: " 8 50 "2222" 3>&1 1>&2 2>&3)
       if [[ -z ${port} ]]; then
         echo "Cancelled"
         return 1
@@ -86,7 +86,7 @@ function enable_ssh() {
     local address
 
     if [[ -z "${NON_INTERACTIVE}" ]]; then
-      address=$(whiptail --title "Enter the desired Listen Address" --inputbox "Listen Address: " 8 50 "127.0.0.1" 3>&1 1>&2 2>&3)
+      address=$(${DIALOG_COMMAND} --title "Enter the desired Listen Address" --inputbox "Listen Address: " 8 50 "127.0.0.1" 3>&1 1>&2 2>&3)
       if [[ -z ${address} ]]; then
         echo "Cancelled"
         return 1

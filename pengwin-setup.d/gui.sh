@@ -78,12 +78,13 @@ function configure_gui() {
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --menu "Install an X server or start menu shortcuts\n[SPACE to select, ENTER to confirm]:" $((12 + more)) 99 $((3 + more)) \
+    menu --title "GUI Menu" --menu "Install an X server or start menu shortcuts\n[ENTER to confirm]:" $((12 + more)) 99 $((3 + more)) \
       "${display_ip_from_dns_option[@]}" \
       "STARTMENU" "Generates 'Windows Start Menu' shortcuts for GUI applications" \
       "VCXSRV" "Install the VcXsrv open source X-server" \
       "X410" "Configure X410 to start on Pengwin launch or view a link to install it   "
 
+    # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
   )
 
@@ -155,7 +156,7 @@ function main() {
       "HIDPI" "Configure Qt and GTK for HiDPI displays" \
       "NLI" "Install fcitx or iBus for improved non-Latin input support" \
       "SYNAPTIC" "Install the Synaptic package manager" \
-      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
+      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" \
       "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   "
 
     3>&1 1>&2 2>&3

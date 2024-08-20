@@ -67,7 +67,7 @@ function install_xrdp() {
   local port
 
   if [[ -z "${NON_INTERACTIVE}" ]]; then
-    port=$(whiptail --title "Enter the desired RDP Port" --inputbox "RDP Port: " 8 50 "3395" 3>&1 1>&2 2>&3)
+    port=$(${DIALOG_COMMAND} --title "Enter the desired RDP Port" --inputbox "RDP Port: " 8 50 "3395" 3>&1 1>&2 2>&3)
     if [[ -z ${port} ]]; then
       echo "Cancelled"
       return 1
