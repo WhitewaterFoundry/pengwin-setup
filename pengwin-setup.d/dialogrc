@@ -27,7 +27,7 @@ visit_items = OFF
 use_scrollbar = OFF
 
 # Shadow dialog boxes? This also turns on color.
-use_shadow = ON
+use_shadow = OFF
 
 # Turn color support ON or OFF
 use_colors = ON
@@ -81,7 +81,7 @@ searchbox_title_color = title_color
 searchbox_border_color = border_color
 
 # File position indicator color
-position_indicator_color = title_color
+position_indicator_color = (GREEN,WHITE,OFF)
 
 # Menu box color
 menubox_color = (DEFAULT,BLUE,OFF)
@@ -114,7 +114,7 @@ check_color = item_color
 check_selected_color = button_active_color
 
 # Up arrow color
-uarrow_color = (YELLOW,WHITE,OFF)
+uarrow_color = (GREEN,WHITE,OFF)
 
 # Down arrow color
 darrow_color = uarrow_color
