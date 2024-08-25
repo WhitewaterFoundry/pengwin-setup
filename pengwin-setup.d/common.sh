@@ -77,10 +77,23 @@ function process_arguments() {
         export NON_INTERACTIVE=1
         shift
         ;;
+      --whiptail)
+        echo "Use whiptail instead of dialog"
+        export DIALOG_COMMAND='whiptail'
+        shift
+        ;;
       --ncurses | --dialog)
-        echo "Use dialog instead of whiptail"
-        export DIALOG_COMMAND="dialog --keep-tite --erase-on-exit --ignore"
-        export DIALOGRC="${SetupDir}/dialogrc"
+        echo "Force use dialog"
+        export DIALOG_COMMAND='dialog'
+        shift
+        ;;
+      --gdialog)
+        echo "Use gdialog instead of dialog"
+        export DIALOG_COMMAND='gdialog'
+        shift
+        ;;
+      --alt)
+        export DIALOGRC="${SetupDir}/dialogrc_alt"
         shift
         ;;
       --help)
@@ -225,7 +238,7 @@ function confirm() {
 
   if [[ ! ${SKIP_CONFIMATIONS} ]]; then
 
-    ${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    ${DIALOG_COMMAND}  "$@"
 
     return $?
   else
@@ -247,7 +260,7 @@ function message() {
 
   if [[ ! ${NON_INTERACTIVE} ]]; then
 
-    ${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@"
+    ${DIALOG_COMMAND}  "$@"
 
     return $?
   else
@@ -269,7 +282,7 @@ function menu() {
   local menu_choice #Split to preserve exit code
 
   if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then
-    menu_choice=$(${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" "$@" 3>&1 1>&2 2>&3)
+    menu_choice=$(${DIALOG_COMMAND}  "$@" 3>&1 1>&2 2>&3)
   else
     menu_choice="${CMD_MENU_OPTIONS[*]}"
   fi
@@ -283,7 +296,7 @@ function menu() {
 
   if [[ -z ${menu_choice} ]]; then
 
-    if (${DIALOG_COMMAND} --backtitle "${PENGWIN_SETUP_TITLE}" --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
+    if (${DIALOG_COMMAND}  --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
       menu "$@"
 
       return
@@ -311,13 +324,17 @@ function menu() {
 #######################################
 function setup_env() {
 
+  export DIALOGOPTS="--keep-tite --erase-on-exit --ignore --backtitle \"${PENGWIN_SETUP_TITLE}\""
+  export DIALOGRC="${SetupDir}/dialogrc"
+
+  export DIALOG_COMMAND="whiptail"
+
   if (! command -v cmd.exe >/dev/null); then
-    whiptail --backtitle "${PENGWIN_SETUP_TITLE}" --title "An environment problem was found" --msgbox "The Windows PATH is not available, and pengwin-setup requires it to run. Please check that: \n\n   pengwin-setup is not running with sudo.\n   pengwin-setup wasn't run with the root user.\n   appendWindowsPath is true in /etc/wsl.conf file or is not defined. \n\n\nIf you don't want to have Windows PATH in Pengwin, enable it temporally to run pengwin-setup" 15 100
+    ${DIALOG_COMMAND} --title "An environment problem was found" --msgbox "The Windows PATH is not available, and pengwin-setup requires it to run. Please check that: \n\n   pengwin-setup is not running with sudo.\n   pengwin-setup wasn't run with the root user.\n   appendWindowsPath is true in /etc/wsl.conf file or is not defined. \n\n\nIf you don't want to have Windows PATH in Pengwin, enable it temporally to run pengwin-setup" 15 100
 
     exit 0
   fi
 
-  export DIALOG_COMMAND="whiptail"
 
   SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
   export SetupDir

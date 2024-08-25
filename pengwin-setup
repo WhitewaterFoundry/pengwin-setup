@@ -146,7 +146,7 @@ function install_menu() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "pengwin-setup" --menu "\nHand-curated add-ons [ENTER to confirm]:" 17 90 8 \
+    menu --title "pengwin-setup" --menu "\nHand-curated add-ons [ENTER to confirm]:" 0 0 0  \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}"  \
       "GUI" "Install an X server or various other GUI applications"  \
       "MAINTENANCE" "Various maintenance tasks like home backup"  \

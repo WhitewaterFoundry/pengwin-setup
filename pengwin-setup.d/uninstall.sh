@@ -12,7 +12,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Uninstall Menu" --menu "Uninstall applications and packages installed by pengwin-setup\n[ENTER to confirm]:" 22 95 12 \
+    menu --title "Uninstall Menu" --menu "Uninstall applications and packages installed by pengwin-setup\n[ENTER to confirm]:" 0 0 0 \
       "ANSIBLE" "Remove Ansible Playbook deployment tools" \
       "AWS" "Remove AWS CLI tools" \
       "AZURE" "Remove Azure CLI tools" \
