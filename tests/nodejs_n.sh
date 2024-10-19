@@ -19,9 +19,9 @@ function test_main() {
   run node --version
   run n list
 
-  assertEquals "N was not installed" "1" "$(run n --version | grep -c 'v9')"
+  assertEquals "N was not installed" "1" "$(run n --version | grep -c 'v10')"
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '10')"
-  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v22')"
+  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v23')"
   assertEquals "nodejs lts was not installed" "1" "$(run n list | grep -c 'node/20')"
 
   run command -v yarn >/dev/null
@@ -38,9 +38,9 @@ function test_uninstall() {
 
   assertFalse "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
 
-  assertEquals "N was not uninstalled" "0" "$(run n --version | grep -c 'v9')"
+  assertEquals "N was not uninstalled" "0" "$(run n --version | grep -c 'v10')"
   assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '10')"
-  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v22')"
+  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v23')"
   assertEquals "nodejs lts was not uninstalled" "0" "$(run n list | grep -c 'node/20')"
 
   run command -v yarn 2>/dev/null
