@@ -289,7 +289,7 @@ function menu() {
 
   local exit_status=$?
 
-  if [[ ${exit_status} != 0 ]]; then
+  if [[ ${exit_status} == 1 ]]; then
     echo "${CANCELLED}"
     return
   fi

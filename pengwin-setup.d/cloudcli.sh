@@ -12,7 +12,7 @@ function install_terraform() {
   if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40); then
     echo "Installing Terraform..."
 
-    local terraform_version="1.9.5"
+    local terraform_version="1.9.8"
 
     sudo apt-get install -yq bash-completion unzip
 
