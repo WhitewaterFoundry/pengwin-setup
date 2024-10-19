@@ -86,8 +86,12 @@ jobs:
             cp -r tests /usr/local/bin/ && chmod -R +x /usr/local/bin/tests
             cp pengwin-setup /usr/local/bin/ && chmod -R +x /usr/local/bin/pengwin-setup
             cp -r pengwin-setup.d /usr/local/
-            apt-get -y -q install shunit2 shellcheck
-            cd /usr/local/bin/tests && ./run_tests.sh
+            
+            cd /usr/local/bin/tests
+            source ./install_shunit2.sh
+            ./run_tests.sh
+      - store_test_results:
+          path: /usr/local/bin/tests/results
   deploymasterdeb:
     docker:
       - image: cimg/ruby:2.7

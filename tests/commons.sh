@@ -1,6 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC2155
 export TEST_USER=test_user
+mkdir -p results
+export TEST_RESULTS_PATH=results
 
 #######################################
 # description
@@ -15,7 +18,7 @@ export TEST_USER=test_user
 #  None
 #######################################
 function oneTimeSetUp() {
-  # shellcheck disable=SC2155
+
   export PATH="$(pwd)/stubs:${PATH}"
   export HOME="/home/${TEST_USER}"
   export TERM="xterm-256color"
@@ -71,7 +74,6 @@ function oneTimeTearDown() {
 #######################################
 function package_installed() {
 
-  # shellcheck disable=SC2155
   local result=$(apt -qq list "$1" 2>/dev/null | grep -c "\[install\|\[upgradable") # so it matches english "install" and also german "installiert"
 
   if [[ $result == 0 ]]; then
@@ -87,8 +89,11 @@ function package_installed() {
 #  None
 #######################################
 function run_test() {
+  local script_name="${1}"
+  local result_file="${TEST_RESULTS_PATH}/$(basename "${script_name%.*}".xml)"
+
   echo "Start: $* *****************************************************************"
-  time "$@"
+  time "$@" -- "--output-junit-xml=${result_file}"
   echo "End: $* *****************************************************************"
 }
 
