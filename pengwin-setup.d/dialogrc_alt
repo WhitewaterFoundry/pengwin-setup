@@ -84,28 +84,28 @@ searchbox_border_color = border_color
 position_indicator_color = (GREEN,WHITE,OFF)
 
 # Menu box color
-menubox_color = (DEFAULT,BLUE,OFF)
+menubox_color = dialog_color
 
 # Menu box border color
 menubox_border_color = border_color
 
 # Item color
-item_color = (WHITE,BLUE,OFF)
+item_color = dialog_color
 
 # Selected item color
 item_selected_color = button_active_color
 
 # Tag color
-tag_color = item_color
+tag_color = (BLUE,WHITE,OFF)
 
 # Selected tag color
-tag_selected_color = button_label_active_color
+tag_selected_color = tag_color
 
 # Tag key color
-tag_key_color = (WHITE,BLUE,ON)
+tag_key_color = (BLUE,WHITE,ON)
 
 # Selected tag key color
-tag_key_selected_color = (WHITE,MAGENTA,ON)
+tag_key_selected_color = tag_key_color
 
 # Check box color
 check_color = item_color

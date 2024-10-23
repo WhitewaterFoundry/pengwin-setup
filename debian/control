@@ -12,7 +12,7 @@ Package: pengwin-setup
 Architecture: all
 Depends: ${misc:Depends},
   git, wslu, pengwin-base (>= 1.0-887),
-  pulseaudio-utils, x11-utils, imagemagick, dialog
+  pulseaudio-utils, x11-utils, imagemagick, dialog, command-not-found
 Recommends: unzip,
   git,
   bash-completion

@@ -27,7 +27,7 @@ if [[ $? != 0 ]] ; then
 fi
 
 if [[ "$result" == "" ]] ; then
-	if whiptail --title "KEYCHAIN" --yesno "No SSH keys selected, would you like to go back and try again?" 10 85 ; then
+	if confirm --title "KEYCHAIN" --yesno "No SSH keys selected, would you like to go back and try again?" 10 85 ; then
 		echo "Repeat SSH key prompt"
 		sshkey_select "$@"
 	fi
@@ -46,7 +46,7 @@ fi
 
 }
 
-if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and set it to load an SSH key of your choice on terminal launch?" 8 85) then
+if (confirm --title "KEYCHAIN" --yesno "Would you like to install Keychain and set it to load an SSH key of your choice on terminal launch?" 8 85) then
     echo "Installing Keychain"
     sudo apt-get install -q -y keychain
 
@@ -56,7 +56,7 @@ if (whiptail --title "KEYCHAIN" --yesno "Would you like to install Keychain and 
         echo "Offering user SSH selection"
 	sshkey_select "$key_list"
     else
-        whiptail --title "KEYCHAIN" --msgbox "No user SSH keys found. If you create key(s) and would like to cache their password on terminal launch, re-run the Keychain installer under pengwin-setup" 10 85
+        confirm --title "KEYCHAIN" --msgbox "No user SSH keys found. If you create key(s) and would like to cache their password on terminal launch, re-run the Keychain installer under pengwin-setup" 10 85
     fi
 else
 	echo "Skipping Keychain"

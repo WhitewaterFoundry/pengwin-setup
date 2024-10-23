@@ -11,7 +11,6 @@ function main {
 
     echo "Installing C++ support"
 
-
     if ! (service ssh status) ; then
       bash "${SetupDir}"/services.sh --enable-ssh --yes "$@"
     fi
@@ -39,19 +38,7 @@ function main {
     sudo apt-get -y -q autoremove
     sudo apt-get -y -q clean
 
-    #Fix bug with Pengwin name, Kept for compatibility reasons
-    local success=0
-    cd "${wHome}" || success=1
-    if [[ ${success} ]] ; then
-      local reg_exp='\(<microsoft-id>\)Pengwin\(</microsoft-id>\)'
-      for l in .CLion*/config/options/wsl.distributions.xml; do
-        if (grep -q ${reg_exp} <"${l}") ; then
-          sed -i "s#${reg_exp}#\1WLinux\2#" "${l}"
-        fi
-      done
-    fi
-
-    bash "${SetupDir}"/jetbrains-support.sh --yes "$@"
+    bash "${SetupDir}"/jetbrains-support.sh --no-toolbox --yes "$@"
 
     cleantmp
   else

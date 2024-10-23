@@ -68,23 +68,25 @@ function configure_gui() {
   if [[ -z ${WSL2} ]]; then #WSL1
     local -a display_ip_from_dns_option
   elif [[ -f "${display_ip_from_dns_flag}" ]]; then
-    local -a display_ip_from_dns_option=("DISPLAY" "Get the IP for DISPLAY from the Host (best for VcXSrv)" off)
-    more=$((more+1))
+    local -a display_ip_from_dns_option=("DISPLAY" "Get the IP for DISPLAY from the Host (best for VcXSrv)")
+    more=$((more + 1))
   else
-    local -a display_ip_from_dns_option=("DISPLAY" "Get the IP for DISPLAY from the resolv.conf (best for X410)" off)
-    more=$((more+1))
+    local -a display_ip_from_dns_option=("DISPLAY" "Get the IP for DISPLAY from the resolv.conf (best for X410)")
+    more=$((more + 1))
   fi
 
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --separate-output --checklist "Install an X server or start menu shortcuts\n[SPACE to select, ENTER to confirm]:" $((10+more)) 99 $((3+more)) \
+    menu --title "GUI Menu" --menu "Install an X server or start menu shortcuts\n[ENTER to confirm]:" $((12 + more)) 99 $((3 + more)) \
       "${display_ip_from_dns_option[@]}" \
-      "STARTMENU" "Generates 'Windows Start Menu' shortcuts for GUI applications" off \
-      "VCXSRV" "Install the VcXsrv open source X-server" off \
-      "X410" "Configure X410 to start on Pengwin launch or view a link to install it   " off \
+      "STARTMENU" "Generates 'Windows Start Menu' shortcuts for GUI applications" \
+      "VCXSRV" "Install the VcXsrv open source X-server" \
+      "X410" "Configure X410 to start on Pengwin launch or view a link to install it   "
 
-  3>&1 1>&2 2>&3)
+    # shellcheck disable=SC2188
+    3>&1 1>&2 2>&3
+  )
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     echo "skip CONFIGURE"
@@ -127,37 +129,38 @@ function main() {
 
   local -i more=0
   if [[ "${WSL2}" == "${WSLG}" ]]; then
-    local -a disable_wslg=("WSLG" "Force disable WSLg just for Pengwin" off)
-    more=$((more+1))
+    local -a disable_wslg=("WSLG" "Force disable WSLg just for Pengwin")
+    more=$((more + 1))
 
     local -a show_configure
   else
     if [[ "${wslg_disabled}" == true ]]; then
-      local -a disable_wslg=("WSLG" "Enable WSLg just for Pengwin" off)
-      more=$((more+1))
+      local -a disable_wslg=("WSLG" "Enable WSLg just for Pengwin")
+      more=$((more + 1))
     else
       local -a disable_wslg
     fi
 
-    local show_configure=("CONFIGURE" "Configure GUI (Check this first)" off)
-    more=$((more+1))
+    local show_configure=("CONFIGURE" "Configure GUI (Check this first)")
+    more=$((more + 1))
   fi
 
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "GUI Menu" --separate-output --checklist "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((14+more)) 99 $((7+more)) \
+    menu --title "GUI Menu" --menu "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((16 + more)) 99 $((7 + more)) \
       "${disable_wslg[@]}" \
       "${show_configure[@]}" \
-      "DESKTOP" "Install Desktop environments" off \
-      "GUILIB" "Install a base set of libraries for GUI applications" off \
-      "HIDPI" "Configure Qt and GTK for HiDPI displays" off \
-      "NLI" "Install fcitx or iBus for improved non-Latin input support" off \
-      "SYNAPTIC" "Install the Synaptic package manager" off \
-      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" off \
-      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " off \
+      "DESKTOP" "Install Desktop environments" \
+      "GUILIB" "Install a base set of libraries for GUI applications" \
+      "HIDPI" "Configure Qt and GTK for HiDPI displays" \
+      "NLI" "Install fcitx or iBus for improved non-Latin input support" \
+      "SYNAPTIC" "Install the Synaptic package manager" \
+      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" \
+      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   "
 
-  3>&1 1>&2 2>&3)
+    3>&1 1>&2 2>&3
+  )
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
@@ -199,9 +202,10 @@ function main() {
 
       menu --title "Non-Latin Input" --radiolist "Select your choice of input [SPACE to select, ENTER to confirm]:" 9 70 2 \
         "FCITX" "Install fcitx for improved non-Latin input support" off \
-        "IBUS" "Install iBus for improved non-Latin input support" off \
+        "IBUS" "Install iBus for improved non-Latin input support" off
 
-      3>&1 1>&2 2>&3)
+      3>&1 1>&2 2>&3
+    )
 
     if [[ ${nli_choice} == *"FCITX"* ]]; then
       echo "FCITX"

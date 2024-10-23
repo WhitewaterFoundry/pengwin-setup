@@ -27,6 +27,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./terraform.sh
   run_test ./lamp.sh "10.6"
   run_test ./motd_settings.sh
+  run_test ./kubernetes.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
@@ -59,6 +60,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #7
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #8
   run_test ./java.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
+  run_test ./kubernetes.sh
   run_test ./go.sh
   run_test ./fish.sh
 fi

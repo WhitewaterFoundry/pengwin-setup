@@ -12,7 +12,7 @@ function install_terraform() {
   if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40); then
     echo "Installing Terraform..."
 
-    local terraform_version="1.2.9"
+    local terraform_version="1.9.8"
 
     sudo apt-get install -yq bash-completion unzip
 
@@ -24,7 +24,6 @@ function install_terraform() {
 
     echo "Installing bash-completion"
     sudo mkdir -p /etc/bash_completion.d
-
 
     terraform -install-autocomplete
     cleantmp
@@ -144,10 +143,16 @@ function install_kubectl() {
   helm completion fish >~/.config/fish/completions/helm.fish
 
   echo "Installing kubectl"
-  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-  echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-  sudo apt-get -y -q update
-  sudo apt-get -y -q install kubectl
+  install_packages apt-transport-https ca-certificates curl gnupg
+
+  sudo rm -f /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+  echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+  sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
+  update_packages
+  install_packages kubectl
 
   kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl
   kubectl completion fish >~/.config/fish/completions/kubectl.fish
@@ -203,7 +208,6 @@ function install_kubernetes() {
 
     # Install helm plugins: helm-github, helm-tiller, helm-restore
 
-    helm init --client-only
     helm plugin install https://github.com/sagansystems/helm-github.git
     helm plugin install https://github.com/rimusz/helm-tiller
     helm plugin install https://github.com/maorfr/helm-restore
@@ -229,17 +233,15 @@ function install_kubernetes() {
       return
     fi
 
-    if (! docker version 2>/dev/null); then
-      bash "${SetupDir}/docker.sh" "$@"
-    fi
-
     local kube_ctl="${wHome}/.kube/config"
 
-    while [[ ! -f ${kube_ctl} ]]; do
-      if ! (confirm --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker or Rancher Desktop. Would you like to try again?" 9 75); then
-        return
-      fi
-    done
+    if [[ ! ${SKIP_CONFIMATIONS} ]]; then
+      while [[ ! -f ${kube_ctl} ]]; do
+        if ! (confirm --title "KUBERNETES" --yesno "Please enable Kubernetes in Docker or Rancher Desktop. Would you like to try again?" 9 75); then
+          return
+        fi
+      done
+    fi
 
     mkdir -p "${HOME}"/.kube
     ln -sf "${kube_ctl}" "${HOME}"/.kube/config
@@ -248,10 +250,9 @@ function install_kubernetes() {
     kubens kube-system
     kubectl get pods
 
-
   else
     echo "Skipping Kubernetes tooling"
-
+    return 1
   fi
 
 }
@@ -283,65 +284,68 @@ function install_openstack() {
 function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
-    menu --title "Cloud Management Menu" --separate-output --checklist "CLI tools for cloud management\n[SPACE to select, ENTER to confirm]:" 16 60 7 \
-      "AWS" "AWS CLI" off \
-      "AZURE" "Azure CLI" off \
-      "DO" "Digital Ocean CLI" off \
-      "IBM" "IBM Cloud CLI" off \
-      "KUBERNETES" "Kubernetes tooling (kubectl, helm)" off \
-      "OPENSTACK" "OpenStack command-line clients      " off \
-      "TERRAFORM" "Terraform                   " off
+    menu --title "Cloud Management Menu" --menu "CLI tools for cloud management\n[ENTER to confirm]:" 16 62 7 \
+      "AWS" "AWS CLI" \
+      "AZURE" "Azure CLI" \
+      "DO" "Digital Ocean CLI" \
+      "IBM" "IBM Cloud CLI" \
+      "KUBERNETES" "Kubernetes tooling (kubectl, helm)" \
+      "OPENSTACK" "OpenStack command-line clients      " \
+      "TERRAFORM" "Terraform                   "
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
   )
 
   echo "Selected:" "${menu_choice}"
-  if [[ ! ${menu_choice} ]]; then
-    return
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
+    return 1
   fi
 
+  local exit_status
+
   if [[ ${menu_choice} == *"AZURE"* ]]; then
-
     bash "${SetupDir}/azurecli.sh" "$@"
-
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"AWS"* ]]; then
-
     install_awscli "$@"
-
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"DO"* ]]; then
-
     install_doctl "$@"
-
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"IBM"* ]]; then
-
     install_ibmcli "$@"
-
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"KUBERNETES"* ]]; then
-
     install_kubernetes "$@"
-
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"OPENSTACK"* ]]; then
-
     install_openstack "$@"
-
+    exit_status=$?
   fi
 
   if [[ ${menu_choice} == *"TERRAFORM"* ]]; then
-
     install_terraform "$@"
-
+    exit_status=$?
   fi
+
+  if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
+    local status
+    main "$@"
+    status=$?
+    return $status
+  fi
+
 }
 
 main "$@"

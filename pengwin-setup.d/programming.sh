@@ -10,25 +10,25 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Programming Menu" --separate-output --checklist "Install various programming languages support\n[SPACE to select, ENTER to confirm]:" 20 95 12 \
-      "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " off \
-      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " off \
-      "GO" "Install the latest Go from Google" off \
-      "JAVA" "Install the SDKMan to manage Java SDKs" off \
-      "JETBRAINS" "Install required support to jetbrains tools" off \
-      "JOOMLA" "Install development support for Joomla" off \
-      "LATEX" "Install TexLive for LaTeX Support" off \
-      "NIM" "Install Nim from official sources using choosenim" off \
-      "NODEJS" "Install Node.js and npm" off \
-      "PYTHONPI" "Install Python 3.9 and download and install latest PyPi" off \
-      "RUBY" "Install Ruby using rbenv and optionally install Rails" off \
-      "RUST" "Install latest version of Rust via rustup installer" off
+    menu --title "Programming Menu" --menu "Install various programming languages support\n[ENTER to confirm]:" 22 95 12 \
+      "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " \
+      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " \
+      "GO" "Install the latest Go from Google" \
+      "JAVA" "Install the SDKMan to manage Java SDKs" \
+      "JETBRAINS" "Install required support to jetbrains tools" \
+      "JOOMLA" "Install development support for Joomla" \
+      "LATEX" "Install TexLive for LaTeX Support" \
+      "NIM" "Install Nim from official sources using choosenim" \
+      "NODEJS" "Install Node.js and npm" \
+      "PYTHONPI" "Install Python 3.9 and download and install latest PyPi" \
+      "RUBY" "Install Ruby using rbenv and optionally install Rails" \
+      "RUST" "Install latest version of Rust via rustup installer"
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
   )
 
-  if [[ ${menu_choice} == "CANCELLED" ]] ; then
+  if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
   fi
 
@@ -106,7 +106,7 @@ function main() {
     exit_status=$?
   fi
 
-  if [[ ${exit_status} != 0 ]]; then
+  if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
     local status
     main "$@"
     status=$?

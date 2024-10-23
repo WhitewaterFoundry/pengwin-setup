@@ -3,18 +3,20 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup autoinstall TOOLS CLOUDCLI TERRAFORM
+  run_pengwinsetup install TOOLS CLOUDCLI TERRAFORM
 
   command -v /usr/bin/terraform
+
   assertEquals "Terraform was not installed" "0" "$?"
-  assertEquals "Terraform was not installed" "1" "$(run /usr/bin/terraform --version | grep -c '1.2')"
+  assertNotEquals "Terraform was not installed" "0" "$(run /usr/bin/terraform --version | grep -c '1.9')"
+  assertNotEquals "Terraform needs to be updated in the installer," "2" "$(run /usr/bin/terraform --version | grep -c '1.9')"
 }
 
 function test_uninstall() {
-  run_pengwinsetup autoinstall UNINSTALL TERRAFORM
+  run_pengwinsetup uninstall TERRAFORM
 
   command -v /usr/bin/terraform
-  assertEquals "Terraform was not uninstalled" "1" "$?"
+  assertNotEquals "Terraform was not uninstalled" "0" "$?"
 }
 
 # shellcheck disable=SC1091

@@ -67,7 +67,7 @@ function install_xrdp() {
   local port
 
   if [[ -z "${NON_INTERACTIVE}" ]]; then
-    port=$(whiptail --title "Enter the desired RDP Port" --inputbox "RDP Port: " 8 50 "3395" 3>&1 1>&2 2>&3)
+    port=$(${DIALOG_COMMAND} --title "Enter the desired RDP Port" --inputbox "RDP Port: " 8 50 "3395" 3>&1 1>&2 2>&3)
     if [[ -z ${port} ]]; then
       echo "Cancelled"
       return 1
@@ -104,7 +104,7 @@ function execute_remote_desktop() {
     local host_ip=127.0.0.1
   else
     # shellcheck disable=SC2155
-    local host_ip=\$(ip -o -f inet addr show | grep -v 127.0.0 | awk '{printf "%s", \$4}' | cut -f1 -d/)
+    local host_ip=\$(ip -o -f inet addr show | grep eth | awk '{printf "%s", \$4}' | cut -f1 -d/)
   fi
 
   local user_name=\$(whoami)
@@ -155,7 +155,7 @@ function install_xfce() {
     install_xrdp
     local exit_status=$?
 
-    if [[ ${exit_status} != 0 ]]; then
+    if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
       return ${exit_status}
     fi
 
@@ -190,8 +190,8 @@ function main() {
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
-    menu --title "Desktop Menu" --separate-output --checklist "Install Desktop environments\n[SPACE to select, ENTER to confirm]:" 10 55 1 \
-      "XFCE" "Install XFCE Desktop environment" on
+    menu --title "Desktop Menu" --menu "Install Desktop environments\n[ENTER to confirm]:" 12 55 1 \
+      "XFCE" "Install XFCE Desktop environment"
 
     3>&1 1>&2 2>&3
   )

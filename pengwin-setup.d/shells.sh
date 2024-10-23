@@ -120,7 +120,7 @@ function fish_install() {
   createtmp
   install_packages fish
 
-  curl -L https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install > install
+  curl -L https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install >install
   fish install --path=~/.local/share/omf --config=~/.config/omf --yes --noninteractive
 
   # Change the default theme for one more friendly with Windows console default font
@@ -167,11 +167,11 @@ function installAndSetShell() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Shell Menu" --separate-output --checklist "Custom shells and improvements (bash included)\n[SPACE to select, ENTER to confirm]:" 12 65 4 \
-      "BASH-RL" "Recommended readline settings for productivity " off \
-      "CSH" "csh" off \
-      "FISH" "fish with oh-my-fish plugin manager" off \
-      "ZSH" "zsh" off
+    menu --title "Shell Menu" --menu "Custom shells and improvements (bash included)\n[ENTER to confirm]:" 14 65 4 \
+      "BASH-RL" "Recommended readline settings for productivity " \
+      "CSH" "csh" \
+      "FISH" "fish with oh-my-fish plugin manager" \
+      "ZSH" "zsh"
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
