@@ -3,11 +3,11 @@
 # shellcheck source=./common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-version="1.20.14.0"
+version="21.1.13"
 
 if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-server? This will be installed to your Windows home directory under .vcxsrv" 8 80); then
   echo "Installing VcXsrv"
-  VcxsrvUrl="https://sourceforge.net/projects/vcxsrv/files/vcxsrv/${version}/vcxsrv-64.${version}.installer.exe/download"
+  VcxsrvUrl="https://github.com/marchaesen/vcxsrv/releases/download/${version}/vcxsrv-64.${version}.0.installer.noadmin.exe"
 
   echo "Installing required install dependencies"
   install_packages wget unzip p7zip-full mesa-utils x11-utils
