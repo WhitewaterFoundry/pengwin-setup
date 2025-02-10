@@ -4,7 +4,7 @@
 source "$(dirname "$0")/common.sh" "$@"
 
 #######################################
-# Install Python 3.12 with pyenv
+# Install Python 3.13 with pyenv
 # Globals:
 #   HOME
 #   PATH
@@ -48,13 +48,13 @@ function install_pyenv() {
       echo 'status --is-interactive; and pyenv init -| source' >>"${HOME}"/.config/fish/config.fish
     fi
 
-    echo "Installing Python 3.12"
+    local python_target="3.13"
+    echo "Installing Python ${python_target}"
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 
-    local python_target="3.12"
     pyenv install -s "$python_target"
     pyenv global "$python_target"
 
@@ -130,7 +130,7 @@ function main() {
   local menu_choice=$(
 
     menu --title "Python" --radiolist "Python install options\n[SPACE to select, ENTER to confirm]:" 12 75 3 \
-      "PYENV" 'Python 3.12 with pyenv   ' off \
+      "PYENV" 'Python 3.13 with pyenv   ' off \
       "PYTHONPIP" 'Python 3.11, IDLE, and the pip package manager ' off \
       "POETRY" 'Python 3.11, IDLE, and the poetry package manager ' off
 
