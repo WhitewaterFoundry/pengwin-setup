@@ -14,7 +14,7 @@ source "$(dirname "$0")/common.sh" "$@"
 #######################################
 function install_pyenv() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.12 with pyenv?" 8 70); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.13 with pyenv?" 8 70); then
     echo "Installing PYENV"
     createtmp
     install_packages make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
@@ -155,7 +155,6 @@ function main() {
   if [[ ${menu_choice} == *"POETRY"* ]]; then
     install_poetry
   fi
-
 }
 
 main
