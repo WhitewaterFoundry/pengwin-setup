@@ -20,7 +20,7 @@ function main() {
       "LATEX" "Install TexLive for LaTeX Support" \
       "NIM" "Install Nim from official sources using choosenim" \
       "NODEJS" "Install Node.js and npm" \
-      "PYTHONPI" "Install Python 3.9 and download and install latest PyPi" \
+      "PYTHONPI" "Install Python 3.13, download and install latest PyPi" \
       "RUBY" "Install Ruby using rbenv and optionally install Rails" \
       "RUST" "Install latest version of Rust via rustup installer"
 

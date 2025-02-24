@@ -42,7 +42,7 @@ EOF
 
   sdk install java
 
-  message --title "SDKMan" --msgbox "$(sdk c java)\n\nTo install other Java versions use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 17 60
+  message --title "SDKMan" --msgbox "\n$(sdk c java)\n\nTo install other Java versions use: \n\nsdk list java\n\nThen: \n\nsdk install java 'version'" 15 50
 
   touch "${HOME}"/.should-restart
 else
