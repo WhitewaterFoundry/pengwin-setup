@@ -85,6 +85,10 @@ function check_upgrades() {
 
   fi
 
+  if [[ $(id | grep -c irc) == 0 ]]; then
+    sudo /usr/sbin/usermod -aG irc "$(whoami)"
+  fi
+
   stop_indeterminate_progress
 }
 
