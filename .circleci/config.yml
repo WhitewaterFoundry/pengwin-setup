@@ -62,6 +62,10 @@ jobs:
           name: Install pengwin-base
           command: |
             # Enable backports
+            echo "Package: *
+Pin: release a=stable-backports
+Pin-Priority: 500" >/etc/apt/preferences
+
             echo "deb https://deb.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list
             
             # Install the pengwin image base packages
