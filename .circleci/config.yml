@@ -61,6 +61,9 @@ jobs:
       - run:
           name: Install pengwin-base
           command: |
+            # Enable backports
+            echo "deb https://deb.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list
+            
             # Install the pengwin image base packages
             apt-get -y -q update
             apt-get -y -q install sudo locales git ssh gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-12-base iputils-ping dos2unix iproute2 psmisc rsync
