@@ -29,7 +29,8 @@ function create_shortcut() {
   bash "${SetupDir}"/generate-shortcut.sh --gui --name "${cmdName}" --icon "${cmdIcon}" --env "env PENGWIN_REMOTE_DESKTOP='${cmdToExec}'" echo
 
   mkdir -p "${dest_path}"
-  mv "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${dest_path}"
+  cp "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk" "${dest_path}"
+  rm "$(wslpath "$(wslvar -l Desktop)")/${cmdName}.lnk"
 }
 
 function package_installed() {

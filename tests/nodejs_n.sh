@@ -19,9 +19,9 @@ function test_main() {
   run node --version
   run n list
 
-  assertEquals "N was not installed" "1" "$(run n --version | grep -c 'v10')"
-  assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '10')"
-  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v23')"
+  assertEquals "N was not installed" "1" "$(run n --version | grep -c '10')"
+  assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '11')"
+  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v24')"
   assertEquals "nodejs lts was not installed" "1" "$(run n list | grep -c 'node/22')"
 
   run command -v yarn >/dev/null
