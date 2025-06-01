@@ -19,8 +19,8 @@ function test_main() {
   run node --version
 
   assertEquals "NVM was not installed" "1" "$(run nvm --version | grep -c '0\.40')"
-  assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '10')"
-  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v23')"
+  assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '11')"
+  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v24')"
 
   run command -v yarn >/dev/null
   assertTrue "package yarn is not installed" "$?"
@@ -36,9 +36,9 @@ function test_uninstall() {
 
   assertFalse "FILE PROFILE-NVM" "[ -f /etc/profile.d/nvm-prefix.sh ]"
 
-  assertEquals "NVM was not uninstalled" "0" "$(run nvm --version | grep -c '0\.39')"
-  assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '10')"
-  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v23')"
+  assertEquals "NVM was not uninstalled" "0" "$(run nvm --version | grep -c '0\.40')"
+  assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '11')"
+  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v24')"
 
   run command -v yarn 2>/dev/null
   assertFalse "package yarn was not uninstalled" "$?"
