@@ -22,7 +22,7 @@ function install_nodejs_nodesource() {
   install_packages nodejs="${version}"
 }
 
-NODEJS_LATEST_VERSION=23
+NODEJS_LATEST_VERSION=24
 NODEJS_LTS_VERSION=22
 
 echo "Offering user n / nvm version manager choice"

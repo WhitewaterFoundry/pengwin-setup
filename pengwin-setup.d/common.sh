@@ -50,6 +50,8 @@ readonly PENGWIN_CONFIG_DIR="${HOME}/.config/pengwin"
 #  None
 #######################################
 function process_arguments() {
+  export DIALOG_COMMAND='dialog' # defaults to ncurses
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --debug | -d | --verbose | -v)

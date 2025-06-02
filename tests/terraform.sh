@@ -8,8 +8,8 @@ function test_main() {
   command -v /usr/bin/terraform
 
   assertEquals "Terraform was not installed" "0" "$?"
-  assertNotEquals "Terraform was not installed" "0" "$(run /usr/bin/terraform --version | grep -c '1.9')"
-  assertNotEquals "Terraform needs to be updated in the installer," "2" "$(run /usr/bin/terraform --version | grep -c '1.9')"
+  assertNotEquals "Terraform was not installed" "0" "$(run /usr/bin/terraform --version | grep -c '1.12')"
+  assertNotEquals "Terraform needs to be updated in the installer," "2" "$(run /usr/bin/terraform --version | grep -c '1.12')"
 }
 
 function test_uninstall() {
