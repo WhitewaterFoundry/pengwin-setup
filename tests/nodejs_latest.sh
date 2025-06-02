@@ -13,7 +13,7 @@ function test_main() {
   run npm --version
   run node --version
 
-  assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '10')"
+  assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '11')"
   assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v24')"
 
   run command -v yarn >/dev/null
@@ -30,7 +30,7 @@ function test_uninstall() {
 
   assertFalse "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
 
-  assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '10')"
+  assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '11')"
   assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v24')"
 
   run command -v yarn 2>/dev/null
