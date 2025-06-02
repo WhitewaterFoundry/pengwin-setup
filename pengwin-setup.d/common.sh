@@ -79,12 +79,12 @@ function process_arguments() {
         export NON_INTERACTIVE=1
         shift
         ;;
-      --whiptail)
+      -w | --whiptail)
         echo "Use whiptail instead of dialog"
         export DIALOG_COMMAND='whiptail'
         shift
         ;;
-      --ncurses | --dialog)
+      -n | --ncurses | --dialog)
         echo "Force use dialog"
         export DIALOG_COMMAND='dialog'
         shift
