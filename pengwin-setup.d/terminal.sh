@@ -135,6 +135,7 @@ function main() {
 #!/bin/bash
 
 export QT_STYLE_OVERRIDE=Breeze
+export QT_QPA_PLATFORM="wayland;xcb"
 
 EOF
 
