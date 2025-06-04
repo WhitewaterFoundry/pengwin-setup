@@ -35,6 +35,7 @@ function main() {
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" \
       "KUBERNETES" "Remove Kubernetes tooling" \
       "LAMP" "Remove LAMP stack" \
+      "MSEDIT" "Remove Microsoft Edit TUI editor" \
       "NIM" "Remove choosenim and any installed Nim components" \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" \
       "OPENSTACK" "Remove OpenStack CLI tools" \
@@ -181,6 +182,11 @@ function main() {
   if [[ ${menu_choice} == *"NIM"* ]]; then
     echo "NIM"
     bash "${UninstallDir}"/nim.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"MSEDIT"* ]]; then
+    echo "MSEDIT"
+    bash "${UninstallDir}"/microsoft-edit.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]]; then
