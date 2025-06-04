@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup autoinstall EDITORS MSEDIT
+  run_pengwinsetup install EDITORS MSEDIT
 
   assertTrue "Microsoft Edit binary missing" "[ -f /usr/local/bin/edit ]"
   command -v /usr/local/bin/edit
@@ -12,7 +12,7 @@ function test_main() {
 }
 
 function test_uninstall() {
-  run_pengwinsetup autoinstall UNINSTALL MSEDIT
+  run_pengwinsetup install UNINSTALL MSEDIT
 
   assertFalse "Microsoft Edit binary still present" "[ -f /usr/local/bin/edit ]"
   assertEquals "update-alternatives entry still present" "0" "$(run update-alternatives --list editor | grep -c '/usr/local/bin/edit')"

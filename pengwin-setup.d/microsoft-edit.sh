@@ -7,9 +7,9 @@ readonly EDIT_GITHUB_API_URL="https://api.github.com/repos/microsoft/edit/releas
 readonly EDIT_INSTALL_DEST="/usr/local/bin/edit"
 
 function msedit_install() {
-  if (confirm --title "MICROSOFT EDIT" --yesno "Would you like to download and install Microsoft Edit CLI?" 8 70); then
+  if (confirm --title "Microsoft Edit" --yesno "Would you like to download and install Microsoft Edit?" 8 70); then
     echo "Installing Microsoft Edit"
-    install_packages curl jq tar zstd
+    install_packages jq zstd
 
     createtmp
 
@@ -52,7 +52,6 @@ function msedit_install() {
     sudo update-alternatives --install /usr/bin/editor editor "${EDIT_INSTALL_DEST}" 30
 
     cleantmp
-    INSTALLED=true
   else
     echo "Skipping Microsoft Edit"
   fi
