@@ -71,6 +71,7 @@ function editor_menu() {
 
     menu --title "Editor Menu" --menu "Custom editors (nano and vi included)\n[ENTER to confirm]:" 14 70 3 \
       "CODE" "Visual Studio Code Linux version${REQUIRES_X}   " \
+      "MSEDIT" "Microsoft Edit CLI" \
       "EMACS" "Emacs" \
       "NEOVIM" "Neovim"
 
@@ -92,6 +93,13 @@ function editor_menu() {
 
   if [[ ${editor_choice} == *"CODE"* ]]; then
     code_install
+  fi
+
+  if [[ ${editor_choice} == *"MSEDIT"* ]]; then
+    bash "${SetupDir}"/microsoft-edit.sh "$@"
+    if [[ -f /usr/local/bin/edit ]]; then
+      INSTALLED=true
+    fi
   fi
 
   if [[ "${INSTALLED}" == true ]]; then
