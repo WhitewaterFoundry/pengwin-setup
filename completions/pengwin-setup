@@ -6,7 +6,7 @@ function _pengwin_setup() { #  By convention, the function name
 
   case "$prev" in
   EDITORS)
-    mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM MSEDIT' -- "${cur}")
     ;;
   GUI)
     mapfile -t COMPREPLY < <(compgen -W 'CONFIGURE DESKTOP NLI GUILIB HIDPI TERMINAL SYNAPTIC WINTHEME WSLG' -- "${cur}")
