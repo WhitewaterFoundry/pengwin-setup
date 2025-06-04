@@ -10,7 +10,7 @@ function main() {
   sudo_rem_file "/usr/local/bin/doctl"
 
   echo "Removing bash completion..."
-  sudo_rem_file "/etc/bash_completion.d/doc.bash_completion"
+  sudo_rem_file "/etc/bash_completion.d/doctl.bash_completion"
 
 }
 

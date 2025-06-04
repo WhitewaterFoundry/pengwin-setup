@@ -120,7 +120,7 @@ function install_doctl() {
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
 
-    doctl completion bash | sudo tee /etc/bash_completion.d/doc.bash_completion >/dev/null
+    doctl completion bash | sudo tee /etc/bash_completion.d/doctl.bash_completion >/dev/null
     doctl version
 
     cleantmp
