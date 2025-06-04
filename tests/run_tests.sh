@@ -55,12 +55,12 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #5
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #6
   #run_test ./lamp.sh "10.9"
   run_test ./brew.sh
-  run_test ./microsoft_edit.sh
   run_test ./nodejs_latest.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #7
   run_test ./pythonpi.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #8
   run_test ./java.sh
+  run_test ./microsoft_edit.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
   run_test ./kubernetes.sh
   run_test ./go.sh
