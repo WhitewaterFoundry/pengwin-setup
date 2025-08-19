@@ -50,6 +50,8 @@ readonly PENGWIN_CONFIG_DIR="${HOME}/.config/pengwin"
 #  None
 #######################################
 function process_arguments() {
+  export DIALOG_COMMAND='dialog' # defaults to ncurses
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --debug | -d | --verbose | -v)
@@ -77,12 +79,12 @@ function process_arguments() {
         export NON_INTERACTIVE=1
         shift
         ;;
-      --whiptail)
+      -w | --whiptail)
         echo "Use whiptail instead of dialog"
         export DIALOG_COMMAND='whiptail'
         shift
         ;;
-      --ncurses | --dialog)
+      -n | --ncurses | --dialog)
         echo "Force use dialog"
         export DIALOG_COMMAND='dialog'
         shift

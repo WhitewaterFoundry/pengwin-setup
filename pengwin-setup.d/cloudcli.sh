@@ -12,7 +12,7 @@ function install_terraform() {
   if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40); then
     echo "Installing Terraform..."
 
-    local terraform_version="1.9.8"
+    local terraform_version="1.12.1"
 
     sudo apt-get install -yq bash-completion unzip
 
@@ -122,7 +122,7 @@ function install_doctl() {
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
 
-    doctl completion bash | sudo tee /etc/bash_completion.d/doc.bash_completion >/dev/null
+    doctl completion bash | sudo tee /etc/bash_completion.d/doctl.bash_completion >/dev/null
     doctl version
 
     cleantmp

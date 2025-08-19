@@ -6,7 +6,7 @@ function _pengwin_setup() { #  By convention, the function name
 
   case "$prev" in
   EDITORS)
-    mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM MSEDIT' -- "${cur}")
     ;;
   GUI)
     mapfile -t COMPREPLY < <(compgen -W 'CONFIGURE DESKTOP NLI GUILIB HIDPI TERMINAL SYNAPTIC WINTHEME WSLG' -- "${cur}")
@@ -49,7 +49,8 @@ function _pengwin_setup() { #  By convention, the function name
     ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
-    --quiet --noninteractive update upgrade autoinstall install uninstall remove startmenu \
+    --quiet --noninteractive -w --whiptail -n --ncurses --dialog --alt --help \
+    upgrade autoinstall install uninstall remove startmenu \
     EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
     ;;
   esac

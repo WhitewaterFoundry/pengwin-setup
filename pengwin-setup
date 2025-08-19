@@ -85,6 +85,10 @@ function check_upgrades() {
 
   fi
 
+  if [[ $(id | grep -c irc) == 0 ]]; then
+    sudo /usr/sbin/usermod -aG irc "$(whoami)"
+  fi
+
   stop_indeterminate_progress
 }
 
@@ -245,7 +249,7 @@ Commands:
   startmenu                      Regenerate the start menu icons. Implies --noupdate, --noninteractive, and --yes.
 
 Actions to be used after install command:
-  EDITORS                        Available editors: CODE, EMACS, NEOVIM.
+  EDITORS                        Available editors: CODE, EMACS, NEOVIM, MSEDIT.
 
   GUI                            GUI-related options: CONFIGURE, DESKTOP, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
 
