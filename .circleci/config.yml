@@ -75,7 +75,7 @@ jobs:
             export os=debian
             export dist=trixie
 
-            curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
+            curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base-dev/script.deb.sh | sudo -E bash
 
             apt-get -y -q install pengwin-base
 
