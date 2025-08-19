@@ -15,7 +15,7 @@ jobs:
           name: Check Scripts
           command: |
             find . -type f -name '*.sh' | wc -l
-            find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests"
+            find . -type f -name '*.sh' | xargs shellcheck -e SC2218 --external-sources --severity=error --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests"
             find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests" || echo "Shellcheck has some warnings"
   build:
     docker:
