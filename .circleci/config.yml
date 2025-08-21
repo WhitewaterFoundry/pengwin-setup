@@ -72,10 +72,16 @@ jobs:
             apt-get -y -q update
             apt-get -y -q install sudo locales git openssh-client gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-12-base iputils-ping dos2unix iproute2 psmisc rsync apt-utils kmod 
 
+            if [ "${CIRCLE_BRANCH}" = "master" ]; then
+              suffix=""
+            else
+              suffix="-dev"
+            fi
+            
             export os=debian
             export dist=trixie
 
-            curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base-dev/script.deb.sh | sudo -E bash
+            curl -s "https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base${suffix}/script.deb.sh" | sudo -E bash
 
             apt-get -y -q install pengwin-base
 
@@ -86,6 +92,9 @@ jobs:
             apt-get -y -q update
             apt-get -y -q autoremove
 
+            if [ "${CIRCLE_BRANCH}" != "master" ]; then
+              switch2dev
+            fi
       - run:
           name: Make automated tests
           command: |
