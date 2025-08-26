@@ -3,10 +3,6 @@
 # shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
-nodesource_key='9FD3 B784 BC1C 6FC3 1A8A  0A1C 1655 A0AB 6857 6280'
-yarn_key='72EC F46A 56B4 AD39 C907  BBB7 1646 B01B 86E5 0310'
-n_line_rgx='^[^#]*\bN_PREFIX='
-
 function main() {
 
   echo "Uninstalling nodejs (including n version manager, npm and yarn package managers)"
@@ -21,9 +17,9 @@ function main() {
     fi
   fi
 
-  if [[ -n "${N_PREFIX}" && -x "${N_PREFIX}"/bin/n-uninstall ]]; then
+  if [[ -n "$N_PREFIX" && -x "${N_PREFIX}/bin/n-uninstall" ]]; then
     echo "Using first the native N uninstaller"
-    "${N_PREFIX}"/bin/n-uninstall -y
+    "${N_PREFIX}/bin/n-uninstall" -y
   fi
 
   rem_dir "$HOME/n"
@@ -45,6 +41,7 @@ function main() {
   # The .bashrc path clean shouldn't be needed on newer installs, but takes into account legacy pengwin-setup nodejs installs
   if [[ -f "$HOME/.bashrc" ]]; then
     echo "$HOME/.bashrc found, cleaning"
+    local n_line_rgx='^[^#]*\bN_PREFIX='
     clean_file "$HOME/.bashrc" "$n_line_rgx"
   fi
 
@@ -59,10 +56,8 @@ function main() {
   sudo_rem_file "/etc/apt/sources.list.d/nodesource.list"
 
   echo "Removing APT key(s)"
-  sudo apt-key del "$yarn_key"
-  sudo apt-key del "$nodesource_key"
-  sudo rm -f /usr/share/keyrings/nodesource.gpg
-  sudo rm -r /etc/apt/keyrings/nodesource.gpg
+  sudo_rem_file /usr/share/keyrings/nodesource.gpg
+  sudo_rem_file /etc/apt/keyrings/nodesource.gpg
 }
 
 if show_warning "nodejs" "$@"; then
