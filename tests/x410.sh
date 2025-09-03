@@ -4,18 +4,18 @@
 source commons.sh
 source mocks.sh
 
-function testX410() {
-  run_pengwinsetup install GUI CONFIGURE X410
+function testX410Tcp() {
+  run_pengwinsetup install GUI CONFIGURE X410 TCP
 
   assertTrue "FILE PROFILE-X410" "[ -f /etc/profile.d/02-x410.sh ]"
+  assertFalse "VSOCK NOT PRESENT" "grep -q '/vsock' /etc/profile.d/02-x410.sh"
+}
 
-  #WSL2= bash /etc/profile.d/02-x410.sh
-  #verify_call "cmd.exe /c x410.exe /wm"
-  #assertTrue "X410 WSL1" "$?"
+function testX410Vsock() {
+  run_pengwinsetup install GUI CONFIGURE X410 VSOCK
 
-  #WSL2=1 bash /etc/profile.d/02-x410.sh
-  #verify_call "cmd.exe /c x410.exe /wm /public"
-  #assertTrue "X410 WSL2" "$?"
+  assertTrue "FILE PROFILE-X410" "[ -f /etc/profile.d/02-x410.sh ]"
+  assertTrue "VSOCK PRESENT" "grep -q '/vsock' /etc/profile.d/02-x410.sh"
 }
 
 function testUninstall() {
