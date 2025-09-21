@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 if (confirm --title "POWERSHELL" --yesno "Would you like to download and install Powershell?" 8 55); then

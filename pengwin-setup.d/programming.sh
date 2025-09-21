@@ -7,22 +7,22 @@ declare SetupDir
 
 function main() {
 
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Programming Menu" --menu "Install various programming languages support\n[ENTER to confirm]:" 22 95 12 \
-      "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " \
-      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " \
-      "GO" "Install the latest Go from Google" \
-      "JAVA" "Install the SDKMan to manage Java SDKs" \
-      "JETBRAINS" "Install required support to jetbrains tools" \
-      "JOOMLA" "Install development support for Joomla" \
-      "LATEX" "Install TexLive for LaTeX Support" \
-      "NIM" "Install Nim from official sources using choosenim" \
-      "NODEJS" "Install Node.js and npm" \
-      "PYTHONPI" "Install Python 3.13, download and install latest PyPi" \
-      "RUBY" "Install Ruby using rbenv and optionally install Rails" \
-      "RUST" "Install latest version of Rust via rustup installer"
+    menu --title "Programming Menu" "${DIALOG_TYPE}" "Install various programming languages support\n[ENTER to confirm]:" 22 95 12 \
+      "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " ${OFF} \
+      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " ${OFF} \
+      "GO" "Install the latest Go from Google" ${OFF} \
+      "JAVA" "Install the SDKMan to manage Java SDKs" ${OFF} \
+      "JETBRAINS" "Install required support to jetbrains tools" ${OFF} \
+      "JOOMLA" "Install development support for Joomla" ${OFF} \
+      "LATEX" "Install TexLive for LaTeX Support" ${OFF} \
+      "NIM" "Install Nim from official sources using choosenim" ${OFF} \
+      "NODEJS" "Install Node.js and npm" ${OFF} \
+      "PYTHONPI" "Install Python 3.13, download and install latest PyPi" ${OFF} \
+      "RUBY" "Install Ruby using rbenv and optionally install Rails" ${OFF} \
+      "RUST" "Install latest version of Rust via rustup installer" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3

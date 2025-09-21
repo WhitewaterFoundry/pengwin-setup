@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 if (confirm --title "GO" --yesno "Would you like to download and install the latest Go from Google?" 8 70); then

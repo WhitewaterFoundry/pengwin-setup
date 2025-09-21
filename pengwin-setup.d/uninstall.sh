@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -9,52 +9,52 @@ declare SetupDir
 function main() {
 
   local UninstallDir="${SetupDir}/uninstall"
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Uninstall Menu" --menu "Uninstall applications and packages installed by pengwin-setup\n[ENTER to confirm]:" 0 0 0 \
-      "ANSIBLE" "Remove Ansible Playbook deployment tools" \
-      "AWS" "Remove AWS CLI tools" \
-      "AZURE" "Remove Azure CLI tools" \
-      "BASH-RL" "Remove optimized Bash readline settings" \
-      "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " \
-      "CASSANDRA" "Remove Cassandra NoSQL server" \
-      "COLORTOOL" "Remove ColorTool console color scheme setter" \
-      "DIGITALOCEAN" "Remove Digital Ocean CLI tools" \
-      "DOCKER" "Remove secure bridge between Pengwin and Docker Desktop" \
-      "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" \
-      "FCITX" "Remove all fcitx improved non-Latin input support" \
-      "FISH" "Remove FISH Shell" \
-      "GO" "Remove Go language" \
-      "GUILIB" "Remove base GUI application libraries" \
-      "HIDPI" "Remove Qt and GTK HiDPI modifications" \
-      "HOMEBREW" "Remove the Homebrew package manager" \
-      "IBM" "Remove IBM Cloud CLI tools" \
-      "IBUS" "Remove all ibus improved non-Latin input support" \
-      "JAVA" "Remove SDKMan its installed Java SDKs" \
-      "KEYCHAIN" "Remove Keychain OpenSSH key manager" \
-      "KUBERNETES" "Remove Kubernetes tooling" \
-      "LAMP" "Remove LAMP stack" \
-      "MSEDIT" "Remove Microsoft Edit TUI editor" \
-      "NIM" "Remove choosenim and any installed Nim components" \
-      "NODEJS" "Remove Node.js, npm and Yarn (if installed)" \
-      "OPENSTACK" "Remove OpenStack CLI tools" \
-      "POETRY" "Remove Poetry" \
-      "POWERSHELL" "Remove Powershell for Linux" \
-      "PYENV" "Remove pyenv, its Python version(s) and modules" \
-      "RCLOCAL" "Remove rclocal support (the file /etc/rc.local) is kept" \
-      "RUBY" "Remove rbenv, Ruby version(s) and Rails (if installed)" \
-      "RUST" "Remove Rust and rustup toolchain installer" \
-      "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" \
-      "SSH" "Remove SSH server" \
-      "SYSTEMD" "Disable SystemD support" \
-      "TERRAFORM" "Remove Terraform CLI tools" \
-      "VCXSRV" "Remove VcXsrv X-server" \
-      "VSCODE" "Remove Visual Studio Code for Linux" \
-      "WINTHEME" "Remove Windows 10 theme and LXAppearance" \
-      "WSLTTY" "Remove WSLtty" \
-      "X410" "Remove the X410 X-server autostart" \
-      "XFCE" "Remove XFCE Desktop environment"
+    menu --title "Uninstall Menu" "${DIALOG_TYPE}" "Uninstall applications and packages installed by pengwin-setup\n[ENTER to confirm]:" 0 0 0 \
+      "ANSIBLE" "Remove Ansible Playbook deployment tools" ${OFF} \
+      "AWS" "Remove AWS CLI tools" ${OFF} \
+      "AZURE" "Remove Azure CLI tools" ${OFF} \
+      "BASH-RL" "Remove optimized Bash readline settings" ${OFF} \
+      "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " ${OFF} \
+      "CASSANDRA" "Remove Cassandra NoSQL server" ${OFF} \
+      "COLORTOOL" "Remove ColorTool console color scheme setter" ${OFF} \
+      "DIGITALOCEAN" "Remove Digital Ocean CLI tools" ${OFF} \
+      "DOCKER" "Remove secure bridge between Pengwin and Docker Desktop" ${OFF} \
+      "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" ${OFF} \
+      "FCITX" "Remove all fcitx improved non-Latin input support" ${OFF} \
+      "FISH" "Remove FISH Shell" ${OFF} \
+      "GO" "Remove Go language" ${OFF} \
+      "GUILIB" "Remove base GUI application libraries" ${OFF} \
+      "HIDPI" "Remove Qt and GTK HiDPI modifications" ${OFF} \
+      "HOMEBREW" "Remove the Homebrew package manager" ${OFF} \
+      "IBM" "Remove IBM Cloud CLI tools" ${OFF} \
+      "IBUS" "Remove all ibus improved non-Latin input support" ${OFF} \
+      "JAVA" "Remove SDKMan its installed Java SDKs" ${OFF} \
+      "KEYCHAIN" "Remove Keychain OpenSSH key manager" ${OFF} \
+      "KUBERNETES" "Remove Kubernetes tooling" ${OFF} \
+      "LAMP" "Remove LAMP stack" ${OFF} \
+      "MSEDIT" "Remove Microsoft Edit TUI editor" ${OFF} \
+      "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
+      "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
+      "OPENSTACK" "Remove OpenStack CLI tools" ${OFF} \
+      "POETRY" "Remove Poetry" ${OFF} \
+      "POWERSHELL" "Remove Powershell for Linux" ${OFF} \
+      "PYENV" "Remove pyenv, its Python version(s) and modules" ${OFF} \
+      "RCLOCAL" "Remove rclocal support (the file /etc/rc.local) is kept" ${OFF} \
+      "RUBY" "Remove rbenv, Ruby version(s) and Rails (if installed)" ${OFF} \
+      "RUST" "Remove Rust and rustup toolchain installer" ${OFF} \
+      "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" ${OFF} \
+      "SSH" "Remove SSH server" ${OFF} \
+      "SYSTEMD" "Disable SystemD support" ${OFF} \
+      "TERRAFORM" "Remove Terraform CLI tools" ${OFF} \
+      "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
+      "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
+      "WINTHEME" "Remove Windows 10 theme and LXAppearance" ${OFF} \
+      "WSLTTY" "Remove WSLtty" ${OFF} \
+      "X410" "Remove the X410 X-server autostart" ${OFF} \
+      "XFCE" "Remove XFCE Desktop environment" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
