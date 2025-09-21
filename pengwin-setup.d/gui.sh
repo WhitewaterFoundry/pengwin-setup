@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 #Imported from common.h
@@ -129,35 +129,38 @@ function main() {
 
   local -i more=0
   if [[ "${WSL2}" == "${WSLG}" ]]; then
-    local -a disable_wslg=("WSLG" "Force disable WSLg just for Pengwin")
+    # shellcheck disable=SC2206
+    local -a disable_wslg=("WSLG" "Force disable WSLg just for Pengwin" ${OFF})
     more=$((more + 1))
 
     local -a show_configure
   else
     if [[ "${wslg_disabled}" == true ]]; then
-      local -a disable_wslg=("WSLG" "Enable WSLg just for Pengwin")
+      # shellcheck disable=SC2206
+      local -a disable_wslg=("WSLG" "Enable WSLg just for Pengwin" ${OFF})
       more=$((more + 1))
     else
       local -a disable_wslg
     fi
 
-    local show_configure=("CONFIGURE" "Configure GUI (Check this first)")
+    # shellcheck disable=SC2206
+    local show_configure=("CONFIGURE" "Configure GUI (Check this first)" ${OFF})
     more=$((more + 1))
   fi
 
-  # shellcheck disable=SC2155,SC2188
+  # shellcheck disable=SC2155,SC2188,SC2086
   local menu_choice=$(
 
-    menu --title "GUI Menu" --menu "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((16 + more)) 99 $((7 + more)) \
+    menu --title "GUI Menu" "${DIALOG_TYPE}" "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((16 + more)) 99 $((7 + more)) \
       "${disable_wslg[@]}" \
       "${show_configure[@]}" \
-      "DESKTOP" "Install Desktop environments" \
-      "GUILIB" "Install a base set of libraries for GUI applications" \
-      "HIDPI" "Configure Qt and GTK for HiDPI displays" \
-      "NLI" "Install fcitx or iBus for improved non-Latin input support" \
-      "SYNAPTIC" "Install the Synaptic package manager" \
-      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" \
-      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   "
+      "DESKTOP" "Install Desktop environments" ${OFF} \
+      "GUILIB" "Install a base set of libraries for GUI applications" ${OFF} \
+      "HIDPI" "Configure Qt and GTK for HiDPI displays" ${OFF} \
+      "NLI" "Install fcitx or iBus for improved non-Latin input support" ${OFF} \
+      "SYNAPTIC" "Install the Synaptic package manager" ${OFF} \
+      "TERMINAL" "Install Terminals on Windows or WSL for using WSL" ${OFF} \
+      "WINTHEME" "Install a Windows 10 theme along with the LXAppearance theme switcher   " ${OFF}
 
     3>&1 1>&2 2>&3
   )

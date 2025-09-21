@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 declare SetupDir
@@ -211,16 +211,16 @@ function main() {
     return
   fi
 
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Services Menu" --menu "Enables various services\n[ENTER to confirm]:" 14 70 6 \
-      "CASSANDRA" "Install the NoSQL server Cassandra from Apache " \
-      "KEYCHAIN" "Install Keychain, the OpenSSH key manager" \
-      "LAMP" "Install LAMP Stack" \
-      "RCLOCAL" "Enable running scripts at startup from rc.local " \
-      "SSH" "Enable SSH server" \
-      "SYSTEMD" "Enable SystemD support"
+    menu --title "Services Menu" "${DIALOG_TYPE}" "Enables various services\n[ENTER to confirm]:" 14 70 6 \
+      "CASSANDRA" "Install the NoSQL server Cassandra from Apache " ${OFF} \
+      "KEYCHAIN" "Install Keychain, the OpenSSH key manager" ${OFF} \
+      "LAMP" "Install LAMP Stack" ${OFF} \
+      "RCLOCAL" "Enable running scripts at startup from rc.local " ${OFF} \
+      "SSH" "Enable SSH server" ${OFF} \
+      "SYSTEMD" "Enable SystemD support" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3

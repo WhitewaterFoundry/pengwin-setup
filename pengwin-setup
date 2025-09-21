@@ -17,6 +17,9 @@ declare CANCELLED
 declare SKIP_UPDATES
 declare JUST_UPDATE
 declare REQUIRES_X
+declare DIALOG_TYPE
+declare OFF
+
 
 rm -f "${HOME}"/.should-restart
 
@@ -147,18 +150,18 @@ function bye_message() {
 
 # main menu
 function install_menu() {
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "pengwin-setup" --menu "\nHand-curated add-ons [ENTER to confirm]:" 0 0 0  \
-      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}"  \
-      "GUI" "Install an X server or various other GUI applications"  \
-      "MAINTENANCE" "Various maintenance tasks like home backup"  \
-      "PROGRAMMING" "Install various programming languages support"  \
-      "SERVICES" "Enable services support (SystemD, SSH, rc.local)"  \
-      "SETTINGS" "Change various settings in Pengwin"  \
-      "TOOLS" "Install applications or servers"  \
-      "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup"
+    menu --title "pengwin-setup" "${DIALOG_TYPE}" "\nHand-curated add-ons [ENTER to confirm]:" 0 0 0  \
+      "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}" ${OFF}  \
+      "GUI" "Install an X server or various other GUI applications" ${OFF}  \
+      "MAINTENANCE" "Various maintenance tasks like home backup" ${OFF}  \
+      "PROGRAMMING" "Install various programming languages support" ${OFF}  \
+      "SERVICES" "Enable services support (SystemD, SSH, rc.local)" ${OFF}  \
+      "SETTINGS" "Change various settings in Pengwin" ${OFF}  \
+      "TOOLS" "Install applications or servers" ${OFF}  \
+      "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
@@ -238,6 +241,7 @@ Options:
   --noupdate                     Skip the update step before showing the setup.
   --norebuildicons               Skip rebuilding the start menu icons.
   -q, --quiet, --noninteractive  Run in non-interactive mode, skipping confirmations and prompts.
+  --multiple                     Allow to select multiple installers at once. (previous pengwin-setup behavior)
 
 Commands:
   update, upgrade                Just update packages without any other actions. Implies --yes and --noninteractive.

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 version="1.20.9.0"
@@ -47,10 +47,10 @@ EOF
   unset VcxsrvUrl
   unset wVcxsrvDir
   unset VcxsrvDir
-  
+
   # Avoid collision with the other XServer
   sudo rm -f /etc/profile.d/02-x410.sh
-  
+
   touch "${HOME}"/.should-restart
 else
   echo "Skipping VcxSrv"
