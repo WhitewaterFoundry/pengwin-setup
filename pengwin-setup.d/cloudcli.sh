@@ -282,16 +282,16 @@ function install_openstack() {
 }
 
 function main() {
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
-    menu --title "Cloud Management Menu" --menu "CLI tools for cloud management\n[ENTER to confirm]:" 16 62 7 \
-      "AWS" "AWS CLI" \
-      "AZURE" "Azure CLI" \
-      "DO" "Digital Ocean CLI" \
-      "IBM" "IBM Cloud CLI" \
-      "KUBERNETES" "Kubernetes tooling (kubectl, helm)" \
-      "OPENSTACK" "OpenStack command-line clients      " \
-      "TERRAFORM" "Terraform                   "
+    menu --title "Cloud Management Menu" "${DIALOG_TYPE}" "CLI tools for cloud management\n[ENTER to confirm]:" 16 62 7 \
+      "AWS" "AWS CLI" ${OFF} \
+      "AZURE" "Azure CLI" ${OFF} \
+      "DO" "Digital Ocean CLI" ${OFF} \
+      "IBM" "IBM Cloud CLI" ${OFF} \
+      "KUBERNETES" "Kubernetes tooling (kubectl, helm)" ${OFF} \
+      "OPENSTACK" "OpenStack command-line clients      " ${OFF} \
+      "TERRAFORM" "Terraform                   " ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3

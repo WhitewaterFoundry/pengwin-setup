@@ -38,7 +38,9 @@ declare -i -x PROGRESS_STATUS
 readonly PENGWIN_CONFIG_DIR="${HOME}/.config/pengwin"
 
 #######################################
-# description
+# Process command line arguments and set corresponding environment variables.
+# Handles debug mode, confirmation skipping, update skipping, non-interactive mode,
+# dialog command selection, and menu options for installation/uninstallation.
 # Globals:
 #   CMD_MENU_OPTIONS
 #   JUST_UPDATE
@@ -47,101 +49,108 @@ readonly PENGWIN_CONFIG_DIR="${HOME}/.config/pengwin"
 #   SKIP_STARTMENU
 #   SKIP_UPDATES
 # Arguments:
-#  None
+#   Command line arguments passed to the script
+# Returns:
+#   None
 #######################################
 function process_arguments() {
   export DIALOG_COMMAND='dialog' # defaults to ncurses
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --debug | -d | --verbose | -v)
-        echo "Running in debug/verbose mode"
-        set -x
-        shift
-        ;;
-      -y | --yes | --assume-yes)
-        echo "Skipping confirmations"
-        export SKIP_CONFIMATIONS=1
-        shift
-        ;;
-      --noupdate)
-        echo "Skipping updates"
-        export SKIP_UPDATES=1
-        shift
-        ;;
-      --norebuildicons)
-        echo "Skipping rebuild start menu"
-        export SKIP_STARTMENU=1
-        shift
-        ;;
-      -q | --quiet | --noninteractive)
-        echo "Skipping confirmations"
-        export NON_INTERACTIVE=1
-        shift
-        ;;
-      -w | --whiptail)
-        echo "Use whiptail instead of dialog"
-        export DIALOG_COMMAND='whiptail'
-        shift
-        ;;
-      -n | --ncurses | --dialog)
-        echo "Force use dialog"
-        export DIALOG_COMMAND='dialog'
-        shift
-        ;;
-      --gdialog)
-        echo "Use gdialog instead of dialog"
-        export DIALOG_COMMAND='gdialog'
-        shift
-        ;;
-      --alt)
-        export DIALOGRC="${SetupDir}/dialogrc_alt"
-        shift
-        ;;
-      --help)
-        export SHOW_HELP=1
-        shift
-        ;;
-      update | upgrade)
-        echo "Just update packages"
-        export JUST_UPDATE=1
-        export SKIP_CONFIMATIONS=1
-        shift
-        ;;
-      autoinstall | install)
-        echo "Automatically install without prompts or updates"
-        export SKIP_UPDATES=1
-        export NON_INTERACTIVE=1
-        export SKIP_CONFIMATIONS=1
-        export SKIP_STARTMENU=1
-        expectMenuOptions=1
-        shift
-        ;;
-      uninstall | remove)
-        echo "Automatically uninstall without prompts or updates"
-        export SKIP_UPDATES=1
-        export NON_INTERACTIVE=1
-        export SKIP_CONFIMATIONS=1
-        export SKIP_STARTMENU=1
-        expectMenuOptions=1
-        CMD_MENU_OPTIONS+=("UNINSTALL")
-        shift
-        ;;
-      startmenu)
-        echo "Regenerates the start menu"
-        export SKIP_UPDATES=1
-        export NON_INTERACTIVE=1
-        export SKIP_CONFIMATIONS=1
-        CMD_MENU_OPTIONS+=("GUI")
-        CMD_MENU_OPTIONS+=("STARTMENU")
-        shift
-        ;;
-      *)
-        if [[ ${expectMenuOptions} ]]; then
-          CMD_MENU_OPTIONS+=("$1")
-        fi
-        shift
-        ;;
+    --debug | -d | --verbose | -v)
+      echo "Running in debug/verbose mode"
+      set -x
+      shift
+      ;;
+    -y | --yes | --assume-yes)
+      echo "Skipping confirmations"
+      export SKIP_CONFIMATIONS=1
+      shift
+      ;;
+    --noupdate)
+      echo "Skipping updates"
+      export SKIP_UPDATES=1
+      shift
+      ;;
+    --norebuildicons)
+      echo "Skipping rebuild start menu"
+      export SKIP_STARTMENU=1
+      shift
+      ;;
+    -q | --quiet | --noninteractive)
+      echo "Skipping confirmations"
+      export NON_INTERACTIVE=1
+      shift
+      ;;
+    -w | --whiptail)
+      echo "Use whiptail instead of dialog"
+      export DIALOG_COMMAND='whiptail'
+      shift
+      ;;
+    -n | --ncurses | --dialog)
+      echo "Force use dialog"
+      export DIALOG_COMMAND='dialog'
+      shift
+      ;;
+    --gdialog)
+      echo "Use gdialog instead of dialog"
+      export DIALOG_COMMAND='gdialog'
+      shift
+      ;;
+    --alt)
+      export DIALOGRC="${SetupDir}/dialogrc_alt"
+      shift
+      ;;
+    --multiple)
+      export DIALOG_TYPE='--checklist'
+      export OFF='off'
+      shift
+      ;;
+    --help)
+      export SHOW_HELP=1
+      shift
+      ;;
+    update | upgrade)
+      echo "Just update packages"
+      export JUST_UPDATE=1
+      export SKIP_CONFIMATIONS=1
+      shift
+      ;;
+    autoinstall | install)
+      echo "Automatically install without prompts or updates"
+      export SKIP_UPDATES=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      export SKIP_STARTMENU=1
+      expectMenuOptions=1
+      shift
+      ;;
+    uninstall | remove)
+      echo "Automatically uninstall without prompts or updates"
+      export SKIP_UPDATES=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      export SKIP_STARTMENU=1
+      expectMenuOptions=1
+      CMD_MENU_OPTIONS+=("UNINSTALL")
+      shift
+      ;;
+    startmenu)
+      echo "Regenerates the start menu"
+      export SKIP_UPDATES=1
+      export NON_INTERACTIVE=1
+      export SKIP_CONFIMATIONS=1
+      CMD_MENU_OPTIONS+=("GUI")
+      CMD_MENU_OPTIONS+=("STARTMENU")
+      shift
+      ;;
+    *)
+      if [[ ${expectMenuOptions} ]]; then
+        CMD_MENU_OPTIONS+=("$1")
+      fi
+      shift
+      ;;
     esac
   done
 
@@ -165,12 +174,15 @@ function createtmp() {
 }
 
 #######################################
-# description
+# Cleans up temporary directory and returns to original directory
+# Removes the temporary directory and its contents using sudo
 # Globals:
-#   CURDIR
-#   TMPDIR
+#   CURDIR - The original directory to return to
+#   TMPDIR - The temporary directory to clean up
 # Arguments:
-#  None
+#   None
+# Returns:
+#   None
 #######################################
 function cleantmp() {
   echo "Returning to $CURDIR"
@@ -193,14 +205,15 @@ function updateupgrade() {
 }
 
 #######################################
-# description
+# Checks if a command exists either in PATH or at specific location
+# Attempts to execute the command to verify its existence
 # Arguments:
-#   1
-#   2
+#   1 - Expected path to the executable
+#   2 - Optional arguments to pass to the executable
 # Returns:
-#   0 ...
-#   1 ...
-#   2 ...
+#   0 - If command exists in PATH
+#   1 - If command not found
+#   2 - If command exists at specific location
 #######################################
 function command_check() {
   # Usage: command_check <EXPECTED PATH> <ARGS (if any)>
@@ -227,20 +240,21 @@ function command_check() {
 #}
 
 #######################################
-# description
+# Shows a confirmation dialog unless confirmations are skipped
+# Uses the configured dialog command to display the confirmation
 # Globals:
-#   SKIP_CONFIMATIONS
+#   SKIP_CONFIMATIONS - Flag to skip confirmation dialogs
 # Arguments:
-#  None
+#   Dialog command arguments
 # Returns:
-#   $? ...
-#   0 ...
+#   0 - If confirmed or skipped
+#   Dialog command exit code otherwise
 #######################################
 function confirm() {
 
   if [[ ! ${SKIP_CONFIMATIONS} ]]; then
 
-    ${DIALOG_COMMAND}  "$@"
+    ${DIALOG_COMMAND} "$@"
 
     return $?
   else
@@ -249,20 +263,21 @@ function confirm() {
 }
 
 #######################################
-# description
+# Shows a message dialog unless in non-interactive mode
+# Uses the configured dialog command to display the message
 # Globals:
-#   NON_INTERACTIVE
+#   NON_INTERACTIVE - Flag for non-interactive mode
 # Arguments:
-#  None
+#   Dialog command arguments
 # Returns:
-#   $? ...
-#   0 ...
+#   0 - If in non-interactive mode
+#   Dialog command exit code otherwise
 #######################################
 function message() {
 
   if [[ ! ${NON_INTERACTIVE} ]]; then
 
-    ${DIALOG_COMMAND}  "$@"
+    ${DIALOG_COMMAND} "$@"
 
     return $?
   else
@@ -271,20 +286,22 @@ function message() {
 }
 
 #######################################
-# Display a menu using whiptail. Echo the option key or CANCELLED if the user has cancelled
+# Displays a menu using the configured dialog command
+# Handles menu selection, cancellation, and empty selections
 # Globals:
-#   CANCELLED
+#   CANCELLED - Value returned on menu cancellation
+#   CMD_MENU_OPTIONS - Predefined menu options if any
 # Arguments:
-#   None
+#   Dialog command arguments for menu display
 # Returns:
-#   None
+#   Selected menu choice or CANCELLED value
 #######################################
 function menu() {
 
   local menu_choice #Split to preserve exit code
 
   if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then
-    menu_choice=$(${DIALOG_COMMAND}  "$@" 3>&1 1>&2 2>&3)
+    menu_choice=$(${DIALOG_COMMAND} "$@" 3>&1 1>&2 2>&3)
   else
     menu_choice="${CMD_MENU_OPTIONS[*]}"
   fi
@@ -298,7 +315,7 @@ function menu() {
 
   if [[ -z ${menu_choice} ]]; then
 
-    if (${DIALOG_COMMAND}  --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
+    if (${DIALOG_COMMAND} --title "None Selected" --yesno "No item selected. Would you like to return to the menu?" 8 60 3>&1 1>&2 2>&3); then
       menu "$@"
 
       return
@@ -313,33 +330,43 @@ function menu() {
 }
 
 #######################################
-# description
+# Sets up the environment for Pengwin setup by initializing required variables and paths.
+# Processes command line arguments, configures dialog settings, and validates the
+# Windows environment. Also sets up various path-related variables and version information.
 # Globals:
-#   CANCELLED
-#   GOVERSION
+#   DIALOGOPTS
+#   DIALOGRC
+#   DIALOG_COMMAND
 #   SetupDir
-#   WIN_CUR_VER
-#   wHome
 #   wHomeWinPath
+#   wHome
+#   CANCELLED
+#   WIN_CUR_VER
+#   SHORTCUTS_FOLDER
+#   GOVERSION
 # Arguments:
-#  None
+#   Command line arguments passed to the script
+# Returns:
+#   0 if environment setup succeeds, non-zero on failure
 #######################################
 function setup_env() {
+  SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+  export SetupDir
 
+  # bashsupport disable=BP2001
   export DIALOGOPTS="--keep-tite --erase-on-exit --ignore --backtitle \"${PENGWIN_SETUP_TITLE}\""
   export DIALOGRC="${SetupDir}/dialogrc"
 
   export DIALOG_COMMAND="whiptail"
+
+  export DIALOG_TYPE='--menu'
+  export OFF=''
 
   if (! command -v cmd.exe >/dev/null); then
     ${DIALOG_COMMAND} --title "An environment problem was found" --msgbox "The Windows PATH is not available, and pengwin-setup requires it to run. Please check that: \n\n   pengwin-setup is not running with sudo.\n   pengwin-setup wasn't run with the root user.\n   appendWindowsPath is true in /etc/wsl.conf file or is not defined. \n\n\nIf you don't want to have Windows PATH in Pengwin, enable it temporally to run pengwin-setup" 15 100
 
     exit 0
   fi
-
-
-  SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-  export SetupDir
 
   process_arguments "$@"
 
@@ -373,22 +400,20 @@ function setup_env() {
 
 }
 
-#######################################
-# description
-# Arguments:
-#  None
-#######################################
 function install_packages() {
 
   sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
 }
 
 #######################################
-# description
+# Updates package lists using apt-get update
+# Uses different progress display based on interactive mode
 # Globals:
-#   NON_INTERACTIVE
+#   NON_INTERACTIVE - Flag for non-interactive mode
 # Arguments:
-#  None
+#   None
+# Returns:
+#   None
 #######################################
 function update_packages() {
 
@@ -400,9 +425,12 @@ function update_packages() {
 }
 
 #######################################
-# description
+# Upgrades installed packages
+# Runs apt-get upgrade with specified arguments
 # Arguments:
-#  None
+#   Additional arguments for apt-get upgrade
+# Returns:
+#   None
 #######################################
 function upgrade_packages() {
 
@@ -410,11 +438,14 @@ function upgrade_packages() {
 }
 
 #######################################
-# description
+# Adds fish shell support for a configuration
+# Creates fish configuration file that sources bash configuration
 # Globals:
-#   __fish_sysconf_dir
+#   __fish_sysconf_dir - Fish configuration directory
 # Arguments:
-#   1
+#   1 - Name of the configuration file
+# Returns:
+#   None
 #######################################
 function add_fish_support() {
   echo "Also for fish."
@@ -429,11 +460,14 @@ EOF
 }
 
 #######################################
-# description
+# Stops the indeterminate progress indicator
+# Resets terminal escape sequence for progress display
 # Globals:
-#   PROGRESS_STATUS
+#   PROGRESS_STATUS - Current progress indicator state
 # Arguments:
-#  None
+#   None
+# Returns:
+#   None
 #######################################
 function start_indeterminate_progress() {
 
@@ -463,22 +497,28 @@ function stop_indeterminate_progress() {
 }
 
 #######################################
-# Instruct to pengwin-setup to terminate the Pengwin instance
+# Creates a flag file to indicate Pengwin should restart
+# Creates .should-restart file in user's home directory
 # Globals:
-#   HOME
+#   HOME - User's home directory
 # Arguments:
-#  None
+#   None
+# Returns:
+#   None
 #######################################
 function enable_should_restart() {
   touch "${HOME}"/.should-restart
 }
 
 #######################################
-# Creates the config dir for pengwin in the user home
+# Creates the Pengwin configuration directory
+# Creates directory structure for Pengwin configuration files
 # Globals:
-#   PENGWIN_CONFIG_DIR
+#   PENGWIN_CONFIG_DIR - Path to Pengwin configuration directory
 # Arguments:
-#  None
+#   None
+# Returns:
+#   None
 #######################################
 function setup_pengwin_config() {
   mkdir -p "${PENGWIN_CONFIG_DIR}"

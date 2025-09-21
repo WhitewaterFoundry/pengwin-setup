@@ -8,15 +8,15 @@ declare SetupDir
 
 function main() {
 
-  # shellcheck disable=SC2155
+  # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Tools Menu" --menu "Install applications or servers\n[ENTER to confirm]:" 14 87 5 \
-      "ANSIBLE" "Install tools to deploy Ansible Playbooks" \
-      "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " \
-      "DOCKER" "Install a secure bridge to Docker Desktop" \
-      "HOMEBREW" "Install the Homebrew package manager" \
-      "POWERSHELL" "Install PowerShell for Linux"
+    menu --title "Tools Menu" "${DIALOG_TYPE}" "Install applications or servers\n[ENTER to confirm]:" 14 87 5 \
+      "ANSIBLE" "Install tools to deploy Ansible Playbooks" ${OFF} \
+      "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " ${OFF} \
+      "DOCKER" "Install a secure bridge to Docker Desktop" ${OFF} \
+      "HOMEBREW" "Install the Homebrew package manager" ${OFF} \
+      "POWERSHELL" "Install PowerShell for Linux" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
