@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 if (confirm --title "HiDPI" --yesno "Would you like to configure Qt and GTK for HiDPI displays?" 8 85) then

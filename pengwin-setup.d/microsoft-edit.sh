@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./common.sh
+# shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
 readonly EDIT_GITHUB_API_URL="https://api.github.com/repos/microsoft/edit/releases/latest"
