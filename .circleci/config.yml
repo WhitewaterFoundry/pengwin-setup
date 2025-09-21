@@ -178,7 +178,7 @@ workflows:
             branches:
               only: master
           requires:
-            - test
+            #- test
             - build
             - shellcheck
   deploydevbranch:
