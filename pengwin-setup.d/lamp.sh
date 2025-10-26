@@ -43,7 +43,7 @@ function install_lamp() {
     fi
 
     # shellcheck disable=SC2155
-    local selected_version=$(echo "${menu_choice##* }" | grep -E "1[0-9]?\.[0-9]?")
+    local selected_version=$(echo "${menu_choice##* }" | grep -E "1[0-9]\.[0-9]+")
     if [[ -z ${selected_version} || ${menu_choice} == *"BUILTIN"* ]]; then
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
