@@ -100,8 +100,20 @@ EOF
 
     echo "Installing PHP"
     install_packages php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
-    sudo a2enmod php8.4
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to install PHP packages. Skipping PHP module enablement."
+    else
+      local php_module_version
+      if command -v php >/dev/null; then
+        php_module_version=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;' 2>/dev/null || true)
+      fi
 
+      if [[ -n ${php_module_version} ]]; then
+        sudo a2enmod "php${php_module_version}"
+      else
+        echo "Unable to determine installed PHP module version; skipping automatic module enablement."
+      fi
+    fi
     php -v
 
     echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php
