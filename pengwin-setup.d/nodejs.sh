@@ -22,7 +22,7 @@ function install_nodejs_nodesource() {
   install_packages nodejs="${version}"
 }
 
-NODEJS_LATEST_VERSION=24
+NODEJS_LATEST_VERSION=25
 NODEJS_LTS_VERSION=22
 
 echo "Offering user n / nvm version manager choice"
@@ -182,12 +182,17 @@ EOF
 
   touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
-  install_nodejs_nodesource ${NODEJS_LATEST_VERSION}
+  install_nodejs_nodesource "${NODEJS_LATEST_VERSION}"
 elif [[ ${menu_choice} == *"LTS"* ]]; then
-  install_nodejs_nodesource ${NODEJS_LTS_VERSION}
+  install_nodejs_nodesource "${NODEJS_LTS_VERSION}"
 fi
 
+exit_status=$?
 cleantmp
+
+if [[ ${exit_status} != 0 ]]; then
+  exit "${exit_status}"
+fi
 
 if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
