@@ -83,6 +83,8 @@ EOF
   eval "$(cat "${NPM_WIN_PROFILE}")"
 fi
 
+exit_status=0
+
 if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   echo "Ensuring we have build-essential installed"
   sudo apt-get -y -q install build-essential
@@ -90,6 +92,11 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   echo "Installing n, Node.js version manager"
   curl -L https://git.io/n-install -o n-install.sh
   env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   N_PATH="$(cat "${HOME}"/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
   echo "${N_PATH}" | sudo tee "/etc/profile.d/n-prefix.sh"
@@ -105,6 +112,11 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing latest node.js release"
   n latest
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   # Add n to fish shell
   FISH_DIR="$HOME/.config/fish/conf.d"
@@ -129,6 +141,11 @@ EOF
 elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat "${HOME}"/.bashrc | grep '^export NVM_DIR=')"
@@ -176,6 +193,11 @@ EOF
 
   echo "Installing latest Node.js release"
   nvm install node --latest-npm
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
@@ -183,11 +205,12 @@ EOF
   touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
   install_nodejs_nodesource "${NODEJS_LATEST_VERSION}"
+  exit_status=$?
 elif [[ ${menu_choice} == *"LTS"* ]]; then
   install_nodejs_nodesource "${NODEJS_LTS_VERSION}"
+  exit_status=$?
 fi
 
-exit_status=$?
 cleantmp
 
 if [[ ${exit_status} != 0 ]]; then
