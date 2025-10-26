@@ -12,7 +12,14 @@ function main() {
 
   echo "Uninstalling LAMP stack"
 
-  sudo a2dismod php8.4
+  local php_module_version
+  if command -v php >/dev/null; then
+    php_module_version=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;' 2>/dev/null || true)
+  fi
+
+  if [[ -n ${php_module_version} ]]; then
+    sudo a2dismod "php${php_module_version}"
+  fi
 
   sudo_rem_file "/etc/profile.d/start-lamp.sh"
   sudo_rem_file "/etc/sudoers.d/start-lamp"
