@@ -223,7 +223,11 @@ function install_menu() {
     exit_status=$?
   fi
 
-  if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
+  if [[ ${exit_status} != 0 ]]; then
+    if [[ ${NON_INTERACTIVE} ]]; then
+      return "${exit_status}"
+    fi
+
     install_menu "$@"
   fi
 }

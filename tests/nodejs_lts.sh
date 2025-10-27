@@ -12,6 +12,7 @@ function test_main() {
 
   run npm --version
   run node --version
+  run yarn --version
 
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '10')"
   assertEquals "nodejs LTS was not installed" "1" "$(run node --version | grep -c 'v22')"

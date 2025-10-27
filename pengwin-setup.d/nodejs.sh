@@ -228,6 +228,13 @@ if (confirm --title "YARN" --yesno "Would you like to download and install the Y
     update_packages
   fi
 
+  if ! command -v corepack; then
+    if ! npm i -g corepack; then
+      sudo npm i -g corepack
+      sudo chown -R "$(id -u)":"$(id -g)" "$HOME/.npm"
+    fi
+  fi
+
   if ! corepack enable; then
     sudo corepack enable
   fi
