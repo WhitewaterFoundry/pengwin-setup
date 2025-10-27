@@ -8,7 +8,7 @@ source commons.sh
 #  None
 #######################################
 function test_main() {
-  run_pengwinsetup install PROGRAMMING NODEJS NVM
+  run_pengwinsetup install PROGRAMMING NODEJS NVM --debug
 
   assertTrue "FILE PROFILE-NVM" "[ -f /etc/profile.d/nvm-prefix.sh ]"
 
@@ -17,10 +17,11 @@ function test_main() {
   run nvm --version
   run npm --version
   run node --version
+  run yarn --version
 
   assertEquals "NVM was not installed" "1" "$(run nvm --version | grep -c '0\.40')"
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '11')"
-  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v24')"
+  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v25')"
 
   run command -v yarn >/dev/null
   assertTrue "package yarn is not installed" "$?"
@@ -38,7 +39,7 @@ function test_uninstall() {
 
   assertEquals "NVM was not uninstalled" "0" "$(run nvm --version | grep -c '0\.40')"
   assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '11')"
-  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v24')"
+  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v25')"
 
   run command -v yarn 2>/dev/null
   assertFalse "package yarn was not uninstalled" "$?"

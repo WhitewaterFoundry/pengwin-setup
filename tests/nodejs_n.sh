@@ -21,7 +21,7 @@ function test_main() {
 
   assertEquals "N was not installed" "1" "$(run n --version | grep -c '10')"
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '11')"
-  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v24')"
+  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v25')"
   assertEquals "nodejs lts was not installed" "1" "$(run n list | grep -c 'node/22')"
 
   run command -v yarn >/dev/null
@@ -40,7 +40,7 @@ function test_uninstall() {
 
   assertEquals "N was not uninstalled" "0" "$(run n --version | grep -c '10')"
   assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '11')"
-  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v24')"
+  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v25')"
   assertEquals "nodejs lts was not uninstalled" "0" "$(run n list | grep -c 'node/22')"
 
   run command -v yarn 2>/dev/null
