@@ -147,6 +147,8 @@ elif [[ ${menu_choice} == *"NVM"* ]]; then
     exit "${exit_status}"
   fi
 
+  install_packages libatomic1
+
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat "${HOME}"/.bashrc | grep '^export NVM_DIR=')"
   NVM_SH="$(cat "${HOME}"/.bashrc | grep '^.*$NVM_DIR/nvm.sh.*$')"
