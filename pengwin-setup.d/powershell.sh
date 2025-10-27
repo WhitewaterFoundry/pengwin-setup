@@ -11,7 +11,7 @@ if (confirm --title "POWERSHELL" --yesno "Would you like to download and install
   curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
   sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 
-  sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
+  sudo sh -c 'echo "deb https://packages.microsoft.com/repos/microsoft-debian-bookworm-prod bookworm main" > /etc/apt/sources.list.d/microsoft.list'
 
   update_packages
   install_packages powershell

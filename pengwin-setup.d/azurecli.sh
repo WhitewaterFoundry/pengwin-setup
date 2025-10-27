@@ -11,14 +11,10 @@ if (confirm --title "AZURECLI" --yesno "Would you like to download and install A
 
   sudo chmod 644 /etc/apt/trusted.gpg.d/microsoft.gpg
 
-  sudo bash -c "echo 'deb https://packages.microsoft.com/repos/azure-cli/ bullseye main' > /etc/apt/sources.list.d/azurecli.list"
+  sudo bash -c "echo 'deb https://packages.microsoft.com/repos/azure-cli/ bookworm main' > /etc/apt/sources.list.d/azurecli.list"
 
-  sudo apt-get -y -q update
-  install_packages -t bullseye azure-cli
-
-  # Remove wslview as the default browser
-  wslview -u
-
+  update_packages
+  install_packages -t bookworm azure-cli
 else
   echo "Skipping AZURECLI"
 fi
