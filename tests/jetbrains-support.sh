@@ -24,8 +24,8 @@ function test_uninstall() {
     assertFalse "package $i is still installed" "$?"
   done
 
-  assertFalse "Toolbox directory still exists" "[ -d ~/.local/share/JetBrains/Toolbox ]"
-  assertFalse "Toolbox symlink still exists" "[ -L ~/.local/bin/jetbrains-toolbox ]"
+  assertFalse "Toolbox directory still exists" "[ -d /home/${TEST_USER}/.local/share/JetBrains/Toolbox ]"
+  assertFalse "Toolbox symlink still exists" "[ -L /home/${TEST_USER}/.local/bin/jetbrains-toolbox ]"
 }
 
 # shellcheck disable=SC1091
