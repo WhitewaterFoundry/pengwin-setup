@@ -20,7 +20,7 @@ function install_pyenv() {
     echo "Installing PYENV"
     createtmp
     install_packages make build-essential libssl-dev zlib1g-dev \
-      libbz2-dev libreadline-dev libsqlite3-dev curl git \
+      libbz2-dev libreadline-dev libsqlite3-dev curl wget git \
       xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
     wget https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
     bash pyenv-installer
