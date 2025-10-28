@@ -78,7 +78,7 @@ function install_pyenv() {
 #######################################
 function install_pythonpip() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_DEBIAN}, IDLE, and the pip package manager?" 8 90); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_DEBIAN}, and the pip package manager?" 8 90); then
     echo "Installing PYTHONPIP"
     createtmp
     install_packages build-essential python3 python3-pip python3-venv
@@ -100,7 +100,7 @@ function install_pythonpip() {
 #######################################
 function install_poetry() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_DEBIAN}, IDLE, and the poetry package manager?" 9 90); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_DEBIAN}, and the poetry package manager?" 9 90); then
     echo "Installing POETRY"
     createtmp
     install_packages build-essential python3 python3-venv
