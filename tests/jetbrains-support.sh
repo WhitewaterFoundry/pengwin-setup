@@ -3,7 +3,7 @@ source commons.sh
 
 function test_install() {
 
-  run_pengwinsetup install PROGRAMMING JETBRAINS
+  run_pengwinsetup install PROGRAMMING JETBRAINS --debug
 
   local i
   for i in 'rsync' 'zip'; do
@@ -16,7 +16,7 @@ function test_install() {
 
 function test_uninstall() {
 
-  run_pengwinsetup install UNINSTALL JETBRAINS
+  run_pengwinsetup install UNINSTALL JETBRAINS --debug
 
   assertFalse "Toolbox directory still exists" "[ -d /home/${TEST_USER}/.local/share/JetBrains/Toolbox ]"
   assertFalse "Toolbox symlink still exists" "[ -L /home/${TEST_USER}/.local/bin/jetbrains-toolbox ]"
