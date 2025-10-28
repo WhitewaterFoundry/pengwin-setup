@@ -16,7 +16,7 @@ function install_jetbrains_support() {
   if (confirm --title "JetBrains Toolbox support" --yesno "Would you like to install JetBrains Toolbox to run inside WSL?${REQUIRES_X}" 10 52); then
     install_packages \
       fuse libfuse2 \
-      libxi6 libxrender1 libxtst6 libfontconfig \
+      libxi6 libxrender1 libxtst6 libfontconfig1 \
       tar dbus-user-session at-spi2-core binfmt-support \
       dconf-gsettings-backend dconf-service \
       glib-networking glib-networking-common glib-networking-services \
