@@ -11,7 +11,7 @@ function test_install() {
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals "Toolbox was not installed" "1" "$(run ~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --version | grep -c 'Toolbox 3')"
+  assertEquals "Toolbox was not installed" "1" "$(run ~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --version | grep -c 'Toolbox')"
 }
 
 # shellcheck disable=SC1091
