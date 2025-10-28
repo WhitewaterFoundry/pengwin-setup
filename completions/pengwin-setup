@@ -42,7 +42,7 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'BASH-RL CSH FISH ZSH' -- "${cur}")
     ;;
   TOOLS)
-    mapfile -t COMPREPLY < <(compgen -W 'HOMEBREW CLOUDCLI' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'ANSIBLE CLOUDCLI DOCKER HOMEBREW POWERSHELL' -- "${cur}")
     ;;
   CLOUDCLI)
     mapfile -t COMPREPLY < <(compgen -W 'TERRAFORM' 'KUBERNETES' -- "${cur}")
