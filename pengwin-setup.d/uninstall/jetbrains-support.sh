@@ -11,7 +11,7 @@ function main() {
   rem_dir "$HOME/.local/share/JetBrains/Toolbox"
 
   echo "Removing JetBrains Toolbox symlink"
-  rem_file "$HOME/.local/bin/jetbrains-toolbox"
+  rem_link "$HOME/.local/bin/jetbrains-toolbox"
 }
 
 if show_warning "JetBrains Toolbox" "$@"; then
