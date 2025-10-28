@@ -22,6 +22,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./hidpi.sh
   run_test ./dotnet.sh
   run_test ./brew.sh
+  run_test ./powershell.sh
   run_test ./microsoft_edit.sh
   #run_test ./guilib.sh
   run_test ./desktop.sh
@@ -55,6 +56,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #5
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #6
   #run_test ./lamp.sh "10.9"
   run_test ./brew.sh
+  run_test ./powershell.sh
   run_test ./nodejs_latest.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #7
   run_test ./pythonpi.sh
