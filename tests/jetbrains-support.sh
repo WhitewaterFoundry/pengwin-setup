@@ -14,5 +14,19 @@ function test_install() {
   assertEquals "Toolbox was not installed" "1" "$(run ~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --version | grep -c 'Toolbox')"
 }
 
+function test_uninstall() {
+
+  run_pengwinsetup install UNINSTALL JETBRAINS --debug
+
+  local i
+  for i in 'rsync' 'zip'; do
+    package_installed "$i"
+    assertFalse "package $i is still installed" "$?"
+  done
+
+  assertFalse "Toolbox directory still exists" "[ -d ~/.local/share/JetBrains/Toolbox ]"
+  assertFalse "Toolbox symlink still exists" "[ -L ~/.local/bin/jetbrains-toolbox ]"
+}
+
 # shellcheck disable=SC1091
 source shunit2
