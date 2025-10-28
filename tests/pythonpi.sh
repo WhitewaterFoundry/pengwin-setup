@@ -4,7 +4,7 @@ source commons.sh
 
 function testPyEnv() {
 
-  run_pengwinsetup autoinstall PROGRAMMING PYTHONPI PYENV --debug
+  run_pengwinsetup autoinstall PROGRAMMING PYTHONPI PYENV
 
   assertEquals "Python was not installed" "1" "$(run "${HOME}"/.pyenv/shims/python3 --version | grep -c '3.1')"
   assertEquals "Pyenv variables are not setup" "1" "$(run cat "${HOME}"/.bashrc | grep -c '^[^#]*\bPYENV_ROOT.*/.pyenv')"
