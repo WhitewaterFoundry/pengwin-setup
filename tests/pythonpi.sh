@@ -4,7 +4,7 @@ source commons.sh
 
 function testPyEnv() {
 
-  run_pengwinsetup autoinstall PROGRAMMING PYTHONPI PYENV
+  run_pengwinsetup autoinstall PROGRAMMING PYTHONPI PYENV --debug
 
   local i
   for i in 'python3' 'make'; do
