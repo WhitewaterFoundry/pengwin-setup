@@ -34,32 +34,44 @@ function install_terraform() {
 
 function install_awscli() {
 
-  if (confirm --title "AWS CLI" --yesno "Would you like to install the AWS CLI Using the Bundled Installer?\n\nPython is required" 10 90); then
-    echo "Installing AWS CLI..."
+  if (confirm --title "AWS CLI" --yesno "Would you like to install the AWS CLI version 2?" 8 70); then
+    echo "Checking for existing AWS CLI installation..."
 
-    if ! (python3 --version); then
-      bash "${SetupDir}"/pythonpi.sh "$@"
-
-      if ! (python3 --version); then
-        return
+    # Check if AWS CLI v1 is installed
+    if [[ -d "/usr/local/aws" ]] && [[ -f "/usr/local/bin/aws" ]]; then
+      local aws_version
+      aws_version=$(/usr/local/bin/aws --version 2>&1)
+      
+      if [[ "${aws_version}" == *"aws-cli/1."* ]]; then
+        echo "AWS CLI version 1 is currently installed."
+        
+        if (confirm --title "AWS CLI v1 Detected" --yesno "AWS CLI version 1 is installed. To install version 2, version 1 must be uninstalled first.\n\nWould you like to uninstall AWS CLI version 1?" 10 75); then
+          echo "Uninstalling AWS CLI version 1..."
+          bash "${SetupDir}/uninstall/awscli.sh" --skip-warning "$@"
+        else
+          echo "Installation cancelled. AWS CLI version 1 will not be removed."
+          return 1
+        fi
       fi
     fi
 
-    createtmp
-    sudo apt-get -y install unzip python3-distutils python3-venv
-    wget -O awscli-bundle.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
-    unzip awscli-bundle.zip
+    echo "Installing AWS CLI version 2..."
 
-    sudo python3 awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+    createtmp
+    sudo apt-get -y -q install unzip curl
+
+    # Download and install AWS CLI v2
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "awscliv2.zip"
+    unzip -q awscliv2.zip
+    sudo ./aws/install
 
     echo "Installing bash-completion"
     sudo mkdir -p /etc/bash_completion.d
     sudo apt-get install -yq bash-completion
 
-    sudo cp /usr/local/aws/bin/aws_completer /usr/local/bin
-    sudo cp /usr/local/aws/bin/aws_bash_completer /etc/bash_completion.d/
-
-    aws --version
+    # AWS CLI v2 has built-in completion support
+    /usr/local/bin/aws --version
+    echo "complete -C '/usr/local/bin/aws_completer' aws" | sudo tee /etc/bash_completion.d/aws >/dev/null
 
     cleantmp
   else
