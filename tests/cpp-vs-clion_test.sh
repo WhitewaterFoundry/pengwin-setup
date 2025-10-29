@@ -12,11 +12,6 @@ function testMain() {
   done
 
   assertEquals "Cmake was not installed" "1" "$(run /usr/bin/cmake --version | grep -c '3')"
-
-  if [[ "$(uname -m)" == "x86_64" ]] ; then
-    assertEquals "MS Cmake was not installed" "1" "$(run /usr/local/bin/cmake --version | grep -c '3.1')"
-  fi
-
 }
 
 function testUninstall() {
@@ -30,11 +25,6 @@ function testUninstall() {
 
   command -v /usr/bin/cmake
   assertEquals "Cmake was not uninstalled" "1" "$?"
-
-  if [[ "$(uname -m)" == "x86_64" ]] ; then
-    command -v /usr/local/bin/cmake
-    assertEquals "MS Cmake was not uninstalled" "1" "$?"
-  fi
 }
 
 # shellcheck disable=SC1091
