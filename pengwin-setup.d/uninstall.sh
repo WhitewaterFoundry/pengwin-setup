@@ -32,6 +32,7 @@ function main() {
       "IBM" "Remove IBM Cloud CLI tools" ${OFF} \
       "IBUS" "Remove all ibus improved non-Latin input support" ${OFF} \
       "JAVA" "Remove SDKMan its installed Java SDKs" ${OFF} \
+      "JETBRAINS" "Remove JetBrains Toolbox" ${OFF} \
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" ${OFF} \
       "KUBERNETES" "Remove Kubernetes tooling" ${OFF} \
       "LAMP" "Remove LAMP stack" ${OFF} \
@@ -162,6 +163,11 @@ function main() {
   if [[ ${menu_choice} == *"JAVA"* ]]; then
     echo "JAVA"
     bash "${UninstallDir}"/java.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"JETBRAINS"* ]]; then
+    echo "JETBRAINS"
+    bash "${UninstallDir}"/jetbrains-support.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"KEYCHAIN"* ]]; then
