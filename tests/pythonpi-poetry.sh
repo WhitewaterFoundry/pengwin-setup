@@ -21,7 +21,7 @@ function test_py_poetry() {
   run python3 --version
   run "${HOME}"/.local/bin/poetry --version
 
-  assertEquals "Python was not installed" "1" "$(run python3 --version | grep -c '3.1')"
+  assertEquals "Python was not installed" "1" "$(run python3 --version | grep -c '^Python 3\.13')"
   assertEquals "Poetry was not installed" "1" "$(run "${HOME}"/.local/bin/poetry --version | grep -c '2.1')"
 }
 
