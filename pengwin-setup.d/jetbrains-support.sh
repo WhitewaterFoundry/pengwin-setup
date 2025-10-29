@@ -3,8 +3,6 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-declare SetupDir
-
 function install_jetbrains_support() {
 
   install_packages rsync zip

@@ -41,6 +41,18 @@ function rem_file() {
 
 }
 
+function rem_link() {
+
+  # Usage: remove_link <FILE>
+  echo "Removing link: '$1'"
+  if [[ -L "$1" ]]; then
+    rm -f "$1"
+  else
+    echo "... not found!"
+  fi
+
+}
+
 function rem_dir() {
 
   # Usage: remove_dir <DIR>
@@ -58,6 +70,18 @@ function sudo_rem_file() {
   # Same as above, just with administrative privileges
   echo "Removing file: '$1'"
   if [[ -f "$1" ]]; then
+    sudo rm -f "$1"
+  else
+    echo "... not found!"
+  fi
+
+}
+
+function sudo_rem_link() {
+
+  # Same as above, just with administrative privileges
+  echo "Removing link: '$1'"
+  if [[ -L "$1" ]]; then
     sudo rm -f "$1"
   else
     echo "... not found!"
