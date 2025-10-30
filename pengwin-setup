@@ -52,15 +52,6 @@ function check_upgrades() {
     sudo apt-get install -q -y opensysusers
   fi
 
-  # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
-  if [[ -f "/etc/apt/.dist-upgrade" ]]; then
-    echo "Distribution upgrade flag noticed! Alerting user"
-    if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
-      sudo rm /etc/apt/.dist-upgrade
-      sudo apt-get dist-upgrade -y
-    fi
-  fi
-
   # Check if there's any upgrades to pengwin-setup / pengwin-base
   echo "Running upgrade check..."
   # shellcheck disable=SC2155
@@ -72,9 +63,21 @@ function check_upgrades() {
       # Ensure that packages get updated without affecting other held packages like udev
       sudo apt-mark unhold pengwin-base pengwin-setup >/dev/null 2>&1
       upgrade_packages --allow-downgrades pengwin-base pengwin-setup
+
+      # shellcheck disable=SC2119
+      update_packages
     fi
   elif [[ ${JUST_UPDATE} ]]; then
     upgrade_packages
+  fi
+
+  # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
+  if [[ -f "/etc/apt/.dist-upgrade" ]]; then
+    echo "Distribution upgrade flag noticed! Alerting user"
+    if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
+      sudo rm /etc/apt/.dist-upgrade
+      sudo apt-get dist-upgrade -y
+    fi
   fi
 
   if [[ -z ${WSL2} ]]; then
