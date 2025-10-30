@@ -27,6 +27,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   #run_test ./guilib.sh
   run_test ./desktop.sh
   run_test ./terraform.sh
+  run_test ./awscli.sh
   run_test ./lamp.sh "12.0"
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
@@ -44,6 +45,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #2
   run_test ./ansible.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #3
   run_test ./terraform.sh
+  run_test ./awscli.sh
   run_test ./nodejs_lts.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #4
   run_test ./nodejs_n.sh
