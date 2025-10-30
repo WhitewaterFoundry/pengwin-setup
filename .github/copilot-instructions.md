@@ -186,6 +186,7 @@ When adding a new installer component, update these files:
 - Handle errors gracefully with meaningful messages
 - Consider both WSL1 and WSL2 environments when relevant
 - Be mindful of Windows/Linux path interactions in WSL
+- **Prefer `dialog` over `whiptail`** - whiptail is legacy and the project is migrating to dialog
 
 ## Common Functions (from common.sh)
 
@@ -196,7 +197,7 @@ Key functions available in all scripts:
 - `install_packages` - Install apt packages with proper error handling
 - `upgrade_packages` - Upgrade packages
 - `createtmp` - Create temporary directory
-- `whiptail`, `dialog` - Dialog commands for UI
+- `dialog` - Dialog command for UI (preferred over legacy `whiptail`)
 - Various progress indicators and utility functions
 
 ## Getting Help
