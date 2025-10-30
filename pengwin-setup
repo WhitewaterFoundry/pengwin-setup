@@ -77,6 +77,8 @@ function check_upgrades() {
     if (confirm --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90); then
       sudo rm /etc/apt/.dist-upgrade
       sudo apt-get dist-upgrade -y
+      sudo apt-get autoremove -y
+      touch "${HOME}"/.should-restart
     fi
   fi
 
