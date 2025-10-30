@@ -22,8 +22,8 @@ function install_nodejs_nodesource() {
   install_packages nodejs="${version}"
 }
 
-NODEJS_LATEST_VERSION=24
-NODEJS_LTS_VERSION=22
+NODEJS_LATEST_VERSION=25
+NODEJS_LTS_VERSION=24
 
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
@@ -83,6 +83,8 @@ EOF
   eval "$(cat "${NPM_WIN_PROFILE}")"
 fi
 
+exit_status=0
+
 if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   echo "Ensuring we have build-essential installed"
   sudo apt-get -y -q install build-essential
@@ -90,6 +92,11 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   echo "Installing n, Node.js version manager"
   curl -L https://git.io/n-install -o n-install.sh
   env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   N_PATH="$(cat "${HOME}"/.bashrc | grep "^.*N_PREFIX.*$" | cut -d'#' -f 1)"
   echo "${N_PATH}" | sudo tee "/etc/profile.d/n-prefix.sh"
@@ -105,6 +112,11 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing latest node.js release"
   n latest
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   # Add n to fish shell
   FISH_DIR="$HOME/.config/fish/conf.d"
@@ -129,6 +141,13 @@ EOF
 elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
+
+  install_packages libatomic1
 
   # Set NVM_DIR variable and load nvm
   NVM_PATH="$(cat "${HOME}"/.bashrc | grep '^export NVM_DIR=')"
@@ -176,18 +195,29 @@ EOF
 
   echo "Installing latest Node.js release"
   nvm install node --latest-npm
+  exit_status=$?
+  if [[ ${exit_status} != 0 ]]; then
+    cleantmp
+    exit "${exit_status}"
+  fi
 
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
 
   touch "${HOME}"/.should-restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
-  install_nodejs_nodesource ${NODEJS_LATEST_VERSION}
+  install_nodejs_nodesource "${NODEJS_LATEST_VERSION}"
+  exit_status=$?
 elif [[ ${menu_choice} == *"LTS"* ]]; then
-  install_nodejs_nodesource ${NODEJS_LTS_VERSION}
+  install_nodejs_nodesource "${NODEJS_LTS_VERSION}"
+  exit_status=$?
 fi
 
 cleantmp
+
+if [[ ${exit_status} != 0 ]]; then
+  exit "${exit_status}"
+fi
 
 if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
@@ -198,6 +228,13 @@ if (confirm --title "YARN" --yesno "Would you like to download and install the Y
 
     # shellcheck disable=SC2119
     update_packages
+  fi
+
+  if ! command -v corepack; then
+    if ! npm i -g corepack; then
+      sudo npm i -g corepack
+      sudo chown -R "$(id -u)":"$(id -g)" "$HOME/.npm"
+    fi
   fi
 
   if ! corepack enable; then

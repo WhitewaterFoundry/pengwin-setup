@@ -27,12 +27,9 @@ function install_lamp() {
     menu_choice=$(
 
       menu --title "MariaDB" --radiolist "Choose what version of MariaDB you want to install\n[SPACE to select, ENTER to confirm]:" 12 70 6 \
-        "BUILTIN" "Install MariaDB 10.11 from Debian Official Repo    " off \
-        "10.6" "Install MariaDB 10.6 from MariaDB" off \
-        "10.7" "Install MariaDB 10.7 from MariaDB" off \
-        "10.8" "Install MariaDB 10.8 from MariaDB" off \
-        "10.9" "Install MariaDB 10.9 from MariaDB" off \
-        "10.11" "Install MariaDB 10.11 from MariaDB" off
+        "BUILTIN" "Install MariaDB 11.8 from Debian Official Repo    " off \
+        "12.0" "Install MariaDB 12.0 from MariaDB" off \
+        "12.1" "Install MariaDB 12.1 from MariaDB" off
 
       # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
@@ -46,7 +43,7 @@ function install_lamp() {
     fi
 
     # shellcheck disable=SC2155
-    local selected_version=$(echo "${menu_choice##* }" | grep -E "10\.[6-9]?")
+    local selected_version=$(echo "${menu_choice##* }" | grep -E "1[0-9]\.[0-9]+")
     if [[ -z ${selected_version} || ${menu_choice} == *"BUILTIN"* ]]; then
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
@@ -54,7 +51,7 @@ function install_lamp() {
       fi
 
       install_packages mariadb-server mariadb-client
-      apt policy mariadb-server
+      apt-cache policy mariadb-server
 
     else
       createtmp
@@ -63,8 +60,24 @@ function install_lamp() {
 
       sudo apt-get -y -q install libdbi-perl
 
-      curl -LsSO https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
-      sudo bash mariadb_repo_setup --mariadb-server-version="mariadb-${selected_version}" --os-type=debian --os-version=bullseye
+      sudo mkdir -p /etc/apt/keyrings
+      sudo curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
+
+      sudo tee "/etc/apt/sources.list.d/mariadb.sources" <<EOF
+# MariaDB ${selected_version} repository list - created 2025-10-26 18:26 UTC
+# https://mariadb.org/download/
+X-Repolib-Name: MariaDB
+Types: deb
+# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+# URIs: https://deb.mariadb.org/${selected_version}/debian
+URIs: https://mirror.raiolanetworks.com/mariadb/repo/${selected_version}/debian
+Suites: trixie
+Components: main
+Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
+
+EOF
+
+      update_packages
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
@@ -72,8 +85,8 @@ function install_lamp() {
         sudo debconf-set-selections <<<"mariadb-server-${selected_version} mysql-server/root_password_again password PASS"
       fi
 
-      install_packages -t bullseye mariadb-server mariadb-client mariadb-backup
-      apt policy mariadb-server
+      install_packages -t trixie mariadb-server mariadb-client mariadb-backup
+      apt-cache policy mariadb-server
 
       cleantmp
     fi
@@ -87,8 +100,20 @@ function install_lamp() {
 
     echo "Installing PHP"
     install_packages php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
-    sudo a2enmod php7.4
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to install PHP packages. Skipping PHP module enablement."
+    else
+      local php_module_version
+      if command -v php >/dev/null; then
+        php_module_version=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;' 2>/dev/null || true)
+      fi
 
+      if [[ -n ${php_module_version} ]]; then
+        sudo a2enmod "php${php_module_version}"
+      else
+        echo "Unable to determine installed PHP module version; skipping automatic module enablement."
+      fi
+    fi
     php -v
 
     echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php

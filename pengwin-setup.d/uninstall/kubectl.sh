@@ -30,8 +30,7 @@ function main() {
   sudo_rem_file "/etc/apt/sources.list.d/kubernetes.list"
 
   echo "Removing kubectl APT keys..."
-  sudo apt-key del "$kubectl_key1"
-  sudo apt-key del "$kubectl_key2"
+  sudo_rem_file /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 }
 
 main "$@"

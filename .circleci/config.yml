@@ -19,7 +19,7 @@ jobs:
             find . -type f -name '*.sh' | xargs shellcheck --external-sources --severity=style --source-path="${PWD}/pengwin-setup.d:${PWD}/pengwin-setup.d/uninstall:tests" || echo "Shellcheck has some warnings"
   build:
     docker:
-      - image: debian:bookworm
+      - image: debian:trixie
     resource_class: small
     environment:
       DEBEMAIL: "contact@whitewaterfoundry.com"
@@ -35,7 +35,7 @@ jobs:
           name: Update changelog
           command: |
             rm ./debian/changelog
-            dch --create --distribution bookworm --package "pengwin-setup" --newversion << pipeline.parameters.package-version >>-${CIRCLE_BUILD_NUM} "Built on Circle CI"
+            dch --create --distribution trixie --package "pengwin-setup" --newversion << pipeline.parameters.package-version >>-${CIRCLE_BUILD_NUM} "Built on Circle CI"
       - run:
           name: Build the package
           command: debuild -i -us -uc -b
@@ -53,7 +53,7 @@ jobs:
           path: /tmp/pkgs
   test:
     docker:
-      - image: debian:bookworm
+      - image: debian:trixie
     resource_class: medium
     parallelism: 10
     steps:
@@ -66,16 +66,22 @@ jobs:
             Pin: release a=stable-backports
             Pin-Priority: 500" >/etc/apt/preferences
 
-            echo "deb https://deb.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list
+            echo "deb https://deb.debian.org/debian trixie-backports main" >> /etc/apt/sources.list
             
             # Install the pengwin image base packages
             apt-get -y -q update
             apt-get -y -q install sudo locales git openssh-client gnupg apt-transport-https wget ca-certificates less curl bash-completion vim man-db socat gcc-12-base iputils-ping dos2unix iproute2 psmisc rsync apt-utils kmod 
 
+            if [ "${CIRCLE_BRANCH}" = "master" ]; then
+              suffix=""
+            else
+              suffix="-dev"
+            fi
+            
             export os=debian
-            export dist=bookworm
+            export dist=trixie
 
-            curl -s https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base/script.deb.sh | sudo -E bash
+            curl -s "https://packagecloud.io/install/repositories/whitewaterfoundry/pengwin-base${suffix}/script.deb.sh" | sudo -E bash
 
             apt-get -y -q install pengwin-base
 
@@ -86,6 +92,9 @@ jobs:
             apt-get -y -q update
             apt-get -y -q autoremove
 
+            if [ "${CIRCLE_BRANCH}" != "master" ]; then
+              switch2dev
+            fi
       - run:
           name: Make automated tests
           command: |
@@ -110,11 +119,11 @@ jobs:
           name: Install packageloud cli
           command: gem install package_cloud
       - run:
-          name: Push deb package bullseye
-          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bullseye /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
-      - run:
           name: Push deb package bookworm
           command: package_cloud push whitewaterfoundry/pengwin-setup/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
+      - run:
+          name: Push deb package trixie
+          command: package_cloud push whitewaterfoundry/pengwin-setup/debian/trixie /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
   deploydevdeb:
     docker:
       - image: cimg/ruby:2.7
@@ -126,11 +135,11 @@ jobs:
           name: Install packageloud cli
           command: gem install package_cloud
       - run:
-          name: Push deb package bullseye
-          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bullseye /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
-      - run:
           name: Push deb package bookworm
           command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/bookworm /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
+      - run:
+          name: Push deb package trixie
+          command: package_cloud push whitewaterfoundry/pengwin-setup-dev/debian/trixie /tmp/pkgs/pengwin-setup_<< pipeline.parameters.package-version >>-*_all.deb
 workflows:
   version: 2
   testdebbuild:

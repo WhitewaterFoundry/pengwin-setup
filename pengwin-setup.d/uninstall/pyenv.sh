@@ -51,6 +51,7 @@ function main() {
   echo "Showing user shell-restart warning"
   message --title "pyenv" --msgbox "Please restart your shell, or 'pyenv not found' will continue to be shown with every command issued" 8 85
 
+  touch "${HOME}"/.should-restart
 }
 
 if show_warning "pyenv" "$@"; then

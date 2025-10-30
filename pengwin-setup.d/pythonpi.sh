@@ -2,9 +2,11 @@
 
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
+PYTHON_TARGET="3.14"
+PYTHON_DEBIAN="3.13"
 
 #######################################
-# Install Python 3.13 with pyenv
+# Install Python 3.14 with pyenv
 # Globals:
 #   HOME
 #   PATH
@@ -14,10 +16,12 @@ source "$(dirname "$0")/common.sh" "$@"
 #######################################
 function install_pyenv() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.13 with pyenv?" 8 70); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_TARGET} with pyenv?" 8 70); then
     echo "Installing PYENV"
     createtmp
-    install_packages make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+    install_packages make build-essential libssl-dev zlib1g-dev \
+      libbz2-dev libreadline-dev libsqlite3-dev curl wget git \
+      xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
     wget https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
     bash pyenv-installer
 
@@ -48,15 +52,14 @@ function install_pyenv() {
       echo 'status --is-interactive; and pyenv init -| source' >>"${HOME}"/.config/fish/config.fish
     fi
 
-    local python_target="3.13"
-    echo "Installing Python ${python_target}"
+    echo "Installing Python ${PYTHON_TARGET}"
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 
-    pyenv install -s "$python_target"
-    pyenv global "$python_target"
+    pyenv install -s "$PYTHON_TARGET"
+    pyenv global "$PYTHON_TARGET"
 
     touch "${HOME}"/.should-restart
 
@@ -67,7 +70,7 @@ function install_pyenv() {
 }
 
 #######################################
-# Install Python 3.11, IDLE, and the pip package manager from the Debian repos
+# Install Python 3.13, and the pip package manager from the Debian repos
 # Globals:
 #   HOME
 # Arguments:
@@ -75,11 +78,10 @@ function install_pyenv() {
 #######################################
 function install_pythonpip() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.11, IDLE, and the pip package manager?" 8 90); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_DEBIAN}, and the pip package manager?" 8 90); then
     echo "Installing PYTHONPIP"
     createtmp
-    install_packages build-essential python3 python3-distutils idle-python3.11 python3-pip python3-venv
-    pip3 install -U pip --no-warn-script-location
+    install_packages build-essential python3 python3-pip python3-venv
 
     touch "${HOME}"/.should-restart
 
@@ -90,7 +92,7 @@ function install_pythonpip() {
 }
 
 #######################################
-# Install Python 3.11, IDLE, and the poetry package manager
+# Install Python 3.13, and the poetry package manager
 # Globals:
 #   HOME
 # Arguments:
@@ -98,10 +100,10 @@ function install_pythonpip() {
 #######################################
 function install_poetry() {
 
-  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python 3.11, IDLE, and the poetry package manager?" 9 90); then
+  if (confirm --title "PYTHON" --yesno "Would you like to download and install Python ${PYTHON_DEBIAN}, and the poetry package manager?" 9 90); then
     echo "Installing POETRY"
     createtmp
-    install_packages build-essential python3 python3-distutils idle-python3.11 python3-venv
+    install_packages build-essential python3 python3-venv
     curl -sSL https://install.python-poetry.org | python3 -
 
     source "${HOME}"/.poetry/env
@@ -130,9 +132,9 @@ function main() {
   local menu_choice=$(
 
     menu --title "Python" --radiolist "Python install options\n[SPACE to select, ENTER to confirm]:" 12 75 3 \
-      "PYENV" 'Python 3.13 with pyenv   ' off \
-      "PYTHONPIP" 'Python 3.11, IDLE, and the pip package manager ' off \
-      "POETRY" 'Python 3.11, IDLE, and the poetry package manager ' off
+      "PYENV" "Python ${PYTHON_TARGET} with pyenv   " off \
+      "PYTHONPIP" "Python ${PYTHON_DEBIAN}, and the pip package manager " off \
+      "POETRY" "Python ${PYTHON_DEBIAN}, and the poetry package manager " off
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3

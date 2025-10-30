@@ -12,9 +12,11 @@ function install_terraform() {
   if (confirm --title "Terraform" --yesno "Would you like to install Terraform?" 8 40); then
     echo "Installing Terraform..."
 
+    local terraform_version="1.13.4"
+
     createtmp
 
-    wget -O terraform.zip "https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_$(dpkg --print-architecture).zip"
+    wget -O terraform.zip "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_$(dpkg --print-architecture).zip"
     unzip terraform.zip
     sudo mv terraform /usr/bin
     sudo chmod +x /usr/bin/terraform

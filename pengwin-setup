@@ -139,7 +139,7 @@ function bye_message() {
     message --title "Setup is complete." --msgbox "This window will be closed to apply the changes in the environment.\nPlease start Pengwin again \n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
 
     if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then #No automated installation
-      wslconfig.exe /t "${WSL_DISTRO_NAME:-WLinux}"
+      wsl.exe --terminate "${WSL_DISTRO_NAME:-WLinux}"
     fi
   elif [[ ${should_restart} ]]; then
     message --title "Setup is complete." --msgbox "Please close this window and start Pengwin again to apply the changes in the environment.\n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
@@ -224,6 +224,10 @@ function install_menu() {
   fi
 
   if [[ ${exit_status} != 0 ]]; then
+    if [[ ${NON_INTERACTIVE} ]]; then
+      return "${exit_status}"
+    fi
+
     install_menu "$@"
   fi
 }
