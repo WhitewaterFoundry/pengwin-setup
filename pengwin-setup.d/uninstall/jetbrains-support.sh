@@ -7,6 +7,9 @@ function main() {
 
   echo "Uninstalling JetBrains Toolbox"
 
+  rem_file "$HOME/.config/autostart/jetbrains-toolbox.desktop"
+  killall jetbrains-toolbox
+
   echo "Removing JetBrains Toolbox installation directory"
   rem_dir "$HOME/.local/share/JetBrains/Toolbox"
 
