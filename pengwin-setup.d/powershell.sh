@@ -3,6 +3,15 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
+# shellcheck disable=SC2155
+declare dist="$(uname -m)"
+if [[ ${dist} != "x86_64" ]]; then
+  message --title "POWERSHELL" --msgbox "PowerShell installation is not supported on ARM64 architecture. Microsoft repositories do not provide PowerShell packages for ARM64." 10 70
+  echo "Skipping POWERSHELL - not supported on ARM64"
+  exit 0
+fi
+unset dist
+
 if (confirm --title "POWERSHELL" --yesno "Would you like to download and install Powershell?" 8 55); then
   echo "Installing POWERSHELL"
 
