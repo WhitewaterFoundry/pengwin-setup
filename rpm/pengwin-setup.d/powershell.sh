@@ -8,7 +8,7 @@ declare dist="$(uname -m)"
 if [[ ${dist} != "x86_64" ]]; then
   message --title "POWERSHELL" --msgbox "PowerShell installation is not supported on ARM64 architecture. Microsoft repositories do not provide PowerShell packages for ARM64." 10 70
   echo "Skipping POWERSHELL - not supported on ARM64"
-  exit 0
+  exit 1
 fi
 unset dist
 
