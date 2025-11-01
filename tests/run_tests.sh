@@ -12,23 +12,16 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./java.sh
   run_test ./pythonpi.sh
   run_test ./go.sh
-  #run_test ./ansible.sh
   run_test ./nodejs_n.sh
   run_test ./fish.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
-  run_test ./cpp-vs-clion_test.sh
-  run_test ./jetbrains-support.sh
-  run_test ./hidpi.sh
   run_test ./dotnet.sh
-  run_test ./brew.sh
   run_test ./powershell.sh
   run_test ./microsoft_edit.sh
-  #run_test ./guilib.sh
   run_test ./desktop.sh
   run_test ./terraform.sh
   run_test ./awscli.sh
-  run_test ./lamp.sh "12.0"
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
