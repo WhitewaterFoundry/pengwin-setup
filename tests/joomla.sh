@@ -12,7 +12,7 @@ source mocks.sh
 #######################################
 function test_main() {
 
-  run_pengwinsetup install PROGRAMMING JOOMLA
+  run_pengwinsetup install PROGRAMMING JOOMLA --debug
 
   # Check if LAMP stack was installed (required dependency)
   for i in 'mariadb-server' 'apache2' 'php'; do
@@ -48,7 +48,7 @@ function test_main() {
 #######################################
 function test_uninstall() {
 
-  run_pengwinsetup uninstall JOOMLA
+  run_pengwinsetup uninstall JOOMLA --debug
 
   # Check if Joomla directory was removed
   local joomla_root="${HOME}/joomla_root"
