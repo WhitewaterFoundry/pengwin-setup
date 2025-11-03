@@ -18,7 +18,7 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
 
   echo "Configuring rbenv"
   (
-    cd ~/.rbenv && src/configure && make -j 4 -C src
+    cd ~/.rbenv && src/configure && make -j "$(nproc)" -C src
   )
 
   conf_path='/etc/profile.d/ruby.sh'
@@ -49,7 +49,7 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   echo 'rbenv rehash >/dev/null ^&1' | sudo tee -a "${conf_path_fish}"
 
   echo "Installing Ruby using rbenv"
-  env MAKE_OPTS="-j 4" rbenv install 3.3.6 --verbose
+  env MAKE_OPTS="-j $(nproc)" rbenv install 3.3.6 --verbose
   rbenv global 3.3.6
   echo "Checking ruby version"
   ruby -v
