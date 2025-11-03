@@ -191,14 +191,14 @@ function main() {
     bash "${UninstallDir}"/latex.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"NIM"* ]]; then
-    echo "NIM"
-    bash "${UninstallDir}"/nim.sh "$@"
-  fi
-
   if [[ ${menu_choice} == *"MSEDIT"* ]]; then
     echo "MSEDIT"
     bash "${UninstallDir}"/microsoft-edit.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"NIM"* ]]; then
+    echo "NIM"
+    bash "${UninstallDir}"/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]]; then
