@@ -11,10 +11,11 @@ function main() {
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Tools Menu" "${DIALOG_TYPE}" "Install applications or servers\n[ENTER to confirm]:" 14 87 5 \
+    menu --title "Tools Menu" "${DIALOG_TYPE}" "Install applications or servers\n[ENTER to confirm]:" 14 87 6 \
       "ANSIBLE" "Install tools to deploy Ansible Playbooks" ${OFF} \
       "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " ${OFF} \
       "DOCKER" "Install a secure bridge to Docker Desktop" ${OFF} \
+      "FZF" "Install command line fuzzy finder" ${OFF} \
       "HOMEBREW" "Install the Homebrew package manager" ${OFF} \
       "POWERSHELL" "Install PowerShell for Linux" ${OFF}
 
@@ -43,6 +44,12 @@ function main() {
   if [[ ${menu_choice} == *"DOCKER"* ]]; then
     echo "DOCKER"
     bash "${SetupDir}"/docker.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${menu_choice} == *"FZF"* ]]; then
+    echo "FZF"
+    bash "${SetupDir}"/fzf.sh "$@"
     exit_status=$?
   fi
 
