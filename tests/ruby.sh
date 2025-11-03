@@ -18,10 +18,10 @@ function testRuby() {
   command -v rbenv
   assertEquals "rbenv was not installed" "0" "$?"
 
-  assertEquals "Ruby 3.3.6 was not installed" "1" "$(run ruby -v | grep -c '3.3.6')"
+  assertEquals "Ruby 3.3.6 was not installed" "1" "$(ruby -v | grep -c '3.3.6')"
 
-  command -v bundler
-  assertEquals "bundler was not installed" "0" "$?"
+  command -v bundle
+  assertEquals "bundle was not installed" "0" "$?"
 
   shellcheck "${installed_script}"
   assertEquals "shellcheck reported errors on ${installed_script}" "0" "$?"
