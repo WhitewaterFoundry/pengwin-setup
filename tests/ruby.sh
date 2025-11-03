@@ -2,7 +2,7 @@
 
 source commons.sh
 
-function testRuby() {
+function test_ruby() {
   run_pengwinsetup autoinstall PROGRAMMING RUBY
 
   assertTrue "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
@@ -28,7 +28,7 @@ function testRuby() {
 
 }
 
-function testUninstall() {
+function test_uninstall() {
 
   run_pengwinsetup autoinstall UNINSTALL RUBY
 
