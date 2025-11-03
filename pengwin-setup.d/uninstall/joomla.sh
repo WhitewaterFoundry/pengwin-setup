@@ -18,12 +18,16 @@ function main() {
 
   echo "Removing Joomla database"
   if command -v mysql >/dev/null 2>&1 || command -v mariadb >/dev/null 2>&1; then
-    sudo mysql -u root << EOF 2>/dev/null || true
+    if sudo mysql -u root << EOF 2>/dev/null
 DROP DATABASE IF EXISTS joomla;
 DROP USER IF EXISTS 'joomla'@'localhost';
 FLUSH PRIVILEGES;
 EOF
-    echo "... database removed"
+    then
+      echo "... database removed"
+    else
+      echo "... database removal failed (may not exist or MySQL not running)"
+    fi
   else
     echo "... MySQL/MariaDB not found, skipping database removal"
   fi

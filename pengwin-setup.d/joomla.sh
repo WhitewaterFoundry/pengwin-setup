@@ -72,19 +72,20 @@ function install_joomla() {
     sudo chown -R www-data:www-data "${joomla_root}"
 
     # Create symlink if it doesn't exist
-    if [[ ! -L "/var/www/html/joomla_root" ]]; then
+    if [[ ! -e "/var/www/html/joomla_root" ]]; then
       sudo ln -s "${joomla_root}" /var/www/html/joomla_root
+    elif [[ ! -L "/var/www/html/joomla_root" ]]; then
+      echo "Warning: /var/www/html/joomla_root exists but is not a symlink. Skipping symlink creation."
     fi
     
     echo "Setting up Joomla database"
-    sudo mysql -u root << EOF
+    if ! sudo mysql -u root << EOF
 CREATE DATABASE IF NOT EXISTS joomla;
 CREATE USER IF NOT EXISTS 'joomla'@'localhost' IDENTIFIED BY 'joomla';
 GRANT ALL PRIVILEGES ON joomla.* TO 'joomla'@'localhost';
 FLUSH PRIVILEGES;
 EOF
-
-    if [[ $? -ne 0 ]]; then
+    then
       echo "Warning: Database setup may have failed. You may need to configure it manually."
     fi
 
