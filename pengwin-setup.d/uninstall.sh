@@ -48,6 +48,7 @@ function main() {
       "RUST" "Remove Rust and rustup toolchain installer" ${OFF} \
       "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" ${OFF} \
       "SSH" "Remove SSH server" ${OFF} \
+      "SYNAPTIC" "Remove Synaptic package manager" ${OFF} \
       "SYSTEMD" "Disable SystemD support" ${OFF} \
       "TERRAFORM" "Remove Terraform CLI tools" ${OFF} \
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
@@ -243,6 +244,11 @@ function main() {
   if [[ ${menu_choice} == *"SSH"* ]]; then
     echo "SSH"
     bash "${UninstallDir}"/ssh.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"SYNAPTIC"* ]]; then
+    echo "SYNAPTIC"
+    bash "${UninstallDir}"/synaptic.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"SYSTEMD"* ]]; then

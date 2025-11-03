@@ -35,6 +35,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #2
   run_test ./cpp-vs-clion_test.sh
   run_test ./hidpi.sh
   run_test ./ansible.sh
+  run_test ./synaptic.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #3
   run_test ./terraform.sh
   run_test ./awscli.sh
