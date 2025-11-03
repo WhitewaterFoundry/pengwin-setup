@@ -33,7 +33,7 @@ EOF
   fi
 
   echo "Removing Joomla web directory symlink"
-  sudo_rem_file "/var/www/html/joomla_root"
+  sudo_rem_link "/var/www/html/joomla_root"
 
   echo "Removing Joomla installation directory"
   if [[ -d "${joomla_root}" ]]; then
