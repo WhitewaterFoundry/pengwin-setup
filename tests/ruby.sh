@@ -1,0 +1,47 @@
+#!/bin/bash
+
+source commons.sh
+
+function testRuby() {
+  run_pengwinsetup autoinstall PROGRAMMING RUBY
+
+  assertTrue "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
+  assertTrue "FILE FISH-RUBY" "[ -f /etc/fish/conf.d/ruby.fish ]"
+
+  local installed_script="/etc/profile.d/ruby.sh"
+  # shellcheck disable=SC1090
+  source ${installed_script}
+
+  command -v ruby
+  assertEquals "Ruby was not installed" "0" "$?"
+
+  command -v rbenv
+  assertEquals "rbenv was not installed" "0" "$?"
+
+  assertEquals "Ruby 3.3.6 was not installed" "1" "$(run ruby -v | grep -c '3.3.6')"
+
+  command -v bundler
+  assertEquals "bundler was not installed" "0" "$?"
+
+  shellcheck "${installed_script}"
+  assertEquals "shellcheck reported errors on ${installed_script}" "0" "$?"
+
+}
+
+function testUninstall() {
+
+  run_pengwinsetup autoinstall UNINSTALL RUBY
+
+  assertFalse "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
+  assertFalse "FILE FISH-RUBY" "[ -f /etc/fish/conf.d/ruby.fish ]"
+
+  command -v ruby
+  assertEquals "Ruby was not uninstalled" "1" "$?"
+
+  command -v rbenv
+  assertEquals "rbenv was not uninstalled" "1" "$?"
+
+}
+
+# shellcheck disable=SC1091
+source shunit2
