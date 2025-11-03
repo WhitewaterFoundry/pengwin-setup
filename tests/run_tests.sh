@@ -23,6 +23,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./awscli.sh
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
+  run_test ./latex.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
@@ -54,6 +55,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #6
   run_test ./nodejs_latest.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #7
   run_test ./pythonpi.sh
+  run_test ./latex.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #8
   run_test ./java.sh
   run_test ./microsoft_edit.sh
