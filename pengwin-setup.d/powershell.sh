@@ -6,8 +6,8 @@ source "$(dirname "$0")/common.sh" "$@"
 # shellcheck disable=SC2155
 declare dist="$(uname -m)"
 if [[ ${dist} != "x86_64" ]]; then
-  message --title "POWERSHELL" --msgbox "PowerShell installation is not supported on ARM64 architecture. Microsoft repositories do not provide PowerShell packages for ARM64." 10 70
-  echo "Skipping POWERSHELL - not supported on ARM64"
+  message --title "POWERSHELL" --msgbox "PowerShell installation is only supported on x86_64 architecture. Microsoft repositories do not provide PowerShell packages for non-x86_64 architectures." 10 70
+  echo "Skipping POWERSHELL - not supported on non-x86_64 architecture"
   exit 1
 fi
 unset dist
