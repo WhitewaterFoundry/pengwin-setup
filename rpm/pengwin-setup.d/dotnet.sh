@@ -7,10 +7,11 @@ source "$(dirname "$0")/common.sh" "$@"
 declare SetupDir
 
 # shellcheck disable=SC2155
-dist="$(uname -m)"
-if [[ ${dist} != "x86_64" ]] ; then
-  echo "Skipping DOTNET not supported in ARM64"
-  exit 0
+declare dist="$(uname -m)"
+if [[ ${dist} != "x86_64" ]]; then
+  message --title "DOTNET" --msgbox ".NET SDK installation is only supported on x86_64 architecture. Microsoft repositories do not provide .NET SDK packages for non-x86_64 architectures." 10 70
+  echo "Skipping DOTNET - not supported on non-x86_64 architecture"
+  exit 1
 fi
 unset dist
 
