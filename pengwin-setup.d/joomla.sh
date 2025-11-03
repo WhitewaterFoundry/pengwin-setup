@@ -5,8 +5,8 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SetupDir
 declare wHome
-JOOMLA_VERSION="5-2-1"
-JOOMLA_MAJOR="5"
+JOOMLA_VERSION="5.2.1"
+JOOMLA_TAG="5.2.1"
 
 #######################################
 # Install Joomla CMS development environment
@@ -14,7 +14,7 @@ JOOMLA_MAJOR="5"
 #   SetupDir
 #   wHome
 #   JOOMLA_VERSION
-#   JOOMLA_MAJOR
+#   JOOMLA_TAG
 # Arguments:
 #   None
 #######################################
@@ -50,7 +50,8 @@ function install_joomla() {
     sudo service apache2 restart
 
     echo "Downloading Joomla ${JOOMLA_VERSION}"
-    wget -O Joomla.tar.bz2 "https://downloads.joomla.org/cms/joomla${JOOMLA_MAJOR}/${JOOMLA_VERSION}/Joomla_${JOOMLA_VERSION}-Stable-Full_Package.tar.bz2?format=bz2"
+    # Download from GitHub releases
+    wget -O Joomla.tar.bz2 "https://github.com/joomla/joomla-cms/releases/download/${JOOMLA_TAG}/Joomla_${JOOMLA_TAG}-Stable-Full_Package.tar.bz2"
     
     if [[ $? -ne 0 ]]; then
       echo "Error: Failed to download Joomla. Please check your internet connection."
