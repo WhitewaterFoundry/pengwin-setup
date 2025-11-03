@@ -23,7 +23,7 @@ function testUninstall() {
 
   # Test that all texlive packages are uninstalled
   for i in 'texlive-full' 'texlive-latex-extra' 'texlive-latex-recommended' 'texlive-latex-base'; do
-    package_installed $i
+    package_installed "$i"
     assertFalse "package $i is not uninstalled" "$?"
   done
 
