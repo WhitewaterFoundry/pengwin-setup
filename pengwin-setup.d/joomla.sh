@@ -5,44 +5,111 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SetupDir
 declare wHome
-JOOMLA_VERSION="3-9-8"
+JOOMLA_VERSION="5-2-1"
+JOOMLA_MAJOR="5"
 
+#######################################
+# Install Joomla CMS development environment
+# Globals:
+#   SetupDir
+#   wHome
+#   JOOMLA_VERSION
+#   JOOMLA_MAJOR
+# Arguments:
+#   None
+#######################################
 function install_joomla() {
 
-  if (confirm --title "Joomla" --yesno "Would you like to install the Joomla development server? It includes LAMP Stack" 10 60) ; then
+  if (confirm --title "Joomla" --yesno "Would you like to install the Joomla ${JOOMLA_VERSION} development server? It includes LAMP Stack" 10 70) ; then
 
-    bash ${SetupDir}/lamp.sh "$@" --yes
+    echo "Installing LAMP Stack for Joomla"
+    bash "${SetupDir}"/lamp.sh "$@" --yes
+    
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to install LAMP stack. Cannot continue with Joomla installation."
+      return 1
+    fi
 
     createtmp
-    sudo service mysql start
-
-    sudo sed -i "s/\(output_buffering = \)\([0-9]*\)/\1Off/" /etc/php/7.*/apache2/php.ini
+    
+    echo "Starting MySQL service"
+    sudo service mysql start || sudo service mariadb start
+    
+    # Update PHP configuration for Joomla 5
+    echo "Configuring PHP for Joomla"
+    local php_ini
+    php_ini=$(find /etc/php -name "php.ini" -path "*/apache2/*" 2>/dev/null | head -1)
+    
+    if [[ -n "${php_ini}" ]]; then
+      sudo sed -i "s/\(output_buffering = \)\([0-9]*\)/\1Off/" "${php_ini}"
+      sudo sed -i "s/;*\(memory_limit = \).*/\1256M/" "${php_ini}"
+      sudo sed -i "s/;*\(upload_max_filesize = \).*/\110M/" "${php_ini}"
+      sudo sed -i "s/;*\(post_max_size = \).*/\113M/" "${php_ini}"
+    fi
+    
     sudo service apache2 restart
 
-    wget -O Joomla.tar.bz2 https://downloads.joomla.org/cms/joomla3/${JOOMLA_VERSION}/Joomla_${JOOMLA_VERSION}-Stable-Full_Package.tar.bz2?format=bz2
+    echo "Downloading Joomla ${JOOMLA_VERSION}"
+    wget -O Joomla.tar.bz2 "https://downloads.joomla.org/cms/joomla${JOOMLA_MAJOR}/${JOOMLA_VERSION}/Joomla_${JOOMLA_VERSION}-Stable-Full_Package.tar.bz2?format=bz2"
+    
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to download Joomla. Please check your internet connection."
+      cleantmp
+      return 1
+    fi
 
     local joomla_root="${wHome}/joomla_root"
+    echo "Installing Joomla to ${joomla_root}"
     mkdir -p "${joomla_root}"
     sudo tar -xjvf Joomla.tar.bz2 --overwrite --directory "${joomla_root}"
-    sudo chown -R www-data:www-data "${joomla_root}/installation"
+    
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to extract Joomla archive."
+      cleantmp
+      return 1
+    fi
+    
+    sudo chown -R www-data:www-data "${joomla_root}"
 
-    sudo ln -s "${joomla_root}" /var/www/html/joomla_root
+    # Create symlink if it doesn't exist
+    if [[ ! -L "/var/www/html/joomla_root" ]]; then
+      sudo ln -s "${joomla_root}" /var/www/html/joomla_root
+    fi
+    
+    echo "Setting up Joomla database"
     sudo mysql -u root << EOF
-
-CREATE DATABASE joomla;
-GRANT ALL PRIVILEGES ON joomla.* TO 'joomla'@'localhost' IDENTIFIED BY 'joomla';
-
+CREATE DATABASE IF NOT EXISTS joomla;
+CREATE USER IF NOT EXISTS 'joomla'@'localhost' IDENTIFIED BY 'joomla';
+GRANT ALL PRIVILEGES ON joomla.* TO 'joomla'@'localhost';
+FLUSH PRIVILEGES;
 EOF
-    wslview "http://localhost/joomla_root/index.php"
+
+    if [[ $? -ne 0 ]]; then
+      echo "Warning: Database setup may have failed. You may need to configure it manually."
+    fi
+
+    echo ""
+    echo "Joomla ${JOOMLA_VERSION} installation complete!"
+    echo "Database: joomla"
+    echo "Database User: joomla"
+    echo "Database Password: joomla"
+    echo ""
+    echo "Opening Joomla installer in browser..."
+    
+    wslview "http://localhost/joomla_root/index.php" 2>/dev/null || echo "Please open http://localhost/joomla_root/index.php in your browser"
 
     cleantmp
 
-    bash ${SetupDir}/services.sh --enable-ssh
   else
     echo "Skipping Joomla"
   fi
 }
 
+#######################################
+# Main function
+# Arguments:
+#   None
+#######################################
 function main() {
 
   install_joomla "$@"

@@ -29,6 +29,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #1
   run_test ./desktop.sh
   run_test ./lamp.sh "BUILTIN"
+  run_test ./joomla.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #2
   run_test ./x410.sh
   run_test ./rclocal.sh
