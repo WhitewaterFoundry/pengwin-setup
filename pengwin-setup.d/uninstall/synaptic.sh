@@ -7,7 +7,7 @@ function main() {
 
   echo "Uninstalling Synaptic"
 
-  remove_package "synaptic" "lsb-release"
+  remove_package "synaptic"
 
 }
 
