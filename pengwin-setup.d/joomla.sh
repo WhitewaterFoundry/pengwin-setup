@@ -51,7 +51,7 @@ function install_joomla() {
 
     echo "Downloading Joomla ${JOOMLA_VERSION}"
     # Download from GitHub releases
-    wget -O Joomla.tar.bz2 "https://github.com/joomla/joomla-cms/releases/download/${JOOMLA_TAG}/Joomla_${JOOMLA_TAG}-Stable-Full_Package.tar.bz2"
+    wget -O Joomla.tar.gz "https://github.com/joomla/joomla-cms/releases/download/${JOOMLA_TAG}/Joomla_${JOOMLA_TAG}-Stable-Full_Package.tar.gz"
     
     if [[ $? -ne 0 ]]; then
       echo "Error: Failed to download Joomla. Please check your internet connection."
@@ -62,7 +62,7 @@ function install_joomla() {
     local joomla_root="${wHome}/joomla_root"
     echo "Installing Joomla to ${joomla_root}"
     mkdir -p "${joomla_root}"
-    sudo tar -xjvf Joomla.tar.bz2 --overwrite --directory "${joomla_root}"
+    sudo tar -xzvf Joomla.tar.gz --overwrite --directory "${joomla_root}"
     
     if [[ $? -ne 0 ]]; then
       echo "Error: Failed to extract Joomla archive."
