@@ -16,6 +16,11 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
 
   echo "Downloading VcxSrv installer"
   wget -O vcxsrvinstaller.exe "$VcxsrvUrl"
+  if [[ $? -ne 0 || ! -s vcxsrvinstaller.exe ]]; then
+    echo "Error: Failed to download VcXsrv installer from $VcxsrvUrl"
+    cleantmp
+    exit 1
+  fi
 
   wVcxsrvDir="$(cmd-exe /C "echo %USERPROFILE%\.vcxsrv" | tr -d '\r')"
   VcxsrvDir="$(wslpath "${wVcxsrvDir}")"
