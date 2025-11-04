@@ -40,7 +40,6 @@ if (confirm --title "VCXSRV" --yesno "Would you like to install the VcXsrv X-ser
   mkdir -p "${VcxsrvDir}"
 
   echo "Unpacking installer executable"
-  mkdir vcxsrv
   7z x vcxsrvinstaller.exe -o"${VcxsrvDir}"
 
   cleantmp
