@@ -17,11 +17,8 @@ function test_main() {
 function test_uninstall() {
   run_pengwinsetup install UNINSTALL SYNAPTIC
 
-  # shellcheck disable=SC2041
-  for i in 'synaptic' ; do
-    package_installed $i
-    assertFalse "package $i is not uninstalled" "$?"
-  done
+  package_installed synaptic
+  assertFalse "package synaptic is not uninstalled" "$?"
 
   command -v /usr/sbin/synaptic
   assertEquals "Synaptic was not uninstalled" "1" "$?"
