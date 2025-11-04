@@ -5,7 +5,6 @@ source commons.sh
 function test_main() {
   run_pengwinsetup install GUI SYNAPTIC
 
-  # shellcheck disable=SC2041
   for i in 'synaptic' 'lsb-release' ; do
     package_installed $i
     assertTrue "package $i is not installed" "$?"
