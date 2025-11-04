@@ -21,7 +21,7 @@ function test_main() {
   done
 
   # Check if Joomla directory was created
-  local joomla_root="${HOME}/joomla_root"
+  local joomla_root="/mnt/c/Users/user/joomla_root"
   assertTrue "Joomla root directory was not created" "[ -d ${joomla_root} ]"
 
   # Check if symlink was created
@@ -51,7 +51,7 @@ function test_uninstall() {
   run_pengwinsetup uninstall JOOMLA --debug
 
   # Check if Joomla directory was removed
-  local joomla_root="${HOME}/joomla_root"
+  local joomla_root="/mnt/c/Users/user/joomla_root"
   assertFalse "Joomla root directory was not removed" "[ -d ${joomla_root} ]"
 
   # Check if symlink was removed
