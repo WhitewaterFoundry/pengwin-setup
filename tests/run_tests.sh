@@ -15,6 +15,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   #run_test ./ansible.sh
   run_test ./nodejs_n.sh
   run_test ./fish.sh
+  run_test ./fzf.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
   run_test ./cpp-vs-clion_test.sh
@@ -69,4 +70,5 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
   run_test ./kubernetes.sh
   run_test ./go.sh
   run_test ./fish.sh
+  run_test ./fzf.sh
 fi
