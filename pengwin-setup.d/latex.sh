@@ -6,20 +6,25 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
+# Check if a version was passed as a parameter
+if [[ -n "$1" ]]; then
+  latex_choice="$1"
+else
+  latex_choice=$(
 
-latex_choice=$(
-
-menu --title "LaTeX" --radiolist "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 12 74 4 \
-    "FULL" "Install all TexLive packages" on \
-    "BASE" "Install essential TexLive packages " off \
-    "RECOMMENDED" "Install recommended TexLive packages" off \
-    "EXTRA" "Install a large collections of TexLive packages" off \
+  menu --title "LaTeX" --radiolist "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 12 74 4 \
+      "FULL" "Install all TexLive packages" on \
+      "BASE" "Install essential TexLive packages " off \
+      "RECOMMENDED" "Install recommended TexLive packages" off \
+      "EXTRA" "Install a large collections of TexLive packages" off \
 
 
-3>&1 1>&2 2>&3)
+  3>&1 1>&2 2>&3)
+fi
 
 if [[ ${latex_choice} == "CANCELLED" ]] ; then
   echo "Skipping LaTeX"
+  exit 0
 fi
 
 if [[ ${latex_choice} == *"FULL"* ]] ; then
@@ -37,7 +42,7 @@ if [[ ${latex_choice} == *"RECOMMENDED"* ]] ; then
   sudo apt-get install -y texlive-latex-base texlive-latex-recommended
 fi
 
-if [[ ${menu_choice} == *"EXTRA"* ]] ; then
+if [[ ${latex_choice} == *"EXTRA"* ]] ; then
   echo "Installing TexLive Extra..."
   sudo apt-get install -y texlive-latex-base texlive-latex-extra
 fi

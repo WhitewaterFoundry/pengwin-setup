@@ -3,7 +3,7 @@
 source commons.sh
 
 function testMain() {
-  run_pengwinsetup autoinstall PROGRAMMING LATEX
+  run_pengwinsetup install PROGRAMMING LATEX FULL
 
   # Test that at least texlive-full is installed (default option)
   package_installed texlive-full
@@ -19,7 +19,7 @@ function testMain() {
 }
 
 function testUninstall() {
-  run_pengwinsetup autoinstall UNINSTALL LATEX
+  run_pengwinsetup uninstall LATEX
 
   # Test that all texlive packages are uninstalled
   for i in 'texlive-full' 'texlive-latex-extra' 'texlive-latex-recommended' 'texlive-latex-base'; do
