@@ -10,6 +10,7 @@ if (confirm --title "FZF" --yesno "Would you like to download and install comman
   echo "Installing FZF"
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   cd ~/.fzf || exit
+  # The --all flag enables auto-completion and key bindings for all supported shells without prompting.
   ./install --all
 else
   echo "Skipping FZF"
