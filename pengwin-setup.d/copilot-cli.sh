@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# shellcheck source=common.sh
+source "$(dirname "$0")/common.sh" "$@"
+
+#Imported from common.h
+declare SetupDir
+
+if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis requires Node.js 22+ and npm 10+.\nIf not installed, the Node.js LTS installer will be launched.\n\nWould you like to install GitHub Copilot CLI?" 12 80); then
+  echo "Installing GitHub Copilot CLI"
+  
+  # Check if nodejs is installed and if version meets requirements
+  if ! command -v node &> /dev/null; then
+    echo "Node.js not found. Installing Node.js LTS..."
+    bash "${SetupDir}"/nodejs.sh --yes --noninteractive install NODEJS LTS "$@"
+    node_install_status=$?
+    if [[ ${node_install_status} != 0 ]]; then
+      echo "Failed to install Node.js. Cannot proceed with Copilot CLI installation."
+      exit "${node_install_status}"
+    fi
+  else
+    # Check Node.js version
+    node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+    if [[ ${node_version} -lt 22 ]]; then
+      echo "Node.js version ${node_version} is below required version 22."
+      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (22).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
+        echo "Upgrading Node.js to LTS..."
+        bash "${SetupDir}"/nodejs.sh --yes --noninteractive install NODEJS LTS "$@"
+        node_install_status=$?
+        if [[ ${node_install_status} != 0 ]]; then
+          echo "Failed to upgrade Node.js. Cannot proceed with Copilot CLI installation."
+          exit "${node_install_status}"
+        fi
+      else
+        echo "Skipping GitHub Copilot CLI installation due to incompatible Node.js version."
+        exit 1
+      fi
+    fi
+  fi
+
+  # Install GitHub Copilot CLI via npm
+  echo "Installing @githubnext/github-copilot-cli via npm..."
+  if ! npm install -g @githubnext/github-copilot-cli; then
+    if ! sudo npm install -g @githubnext/github-copilot-cli; then
+      echo "Failed to install GitHub Copilot CLI"
+      exit 1
+    fi
+  fi
+
+  # Set up shell aliases (github-copilot-cli provides these)
+  COPILOT_ALIAS_FILE="/etc/profile.d/github-copilot-cli.sh"
+  echo "Setting up GitHub Copilot CLI shell integration..."
+  sudo tee "${COPILOT_ALIAS_FILE}" <<'EOF'
+#!/bin/bash
+
+# GitHub Copilot CLI aliases
+eval "$(github-copilot-cli alias -- "$0")"
+EOF
+
+  # Set up for fish shell if installed
+  if command -v fish &> /dev/null; then
+    FISH_DIR="${HOME}/.config/fish/conf.d"
+    FISH_CONF="${FISH_DIR}/github-copilot-cli.fish"
+    
+    mkdir -p "${FISH_DIR}"
+    cat > "${FISH_CONF}" <<'EOF'
+#!/bin/fish
+
+# GitHub Copilot CLI aliases
+github-copilot-cli alias -- fish | source
+EOF
+    echo "GitHub Copilot CLI fish shell integration configured"
+  fi
+
+  echo "GitHub Copilot CLI installed successfully!"
+  echo ""
+  echo "To authenticate, run: github-copilot-cli auth"
+  echo "For command suggestions, use: ?? <your question>"
+  echo "For git command suggestions, use: git? <your question>"
+  echo "For gh (GitHub CLI) suggestions, use: gh? <your question>"
+  
+  touch "${HOME}"/.should-restart
+else
+  echo "Skipping GitHub Copilot CLI"
+fi
