@@ -6,7 +6,6 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-
 latex_choice=$(
 
 menu --title "LaTeX" --radiolist "Select the version you would like to install\n[SPACE to select, ENTER to confirm]:" 12 74 4 \
@@ -20,6 +19,7 @@ menu --title "LaTeX" --radiolist "Select the version you would like to install\n
 
 if [[ ${latex_choice} == "CANCELLED" ]] ; then
   echo "Skipping LaTeX"
+  exit 1
 fi
 
 if [[ ${latex_choice} == *"FULL"* ]] ; then
@@ -37,7 +37,7 @@ if [[ ${latex_choice} == *"RECOMMENDED"* ]] ; then
   sudo apt-get install -y texlive-latex-base texlive-latex-recommended
 fi
 
-if [[ ${menu_choice} == *"EXTRA"* ]] ; then
+if [[ ${latex_choice} == *"EXTRA"* ]] ; then
   echo "Installing TexLive Extra..."
   sudo apt-get install -y texlive-latex-base texlive-latex-extra
 fi

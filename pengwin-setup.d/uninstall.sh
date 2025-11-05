@@ -36,6 +36,7 @@ function main() {
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" ${OFF} \
       "KUBERNETES" "Remove Kubernetes tooling" ${OFF} \
       "LAMP" "Remove LAMP stack" ${OFF} \
+      "LATEX" "Remove TexLive LaTeX packages" ${OFF} \
       "MSEDIT" "Remove Microsoft Edit TUI editor" ${OFF} \
       "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
@@ -186,14 +187,19 @@ function main() {
     bash "${UninstallDir}"/lamp.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"NIM"* ]]; then
-    echo "NIM"
-    bash "${UninstallDir}"/nim.sh "$@"
+  if [[ ${menu_choice} == *"LATEX"* ]]; then
+    echo "LATEX"
+    bash "${UninstallDir}"/latex.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"MSEDIT"* ]]; then
     echo "MSEDIT"
     bash "${UninstallDir}"/microsoft-edit.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"NIM"* ]]; then
+    echo "NIM"
+    bash "${UninstallDir}"/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]]; then
