@@ -24,8 +24,7 @@ function testMain() {
   assertTrue "CARGO-DIR" "[ -d /home/${TEST_USER}/.cargo ]"
   assertTrue "RUSTUP-DIR" "[ -d /home/${TEST_USER}/.rustup ]"
 
-  shellcheck "${installed_script}"
-  assertEquals "shellcheck reported errors on ${installed_script}" "0" "$?"
+  check_script "${installed_script}"
 }
 
 function testUninstall() {
