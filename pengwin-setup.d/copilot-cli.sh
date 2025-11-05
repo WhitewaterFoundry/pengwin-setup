@@ -20,8 +20,8 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
       exit "${node_install_status}"
     fi
   else
-    # Check Node.js version
-    node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+    # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
+    node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
     if [[ ${node_version} -lt 22 ]]; then
       echo "Node.js version ${node_version} is below required version 22."
       if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (22).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
@@ -42,9 +42,11 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
 
   # Install GitHub Copilot CLI via npm
   echo "Installing @githubnext/github-copilot-cli via npm..."
-  if ! npm install -g @githubnext/github-copilot-cli; then
-    if ! sudo npm install -g @githubnext/github-copilot-cli; then
-      echo "Failed to install GitHub Copilot CLI"
+  if ! npm install -g @githubnext/github-copilot-cli 2>&1; then
+    echo "Failed to install with user permissions, trying with sudo..."
+    if ! sudo npm install -g @githubnext/github-copilot-cli 2>&1; then
+      echo "ERROR: Failed to install GitHub Copilot CLI via npm."
+      echo "Please check the error messages above for details."
       exit 1
     fi
   fi
