@@ -23,9 +23,7 @@ function install_joomla() {
   if (confirm --title "Joomla" --yesno "Would you like to install the Joomla ${JOOMLA_VERSION} development server? It includes LAMP Stack" 10 70) ; then
 
     echo "Installing LAMP Stack for Joomla"
-    bash "${SetupDir}"/lamp.sh "$@" --yes
-    
-    if [[ $? -ne 0 ]]; then
+    if ! bash "${SetupDir}"/lamp.sh "$@" --yes; then
       echo "Error: Failed to install LAMP stack. Cannot continue with Joomla installation."
       return 1
     fi
@@ -51,33 +49,22 @@ function install_joomla() {
 
     echo "Downloading Joomla ${JOOMLA_VERSION}"
     # Download from GitHub releases
-    wget -O Joomla.tar.gz "https://github.com/joomla/joomla-cms/releases/download/${JOOMLA_TAG}/Joomla_${JOOMLA_TAG}-Stable-Full_Package.tar.gz"
-    
-    if [[ $? -ne 0 ]]; then
+    if ! wget -O Joomla.tar.gz "https://github.com/joomla/joomla-cms/releases/download/${JOOMLA_TAG}/Joomla_${JOOMLA_TAG}-Stable-Full_Package.tar.gz"; then
       echo "Error: Failed to download Joomla. Please check your internet connection."
       cleantmp
       return 1
     fi
 
-    local joomla_root="${wHome}/joomla_root"
+    local joomla_root="/var/www/html/joomla_root"
     echo "Installing Joomla to ${joomla_root}"
-    mkdir -p "${joomla_root}"
-    sudo tar -xzvf Joomla.tar.gz --overwrite --directory "${joomla_root}"
-    
-    if [[ $? -ne 0 ]]; then
+    sudo mkdir -p "${joomla_root}"
+    if ! sudo tar -xzvf Joomla.tar.gz --overwrite --directory "${joomla_root}"; then
       echo "Error: Failed to extract Joomla archive."
       cleantmp
       return 1
     fi
     
     sudo chown -R www-data:www-data "${joomla_root}"
-
-    # Create symlink if it doesn't exist
-    if [[ ! -e "/var/www/html/joomla_root" ]]; then
-      sudo ln -s "${joomla_root}" /var/www/html/joomla_root
-    elif [[ ! -L "/var/www/html/joomla_root" ]]; then
-      echo "Warning: /var/www/html/joomla_root exists but is not a symlink. Skipping symlink creation."
-    fi
     
     echo "Setting up Joomla database"
     if ! sudo mysql -u root << EOF

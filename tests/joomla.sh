@@ -16,16 +16,13 @@ function test_main() {
 
   # Check if LAMP stack was installed (required dependency)
   for i in 'mariadb-server' 'apache2' 'php'; do
-    package_installed $i
+    package_installed "$i"
     assertTrue "package $i is not installed" "$?"
   done
 
   # Check if Joomla directory was created
-  local joomla_root="/mnt/c/Users/user/joomla_root"
+  local joomla_root="/var/www/html/joomla_root"
   assertTrue "Joomla root directory was not created" "[ -d ${joomla_root} ]"
-
-  # Check if symlink was created
-  assertTrue "Joomla symlink was not created" "[ -L /var/www/html/joomla_root ]"
 
   # Check if database was created
   local db_exists
@@ -51,11 +48,8 @@ function test_uninstall() {
   run_pengwinsetup uninstall JOOMLA --debug
 
   # Check if Joomla directory was removed
-  local joomla_root="/mnt/c/Users/user/joomla_root"
+  local joomla_root="/var/www/html/joomla_root"
   assertFalse "Joomla root directory was not removed" "[ -d ${joomla_root} ]"
-
-  # Check if symlink was removed
-  assertFalse "Joomla symlink was not removed" "[ -L /var/www/html/joomla_root ]"
 
   # Database and user should be preserved (user data)
   local db_count
@@ -68,7 +62,7 @@ function test_uninstall() {
 
   # Note: LAMP stack should NOT be removed by Joomla uninstall
   for i in 'mariadb-server' 'apache2' 'php'; do
-    package_installed $i
+    package_installed "$i"
     assertTrue "package $i should not be uninstalled by Joomla uninstall" "$?"
   done
 

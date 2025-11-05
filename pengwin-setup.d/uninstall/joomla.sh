@@ -6,7 +6,7 @@ source "$(dirname "$0")/uninstall-common.sh" "$@"
 #######################################
 # Main uninstall function for Joomla
 # Globals:
-#   wHome
+#   None
 # Arguments:
 #   None
 #######################################
@@ -14,10 +14,7 @@ function main() {
 
   echo "Uninstalling Joomla"
 
-  local joomla_root="${wHome}/joomla_root"
-
-  echo "Removing Joomla web directory symlink"
-  sudo_rem_link "/var/www/html/joomla_root"
+  local joomla_root="/var/www/html/joomla_root"
 
   echo "Removing Joomla installation directory"
   if [[ -d "${joomla_root}" ]]; then
