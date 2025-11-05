@@ -12,6 +12,8 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./java.sh
   run_test ./pythonpi.sh
   run_test ./go.sh
+  run_test ./ruby.sh
+  #run_test ./ansible.sh
   run_test ./rust.sh
   run_test ./nodejs_n.sh
   run_test ./fish.sh

@@ -18,7 +18,7 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
 
   echo "Configuring rbenv"
   (
-    cd ~/.rbenv && src/configure && make -j 4 -C src
+    cd ~/.rbenv && src/configure && make -j "$(nproc)" -C src
   )
 
   conf_path='/etc/profile.d/ruby.sh'
@@ -49,12 +49,12 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   echo 'rbenv rehash >/dev/null ^&1' | sudo tee -a "${conf_path_fish}"
 
   echo "Installing Ruby using rbenv"
-  env MAKE_OPTS="-j 4" rbenv install 2.7.2 --verbose
-  rbenv global 2.7.2
+  env MAKE_OPTS="-j $(nproc)" rbenv install 3.3.6 --verbose
+  rbenv global 3.3.6
   echo "Checking ruby version"
   ruby -v
   echo "Installing bundler using gem"
-  gem install bundler -v 2.2.4
+  gem install bundler -v 2.7.2
   echo "Rehashing rbenv"
   rbenv rehash
 
@@ -90,7 +90,7 @@ if (confirm --title "RAILS" --yesno "Would you like to download and install Rail
 
   install_packages git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
   createtmp
-  gem install rails -v 6.1.1
+  gem install rails -v 8.1.1
   rbenv rehash
   cleantmp
 
