@@ -18,7 +18,6 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./nodejs_n.sh
   run_test ./fish.sh
   run_test ./fzf.sh
-  run_test ./copilot-cli.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
   run_test ./dotnet.sh
@@ -47,6 +46,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #3
   run_test ./terraform.sh
   run_test ./awscli.sh
   run_test ./nodejs_lts.sh
+  run_test ./copilot-cli.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #4
   run_test ./nodejs_n.sh
   #run_test ./lamp.sh "10.11"
