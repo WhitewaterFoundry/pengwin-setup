@@ -219,7 +219,7 @@ if [[ ${exit_status} != 0 ]]; then
   exit "${exit_status}"
 fi
 
-if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
+if [[ -z ${SKIP_YARN} ]] && (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
 
   if command -v yarn; then
