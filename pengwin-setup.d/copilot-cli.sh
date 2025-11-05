@@ -13,7 +13,7 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
   if ! command -v node &> /dev/null; then
     echo "Node.js not found. Installing Node.js LTS..."
     export SKIP_YARN=1
-    bash "${SetupDir}"/nodejs.sh --yes --noninteractive PROGRAMMING NODEJS LTS --debug
+    bash "${SetupDir}"/nodejs.sh --yes --noninteractive install PROGRAMMING NODEJS LTS --debug
     node_install_status=$?
     unset SKIP_YARN
     if [[ ${node_install_status} != 0 ]]; then
@@ -30,7 +30,7 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
       if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (22).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
         echo "Upgrading Node.js to LTS..."
         export SKIP_YARN=1
-        bash "${SetupDir}"/nodejs.sh --yes --noninteractive PROGRAMMING NODEJS LTS
+        bash "${SetupDir}"/nodejs.sh --yes --noninteractive install PROGRAMMING NODEJS LTS
         node_install_status=$?
         unset SKIP_YARN
         if [[ ${node_install_status} != 0 ]]; then
