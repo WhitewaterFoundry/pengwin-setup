@@ -12,7 +12,8 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
   # Check if nodejs is installed and if version meets requirements
   if ! command -v node &> /dev/null; then
     echo "Node.js not found. Installing Node.js LTS..."
-    bash "${SetupDir}"/nodejs.sh --yes --noninteractive install NODEJS LTS "$@"
+    export CMD_MENU_OPTIONS=("LTS")
+    bash "${SetupDir}"/nodejs.sh --yes --noninteractive "$@"
     node_install_status=$?
     if [[ ${node_install_status} != 0 ]]; then
       echo "Failed to install Node.js. Cannot proceed with Copilot CLI installation."
@@ -25,7 +26,8 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
       echo "Node.js version ${node_version} is below required version 22."
       if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (22).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
         echo "Upgrading Node.js to LTS..."
-        bash "${SetupDir}"/nodejs.sh --yes --noninteractive install NODEJS LTS "$@"
+        export CMD_MENU_OPTIONS=("LTS")
+        bash "${SetupDir}"/nodejs.sh --yes --noninteractive "$@"
         node_install_status=$?
         if [[ ${node_install_status} != 0 ]]; then
           echo "Failed to upgrade Node.js. Cannot proceed with Copilot CLI installation."
