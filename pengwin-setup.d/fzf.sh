@@ -8,7 +8,6 @@ declare SetupDir
 
 if (confirm --title "FZF" --yesno "Would you like to download and install command line finder fzf?" 8 80); then
   echo "Installing FZF"
-  cd ~ || exit
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   cd ~/.fzf || exit
   ./install --all
