@@ -20,7 +20,12 @@ if (confirm --title "RUST" --yesno "Would you like to download and install the l
 
     echo "Adding rustup to path"
     conf_path='/etc/profile.d/rust.sh'
-    echo 'export PATH="$PATH:${HOME}/.cargo/bin"' | sudo tee "${conf_path}"
+    sudo tee "${conf_path}" <<EOF
+#!/bin/sh
+
+export PATH="\${PATH}:\${HOME}/.cargo/bin"
+
+EOF
 
     # Copy configuration to fish
     sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
