@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup install AI COPILOT-CLI --debug
+  run_pengwinsetup install AI COPILOT-CLI
 
   # Check if github-copilot-cli is installed
   run command -v github-copilot-cli
@@ -18,7 +18,7 @@ function test_main() {
 }
 
 function test_uninstall() {
-  run_pengwinsetup install UNINSTALL COPILOT-CLI --debug
+  run_pengwinsetup install UNINSTALL COPILOT-CLI
 
   # Check if github-copilot-cli is removed
   run command -v github-copilot-cli

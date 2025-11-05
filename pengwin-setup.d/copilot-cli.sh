@@ -3,7 +3,7 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-#Imported from common.h
+# Imported from common.sh
 declare SetupDir
 
 if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis requires Node.js 22+ and npm 10+.\nIf not installed, the Node.js LTS installer will be launched.\n\nWould you like to install GitHub Copilot CLI?" 12 80); then
@@ -13,7 +13,7 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
   if ! command -v node &> /dev/null; then
     echo "Node.js not found. Installing Node.js LTS..."
     export SKIP_YARN=1
-    bash "${SetupDir}"/nodejs.sh --yes --noninteractive install PROGRAMMING NODEJS LTS --debug
+    bash "${SetupDir}"/nodejs.sh --yes --noninteractive install PROGRAMMING NODEJS LTS
     node_install_status=$?
     unset SKIP_YARN
     if [[ ${node_install_status} != 0 ]]; then

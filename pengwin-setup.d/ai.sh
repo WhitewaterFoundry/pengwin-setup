@@ -3,7 +3,7 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-#Imported from common.h
+# Imported from common.sh
 declare SetupDir
 
 function main() {
@@ -22,7 +22,7 @@ function main() {
     return 1
   fi
 
-  local exit_status
+  local exit_status=0
 
   if [[ ${menu_choice} == *"COPILOT-CLI"* ]]; then
     echo "COPILOT-CLI"
@@ -34,7 +34,7 @@ function main() {
     local status
     main "$@"
     status=$?
-    return $status
+    return ${status}
   fi
 }
 
