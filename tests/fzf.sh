@@ -10,7 +10,7 @@ function test_main() {
   assertTrue "FZF binary not executable" "[ -x ${HOME}/.fzf/bin/fzf ]"
   
   # Check that version command returns successfully and outputs a version number
-  assertNotEquals "FZF version not found" "0" "$(run ${HOME}/.fzf/bin/fzf --version | grep -cE '[0-9]+\.[0-9]+')"
+  assertTrue "FZF version not found" "[ $(run ${HOME}/.fzf/bin/fzf --version | grep -cE '[0-9]+\.[0-9]+') -gt 0 ]"
 }
 
 function test_uninstall() {
