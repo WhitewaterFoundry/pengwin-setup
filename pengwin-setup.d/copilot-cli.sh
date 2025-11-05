@@ -13,7 +13,7 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
   if ! command -v node &> /dev/null; then
     echo "Node.js not found. Installing Node.js LTS..."
     export SKIP_YARN=1
-    bash "${SetupDir}"/nodejs.sh --yes --noninteractive PROGRAMMING NODEJS LTS
+    bash "${SetupDir}"/nodejs.sh --yes --noninteractive PROGRAMMING NODEJS LTS --debug
     node_install_status=$?
     unset SKIP_YARN
     if [[ ${node_install_status} != 0 ]]; then
