@@ -25,6 +25,7 @@ function main() {
       "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" ${OFF} \
       "FCITX" "Remove all fcitx improved non-Latin input support" ${OFF} \
       "FISH" "Remove FISH Shell" ${OFF} \
+      "FZF" "Remove command line fuzzy finder" ${OFF} \
       "GO" "Remove Go language" ${OFF} \
       "GUILIB" "Remove base GUI application libraries" ${OFF} \
       "HIDPI" "Remove Qt and GTK HiDPI modifications" ${OFF} \
@@ -33,9 +34,11 @@ function main() {
       "IBUS" "Remove all ibus improved non-Latin input support" ${OFF} \
       "JAVA" "Remove SDKMan its installed Java SDKs" ${OFF} \
       "JETBRAINS" "Remove JetBrains Toolbox" ${OFF} \
+      "JOOMLA" "Remove Joomla CMS development environment" ${OFF} \
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" ${OFF} \
       "KUBERNETES" "Remove Kubernetes tooling" ${OFF} \
       "LAMP" "Remove LAMP stack" ${OFF} \
+      "LATEX" "Remove TexLive LaTeX packages" ${OFF} \
       "MSEDIT" "Remove Microsoft Edit TUI editor" ${OFF} \
       "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
@@ -126,6 +129,11 @@ function main() {
     bash "${UninstallDir}"/fish.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"FZF"* ]]; then
+    echo "FZF"
+    bash "${UninstallDir}"/fzf.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"GO"* ]]; then
     echo "GO"
     bash "${UninstallDir}"/go.sh "$@"
@@ -171,6 +179,11 @@ function main() {
     bash "${UninstallDir}"/jetbrains-support.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"JOOMLA"* ]]; then
+    echo "JOOMLA"
+    bash "${UninstallDir}"/joomla.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"KEYCHAIN"* ]]; then
     echo "KEYCHAIN"
     bash "${UninstallDir}"/keychain.sh "$@"
@@ -186,14 +199,19 @@ function main() {
     bash "${UninstallDir}"/lamp.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"NIM"* ]]; then
-    echo "NIM"
-    bash "${UninstallDir}"/nim.sh "$@"
+  if [[ ${menu_choice} == *"LATEX"* ]]; then
+    echo "LATEX"
+    bash "${UninstallDir}"/latex.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"MSEDIT"* ]]; then
     echo "MSEDIT"
     bash "${UninstallDir}"/microsoft-edit.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"NIM"* ]]; then
+    echo "NIM"
+    bash "${UninstallDir}"/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]]; then

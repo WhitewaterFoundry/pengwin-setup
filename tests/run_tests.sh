@@ -14,8 +14,10 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./go.sh
   run_test ./ruby.sh
   #run_test ./ansible.sh
+  run_test ./rust.sh
   run_test ./nodejs_n.sh
   run_test ./fish.sh
+  run_test ./fzf.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
   run_test ./dotnet.sh
@@ -25,12 +27,14 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./awscli.sh
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
+  run_test ./latex.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #1
   run_test ./desktop.sh
   run_test ./lamp.sh "BUILTIN"
+  run_test ./joomla.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #2
   run_test ./x410.sh
   run_test ./rclocal.sh
@@ -57,11 +61,14 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #6
   run_test ./nodejs_latest.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #7
   run_test ./pythonpi.sh
+  run_test ./latex.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #8
   run_test ./java.sh
   run_test ./microsoft_edit.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
   run_test ./kubernetes.sh
   run_test ./go.sh
+  run_test ./rust.sh
   run_test ./fish.sh
+  run_test ./fzf.sh
 fi
