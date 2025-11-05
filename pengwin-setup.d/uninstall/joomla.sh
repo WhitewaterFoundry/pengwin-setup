@@ -16,22 +16,6 @@ function main() {
 
   local joomla_root="${wHome}/joomla_root"
 
-  echo "Removing Joomla database"
-  if command -v mysql >/dev/null 2>&1 || command -v mariadb >/dev/null 2>&1; then
-    if sudo mysql -u root << EOF 2>/dev/null
-DROP DATABASE IF EXISTS joomla;
-DROP USER IF EXISTS 'joomla'@'localhost';
-FLUSH PRIVILEGES;
-EOF
-    then
-      echo "... database removed"
-    else
-      echo "... database removal failed (may not exist or MySQL not running)"
-    fi
-  else
-    echo "... MySQL/MariaDB not found, skipping database removal"
-  fi
-
   echo "Removing Joomla web directory symlink"
   sudo_rem_link "/var/www/html/joomla_root"
 
@@ -44,6 +28,7 @@ EOF
   fi
 
   echo "Joomla uninstallation complete"
+  echo "Note: Joomla database and user are preserved as they may contain user data."
   echo "Note: LAMP stack was not removed. To remove it, use 'pengwin-setup uninstall LAMP'"
 
 }

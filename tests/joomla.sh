@@ -57,15 +57,14 @@ function test_uninstall() {
   # Check if symlink was removed
   assertFalse "Joomla symlink was not removed" "[ -L /var/www/html/joomla_root ]"
 
-  # Check if database was removed
+  # Database and user should be preserved (user data)
   local db_count
   db_count=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla';" 2>/dev/null | grep -c joomla || echo 0)
-  assertTrue "Joomla database was not removed" "[ ${db_count} -eq 0 ]"
+  assertTrue "Joomla database should be preserved" "[ ${db_count} -ge 1 ]"
 
-  # Check if database user was removed
   local user_count
   user_count=$(sudo mysql -u root -e "SELECT User FROM mysql.user WHERE User='joomla';" 2>/dev/null | grep -c joomla || echo 0)
-  assertTrue "Joomla database user was not removed" "[ ${user_count} -eq 0 ]"
+  assertTrue "Joomla database user should be preserved" "[ ${user_count} -ge 1 ]"
 
   # Note: LAMP stack should NOT be removed by Joomla uninstall
   for i in 'mariadb-server' 'apache2' 'php'; do
