@@ -19,7 +19,7 @@ menu --title "LaTeX" --radiolist "Select the version you would like to install\n
 
 if [[ ${latex_choice} == "CANCELLED" ]] ; then
   echo "Skipping LaTeX"
-  exit 0
+  exit 1
 fi
 
 if [[ ${latex_choice} == *"FULL"* ]] ; then
