@@ -25,6 +25,7 @@ function main() {
       "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" ${OFF} \
       "FCITX" "Remove all fcitx improved non-Latin input support" ${OFF} \
       "FISH" "Remove FISH Shell" ${OFF} \
+      "FZF" "Remove command line fuzzy finder" ${OFF} \
       "GO" "Remove Go language" ${OFF} \
       "GUILIB" "Remove base GUI application libraries" ${OFF} \
       "HIDPI" "Remove Qt and GTK HiDPI modifications" ${OFF} \
@@ -126,6 +127,11 @@ function main() {
   if [[ ${menu_choice} == *"FISH"* ]]; then
     echo "FISH"
     bash "${UninstallDir}"/fish.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"FZF"* ]]; then
+    echo "FZF"
+    bash "${UninstallDir}"/fzf.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"GO"* ]]; then
