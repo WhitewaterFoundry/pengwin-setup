@@ -2,7 +2,7 @@
 
 source commons.sh
 
-function testMain() {
+function test_main() {
   run_pengwinsetup autoinstall PROGRAMMING RUST
 
   assertTrue "FILE PROFILE-RUST" "[ -f /etc/profile.d/rust.sh ]"
@@ -27,7 +27,7 @@ function testMain() {
   check_script "${installed_script}"
 }
 
-function testUninstall() {
+function test_uninstall() {
   run_pengwinsetup autoinstall UNINSTALL RUST
 
   assertFalse "FILE PROFILE-RUST" "[ -f /etc/profile.d/rust.sh ]"
