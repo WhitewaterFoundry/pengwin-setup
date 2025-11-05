@@ -18,6 +18,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./nodejs_n.sh
   run_test ./fish.sh
   run_test ./fzf.sh
+  run_test ./copilot-cli.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
   run_test ./dotnet.sh
