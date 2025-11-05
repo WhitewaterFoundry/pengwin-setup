@@ -21,6 +21,8 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
       echo "Failed to install Node.js. Cannot proceed with Copilot CLI installation."
       exit "${node_install_status}"
     fi
+    # Refresh the command hash table to recognize newly installed binaries
+    hash -r
   else
     # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
     node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
@@ -37,6 +39,8 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
           echo "Failed to upgrade Node.js. Cannot proceed with Copilot CLI installation."
           exit "${node_install_status}"
         fi
+        # Refresh the command hash table to recognize newly installed binaries
+        hash -r
       else
         echo "Skipping GitHub Copilot CLI installation due to incompatible Node.js version."
         exit 1
