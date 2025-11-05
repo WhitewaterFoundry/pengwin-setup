@@ -77,6 +77,11 @@ EOF
   fi
 
   echo "GitHub Copilot CLI installed successfully!"
+  echo ""
+  echo "To authenticate, run: github-copilot-cli auth"
+  echo "For command suggestions, use: ?? <your question>"
+  echo "For git command suggestions, use: git? <your question>"
+  echo "For gh (GitHub CLI) suggestions, use: gh? <your question>"
   
   message --title "GitHub Copilot CLI" --msgbox "GitHub Copilot CLI installed successfully!\n\nTo authenticate, run:\n  github-copilot-cli auth\n\nFor command suggestions, use:\n  ?? <your question>\n\nFor git command suggestions, use:\n  git? <your question>\n\nFor gh (GitHub CLI) suggestions, use:\n  gh? <your question>" 16 70
   
