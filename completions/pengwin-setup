@@ -5,6 +5,9 @@ function _pengwin_setup() { #  By convention, the function name
   local prev=${COMP_WORDS[COMP_CWORD - 1]}
 
   case "$prev" in
+  AI)
+    mapfile -t COMPREPLY < <(compgen -W 'COPILOT-CLI' -- "${cur}")
+    ;;
   EDITORS)
     mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM MSEDIT' -- "${cur}")
     ;;
@@ -48,13 +51,13 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'AWS AZURE DO IBM KUBERNETES OPENSTACK TERRAFORM' -- "${cur}")
     ;;
   UNINSTALL)
-    mapfile -t COMPREPLY < <(compgen -W 'ANSIBLE AWS AZURE BASH-RL C++ CASSANDRA COLORTOOL DIGITALOCEAN DOCKER DOTNET FCITX FISH GO GUILIB HIDPI HOMEBREW IBM IBUS JAVA JETBRAINS KEYCHAIN KUBERNETES LAMP MSEDIT NIM NODEJS OPENSTACK POETRY POWERSHELL PYENV RCLOCAL RUBY RUST STARTMENU SSH SYNAPTIC SYSTEMD TERRAFORM VCXSRV VSCODE WINTHEME WSLTTY X410 XFCE' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'ANSIBLE AWS AZURE BASH-RL C++ CASSANDRA COLORTOOL COPILOT-CLI DIGITALOCEAN DOCKER DOTNET FCITX FISH GO GUILIB HIDPI HOMEBREW IBM IBUS JAVA JETBRAINS KEYCHAIN KUBERNETES LAMP MSEDIT NIM NODEJS OPENSTACK POETRY POWERSHELL PYENV RCLOCAL RUBY RUST STARTMENU SSH SYNAPTIC SYSTEMD TERRAFORM VCXSRV VSCODE WINTHEME WSLTTY X410 XFCE' -- "${cur}")
     ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
     --quiet --noninteractive -w --whiptail -n --ncurses --dialog --alt --multiple --help \
     upgrade autoinstall install uninstall remove startmenu \
-    EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
+    AI EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
     ;;
   esac
 
