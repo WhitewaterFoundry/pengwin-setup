@@ -47,6 +47,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #3
   run_test ./awscli.sh
   run_test ./nodejs_lts.sh
   run_test ./copilot-cli.sh
+  run_test ./copilot-vim.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #4
   run_test ./nodejs_n.sh
   #run_test ./lamp.sh "10.11"
