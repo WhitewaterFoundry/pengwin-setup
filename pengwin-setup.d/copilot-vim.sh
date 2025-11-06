@@ -31,6 +31,49 @@ function install_nodejs_lts() {
 }
 
 #######################################
+# Ensure Node.js meets minimum version requirement
+# Globals:
+#   None
+# Arguments:
+#   $1: minimum required version (e.g., 18)
+#   $2: product name for error messages (e.g., "GitHub Copilot")
+# Returns:
+#   0 on success, non-zero on failure
+#######################################
+function ensure_nodejs_version() {
+  local min_version="$1"
+  local product_name="$2"
+  
+  # Check if nodejs is installed and if version meets requirements
+  if ! command -v node &> /dev/null; then
+    echo "Node.js not found. Installing Node.js LTS..."
+    if ! install_nodejs_lts; then
+      echo "Failed to install Node.js. Cannot proceed with ${product_name} installation."
+      return 1
+    fi
+  else
+    # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
+    local node_version
+    node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
+    if [[ ${node_version} -lt ${min_version} ]]; then
+      echo "Node.js version ${node_version} is below required version ${min_version}."
+      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
+        echo "Upgrading Node.js to LTS..."
+        if ! install_nodejs_lts; then
+          echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
+          return 1
+        fi
+      else
+        echo "Skipping ${product_name} installation due to incompatible Node.js version."
+        return 1
+      fi
+    fi
+  fi
+  
+  return 0
+}
+
+#######################################
 # Install vim-plug for an editor
 # Globals:
 #   None
@@ -168,30 +211,9 @@ function main() {
 
   echo "Installing GitHub Copilot for Vim/Neovim"
   
-  # Check if nodejs is installed and if version meets requirements
-  if ! command -v node &> /dev/null; then
-    echo "Node.js not found. Installing Node.js LTS..."
-    if ! install_nodejs_lts; then
-      echo "Failed to install Node.js. Cannot proceed with GitHub Copilot installation."
-      return 1
-    fi
-  else
-    # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
-    local node_version
-    node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
-    if [[ ${node_version} -lt 18 ]]; then
-      echo "Node.js version ${node_version} is below required version 18."
-      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (18).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
-        echo "Upgrading Node.js to LTS..."
-        if ! install_nodejs_lts; then
-          echo "Failed to upgrade Node.js. Cannot proceed with GitHub Copilot installation."
-          return 1
-        fi
-      else
-        echo "Skipping GitHub Copilot installation due to incompatible Node.js version."
-        return 1
-      fi
-    fi
+  # Ensure Node.js meets minimum version requirement
+  if ! ensure_nodejs_version 18 "GitHub Copilot"; then
+    return 1
   fi
   
   # Determine which editor(s) to configure
