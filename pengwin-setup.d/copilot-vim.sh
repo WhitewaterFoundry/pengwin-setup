@@ -219,7 +219,7 @@ function main() {
     # shellcheck disable=SC2155,SC2086
     editor_choice=$(
       menu --title "Editor Selection" "${DIALOG_TYPE}" "Neither Vim nor Neovim is installed.\nWhich would you like to install?\n[ENTER to confirm]:" 12 70 2 \
-        "VIM" "Install Vim" ${OFF} \
+        "VIM_" "Install Vim" ${OFF} \
         "NEOVIM" "Install Neovim" ${OFF}
       # shellcheck disable=SC2188
       3>&1 1>&2 2>&3
@@ -230,7 +230,7 @@ function main() {
       return 1
     fi
     
-    if [[ ${editor_choice} == *"VIM"* ]]; then
+    if [[ ${editor_choice} == *"VIM_"* ]]; then
       echo "Installing Vim..."
       install_packages vim
       has_vim=true
