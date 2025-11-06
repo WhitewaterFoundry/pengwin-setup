@@ -8,42 +8,25 @@ function main() {
   echo "Uninstalling GitHub Copilot for Vim/Neovim"
 
   # Remove copilot.vim plugin from vim
-  if [[ -d "${HOME}/.vim/plugged/copilot.vim" ]]; then
-    echo "Removing GitHub Copilot plugin from Vim..."
-    rm -rf "${HOME}/.vim/plugged/copilot.vim"
-  fi
+  rem_dir "${HOME}/.vim/plugged/copilot.vim"
 
   # Remove copilot.vim plugin from neovim
-  if [[ -d "${HOME}/.local/share/nvim/plugged/copilot.vim" ]]; then
-    echo "Removing GitHub Copilot plugin from Neovim..."
-    rm -rf "${HOME}/.local/share/nvim/plugged/copilot.vim"
-  fi
+  rem_dir "${HOME}/.local/share/nvim/plugged/copilot.vim"
 
   # Remove copilot configuration from .vimrc
   if [[ -f "${HOME}/.vimrc" ]]; then
-    if grep -q "Plug 'github/copilot.vim'" "${HOME}/.vimrc" 2>/dev/null; then
-      echo "Removing GitHub Copilot configuration from .vimrc..."
-      # Create temporary file without the copilot.vim plugin line
-      grep -v "Plug 'github/copilot.vim'" "${HOME}/.vimrc" > "${HOME}/.vimrc.tmp"
-      mv "${HOME}/.vimrc.tmp" "${HOME}/.vimrc"
-    fi
+    echo "Removing GitHub Copilot configuration from .vimrc..."
+    clean_file "${HOME}/.vimrc" "Plug 'github/copilot.vim'"
   fi
 
   # Remove copilot configuration from init.vim
   if [[ -f "${HOME}/.config/nvim/init.vim" ]]; then
-    if grep -q "Plug 'github/copilot.vim'" "${HOME}/.config/nvim/init.vim" 2>/dev/null; then
-      echo "Removing GitHub Copilot configuration from init.vim..."
-      # Create temporary file without the copilot.vim plugin line
-      grep -v "Plug 'github/copilot.vim'" "${HOME}/.config/nvim/init.vim" > "${HOME}/.config/nvim/init.vim.tmp"
-      mv "${HOME}/.config/nvim/init.vim.tmp" "${HOME}/.config/nvim/init.vim"
-    fi
+    echo "Removing GitHub Copilot configuration from init.vim..."
+    clean_file "${HOME}/.config/nvim/init.vim" "Plug 'github/copilot.vim'"
   fi
 
   # Remove copilot data directory
-  if [[ -d "${HOME}/.config/github-copilot" ]]; then
-    echo "Removing GitHub Copilot data directory..."
-    rm -rf "${HOME}/.config/github-copilot"
-  fi
+  rem_dir "${HOME}/.config/github-copilot"
 
   echo "GitHub Copilot for Vim/Neovim uninstalled successfully"
   echo "Note: vim-plug and Vim/Neovim itself were not removed"
