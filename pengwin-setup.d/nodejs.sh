@@ -5,6 +5,8 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SKIP_CONFIMATIONS
 
+NODEJS_LATEST_VERSION=25
+NODEJS_LTS_VERSION=24
 
 #######################################
 # Install the packaged version of NodeJS from nodesource repos
@@ -13,17 +15,19 @@ declare SKIP_CONFIMATIONS
 #######################################
 # shellcheck disable=SC2155
 function install_nodejs_nodesource() {
-  echo "Installing latest node.js version from NodeSource repository"
-
   local major_vers=${1}
+  local version_type="latest"
+  
+  if [[ "${major_vers}" == "${NODEJS_LTS_VERSION}" ]]; then
+    version_type="LTS"
+  fi
+  
+  echo "Installing ${version_type} node.js version from NodeSource repository"
 
   curl -fsSL "https://deb.nodesource.com/setup_${major_vers}.x" | sudo -E bash - &&\
   local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   install_packages nodejs="${version}"
 }
-
-NODEJS_LATEST_VERSION=25
-NODEJS_LTS_VERSION=24
 
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
