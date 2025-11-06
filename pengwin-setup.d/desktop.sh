@@ -77,24 +77,26 @@ function install_xrdp() {
     port="3395"
   fi
 
-  install_packages xrdp xorgxrdp pulseaudio
+  install_packages xrdp xorgxrdp pulseaudio crudini
 
-  sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bitmap_cache=\)\(.*\)$/\1true/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bitmap_compression=\)\(.*\)$/\1true/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bulk_compression=\)\(.*\)$/\1true/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(max_bpp=\)\(32\)$/\124/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(blue=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(#\)\(ls_title=\)\(.*\)$/\2Welcome to Pengwin/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(ls_top_window_bg_color=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s|^\(ls_logo_filename=\)\(.*\)$|\1/usr/share/images/pengwin-xrdp.bmp|" /etc/xrdp/xrdp.ini
+  # Use crudini for safer INI file manipulation
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals port "${port}"
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals bitmap_cache true
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals bitmap_compression true
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals bulk_compression true
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals max_bpp 24
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals blue 41004d
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_title "Welcome to Pengwin"
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_top_window_bg_color 41004d
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_logo_filename /usr/share/images/pengwin-xrdp.bmp
 
   # shellcheck disable=SC2155
   local sesman_port=$(echo "${port} - 50" | bc)
 
   # Fix the thinclient_drives error, also not needed in WSL
-  sudo sed -i "s/^\(FuseMountName=\)\(thinclient_drives\)$/\1\/tmp\/%u\/\2/" /etc/xrdp/sesman.ini
-  sudo sed -i "s/^\(ListenPort=\)\([0-9]*\)$/\1${sesman_port}/" /etc/xrdp/sesman.ini
+  # Use crudini for safer INI file manipulation
+  sudo crudini --set /etc/xrdp/sesman.ini Chansrv FuseMountName "/tmp/%u/thinclient_drives"
+  sudo crudini --set /etc/xrdp/sesman.ini Globals ListenPort "${sesman_port}"
 
   sudo /etc/init.d/xrdp start
 
