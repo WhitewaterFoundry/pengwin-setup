@@ -16,6 +16,7 @@ function main() {
       "ANSIBLE" "Remove Ansible Playbook deployment tools" ${OFF} \
       "AWS" "Remove AWS CLI tools" ${OFF} \
       "COPILOT-CLI" "Remove GitHub Copilot CLI" ${OFF} \
+      "COPILOT-VIM" "Remove GitHub Copilot for Vim/Neovim" ${OFF} \
       "AZURE" "Remove Azure CLI tools" ${OFF} \
       "BASH-RL" "Remove optimized Bash readline settings" ${OFF} \
       "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " ${OFF} \
@@ -108,6 +109,11 @@ function main() {
   if [[ ${menu_choice} == *"COPILOT-CLI"* ]]; then
     echo "COPILOT-CLI"
     bash "${UninstallDir}"/copilot-cli.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"COPILOT-VIM"* ]]; then
+    echo "COPILOT-VIM"
+    bash "${UninstallDir}"/copilot-vim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"DIGITALOCEAN"* ]]; then

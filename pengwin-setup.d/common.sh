@@ -524,4 +524,74 @@ function setup_pengwin_config() {
   mkdir -p "${PENGWIN_CONFIG_DIR}"
 }
 
+#######################################
+# Install or upgrade Node.js LTS
+# Installs Node.js LTS version without Yarn
+# Globals:
+#   SetupDir - Directory containing setup scripts
+# Arguments:
+#   None
+# Returns:
+#   0 on success, non-zero on failure
+#######################################
+function install_nodejs_lts() {
+  export SKIP_YARN=1
+  bash "${SetupDir}"/nodejs.sh install PROGRAMMING NODEJS LTS
+  local status=$?
+  unset SKIP_YARN
+  
+  if [[ ${status} != 0 ]]; then
+    return "${status}"
+  fi
+  
+  # Refresh the command hash table to recognize newly installed binaries
+  hash -r
+  return 0
+}
+
+#######################################
+# Ensure Node.js meets minimum version requirement
+# Checks if Node.js is installed and meets minimum version.
+# Prompts to install or upgrade if needed.
+# Globals:
+#   None
+# Arguments:
+#   $1: minimum required version (e.g., 18)
+#   $2: product name for error messages (e.g., "GitHub Copilot")
+# Returns:
+#   0 on success, non-zero on failure
+#######################################
+function ensure_nodejs_version() {
+  local min_version="$1"
+  local product_name="$2"
+  
+  # Check if nodejs is installed and if version meets requirements
+  if ! command -v node &> /dev/null; then
+    echo "Node.js not found. Installing Node.js LTS..."
+    if ! install_nodejs_lts; then
+      echo "Failed to install Node.js. Cannot proceed with ${product_name} installation."
+      return 1
+    fi
+  else
+    # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
+    local node_version
+    node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
+    if [[ ${node_version} -lt ${min_version} ]]; then
+      echo "Node.js version ${node_version} is below required version ${min_version}."
+      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
+        echo "Upgrading Node.js to LTS..."
+        if ! install_nodejs_lts; then
+          echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
+          return 1
+        fi
+      else
+        echo "Skipping ${product_name} installation due to incompatible Node.js version."
+        return 1
+      fi
+    fi
+  fi
+  
+  return 0
+}
+
 setup_env "$@"

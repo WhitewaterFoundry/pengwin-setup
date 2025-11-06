@@ -11,8 +11,9 @@ function main() {
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "AI Menu" "${DIALOG_TYPE}" "Install AI tools and assistants\n[ENTER to confirm]:" 14 87 1 \
-      "COPILOT-CLI" "Install GitHub Copilot CLI (requires Node.js 22+ and npm 10+)" ${OFF}
+    menu --title "AI Menu" "${DIALOG_TYPE}" "Install AI tools and assistants\n[ENTER to confirm]:" 14 87 2 \
+      "COPILOT-CLI" "Install GitHub Copilot CLI (requires Node.js 22+ and npm 10+)" ${OFF} \
+      "COPILOT-VIM" "Install GitHub Copilot for Vim/Neovim (requires Node.js 18+)" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
@@ -27,6 +28,12 @@ function main() {
   if [[ ${menu_choice} == *"COPILOT-CLI"* ]]; then
     echo "COPILOT-CLI"
     bash "${SetupDir}"/copilot-cli.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${menu_choice} == *"COPILOT-VIM"* ]]; then
+    echo "COPILOT-VIM"
+    bash "${SetupDir}"/copilot-vim.sh "$@"
     exit_status=$?
   fi
 
