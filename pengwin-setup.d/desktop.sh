@@ -80,8 +80,9 @@ function install_xrdp() {
   install_packages xrdp xorgxrdp pulseaudio
 
   sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bitmap_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bulk_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(bitmap_cache=\)\(.*\)$/\1yes/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(bitmap_compression=\)\(.*\)$/\1yes/" /etc/xrdp/xrdp.ini
+  sudo sed -i "s/^\(bulk_compression=\)\(.*\)$/\1yes/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(max_bpp=\)\(32\)$/\124/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(blue=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
   sudo sed -i "s/^\(#\)\(ls_title=\)\(.*\)$/\2Welcome to Pengwin/" /etc/xrdp/xrdp.ini
