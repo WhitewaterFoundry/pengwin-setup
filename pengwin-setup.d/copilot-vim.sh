@@ -31,145 +31,123 @@ function install_nodejs_lts() {
 }
 
 #######################################
-# Install vim-plug for vim
+# Install vim-plug for an editor
 # Globals:
 #   None
 # Arguments:
-#   None
+#   $1: editor name ("vim" or "neovim")
+#   $2: plugin directory path
 # Returns:
 #   0 on success, non-zero on failure
 #######################################
-function install_vim_plug() {
-  local vim_plug_dir="${HOME}/.vim/autoload"
-  local vim_plug_file="${vim_plug_dir}/plug.vim"
+function install_plug() {
+  local editor_name="$1"
+  local plug_dir="$2"
+  local plug_file="${plug_dir}/plug.vim"
   
-  if [[ -f "${vim_plug_file}" ]]; then
-    echo "vim-plug already installed for vim"
+  if [[ -f "${plug_file}" ]]; then
+    echo "vim-plug already installed for ${editor_name}"
     return 0
   fi
   
-  echo "Installing vim-plug for vim..."
-  mkdir -p "${vim_plug_dir}"
-  if curl -fLo "${vim_plug_file}" --create-dirs \
+  echo "Installing vim-plug for ${editor_name}..."
+  mkdir -p "${plug_dir}"
+  if curl -fLo "${plug_file}" --create-dirs \
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; then
-    echo "vim-plug installed successfully for vim"
+    echo "vim-plug installed successfully for ${editor_name}"
     return 0
   else
-    echo "ERROR: Failed to install vim-plug for vim"
+    echo "ERROR: Failed to install vim-plug for ${editor_name}"
     return 1
   fi
 }
 
 #######################################
-# Install vim-plug for neovim
+# Configure copilot.vim plugin in config file
 # Globals:
 #   None
 # Arguments:
-#   None
+#   $1: editor name ("vim" or "neovim")
+#   $2: config file path
+#   $3: plugin directory path
 # Returns:
 #   0 on success, non-zero on failure
 #######################################
-function install_nvim_plug() {
-  local nvim_plug_dir="${HOME}/.local/share/nvim/site/autoload"
-  local nvim_plug_file="${nvim_plug_dir}/plug.vim"
+function configure_copilot() {
+  local editor_name="$1"
+  local config_file="$2"
+  local plugin_dir="$3"
+  local config_name
   
-  if [[ -f "${nvim_plug_file}" ]]; then
-    echo "vim-plug already installed for neovim"
-    return 0
-  fi
+  config_name=$(basename "${config_file}")
   
-  echo "Installing vim-plug for neovim..."
-  mkdir -p "${nvim_plug_dir}"
-  if curl -fLo "${nvim_plug_file}" --create-dirs \
-      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; then
-    echo "vim-plug installed successfully for neovim"
-    return 0
-  else
-    echo "ERROR: Failed to install vim-plug for neovim"
-    return 1
-  fi
-}
-
-#######################################
-# Configure copilot.vim plugin in vimrc
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   0 on success, non-zero on failure
-#######################################
-function configure_vim_copilot() {
-  local vimrc="${HOME}/.vimrc"
+  # Create config directory if needed
+  mkdir -p "$(dirname "${config_file}")"
   
   # Check if copilot is already configured
-  if [[ -f "${vimrc}" ]] && grep -q "github/copilot.vim" "${vimrc}"; then
-    echo "GitHub Copilot already configured in .vimrc"
+  if [[ -f "${config_file}" ]] && grep -q "github/copilot.vim" "${config_file}"; then
+    echo "GitHub Copilot already configured in ${config_name}"
     return 0
   fi
   
-  echo "Configuring GitHub Copilot in .vimrc..."
+  echo "Configuring GitHub Copilot in ${config_name}..."
   
-  # Create or update .vimrc with vim-plug section
-  if ! grep -q "call plug#begin" "${vimrc}" 2>/dev/null; then
-    cat >> "${vimrc}" <<'EOF'
+  # Create or update config file with vim-plug section
+  if ! grep -q "call plug#begin" "${config_file}" 2>/dev/null; then
+    cat >> "${config_file}" <<EOF
 
 " vim-plug plugins
-call plug#begin('~/.vim/plugged')
+call plug#begin('${plugin_dir}')
 Plug 'github/copilot.vim'
 call plug#end()
 EOF
   else
     # Add copilot to existing plug#begin section
-    if ! grep -q "Plug 'github/copilot.vim'" "${vimrc}"; then
-      sed -i "/call plug#begin/a Plug 'github/copilot.vim'" "${vimrc}"
+    if ! grep -q "Plug 'github/copilot.vim'" "${config_file}"; then
+      sed -i "/call plug#begin/a Plug 'github/copilot.vim'" "${config_file}"
     fi
   fi
   
-  echo "GitHub Copilot configured in .vimrc"
+  echo "GitHub Copilot configured in ${config_name}"
   return 0
 }
 
 #######################################
-# Configure copilot.vim plugin in init.vim
+# Setup copilot for a specific editor
 # Globals:
 #   None
 # Arguments:
-#   None
+#   $1: editor name ("vim" or "neovim")
+#   $2: editor command ("vim" or "nvim")
+#   $3: autoload directory path
+#   $4: config file path
+#   $5: plugin directory path
 # Returns:
 #   0 on success, non-zero on failure
 #######################################
-function configure_nvim_copilot() {
-  local nvim_config_dir="${HOME}/.config/nvim"
-  local init_vim="${nvim_config_dir}/init.vim"
+function setup_editor_copilot() {
+  local editor_name="$1"
+  local editor_cmd="$2"
+  local autoload_dir="$3"
+  local config_file="$4"
+  local plugin_dir="$5"
   
-  mkdir -p "${nvim_config_dir}"
+  echo "Configuring GitHub Copilot for ${editor_name}..."
   
-  # Check if copilot is already configured
-  if [[ -f "${init_vim}" ]] && grep -q "github/copilot.vim" "${init_vim}"; then
-    echo "GitHub Copilot already configured in init.vim"
-    return 0
+  if ! install_plug "${editor_name}" "${autoload_dir}"; then
+    echo "ERROR: Failed to install vim-plug for ${editor_name}"
+    return 1
   fi
   
-  echo "Configuring GitHub Copilot in init.vim..."
+  configure_copilot "${editor_name}" "${config_file}" "${plugin_dir}"
   
-  # Create or update init.vim with vim-plug section
-  if ! grep -q "call plug#begin" "${init_vim}" 2>/dev/null; then
-    cat >> "${init_vim}" <<'EOF'
-
-" vim-plug plugins
-call plug#begin('~/.local/share/nvim/plugged')
-Plug 'github/copilot.vim'
-call plug#end()
-EOF
+  echo "Running :PlugInstall for ${editor_name}..."
+  if [[ "${editor_cmd}" == "vim" ]]; then
+    vim +PlugInstall +qall 2>/dev/null || true
   else
-    # Add copilot to existing plug#begin section
-    if ! grep -q "Plug 'github/copilot.vim'" "${init_vim}"; then
-      sed -i "/call plug#begin/a Plug 'github/copilot.vim'" "${init_vim}"
-    fi
+    nvim --headless +PlugInstall +qall 2>/dev/null || true
   fi
   
-  echo "GitHub Copilot configured in init.vim"
   return 0
 }
 
@@ -260,61 +238,47 @@ function main() {
   
   # Install vim-plug and configure copilot for vim
   if [[ "${has_vim}" == true ]]; then
-    echo "Configuring GitHub Copilot for Vim..."
-    if ! install_vim_plug; then
-      echo "ERROR: Failed to install vim-plug for Vim"
+    if ! setup_editor_copilot "Vim" "vim" "${HOME}/.vim/autoload" "${HOME}/.vimrc" "${HOME}/.vim/plugged"; then
       return 1
     fi
-    configure_vim_copilot
   fi
   
   # Install vim-plug and configure copilot for neovim
   if [[ "${has_nvim}" == true ]]; then
-    echo "Configuring GitHub Copilot for Neovim..."
-    if ! install_nvim_plug; then
-      echo "ERROR: Failed to install vim-plug for Neovim"
+    if ! setup_editor_copilot "Neovim" "nvim" "${HOME}/.local/share/nvim/site/autoload" "${HOME}/.config/nvim/init.vim" "${HOME}/.local/share/nvim/plugged"; then
       return 1
     fi
-    configure_nvim_copilot
   fi
   
-  # Install the plugin(s)
-  echo ""
-  echo "Installing GitHub Copilot plugin..."
-  if [[ "${has_vim}" == true ]]; then
-    echo "Running :PlugInstall for Vim..."
-    vim +PlugInstall +qall 2>/dev/null || true
-  fi
-  
-  if [[ "${has_nvim}" == true ]]; then
-    echo "Running :PlugInstall for Neovim..."
-    nvim --headless +PlugInstall +qall 2>/dev/null || true
-  fi
-  
+  # Display success message
   echo ""
   echo "GitHub Copilot for Vim/Neovim installed successfully!"
   echo ""
   echo "To authenticate and start using GitHub Copilot:"
+  
+  local msg="GitHub Copilot for Vim/Neovim installed successfully!\n\nTo authenticate and start using GitHub Copilot:\n"
+  local instructions=""
+  
   if [[ "${has_vim}" == true ]]; then
+    instructions="  1. Open Vim and run: :Copilot setup"
     echo "  1. Open Vim: vim"
     echo "  2. Run: :Copilot setup"
   fi
   if [[ "${has_nvim}" == true ]]; then
+    if [[ -n "${instructions}" ]]; then
+      instructions="${instructions}\n  OR\n"
+      echo "  OR"
+    fi
+    instructions="${instructions}  1. Open Neovim and run: :Copilot setup"
     echo "  1. Open Neovim: nvim"
     echo "  2. Run: :Copilot setup"
   fi
+  
   echo ""
   echo "After setup, Copilot will provide inline suggestions as you type."
   echo "Press Tab to accept suggestions."
   
-  local msg="GitHub Copilot for Vim/Neovim installed successfully!\n\nTo authenticate and start using GitHub Copilot:\n"
-  if [[ "${has_vim}" == true ]]; then
-    msg="${msg}  1. Open Vim and run: :Copilot setup\n"
-  fi
-  if [[ "${has_nvim}" == true ]]; then
-    msg="${msg}  1. Open Neovim and run: :Copilot setup\n"
-  fi
-  msg="${msg}\nAfter setup, Copilot will provide inline suggestions as you type.\nPress Tab to accept suggestions."
+  msg="${msg}${instructions}\n\nAfter setup, Copilot will provide inline suggestions as you type.\nPress Tab to accept suggestions."
   
   message --title "GitHub Copilot for Vim/Neovim" --msgbox "${msg}" 16 70
   return 0
