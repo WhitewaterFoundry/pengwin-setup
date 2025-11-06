@@ -39,14 +39,16 @@ function test_uninstall() {
 
   # Check if configuration is removed from .vimrc
   if [[ -f "${HOME}/.vimrc" ]]; then
-    run grep -q "github/copilot.vim" "${HOME}/.vimrc"
-    assertFalse "GitHub Copilot still configured in .vimrc" "$?"
+    if grep -q "github/copilot.vim" "${HOME}/.vimrc"; then
+      fail "GitHub Copilot still configured in .vimrc"
+    fi
   fi
 
   # Check if configuration is removed from init.vim
   if [[ -f "${HOME}/.config/nvim/init.vim" ]]; then
-    run grep -q "github/copilot.vim" "${HOME}/.config/nvim/init.vim"
-    assertFalse "GitHub Copilot still configured in init.vim" "$?"
+    if grep -q "github/copilot.vim" "${HOME}/.config/nvim/init.vim"; then
+      fail "GitHub Copilot still configured in init.vim"
+    fi
   fi
 
   # Check if copilot data directory is removed

@@ -21,18 +21,22 @@ function main() {
 
   # Remove copilot configuration from .vimrc
   if [[ -f "${HOME}/.vimrc" ]]; then
-    echo "Removing GitHub Copilot configuration from .vimrc..."
-    # Create temporary file without the copilot.vim plugin line
-    grep -v "Plug 'github/copilot.vim'" "${HOME}/.vimrc" > "${HOME}/.vimrc.tmp" || true
-    mv "${HOME}/.vimrc.tmp" "${HOME}/.vimrc"
+    if grep -q "Plug 'github/copilot.vim'" "${HOME}/.vimrc" 2>/dev/null; then
+      echo "Removing GitHub Copilot configuration from .vimrc..."
+      # Create temporary file without the copilot.vim plugin line
+      grep -v "Plug 'github/copilot.vim'" "${HOME}/.vimrc" > "${HOME}/.vimrc.tmp"
+      mv "${HOME}/.vimrc.tmp" "${HOME}/.vimrc"
+    fi
   fi
 
   # Remove copilot configuration from init.vim
   if [[ -f "${HOME}/.config/nvim/init.vim" ]]; then
-    echo "Removing GitHub Copilot configuration from init.vim..."
-    # Create temporary file without the copilot.vim plugin line
-    grep -v "Plug 'github/copilot.vim'" "${HOME}/.config/nvim/init.vim" > "${HOME}/.config/nvim/init.vim.tmp" || true
-    mv "${HOME}/.config/nvim/init.vim.tmp" "${HOME}/.config/nvim/init.vim"
+    if grep -q "Plug 'github/copilot.vim'" "${HOME}/.config/nvim/init.vim" 2>/dev/null; then
+      echo "Removing GitHub Copilot configuration from init.vim..."
+      # Create temporary file without the copilot.vim plugin line
+      grep -v "Plug 'github/copilot.vim'" "${HOME}/.config/nvim/init.vim" > "${HOME}/.config/nvim/init.vim.tmp"
+      mv "${HOME}/.config/nvim/init.vim.tmp" "${HOME}/.config/nvim/init.vim"
+    fi
   fi
 
   # Remove copilot data directory
