@@ -6,56 +6,12 @@ source "$(dirname "$0")/common.sh" "$@"
 # Imported from common.sh
 declare SetupDir
 
-#######################################
-# Install or upgrade Node.js LTS
-# Globals:
-#   SetupDir
-# Arguments:
-#   None
-# Returns:
-#   0 on success, non-zero on failure
-#######################################
-function install_nodejs_lts() {
-  export SKIP_YARN=1
-  bash "${SetupDir}"/nodejs.sh install PROGRAMMING NODEJS LTS
-  local status=$?
-  unset SKIP_YARN
-  
-  if [[ ${status} != 0 ]]; then
-    return "${status}"
-  fi
-  
-  # Refresh the command hash table to recognize newly installed binaries
-  hash -r
-  return 0
-}
-
 if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis requires Node.js 22+ and npm 10+.\nIf not installed, the Node.js LTS installer will be launched.\n\nWould you like to install GitHub Copilot CLI?" 12 80); then
   echo "Installing GitHub Copilot CLI"
   
-  # Check if nodejs is installed and if version meets requirements
-  if ! command -v node &> /dev/null; then
-    echo "Node.js not found. Installing Node.js LTS..."
-    if ! install_nodejs_lts; then
-      echo "Failed to install Node.js. Cannot proceed with Copilot CLI installation."
-      exit 1
-    fi
-  else
-    # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
-    node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
-    if [[ ${node_version} -lt 22 ]]; then
-      echo "Node.js version ${node_version} is below required version 22."
-      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (22).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
-        echo "Upgrading Node.js to LTS..."
-        if ! install_nodejs_lts; then
-          echo "Failed to upgrade Node.js. Cannot proceed with Copilot CLI installation."
-          exit 1
-        fi
-      else
-        echo "Skipping GitHub Copilot CLI installation due to incompatible Node.js version."
-        exit 1
-      fi
-    fi
+  # Ensure Node.js meets minimum version requirement
+  if ! ensure_nodejs_version 22 "GitHub Copilot CLI"; then
+    exit 1
   fi
 
   # Install GitHub Copilot CLI via npm
