@@ -119,11 +119,15 @@ function setup_editor_copilot() {
   
   echo "Running :PlugInstall for ${editor_name}..."
   if [[ "${editor_cmd}" == "vim" ]]; then
-    vim +PlugInstall +qall 2>/dev/null || true
+    vim +PlugInstall +qall 2>/dev/null
   else
-    nvim --headless +PlugInstall +qall 2>/dev/null || true
+    nvim --headless +PlugInstall +qall 2>/dev/null
   fi
-  
+
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR: Failed to install copilot.vim plugin for ${editor_name}"
+    return 1
+  fi
   return 0
 }
 
