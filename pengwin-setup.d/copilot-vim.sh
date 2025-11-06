@@ -195,6 +195,54 @@ function setup_editor_copilot() {
 }
 
 #######################################
+# Display installation success message
+# Globals:
+#   None
+# Arguments:
+#   $1: has_vim (true/false)
+#   $2: has_nvim (true/false)
+# Returns:
+#   0 on success
+#######################################
+function display_success_message() {
+  local has_vim="$1"
+  local has_nvim="$2"
+  
+  # Display success message
+  echo ""
+  echo "GitHub Copilot for Vim/Neovim installed successfully!"
+  echo ""
+  echo "To authenticate and start using GitHub Copilot:"
+  
+  local msg="GitHub Copilot for Vim/Neovim installed successfully!\n\nTo authenticate and start using GitHub Copilot:\n"
+  local instructions=""
+  
+  if [[ "${has_vim}" == true ]]; then
+    instructions="  1. Open Vim and run: :Copilot setup"
+    echo "  1. Open Vim: vim"
+    echo "  2. Run: :Copilot setup"
+  fi
+  if [[ "${has_nvim}" == true ]]; then
+    if [[ -n "${instructions}" ]]; then
+      instructions="${instructions}\n  OR\n"
+      echo "  OR"
+    fi
+    instructions="${instructions}  1. Open Neovim and run: :Copilot setup"
+    echo "  1. Open Neovim: nvim"
+    echo "  2. Run: :Copilot setup"
+  fi
+  
+  echo ""
+  echo "After setup, Copilot will provide inline suggestions as you type."
+  echo "Press Tab to accept suggestions."
+  
+  msg="${msg}${instructions}\n\nAfter setup, Copilot will provide inline suggestions as you type.\nPress Tab to accept suggestions."
+  
+  message --title "GitHub Copilot for Vim/Neovim" --msgbox "${msg}" 16 70
+  return 0
+}
+
+#######################################
 # Main installation function
 # Globals:
 #   SetupDir
@@ -273,36 +321,7 @@ function main() {
   fi
   
   # Display success message
-  echo ""
-  echo "GitHub Copilot for Vim/Neovim installed successfully!"
-  echo ""
-  echo "To authenticate and start using GitHub Copilot:"
-  
-  local msg="GitHub Copilot for Vim/Neovim installed successfully!\n\nTo authenticate and start using GitHub Copilot:\n"
-  local instructions=""
-  
-  if [[ "${has_vim}" == true ]]; then
-    instructions="  1. Open Vim and run: :Copilot setup"
-    echo "  1. Open Vim: vim"
-    echo "  2. Run: :Copilot setup"
-  fi
-  if [[ "${has_nvim}" == true ]]; then
-    if [[ -n "${instructions}" ]]; then
-      instructions="${instructions}\n  OR\n"
-      echo "  OR"
-    fi
-    instructions="${instructions}  1. Open Neovim and run: :Copilot setup"
-    echo "  1. Open Neovim: nvim"
-    echo "  2. Run: :Copilot setup"
-  fi
-  
-  echo ""
-  echo "After setup, Copilot will provide inline suggestions as you type."
-  echo "Press Tab to accept suggestions."
-  
-  msg="${msg}${instructions}\n\nAfter setup, Copilot will provide inline suggestions as you type.\nPress Tab to accept suggestions."
-  
-  message --title "GitHub Copilot for Vim/Neovim" --msgbox "${msg}" 16 70
+  display_success_message "${has_vim}" "${has_nvim}"
   return 0
 }
 
