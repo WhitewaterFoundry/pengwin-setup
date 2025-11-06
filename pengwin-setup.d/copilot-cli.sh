@@ -103,7 +103,7 @@ EOF
   
   message --title "GitHub Copilot CLI" --msgbox "GitHub Copilot CLI installed successfully!\n\nTo authenticate, run:\n  github-copilot-cli auth\n\nFor command suggestions, use:\n  ?? <your question>\n\nFor git command suggestions, use:\n  git? <your question>\n\nFor gh (GitHub CLI) suggestions, use:\n  gh? <your question>" 16 70
   
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 else
   echo "Skipping GitHub Copilot CLI"
 fi
