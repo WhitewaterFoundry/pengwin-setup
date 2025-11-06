@@ -5,6 +5,8 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SKIP_CONFIMATIONS
 
+NODEJS_LATEST_VERSION=25
+NODEJS_LTS_VERSION=24
 
 #######################################
 # Install the packaged version of NodeJS from nodesource repos
@@ -26,9 +28,6 @@ function install_nodejs_nodesource() {
   local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   install_packages nodejs="${version}"
 }
-
-NODEJS_LATEST_VERSION=25
-NODEJS_LTS_VERSION=24
 
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
