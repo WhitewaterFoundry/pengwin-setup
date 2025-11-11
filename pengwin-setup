@@ -50,7 +50,6 @@ function check_upgrades() {
   if [[ -z ${WSL2} ]]; then
     # If WSL1 fix systemd upgrades
     cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
-    sudo apt-get install -q -y opensysusers
   fi
 
   # Check if there's any upgrades to pengwin-setup / pengwin-base
@@ -72,6 +71,11 @@ function check_upgrades() {
     upgrade_packages
   fi
 
+  if [[ -z ${WSL2} ]]; then
+    # If WSL1 fix systemd upgrades
+    cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
+  fi
+
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
   if [[ -f "/etc/apt/.dist-upgrade" ]]; then
     echo "Distribution upgrade flag noticed! Alerting user"
@@ -81,6 +85,11 @@ function check_upgrades() {
       sudo apt-get autoremove -y
       touch "${HOME}"/.should-restart
     fi
+  fi
+
+  if [[ -z ${WSL2} ]]; then
+    # If WSL1 fix systemd upgrades
+    cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
   fi
 
   if [[ -z ${WSL2} ]]; then
