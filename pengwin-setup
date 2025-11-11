@@ -49,6 +49,7 @@ function check_upgrades() {
 
   if [[ -z ${WSL2} ]]; then
     # If WSL1 fix systemd upgrades
+    cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
     sudo apt-get install -q -y opensysusers
   fi
 
