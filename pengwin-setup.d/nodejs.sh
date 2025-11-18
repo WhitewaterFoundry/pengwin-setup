@@ -29,7 +29,7 @@ function install_nodejs_nodesource() {
     return 1
   fi
   
-  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\s+nodejs\s+|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\s+nodejs\s+.*$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
   
   if [[ -z "${version}" ]]; then
     echo "Failed to find Node.js version ${major_vers} in repository"
