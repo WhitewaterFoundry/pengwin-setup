@@ -6,26 +6,17 @@ source "$(dirname "$0")/common.sh" "$@"
 #Imported from common.h
 declare SetupDir
 
-# shellcheck disable=SC2155
-dist="$(uname -m)"
-if [[ ${dist} != "x86_64" ]]; then
-  message --title "DOTNET" --msgbox ".NET SDK installation is only supported on x86_64 architecture. Microsoft repositories do not provide .NET SDK packages for non-x86_64 architectures." 10 70
-  echo "Skipping DOTNET - not supported on non-x86_64 architecture"
-  exit 1
-fi
-unset dist
-
 if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
   createtmp
-  curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-
-  echo 'deb https://packages.microsoft.com/repos/microsoft-debian-bookworm-prod bookworm main' | sudo tee /etc/apt/sources.list.d/microsoft.list
+  
+  wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  rm packages-microsoft-prod.deb
 
   update_packages
 
-  install_packages dotnet-sdk-9.0
+  install_packages dotnet-sdk-10.0
   cleantmp
 
   if (confirm --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) ; then
