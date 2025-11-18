@@ -8,7 +8,7 @@ source commons.sh
 #  None
 #######################################
 function test_main() {
-  run_pengwinsetup install PROGRAMMING NODEJS LTS --debug
+  run_pengwinsetup install PROGRAMMING NODEJS LTS
 
   run npm --version
   run node --version
