@@ -8,9 +8,9 @@ declare SetupDir
 
 # shellcheck disable=SC2155
 dist="$(uname -m)"
-if [[ ${dist} != "x86_64" ]]; then
-  message --title "DOTNET" --msgbox ".NET SDK installation is only supported on x86_64 architecture. Microsoft repositories do not provide .NET SDK packages for non-x86_64 architectures." 10 70
-  echo "Skipping DOTNET - not supported on non-x86_64 architecture"
+if [[ ${dist} != "x86_64" ]] && [[ ${dist} != "aarch64" ]]; then
+  message --title "DOTNET" --msgbox ".NET SDK 10 installation is only supported on x86_64 and ARM64 (aarch64) architectures. Microsoft repositories do not provide .NET SDK 10 packages for other architectures." 10 80
+  echo "Skipping DOTNET - not supported on ${dist} architecture"
   exit 1
 fi
 unset dist
@@ -25,7 +25,7 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
 
   update_packages
 
-  install_packages dotnet-sdk-9.0
+  install_packages dotnet-sdk-10.0
   cleantmp
 
   if (confirm --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) ; then
