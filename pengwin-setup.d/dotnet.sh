@@ -9,10 +9,10 @@ declare SetupDir
 if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
   createtmp
-  curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  sudo cp microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-
-  echo 'deb https://packages.microsoft.com/repos/microsoft-debian-trixie-prod trixie main' | sudo tee /etc/apt/sources.list.d/microsoft.list
+  
+  wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  rm packages-microsoft-prod.deb
 
   update_packages
 
