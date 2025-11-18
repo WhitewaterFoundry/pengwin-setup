@@ -24,8 +24,18 @@ function install_nodejs_nodesource() {
   
   echo "Installing ${version_type} node.js version from NodeSource repository"
 
-  curl -fsSL "https://deb.nodesource.com/setup_${major_vers}.x" | sudo -E bash - &&\
-  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  if ! curl -fsSL "https://deb.nodesource.com/setup_${major_vers}.x" | sudo -E bash -; then
+    echo "Failed to setup NodeSource repository"
+    return 1
+  fi
+  
+  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\s+nodejs\s+.*$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  
+  if [[ -z "${version}" ]]; then
+    echo "Failed to find Node.js version ${major_vers} in repository"
+    return 1
+  fi
+  
   install_packages nodejs="${version}"
 }
 

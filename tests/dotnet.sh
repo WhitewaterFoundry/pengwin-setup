@@ -3,35 +3,23 @@
 source commons.sh
 
 function testMain() {
-  # shellcheck disable=SC2155
-  local dist="$(uname -m)"
-  if [[ ${dist} != "x86_64" ]] ; then
-    return
-  fi
-
   run_pengwinsetup autoinstall PROGRAMMING DOTNET
 
-  for i in 'dotnet-sdk-9.0' 'nuget'; do
+  for i in 'dotnet-sdk-10.0' 'nuget'; do
     package_installed $i
     assertTrue "package $i is not installed" "$?"
   done
 
-  assertEquals ".NET Core was not installed" "1" "$(run /usr/bin/dotnet --version | grep -c '9.0')"
+  assertEquals ".NET Core was not installed" "1" "$(run /usr/bin/dotnet --version | grep -c '10.0')"
 
   command -v /usr/bin/nuget
   assertEquals "NUGet was not installed" "0" "$?"
 }
 
 function testUninstall() {
-  # shellcheck disable=SC2155
-  local dist="$(uname -m)"
-  if [[ ${dist} != "x86_64" ]] ; then
-    return
-  fi
-
   run_pengwinsetup autoinstall UNINSTALL DOTNET
 
-  for i in 'dotnet-sdk-9.0' 'nuget'; do
+  for i in 'dotnet-sdk-10.0' 'nuget'; do
     package_installed $i
     assertFalse "package $i is not uninstalled" "$?"
   done

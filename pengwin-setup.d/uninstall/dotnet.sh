@@ -7,7 +7,7 @@ function main() {
 
   echo "Uninstalling dotnet"
 
-  remove_package "dotnet-sdk-3.1" "dotnet-sdk-5.0" "dotnet-sdk-6.0" "dotnet-sdk-7.0" "dotnet-sdk-9.0" "nuget"
+  remove_package "dotnet-sdk-3.1" "dotnet-sdk-5.0" "dotnet-sdk-6.0" "dotnet-sdk-7.0" "dotnet-sdk-9.0" "dotnet-sdk-10.0" "nuget"
 
   echo "Removing leftover dotnet cli tools directory..."
   rem_dir "$HOME/.dotnet"
