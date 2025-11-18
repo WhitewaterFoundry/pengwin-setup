@@ -15,7 +15,7 @@
   - [Command Line Options](#command-line-options)
 - [Configuration and Settings](#configuration-and-settings)
   - [Updates and Package Management](#updates-and-package-management)
-  - [SystemD Support](#systemd-support)
+  - [systemd Support](#systemd-support)
   - [Home Directory Backups](#home-directory-backups)
   - [Windows Home Access (winhome)](#windows-home-access-winhome)
   - [GUI Configuration](#gui-configuration)
@@ -68,7 +68,7 @@ If you haven't already enabled WSL on your Windows system:
 
 1. **Open PowerShell as Administrator** and run:
    ```powershell
-   wsl --install
+   wsl --install --no-distribution
    ```
 
 2. **Restart your computer** when prompted.
@@ -91,20 +91,12 @@ If you haven't already enabled WSL on your Windows system:
 
 ### Installing Pengwin
 
-Pengwin can be installed from the Microsoft Store or from the Pengwin website:
-
-#### Method 1: Microsoft Store (Recommended)
+Pengwin can be installed from the Microsoft Store:
 
 1. Open the **Microsoft Store**
 2. Search for **"Pengwin"**
 3. Click **"Get"** or **"Install"**
 4. Wait for the download and installation to complete
-
-#### Method 2: Direct Download
-
-1. Visit the [Pengwin website](https://www.pengwin.dev/)
-2. Download the latest `.appx` or `.msix` package
-3. Install the package by double-clicking it
 
 ### First Launch
 
@@ -117,7 +109,7 @@ Pengwin can be installed from the Microsoft Store or from the Pengwin website:
    - Enter and confirm a password
    - This user will have sudo privileges
 
-4. **Initial configuration** - After account creation, you'll see the Pengwin welcome screen and **pengwin-setup** will automatically launch
+4. **Initial configuration** - After account creation, you'll see the Pengwin welcome screen
 
 ---
 
@@ -233,22 +225,22 @@ sudo apt-get upgrade pengwin-base pengwin-setup
 sudo apt-get dist-upgrade
 ```
 
-### SystemD Support
+### systemd Support
 
-SystemD is the modern init system and service manager for Linux.
+systemd is the modern init system and service manager for Linux.
 
-#### Enabling SystemD
+#### Enabling systemd
 
 1. Launch pengwin-setup
 2. Navigate to **SERVICES → SYSTEMD**
-3. Confirm to enable SystemD support
+3. Confirm to enable systemd support
 
 **Note:** 
-- SystemD is fully supported in WSL2
-- WSL1 uses compatibility shims for limited SystemD functionality
+- systemd is fully supported in WSL2
+- WSL1 uses compatibility shims for limited systemd functionality
 - After enabling, you may need to restart Pengwin
 
-#### Using SystemD
+#### Using systemd
 
 ```bash
 # Start a service
@@ -987,7 +979,7 @@ ssh username@windows-ip-address -p port
 
 #### SYSTEMD
 
-Enable SystemD init system.
+Enable systemd init system.
 
 **Installation:**
 ```bash
@@ -995,7 +987,7 @@ pengwin-setup install SERVICES SYSTEMD
 ```
 
 **Features:**
-- Full SystemD support (WSL2)
+- Full systemd support (WSL2)
 - Compatibility layer (WSL1)
 - Service management with systemctl
 
@@ -1351,12 +1343,12 @@ pengwin-setup uninstall TOOLS DOCKER
    sudo apt-get update
    ```
 
-#### SystemD Services Won't Start
+#### systemd Services Won't Start
 
 **Problem:** systemctl commands fail
 
 **Solution:**
-1. Ensure SystemD is enabled:
+1. Ensure systemd is enabled:
    ```bash
    pengwin-setup install SERVICES SYSTEMD
    ```
@@ -1364,7 +1356,7 @@ pengwin-setup uninstall TOOLS DOCKER
 2. Check WSL version:
    ```bash
    wsl -l -v
-   # Pengwin should show version 2 for full SystemD support
+   # Pengwin should show version 2 for full systemd support
    ```
 
 3. Restart Pengwin completely:
@@ -1509,7 +1501,7 @@ If you continue to experience issues:
 
 ### Official Links
 
-- **Pengwin Website**: https://www.pengwin.dev/
+- **Pengwin Website**: https://www.whitewaterfoundry.com
 - **GitHub Repository**: https://github.com/WhitewaterFoundry/pengwin-setup
 - **Documentation**: Run `pengwin-help` in your terminal
 - **Microsoft Store Page**: Search for "Pengwin" in Microsoft Store

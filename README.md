@@ -78,7 +78,7 @@ pengwin-setup --debug install TOOLS HOMEBREW
 Hand-curated packages optimized for WSL with one-command installation.
 
 ### 🔧 Configuration Management
-- SystemD support for modern service management
+- systemd support for modern service management
 - Home directory backup and restore
 - Windows home directory integration (`winhome`)
 - HiDPI/4K display configuration
@@ -132,7 +132,7 @@ Examples:
 
 - **Windows 10** (version 1903 or later) or **Windows 11**
 - **WSL** (Windows Subsystem for Linux) enabled
-- **Pengwin** installed from Microsoft Store or direct download
+- **Pengwin** installed from Microsoft Store
 
 ## Contributing
 
@@ -156,9 +156,9 @@ See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for:
 ## Support
 
 - 📖 **Documentation**: [USER_GUIDE.md](USER_GUIDE.md)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/WhitewaterFoundry/pengwin-setup/issues)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/WhitewaterFoundry/Pengwin/issues)
 - 💬 **Discussions**: GitHub Discussions
-- 🌐 **Website**: https://www.pengwin.dev/
+- 🌐 **Website**: https://www.whitewaterfoundry.com
 - ❓ **Help Command**: Run `pengwin-help` in your terminal
 
 ## License
@@ -170,7 +170,5 @@ See [LICENSE](LICENSE) file for details.
 Pengwin is developed and maintained by [Whitewater Foundry](https://github.com/WhitewaterFoundry) with contributions from the community.
 
 ---
-
-**Version**: 1.2a
 
 For detailed information about all features, options, and troubleshooting, see the **[Complete User Guide](USER_GUIDE.md)**.
