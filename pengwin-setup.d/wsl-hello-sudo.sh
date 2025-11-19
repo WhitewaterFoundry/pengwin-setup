@@ -49,6 +49,14 @@ function main() {
     cd ./release || exit 1
     ./install.sh
 
+    # Save the uninstall.sh script before cleantmp removes it
+    if [[ -f uninstall.sh ]]; then
+      echo "Saving uninstall script..."
+      sudo mkdir -p /usr/local/share/wsl-hello-sudo
+      sudo cp uninstall.sh /usr/local/share/wsl-hello-sudo/uninstall.sh
+      sudo chmod +x /usr/local/share/wsl-hello-sudo/uninstall.sh
+    fi
+
     cleantmp
 
     echo ""

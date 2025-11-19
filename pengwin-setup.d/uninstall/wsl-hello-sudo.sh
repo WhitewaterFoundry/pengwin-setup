@@ -15,7 +15,14 @@ function main() {
 
   echo "Uninstalling WSL-Hello-sudo"
 
-  # Remove PAM configuration
+  # Call the saved uninstall.sh if it exists
+  if [[ -f /usr/local/share/wsl-hello-sudo/uninstall.sh ]]; then
+    echo "Running official uninstall script..."
+    cd /tmp || exit 1
+    sudo bash /usr/local/share/wsl-hello-sudo/uninstall.sh || true
+  fi
+
+  # Remove PAM configuration (in case uninstall.sh didn't cover it)
   echo "Removing PAM configuration..."
   if [[ -f /etc/pam.d/sudo ]]; then
     sudo sed -i '/pam_wsl_hello/d' /etc/pam.d/sudo
@@ -25,11 +32,24 @@ function main() {
   echo "Removing PAM module..."
   sudo_rem_file "/lib/x86_64-linux-gnu/security/pam_wsl_hello.so"
   sudo_rem_file "/usr/local/lib/pam_wsl_hello.so"
+  sudo_rem_file "/lib/security/pam_wsl_hello.so"
 
   # Remove Windows Hello credential files
   echo "Removing configuration files..."
   if [[ -d "${HOME}/.pam-wsl-hello" ]]; then
     rm -rf "${HOME}/.pam-wsl-hello"
+  fi
+
+  # Remove leftover files that the installer creates
+  echo "Removing leftover configuration files..."
+  sudo_rem_file "/usr/share/pam-configs/wsl-hello"
+  if [[ -d /etc/pam_wsl_hello ]]; then
+    sudo rm -rf /etc/pam_wsl_hello
+  fi
+
+  # Remove the saved uninstall script directory
+  if [[ -d /usr/local/share/wsl-hello-sudo ]]; then
+    sudo rm -rf /usr/local/share/wsl-hello-sudo
   fi
 
   echo "WSL-Hello-sudo has been uninstalled."
