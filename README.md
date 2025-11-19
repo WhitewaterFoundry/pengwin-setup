@@ -89,6 +89,7 @@ Hand-curated packages optimized for WSL with one-command installation.
 - Start menu shortcuts
 - Seamless file access between Windows and Linux
 - Windows Terminal configuration
+- **Windows fonts available in Linux GUI apps** (unique to Pengwin - no configuration needed)
 
 ### 📦 Comprehensive Package Support
 Categories include:

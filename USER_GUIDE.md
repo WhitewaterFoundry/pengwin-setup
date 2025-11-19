@@ -48,6 +48,7 @@ The heart of Pengwin is **pengwin-setup**, a comprehensive configuration utility
 - **GUI Support**: Built-in support for X servers and desktop environments
 - **Developer Tools**: Quick installation of popular programming languages and development tools
 - **Windows Integration**: Seamless integration with Windows including Explorer integration and file access
+- **Windows Fonts for Linux Apps**: Unique to Pengwin - Linux GUI applications can directly use Windows fonts without additional configuration
 - **Automated Mode**: Support for scripted, non-interactive installations
 
 ---
@@ -338,6 +339,16 @@ Pengwin supports running graphical Linux applications through various methods.
 **Using WSLg:**
 1. Simply install and run GUI applications
 2. They will appear as native Windows windows
+
+**Pengwin's Unique Windows Fonts Integration:**
+
+One of Pengwin's exclusive features is automatic Windows fonts integration. Linux GUI applications can use Windows fonts directly without any additional configuration. This means:
+- All your Windows fonts (Arial, Calibri, Times New Roman, etc.) are immediately available in Linux GUI apps
+- Font rendering in Linux applications matches Windows appearance
+- No need to manually copy or configure fonts
+- Works automatically with any Linux GUI application
+
+This feature is unique to Pengwin and provides seamless typography consistency between Windows and Linux applications.
 
 **Disabling WSLg** (to use alternative X servers):
 1. Launch pengwin-setup
