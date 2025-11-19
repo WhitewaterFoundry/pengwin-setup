@@ -59,6 +59,7 @@ function main() {
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
       "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" ${OFF} \
+      "WSL-HELLO-SUDO" "Remove Windows Hello authentication for sudo" ${OFF} \
       "WSLTTY" "Remove WSLtty" ${OFF} \
       "X410" "Remove the X410 X-server autostart" ${OFF} \
       "XFCE" "Remove XFCE Desktop environment" ${OFF}
@@ -304,6 +305,11 @@ function main() {
   if [[ ${menu_choice} == *"WINTHEME"* ]]; then
     echo "WINTHEME"
     bash "${UninstallDir}"/theme.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"WSL-HELLO-SUDO"* ]]; then
+    echo "WSL-HELLO-SUDO"
+    bash "${UninstallDir}"/wsl-hello-sudo.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"WSLTTY"* ]]; then
