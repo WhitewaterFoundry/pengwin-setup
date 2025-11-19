@@ -37,7 +37,7 @@
 
 ## Introduction
 
-**Pengwin** is a Linux distribution specifically optimized for Windows Subsystem for Linux (WSL). It provides a curated collection of tools and configurations designed to work seamlessly with Windows, making it ideal for developers, system administrators, and Linux enthusiasts who work in a Windows environment.
+**Pengwin** is a Linux distribution specifically optimized for Windows Subsystem for Linux (WSL). Based on Debian 13 (Trixie), it provides a curated collection of tools and configurations designed to work seamlessly with Windows, making it ideal for developers, system administrators, and Linux enthusiasts who work in a Windows environment.
 
 The heart of Pengwin is **pengwin-setup**, a comprehensive configuration utility that allows you to easily install and configure various applications, programming languages, desktop environments, and services without dealing with complex manual installation procedures.
 
@@ -46,9 +46,11 @@ The heart of Pengwin is **pengwin-setup**, a comprehensive configuration utility
 - **Pre-configured for WSL**: Optimized settings and configurations for both WSL1 and WSL2
 - **Easy Package Installation**: Hand-curated add-ons and applications through an intuitive menu system
 - **GUI Support**: Built-in support for X servers and desktop environments
+- **Hardware Acceleration**: GPU acceleration with Direct3D 12 support for graphics and video
 - **Developer Tools**: Quick installation of popular programming languages and development tools
 - **Windows Integration**: Seamless integration with Windows including Explorer integration and file access
 - **Windows Fonts for Linux Apps**: Unique to Pengwin - Linux GUI applications can directly use Windows fonts without additional configuration
+- **Built-in Aliases**: Convenient shortcuts like `winget`, `wsl`, and `ll` commands
 - **Automated Mode**: Support for scripted, non-interactive installations
 
 ---
@@ -237,12 +239,14 @@ systemd is the modern init system and service manager for Linux.
 3. Confirm to enable systemd support
 
 **Note:** 
-- systemd is fully supported in WSL2
-- WSL1 uses compatibility shims for limited systemd functionality
+- systemd is fully supported in WSL2 with Pengwin's custom start-systemd implementation
+- WSL1 uses `wslsystemctl` - a compatibility tool providing basic systemd functionality
 - After enabling, you may need to restart Pengwin
+- Pengwin automatically detects your WSL version and configures accordingly
 
 #### Using systemd
 
+**On WSL2:**
 ```bash
 # Start a service
 sudo systemctl start service-name
@@ -255,6 +259,20 @@ sudo systemctl status service-name
 
 # View all services
 systemctl list-units --type=service
+
+# View logs
+journalctl -u service-name
+```
+
+**On WSL1:**
+```bash
+# WSL1 uses wslsystemctl for basic compatibility
+sudo wslsystemctl start service-name
+sudo wslsystemctl stop service-name
+sudo wslsystemctl status service-name
+
+# View logs with wsljournalctl
+wsljournalctl
 ```
 
 ### Home Directory Backups
@@ -332,13 +350,27 @@ Pengwin supports running graphical Linux applications through various methods.
 - Windows 10 version 21H2 and later (with updates)
 
 **Features:**
-- Automatic GPU acceleration
+- Automatic GPU acceleration with Direct3D 12
 - Native Windows integration
 - No additional setup required
+- Hardware video acceleration (VDPAU, VA-API)
 
 **Using WSLg:**
 1. Simply install and run GUI applications
 2. They will appear as native Windows windows
+
+**Pengwin's GPU and Video Acceleration (WSL2):**
+
+Pengwin automatically configures GPU acceleration for optimal graphics and video performance:
+
+- **Direct3D 12 Graphics**: Pengwin sets up Mesa Gallium drivers with D3D12 backend for GPU acceleration
+- **Video Acceleration**: 
+  - VDPAU (Video Decode and Presentation API for Unix) with d3d12 driver
+  - VA-API (Video Acceleration API) with d3d12 driver
+- **OpenGL Support**: Automatic configuration for both indirect and direct rendering
+- **Performance**: Significantly improved graphics rendering in GUI applications and video playback
+
+These optimizations are applied automatically in WSL2 environments without any user configuration.
 
 **Pengwin's Unique Windows Fonts Integration:**
 
@@ -1525,12 +1557,45 @@ If you continue to experience issues:
 
 ### Useful Commands
 
+#### Pengwin-Specific Commands
+
+```bash
+# Get help with pengwin-setup
+pengwin-setup --help
+
+# Open Pengwin GitHub repository in browser
+pengwin-help
+
+# Switch to development branch (for testing)
+switch2dev
+
+# Switch to next release branch
+switch2next
+```
+
+#### Built-in Aliases
+
+Pengwin includes convenient aliases:
+
+```bash
+# Long listing format
+ll                           # Alias for 'ls -al'
+
+# Use Windows package manager from Linux
+winget <command>             # Access Windows winget
+
+# WSL command
+wsl <command>                # Run WSL commands
+
+# Clear screen without scrolling issues
+clear                        # Fixed to 'clear -x'
+```
+
+#### System Commands
+
 ```bash
 # Display pengwin-setup version
 pengwin-setup --help | head -n 1
-
-# Get help with pengwin-setup
-pengwin-setup --help
 
 # View pengwin-setup completion options (bash)
 source /usr/share/bash-completion/completions/pengwin-setup

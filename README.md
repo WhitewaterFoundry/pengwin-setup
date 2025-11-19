@@ -1,6 +1,6 @@
 # pengwin-setup
 
-A comprehensive configuration and package installation utility for [Pengwin](https://www.pengwin.dev/), a Linux distribution optimized for Windows Subsystem for Linux (WSL).
+A comprehensive configuration and package installation utility for [Pengwin](https://www.whitewaterfoundry.com), a Debian-based Linux distribution optimized for Windows Subsystem for Linux (WSL).
 
 ## Overview
 
@@ -78,11 +78,12 @@ pengwin-setup --debug install TOOLS HOMEBREW
 Hand-curated packages optimized for WSL with one-command installation.
 
 ### 🔧 Configuration Management
-- systemd support for modern service management
+- systemd support for modern service management (with WSL1 compatibility via wslsystemctl)
 - Home directory backup and restore
 - Windows home directory integration (`winhome`)
 - HiDPI/4K display configuration
 - X server setup (VcXsrv, X410) or WSLg
+- GPU acceleration with Direct3D 12 for graphics and video
 
 ### 🪟 Windows Integration
 - Explorer context menu integration
@@ -90,6 +91,7 @@ Hand-curated packages optimized for WSL with one-command installation.
 - Seamless file access between Windows and Linux
 - Windows Terminal configuration
 - **Windows fonts available in Linux GUI apps** (unique to Pengwin - no configuration needed)
+- Built-in aliases: `winget`, `wsl`, `ll` commands
 
 ### 📦 Comprehensive Package Support
 Categories include:
