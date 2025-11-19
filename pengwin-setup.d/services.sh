@@ -214,14 +214,13 @@ function main() {
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Services Menu" "${DIALOG_TYPE}" "Enables various services\n[ENTER to confirm]:" 15 75 7 \
+    menu --title "Services Menu" "${DIALOG_TYPE}" "Enables various services\n[ENTER to confirm]:" 14 70 6 \
       "CASSANDRA" "Install the NoSQL server Cassandra from Apache " ${OFF} \
       "KEYCHAIN" "Install Keychain, the OpenSSH key manager" ${OFF} \
       "LAMP" "Install LAMP Stack" ${OFF} \
       "RCLOCAL" "Enable running scripts at startup from rc.local " ${OFF} \
       "SSH" "Enable SSH server" ${OFF} \
-      "SYSTEMD" "Enable SystemD support" ${OFF} \
-      "WSL-HELLO-SUDO" "Install Windows Hello authentication for sudo" ${OFF}
+      "SYSTEMD" "Enable SystemD support" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
@@ -259,11 +258,6 @@ function main() {
   if [[ ${menu_choice} == *"SYSTEMD"* ]]; then
     echo "SYSTEMD"
     enable_systemd
-  fi
-
-  if [[ ${menu_choice} == *"WSL-HELLO-SUDO"* ]]; then
-    echo "WSL-HELLO-SUDO"
-    bash "${SetupDir}"/wsl-hello-sudo.sh "$@"
   fi
 }
 

@@ -45,6 +45,7 @@ function main() {
       "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
       "OPENSTACK" "Remove OpenStack CLI tools" ${OFF} \
+      "PASSWORDLESS-SUDO" "Disable passwordless sudo" ${OFF} \
       "POETRY" "Remove Poetry" ${OFF} \
       "POWERSHELL" "Remove Powershell for Linux" ${OFF} \
       "PYENV" "Remove pyenv, its Python version(s) and modules" ${OFF} \
@@ -245,6 +246,11 @@ function main() {
   if [[ ${menu_choice} == *"PYENV"* ]]; then
     echo "PYENV"
     bash "${UninstallDir}"/pyenv.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"PASSWORDLESS-SUDO"* ]]; then
+    echo "PASSWORDLESS-SUDO"
+    bash "${UninstallDir}"/passwordless-sudo.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"POETRY"* ]]; then

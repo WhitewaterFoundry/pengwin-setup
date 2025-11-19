@@ -11,12 +11,13 @@ function main() {
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Settings Menu" "${DIALOG_TYPE}" "Change various settings in Pengwin\n[ENTER to confirm]:" 14 97 5 \
+    menu --title "Settings Menu" "${DIALOG_TYPE}" "Change various settings in Pengwin\n[ENTER to confirm]:" 15 97 6 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " ${OFF} \
       "COLORTOOL" "Install ColorTool to set Windows console color schemes" ${OFF} \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" ${OFF} \
       "MOTD" "Configures the Message Of The Day behaviour" ${OFF} \
-      "SHELLS" "Install and configure zsh, csh, fish or readline improvements" ${OFF}
+      "SHELLS" "Install and configure zsh, csh, fish or readline improvements" ${OFF} \
+      "SUDO" "Configure sudo authentication method (passwordless or Windows Hello)" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3
@@ -55,6 +56,12 @@ function main() {
   if [[ ${menu_choice} == *"SHELLS"* ]]; then
     echo "SHELLS"
     bash "${SetupDir}"/shells.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${menu_choice} == *"SUDO"* ]]; then
+    echo "SUDO"
+    bash "${SetupDir}"/sudo-management.sh "$@"
     exit_status=$?
   fi
 

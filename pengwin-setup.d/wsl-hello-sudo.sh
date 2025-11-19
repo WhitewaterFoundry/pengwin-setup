@@ -21,6 +21,17 @@ function main() {
   if (confirm --title "WSL-Hello-sudo" --yesno "Would you like to install WSL-Hello-sudo?\n\nThis enables using Windows Hello (fingerprint, face recognition, PIN) for sudo authentication in WSL." 10 75); then
     echo "Installing WSL-Hello-sudo..."
 
+    # Check if passwordless sudo is installed and remove it
+    if [[ -f /etc/sudoers.d/passwordless-sudo ]]; then
+      if (confirm --title "Passwordless sudo detected" --yesno "Passwordless sudo is currently enabled and is incompatible with WSL-Hello-sudo.\n\nWould you like to remove passwordless sudo?" 10 75); then
+        echo "Removing passwordless sudo..."
+        sudo rm -f /etc/sudoers.d/passwordless-sudo
+      else
+        echo "Cannot install WSL-Hello-sudo while passwordless sudo is enabled"
+        return 1
+      fi
+    fi
+
     createtmp
 
     # Install required dependencies

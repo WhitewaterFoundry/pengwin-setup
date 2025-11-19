@@ -35,6 +35,9 @@ function main() {
   echo "WSL-Hello-sudo has been uninstalled."
 }
 
-if show_warning "WSL-Hello-sudo" "$@"; then
+# Check if --skip-warning flag is passed
+if [[ "$*" == *"--skip-warning"* ]]; then
+  main "$@"
+elif show_warning "WSL-Hello-sudo" "$@"; then
   main "$@"
 fi
