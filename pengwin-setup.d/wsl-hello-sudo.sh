@@ -46,6 +46,10 @@ function main() {
     echo ""
     echo "Note: You may need to restart your WSL session for changes to take full effect."
 
+    message --title "WSL-Hello-sudo" --msgbox "WSL-Hello-sudo has been installed successfully!\n\nYou can now use Windows Hello for sudo authentication.\n\nNote: Please restart your WSL session for changes to take full effect." 11 70
+
+    enable_should_restart
+
     return 0
   else
     echo "Skipping WSL-Hello-sudo"
