@@ -25,7 +25,7 @@ function main() {
   # Remove PAM configuration (in case uninstall.sh didn't cover it)
   echo "Removing PAM configuration..."
   if [[ -f /etc/pam.d/sudo ]]; then
-    sudo sed -i '/pam_wsl_hello/d' /etc/pam.d/sudo
+    sudo_clean_file "/etc/pam.d/sudo" "pam_wsl_hello"
   fi
 
   # Remove the PAM module
@@ -43,14 +43,10 @@ function main() {
   # Remove leftover files that the installer creates
   echo "Removing leftover configuration files..."
   sudo_rem_file "/usr/share/pam-configs/wsl-hello"
-  if [[ -d /etc/pam_wsl_hello ]]; then
-    sudo rm -rf /etc/pam_wsl_hello
-  fi
+  sudo_rem_dir "/etc/pam_wsl_hello"
 
   # Remove the saved uninstall script directory
-  if [[ -d /usr/local/share/wsl-hello-sudo ]]; then
-    sudo rm -rf /usr/local/share/wsl-hello-sudo
-  fi
+  sudo_rem_dir "/usr/local/share/wsl-hello-sudo"
 
   echo "WSL-Hello-sudo has been uninstalled."
 }
