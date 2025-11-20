@@ -3,7 +3,7 @@
 # shellcheck source=../common.sh
 source "$(dirname "$0")/../common.sh" "$@"
 
-#Imported from common.h
+#Imported from common.sh
 declare SetupDir
 
 #######################################
