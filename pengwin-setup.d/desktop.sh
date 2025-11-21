@@ -98,7 +98,14 @@ function install_xrdp() {
   sudo crudini --set /etc/xrdp/sesman.ini Chansrv FuseMountName "/tmp/%u/thinclient_drives"
   sudo crudini --set /etc/xrdp/sesman.ini Globals ListenPort "${sesman_port}"
 
-  sudo /etc/init.d/xrdp start
+  # Enable and start xrdp based on init system
+  if is_systemd_running; then
+    echo "Systemd detected, enabling xrdp service"
+    sudo systemctl enable xrdp
+    sudo systemctl start xrdp
+  else
+    sudo /etc/init.d/xrdp start
+  fi
 
   sudo tee '/usr/local/bin/remote_desktop.sh' <<EOF
 #!/bin/bash
@@ -125,7 +132,16 @@ EOF
   sudo tee '/usr/local/bin/start-xrdp' <<EOF
 #!/bin/bash
 
-sudo service xrdp start >/dev/null 2>&1
+# Check if systemd is running (PID 1)
+if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+  # Using systemd - check and start service if not active
+  if ! systemctl is-active --quiet xrdp; then
+    systemctl start xrdp >/dev/null 2>&1
+  fi
+else
+  # Using traditional init - use service command
+  service xrdp start >/dev/null 2>&1
+fi
 EOF
 
   sudo tee '/etc/profile.d/start-xrdp.sh' <<EOF
@@ -138,7 +154,16 @@ fi
 saved_param="\${PENGWIN_REMOTE_DESKTOP}"
 unset PENGWIN_REMOTE_DESKTOP
 
-sudo /usr/local/bin/start-xrdp
+# Check if systemd is running
+if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+  # Service managed by systemd, only start if not already active
+  if ! systemctl is-active --quiet xrdp; then
+    sudo /usr/local/bin/start-xrdp
+  fi
+else
+  # Traditional init, always run the start script
+  sudo /usr/local/bin/start-xrdp
+fi
 
 if [ -n "\${saved_param}" ]; then
   /usr/local/bin/remote_desktop.sh \${saved_param}

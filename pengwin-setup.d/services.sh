@@ -110,20 +110,41 @@ function enable_ssh() {
     echo "UsePrivilegeSeparation no" | sudo tee -a ${sshd_file}
     echo "PasswordAuthentication yes" | sudo tee -a ${sshd_file}
 
-    sudo service ssh --full-restart
+    # Enable and start ssh based on init system
+    if is_systemd_running; then
+      echo "Systemd detected, enabling ssh service"
+      sudo systemctl enable ssh
+      sudo systemctl restart ssh
+      
+      sshd_status=$(systemctl is-active ssh)
+      if [[ $sshd_status != "active" ]]; then
+        sudo systemctl restart ssh >/dev/null 2>&1
+      fi
+    else
+      sudo service ssh --full-restart
 
-    sshd_status=$(service ssh status)
-    if [[ $sshd_status = *"is not running"* ]]; then
-      sudo service ssh --full-restart >/dev/null 2>&1
+      sshd_status=$(service ssh status)
+      if [[ $sshd_status = *"is not running"* ]]; then
+        sudo service ssh --full-restart >/dev/null 2>&1
+      fi
     fi
 
     local startSsh="/usr/bin/start-ssh"
     sudo tee "${startSsh}" <<EOF
 #!/bin/bash
 
-sshd_status=\$(service ssh status)
-if [[ \${sshd_status} = *"is not running"* ]]; then
-  service ssh --full-restart > /dev/null 2>&1
+# Check if systemd is running (PID 1)
+if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+  # Using systemd - check and start service if not active
+  if ! systemctl is-active --quiet ssh; then
+    systemctl restart ssh > /dev/null 2>&1
+  fi
+else
+  # Using traditional init - use service command
+  sshd_status=\$(service ssh status)
+  if [[ \${sshd_status} = *"is not running"* ]]; then
+    service ssh --full-restart > /dev/null 2>&1
+  fi
 fi
 
 EOF
@@ -139,7 +160,16 @@ EOF
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then
 
-  sudo ${startSsh}
+  # Check if systemd is running
+  if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+    # Service managed by systemd, only start if not already active
+    if ! systemctl is-active --quiet ssh; then
+      sudo ${startSsh}
+    fi
+  else
+    # Traditional init, always run the start script
+    sudo ${startSsh}
+  fi
 fi
 
 EOF

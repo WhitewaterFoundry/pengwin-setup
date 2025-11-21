@@ -31,7 +31,12 @@ function install_joomla() {
     createtmp
     
     echo "Starting MySQL service"
-    sudo service mysql start || sudo service mariadb start
+    # Start MySQL/MariaDB based on init system
+    if is_systemd_running; then
+      sudo systemctl start mariadb || sudo systemctl start mysql
+    else
+      sudo service mysql start || sudo service mariadb start
+    fi
     
     # Update PHP configuration for Joomla 5
     echo "Configuring PHP for Joomla"
@@ -45,7 +50,12 @@ function install_joomla() {
       sudo sed -i "s/;*\(post_max_size = \).*/\113M/" "${php_ini}"
     fi
     
-    sudo service apache2 restart
+    # Restart apache2 based on init system
+    if is_systemd_running; then
+      sudo systemctl restart apache2
+    else
+      sudo service apache2 restart
+    fi
 
     echo "Downloading Joomla ${JOOMLA_VERSION}"
     # Download from GitHub releases

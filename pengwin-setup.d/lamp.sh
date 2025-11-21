@@ -93,10 +93,23 @@ EOF
 
     echo "Installing Apache Web Server"
     install_packages apache2 apache2-utils
-    sudo service apache2 start
+    
+    # Enable and start apache2 based on init system
+    if is_systemd_running; then
+      echo "Systemd detected, enabling apache2 service"
+      sudo systemctl enable apache2
+      sudo systemctl start apache2
+    else
+      sudo service apache2 start
+    fi
+    
     sudo apache2 -v
 
-    service apache2 status
+    if is_systemd_running; then
+      sudo systemctl status apache2 --no-pager
+    else
+      service apache2 status
+    fi
 
     echo "Installing PHP"
     install_packages php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
@@ -118,7 +131,12 @@ EOF
 
     echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php
 
-    sudo service apache2 restart
+    # Restart apache2 based on init system
+    if is_systemd_running; then
+      sudo systemctl restart apache2
+    else
+      sudo service apache2 restart
+    fi
 
     wslview "http://localhost/phpinfo.php"
 
@@ -126,19 +144,39 @@ EOF
 
     local mariadb_service
     mariadb_service="mariadb"
+    
+    # Enable mariadb service if systemd is running
+    if is_systemd_running; then
+      echo "Systemd detected, enabling mariadb service"
+      sudo systemctl enable mariadb
+      sudo systemctl start mariadb
+    fi
 
     local start_lamp="/usr/bin/start-lamp"
     sudo tee "${start_lamp}" <<EOF
 #!/bin/bash
 
-mysql_status=\$(service ${mariadb_service} status)
-if [[ \${mysql_status} = *"is stopped"* ]]; then
-  service ${mariadb_service} --full-restart > /dev/null 2>&1
-fi
+# Check if systemd is running (PID 1)
+if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+  # Using systemd - check and start services if not active
+  if ! systemctl is-active --quiet ${mariadb_service}; then
+    systemctl start ${mariadb_service} > /dev/null 2>&1
+  fi
+  
+  if ! systemctl is-active --quiet apache2; then
+    systemctl start apache2 > /dev/null 2>&1
+  fi
+else
+  # Using traditional init - use service command
+  mysql_status=\$(service ${mariadb_service} status)
+  if [[ \${mysql_status} = *"is stopped"* ]]; then
+    service ${mariadb_service} --full-restart > /dev/null 2>&1
+  fi
 
-apache2_status=\$(service apache2 status)
-if [[ \${apache2_status} = *"is not running"* ]]; then
-  service apache2 --full-restart > /dev/null 2>&1
+  apache2_status=\$(service apache2 status)
+  if [[ \${apache2_status} = *"is not running"* ]]; then
+    service apache2 --full-restart > /dev/null 2>&1
+  fi
 fi
 
 EOF
@@ -154,7 +192,16 @@ EOF
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then
 
-  sudo ${start_lamp}
+  # Check if systemd is running
+  if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+    # Services managed by systemd, only start if not already active
+    if ! systemctl is-active --quiet ${mariadb_service} || ! systemctl is-active --quiet apache2; then
+      sudo ${start_lamp}
+    fi
+  else
+    # Traditional init, always run the start script
+    sudo ${start_lamp}
+  fi
 
 fi
 
