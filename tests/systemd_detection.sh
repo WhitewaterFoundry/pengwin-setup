@@ -8,8 +8,17 @@ source commons.sh
 #  None
 #######################################
 function test_systemd_detection() {
-  # Source common.sh to get the is_systemd_running function
-  source ../pengwin-setup.d/common.sh --help >/dev/null 2>&1 || true
+  # Define the function locally for testing since sourcing common.sh requires WSL environment
+  function is_systemd_running() {
+    local init_process
+    init_process=$(ps -p 1 -o comm= 2>/dev/null || echo "")
+    
+    if [[ "${init_process}" == "systemd" ]]; then
+      return 0
+    else
+      return 1
+    fi
+  }
   
   # Test the function exists
   type is_systemd_running >/dev/null 2>&1

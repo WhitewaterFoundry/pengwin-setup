@@ -97,8 +97,7 @@ EOF
     # Enable and start apache2 based on init system
     if is_systemd_running; then
       echo "Systemd detected, enabling apache2 service"
-      sudo systemctl enable apache2
-      sudo systemctl start apache2
+      sudo systemctl enable --now apache2
     else
       sudo service apache2 start
     fi
@@ -148,8 +147,7 @@ EOF
     # Enable mariadb service if systemd is running
     if is_systemd_running; then
       echo "Systemd detected, enabling mariadb service"
-      sudo systemctl enable mariadb
-      sudo systemctl start mariadb
+      sudo systemctl enable --now mariadb
     fi
 
     local start_lamp="/usr/bin/start-lamp"

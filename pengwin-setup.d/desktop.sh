@@ -101,8 +101,7 @@ function install_xrdp() {
   # Enable and start xrdp based on init system
   if is_systemd_running; then
     echo "Systemd detected, enabling xrdp service"
-    sudo systemctl enable xrdp
-    sudo systemctl start xrdp
+    sudo systemctl enable --now xrdp
   else
     sudo /etc/init.d/xrdp start
   fi

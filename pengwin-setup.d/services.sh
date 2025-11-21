@@ -149,7 +149,9 @@ function enable_ssh() {
     # Enable and start ssh based on init system
     if is_systemd_running; then
       echo "Systemd detected, enabling ssh service"
-      sudo systemctl enable ssh
+      sudo systemctl enable --now ssh
+      
+      # Restart to apply new configuration
       sudo systemctl restart ssh
       
       sshd_status=$(systemctl is-active ssh)
