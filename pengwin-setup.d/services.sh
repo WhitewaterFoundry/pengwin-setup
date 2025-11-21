@@ -29,6 +29,32 @@ if test -d /etc/boot.d ; then
 fi
 
 EOF
+      sudo chmod +x /etc/rc.local
+    fi
+
+    # If systemd is running, enable rc-local service
+    if is_systemd_running; then
+      # Create rc-local.service if it doesn't exist
+      if [[ ! -f /etc/systemd/system/rc-local.service ]]; then
+        sudo tee "/etc/systemd/system/rc-local.service" <<EOF
+[Unit]
+Description=/etc/rc.local Compatibility
+ConditionPathExists=/etc/rc.local
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target
+EOF
+      fi
+      sudo systemctl daemon-reload
+      sudo systemctl enable rc-local.service
     fi
 
     local cmd="/bin/bash /etc/rc.local"
@@ -41,7 +67,17 @@ EOF
 # Check if we have Windows Path
 if ( command -v cmd.exe >/dev/null ); then
 
-  sudo ${cmd}
+  # Check if systemd is running
+  if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+    # With systemd, rc.local runs on boot via systemd service
+    # Only run manually if the service didn't start properly
+    if ! systemctl is-active --quiet rc-local.service 2>/dev/null; then
+      sudo ${cmd}
+    fi
+  else
+    # Traditional init, always run the script
+    sudo ${cmd}
+  fi
 fi
 
 EOF
