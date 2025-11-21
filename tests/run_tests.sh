@@ -20,6 +20,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./fzf.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
+  #run_test ./wsl-hello-sudo.sh
   run_test ./dotnet.sh
   run_test ./microsoft_edit.sh
   run_test ./desktop.sh

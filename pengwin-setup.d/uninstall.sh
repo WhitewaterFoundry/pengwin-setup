@@ -45,6 +45,7 @@ function main() {
       "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
       "OPENSTACK" "Remove OpenStack CLI tools" ${OFF} \
+      "PASSWORDLESS-SUDO" "Disable passwordless sudo" ${OFF} \
       "POETRY" "Remove Poetry" ${OFF} \
       "POWERSHELL" "Remove Powershell for Linux" ${OFF} \
       "PYENV" "Remove pyenv, its Python version(s) and modules" ${OFF} \
@@ -59,6 +60,7 @@ function main() {
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
       "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" ${OFF} \
+      "WSL-HELLO-SUDO" "Remove Windows Hello authentication for sudo" ${OFF} \
       "WSLTTY" "Remove WSLtty" ${OFF} \
       "X410" "Remove the X410 X-server autostart" ${OFF} \
       "XFCE" "Remove XFCE Desktop environment" ${OFF}
@@ -246,6 +248,11 @@ function main() {
     bash "${UninstallDir}"/pyenv.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"PASSWORDLESS-SUDO"* ]]; then
+    echo "PASSWORDLESS-SUDO"
+    bash "${UninstallDir}"/passwordless-sudo.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"POETRY"* ]]; then
     echo "POETRY"
     bash "${UninstallDir}"/poetry.sh "$@"
@@ -304,6 +311,11 @@ function main() {
   if [[ ${menu_choice} == *"WINTHEME"* ]]; then
     echo "WINTHEME"
     bash "${UninstallDir}"/theme.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"WSL-HELLO-SUDO"* ]]; then
+    echo "WSL-HELLO-SUDO"
+    bash "${UninstallDir}"/wsl-hello-sudo.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"WSLTTY"* ]]; then
