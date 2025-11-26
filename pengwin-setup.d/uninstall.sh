@@ -158,7 +158,7 @@ function main() {
   fi
 
   if [[ ${menu_choice} == *"GTERM"* ]]; then
-    echo "GO"
+    echo "GTERM"
     bash "${UninstallDir}"/gterm.sh "$@"
   fi
 
