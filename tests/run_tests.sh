@@ -73,4 +73,5 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
   run_test ./rust.sh
   run_test ./fish.sh
   run_test ./fzf.sh
+  run_test ./wezterm.sh
 fi
