@@ -42,7 +42,6 @@ function install_shell_integration() {
 
   # Install shell integration script
   # Based on: https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
-  # and https://github.com/WhitewaterFoundry/pengwin-enterprise-rootfs-builds/blob/main/linux_files/bash-prompt-wsl.sh
   sudo tee "${SHELL_INTEGRATION_SCRIPT}" >/dev/null <<'SCRIPT_EOF'
 #!/bin/bash
 # Windows Terminal shell integration
@@ -91,7 +90,8 @@ ${PENGWIN_SHELL_INTEGRATION_MARKER}
 EOF
 
   echo "Windows Terminal shell integration installed successfully."
-  message --title "Shell Integration Installed" --msgbox "Windows Terminal shell integration has been installed.\n\nScript location: ${SHELL_INTEGRATION_SCRIPT}\nSource added to: ${bashrc}\n\nPlease close and re-open your terminal or run 'source ~/.bashrc' to apply the changes.\n\nThis provides:\n- Command marks for scroll-to-command\n- Current working directory tracking\n- Command exit status reporting" 16 80
+  enable_should_restart
+  message --title "Shell Integration Installed" --msgbox "Windows Terminal shell integration has been installed.\n\nScript location: ${SHELL_INTEGRATION_SCRIPT}\nSource added to: ${bashrc}\n\nPlease close and re-open Pengwin to apply the changes.\n\nThis provides:\n- Command marks for scroll-to-command\n- Current working directory tracking\n- Command exit status reporting" 16 80
 }
 
 if (confirm --title "Windows Terminal Shell Integration" --yesno "Would you like to install Windows Terminal shell integration?\n\nThis adds special escape sequences to your bash prompt that enable:\n- Scroll to command feature in Windows Terminal\n- Current working directory tracking\n- Command exit status tracking\n\nThe changes will be added to ~/.bashrc with markers for easy removal." 15 80); then

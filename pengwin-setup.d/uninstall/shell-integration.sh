@@ -41,12 +41,7 @@ function main() {
 
   # Remove the shell integration script
   echo "Removing ${SHELL_INTEGRATION_SCRIPT}"
-  if [[ -f "${SHELL_INTEGRATION_SCRIPT}" ]]; then
-    sudo rm -f "${SHELL_INTEGRATION_SCRIPT}"
-    echo "Shell integration script removed."
-  else
-    echo "... script not found!"
-  fi
+  sudo_rem_file "${SHELL_INTEGRATION_SCRIPT}"
 
   echo "Windows Terminal shell integration uninstalled successfully."
 }
