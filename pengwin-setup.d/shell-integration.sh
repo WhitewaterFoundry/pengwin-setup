@@ -67,7 +67,7 @@ if [[ "${TERM_PROGRAM}" == "WezTerm" || -n "${WT_SESSION}" ]]; then
     __wt_mark_command_finished "${last_exit_code}"
     __wt_set_cwd
     __wt_mark_prompt_start
-    PS1="${__wt_original_ps1}"
+    PS1="\[\$(__wt_mark_command_start)\]${__wt_original_ps1}"
     return "${last_exit_code}"
   }
 
