@@ -4,7 +4,7 @@ source commons.sh
 
 function test_main() {
   # Test installing WezTerm for Linux
-  run_pengwinsetup autoinstall GUI TERMINAL WEZTERM LINUX
+  run_pengwinsetup autoinstall GUI TERMINAL WEZTERM WEZT_LINUX
 
   # Check that the APT repository was added
   assertTrue "WezTerm APT source not found" "[ -f /etc/apt/sources.list.d/wezterm.list ]"

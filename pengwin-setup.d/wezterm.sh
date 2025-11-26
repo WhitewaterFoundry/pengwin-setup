@@ -88,8 +88,8 @@ function main() {
     # shellcheck disable=SC2155
     local version_choice=$(
       menu --title "WezTerm Version" --menu "Select which version of WezTerm to install:\n\n- Windows: Better window management, runs natively on Windows\n- Linux: Runs within WSL, requires X server or WSLg\n\n[ENTER to confirm]:" 16 75 2 \
-        "WINDOWS" "Install WezTerm for Windows (recommended)" \
-        "LINUX" "Install WezTerm for Linux (requires X/WSLg)"
+        "WEZT_WINDOWS" "Install WezTerm for Windows (recommended)" \
+        "WEZT_LINUX" "Install WezTerm for Linux (requires X/WSLg)"
 
       3>&1 1>&2 2>&3
     )
@@ -99,11 +99,11 @@ function main() {
       return 1
     fi
 
-    if [[ ${version_choice} == *"WINDOWS"* ]]; then
+    if [[ ${version_choice} == *"WEZT_WINDOWS"* ]]; then
       install_wezterm_windows
     fi
 
-    if [[ ${version_choice} == *"LINUX"* ]]; then
+    if [[ ${version_choice} == *"WEZT_LINUX"* ]]; then
       install_wezterm_linux
     fi
   else
