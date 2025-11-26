@@ -11,7 +11,8 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Terminal Menu" --menu "Select the terminals you want to install\n[ENTER to confirm]:" 16 60 7 \
+    menu --title "Terminal Menu" --menu "Select the terminals you want to install\n[ENTER to confirm]:" 17 60 8 \
+      "WEZTERM" "WezTerm (Windows or Linux)" \
       "WINTERM" "Windows Terminal" \
       "WSLTTY" "WSLtty" \
       "TILIX" "Tilix${REQUIRES_X}" \
@@ -25,6 +26,11 @@ function main() {
 
   if [[ ${menu_choice} == "CANCELLED" ]]; then
     return 1
+  fi
+
+  if [[ ${menu_choice} == *"WEZTERM"* ]]; then
+    echo "WEZTERM"
+    bash "${SetupDir}"/wezterm.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"WINTERM"* ]]; then

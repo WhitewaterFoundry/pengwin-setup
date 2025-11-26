@@ -58,6 +58,7 @@ function main() {
       "TERRAFORM" "Remove Terraform CLI tools" ${OFF} \
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
       "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
+      "WEZTERM" "Remove WezTerm (Linux version only)" ${OFF} \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" ${OFF} \
       "WSLTTY" "Remove WSLtty" ${OFF} \
       "X410" "Remove the X410 X-server autostart" ${OFF} \
@@ -299,6 +300,11 @@ function main() {
   if [[ ${menu_choice} == *"VSCODE"* ]]; then
     echo "VSCODE"
     bash "${UninstallDir}"/vscode.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"WEZTERM"* ]]; then
+    echo "WEZTERM"
+    bash "${UninstallDir}"/wezterm.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"WINTHEME"* ]]; then
