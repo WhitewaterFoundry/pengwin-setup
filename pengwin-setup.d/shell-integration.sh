@@ -35,40 +35,31 @@ function install_shell_integration() {
   fi
 
   # Add shell integration to .bashrc
-  # Based on: https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
-  # and https://github.com/WhitewaterFoundry/pengwin-enterprise-rootfs-builds/blob/main/linux_files/bash-prompt-wsl.sh
-  cat >>"${bashrc}" <<EOF
+  # Based on: https://github.com/WhitewaterFoundry/pengwin-enterprise-rootfs-builds/blob/main/linux_files/bash-prompt-wsl.sh
+  # and https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
+  cat >>"${bashrc}" <<'BASHRC_EOF'
 ${PENGWIN_SHELL_INTEGRATION_MARKER}
 # Windows Terminal shell integration
+# Based on: https://github.com/WhitewaterFoundry/pengwin-enterprise-rootfs-builds/blob/main/linux_files/bash-prompt-wsl.sh
 # See: https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
 # Also supports WezTerm which implements the same OSC sequences
-if [[ "\${TERM_PROGRAM}" == "WezTerm" || -n "\${WT_SESSION}" ]]; then
-  __wt_osc() { printf '\e]%s\e\\' "\$1"; }
-
-  __wt_mark_prompt_start() { __wt_osc '133;A'; }
-  __wt_mark_command_start() { __wt_osc '133;B'; }
-  __wt_mark_command_executed() { __wt_osc "133;C;\$1"; }
-  __wt_mark_command_finished() { __wt_osc "133;D;\$1"; }
-  __wt_set_cwd() { __wt_osc "9;9;\${PWD}"; }
-
-  __wt_update_prompt() {
-    local last_exit_code="\$?"
-    __wt_mark_command_finished "\${last_exit_code}"
-    __wt_set_cwd
-    __wt_mark_prompt_start
-    PS1="\${__wt_original_ps1}"
-    return "\${last_exit_code}"
-  }
-
-  if [[ -z "\${__wt_original_ps1}" ]]; then
-    __wt_original_ps1="\${PS1}"
-    PROMPT_COMMAND="__wt_update_prompt\${PROMPT_COMMAND:+;}\${PROMPT_COMMAND}"
-    PS1="\[\$(__wt_mark_command_start)\]\${PS1}"
+if [[ "${TERM_PROGRAM}" == "WezTerm" || -n "${WT_SESSION}" ]]; then
+  if [[ -z "${__wt_original_ps1}" ]]; then
+    __wt_original_ps1="${PS1}"
+    # PS0: Executed after command is read, before execution (marks command executed)
+    PS0='\[\e]133;C\e\\\]'
+    # PS1: 133;D;$? = command finished with exit code
+    #      133;A = prompt start
+    #      9;9;path = set current working directory
+    #      133;B = command input start (end of prompt)
+    PS1='\[\e]133;D;$?\e\\\]\[\e]133;A\e\\\]'"${__wt_original_ps1}"'\[\e]9;9;"$(wslpath -w "${PWD}" 2>/dev/null || echo "${PWD}")"\e\\\]\[\e]133;B\e\\\]'
   fi
 fi
 ${PENGWIN_SHELL_INTEGRATION_MARKER}
+BASHRC_EOF
 
-EOF
+  # Replace the marker placeholder in the output
+  sed -i "s|\${PENGWIN_SHELL_INTEGRATION_MARKER}|${PENGWIN_SHELL_INTEGRATION_MARKER}|g" "${bashrc}"
 
   echo "Windows Terminal shell integration installed successfully."
   message --title "Shell Integration Installed" --msgbox "Windows Terminal shell integration has been installed to ${bashrc}.\n\nPlease close and re-open your terminal or run 'source ~/.bashrc' to apply the changes.\n\nThis provides:\n- Command marks for scroll-to-command\n- Current working directory tracking\n- Command exit status reporting" 14 80
