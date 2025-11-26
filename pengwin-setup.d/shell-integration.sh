@@ -76,7 +76,7 @@ if [[ "${TERM_PROGRAM}" == "WezTerm" || -n "${WT_SESSION}" ]]; then
     PROMPT_COMMAND="__wt_update_prompt${PROMPT_COMMAND:+;}${PROMPT_COMMAND}"
     PS1="\[\$(__wt_mark_command_start)\]${PS1}"
     # PS0 is executed after reading a command but before executing it
-    PS0='\[\$(__wt_mark_command_executed)\]'
+    PS0='\[$(__wt_mark_command_executed)\]'
   fi
 fi
 SCRIPT_EOF
