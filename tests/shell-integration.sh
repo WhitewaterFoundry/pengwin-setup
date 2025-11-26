@@ -18,11 +18,11 @@ function test_main() {
   grep -q "${PENGWIN_SHELL_INTEGRATION_MARKER}" "${bashrc}"
   assertEquals "Shell integration marker should be present in .bashrc" "0" "$?"
 
-  grep -q "PS0=" "${bashrc}"
-  assertEquals "PS0 should be set in .bashrc for command executed mark" "0" "$?"
+  grep -q "__wt_update_prompt" "${bashrc}"
+  assertEquals "Shell integration function should be present in .bashrc" "0" "$?"
 
-  grep -q "133;C" "${bashrc}"
-  assertEquals "Command executed mark (133;C) should be present in .bashrc" "0" "$?"
+  grep -q "PS0=" "${bashrc}"
+  assertEquals "PS0 should be set for command executed mark" "0" "$?"
 
   grep -q "WT_SESSION" "${bashrc}"
   assertEquals "WT_SESSION check should be present in .bashrc" "0" "$?"
@@ -42,8 +42,8 @@ function test_uninstall() {
     grep -q "${PENGWIN_SHELL_INTEGRATION_MARKER}" "${bashrc}"
     assertNotEquals "Shell integration marker should NOT be present after uninstall" "0" "$?"
 
-    grep -q "PS0=" "${bashrc}"
-    assertNotEquals "PS0 should NOT be present after uninstall" "0" "$?"
+    grep -q "__wt_update_prompt" "${bashrc}"
+    assertNotEquals "Shell integration function should NOT be present after uninstall" "0" "$?"
   fi
 }
 
