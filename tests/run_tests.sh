@@ -28,9 +28,11 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
   run_test ./latex.sh
+  run_test ./shell-integration.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
+  run_test ./shell-integration.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #1
   run_test ./desktop.sh
   run_test ./lamp.sh "BUILTIN"
