@@ -41,6 +41,7 @@ function install_shell_integration() {
 ${PENGWIN_SHELL_INTEGRATION_MARKER}
 # Windows Terminal shell integration
 # See: https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
+# Also supports WezTerm which implements the same OSC sequences
 if [[ "\${TERM_PROGRAM}" == "WezTerm" || -n "\${WT_SESSION}" ]]; then
   __wt_osc() { printf '\e]%s\e\\' "\$1"; }
 
