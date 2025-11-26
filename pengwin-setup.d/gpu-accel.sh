@@ -15,7 +15,7 @@ function main() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "GPU Acceleration" --radiolist "GPU Hardware Acceleration Settings\n[SPACE to select, ENTER to confirm]:" 12 85 3 \
+    menu --title "GPU Acceleration" --radiolist "GPU Hardware Acceleration Settings\n[SPACE to select, ENTER to confirm]:" 12 85 2 \
       "GPU_ACCEL_ENABLE" 'Enable hardware acceleration (D3D12) - default  ' off \
       "GPU_ACCEL_DISABLE" 'Disable hardware acceleration (helps with driver issues) ' off
 
