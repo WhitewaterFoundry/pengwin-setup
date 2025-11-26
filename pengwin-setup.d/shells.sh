@@ -167,10 +167,11 @@ function installAndSetShell() {
   # shellcheck disable=SC2155
   local menu_choice=$(
 
-    menu --title "Shell Menu" --menu "Custom shells and improvements (bash included)\n[ENTER to confirm]:" 14 65 4 \
+    menu --title "Shell Menu" --menu "Custom shells and improvements (bash included)\n[ENTER to confirm]:" 15 70 5 \
       "BASH-RL" "Recommended readline settings for productivity " \
       "CSH" "csh" \
       "FISH" "fish with oh-my-fish plugin manager" \
+      "SHELLINT" "Windows Terminal shell integration for bash" \
       "ZSH" "zsh"
 
     # shellcheck disable=SC2188
@@ -203,6 +204,11 @@ function installAndSetShell() {
   if [[ $menu_choice == *"BASH-RL"* ]]; then
     echo "BASH-RL"
     bash "${SetupDir}"/shell-opts.sh "$@"
+  fi
+
+  if [[ $menu_choice == *"SHELLINT"* ]]; then
+    echo "SHELLINT"
+    bash "${SetupDir}"/shell-integration.sh "$@"
   fi
 
 }

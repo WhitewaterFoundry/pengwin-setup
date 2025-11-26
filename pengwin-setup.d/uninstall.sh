@@ -51,6 +51,7 @@ function main() {
       "RCLOCAL" "Remove rclocal support (the file /etc/rc.local) is kept" ${OFF} \
       "RUBY" "Remove rbenv, Ruby version(s) and Rails (if installed)" ${OFF} \
       "RUST" "Remove Rust and rustup toolchain installer" ${OFF} \
+      "SHELLINT" "Remove Windows Terminal shell integration" ${OFF} \
       "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" ${OFF} \
       "SSH" "Remove SSH server" ${OFF} \
       "SYNAPTIC" "Remove Synaptic package manager" ${OFF} \
@@ -264,6 +265,11 @@ function main() {
   if [[ ${menu_choice} == *"RUST"* ]]; then
     echo "RUST"
     bash "${UninstallDir}"/rust.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"SHELLINT"* ]]; then
+    echo "SHELLINT"
+    bash "${UninstallDir}"/shell-integration.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"STARTMENU"* ]]; then
