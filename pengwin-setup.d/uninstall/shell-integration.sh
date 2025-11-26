@@ -8,11 +8,12 @@ declare HOME
 
 # We need to delete everything between 2 instances of this string
 readonly PENGWIN_SHELL_INTEGRATION_MARKER='### PENGWIN WINDOWS TERMINAL SHELL INTEGRATION'
-readonly SHELL_INTEGRATION_SCRIPT='/etc/profile.d/wt-shell-integration.sh'
+readonly SHELL_INTEGRATION_DIR='/usr/local/share/pengwin'
+readonly SHELL_INTEGRATION_SCRIPT="${SHELL_INTEGRATION_DIR}/wt-shell-integration.sh"
 
 #######################################
 # Uninstall Windows Terminal shell integration
-# Removes the source line from ~/.bashrc and the script from /etc/profile.d
+# Removes the source line from ~/.bashrc and the script from /usr/local/share/pengwin
 # Globals:
 #   HOME
 #   PENGWIN_SHELL_INTEGRATION_MARKER
@@ -38,7 +39,7 @@ function main() {
     echo "... ${bashrc} not found!"
   fi
 
-  # Remove the shell integration script from /etc/profile.d
+  # Remove the shell integration script
   echo "Removing ${SHELL_INTEGRATION_SCRIPT}"
   if [[ -f "${SHELL_INTEGRATION_SCRIPT}" ]]; then
     sudo rm -f "${SHELL_INTEGRATION_SCRIPT}"

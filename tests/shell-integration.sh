@@ -5,7 +5,7 @@ source commons.sh
 declare TEST_USER
 
 readonly PENGWIN_SHELL_INTEGRATION_MARKER='### PENGWIN WINDOWS TERMINAL SHELL INTEGRATION'
-readonly SHELL_INTEGRATION_SCRIPT='/etc/profile.d/wt-shell-integration.sh'
+readonly SHELL_INTEGRATION_SCRIPT='/usr/local/share/pengwin/wt-shell-integration.sh'
 
 function test_main() {
   run_pengwinsetup autoinstall SETTINGS SHELLS SHELLINT
@@ -22,9 +22,9 @@ function test_main() {
   grep -q "wt-shell-integration.sh" "${bashrc}"
   assertEquals "Source line for shell integration script should be present in .bashrc" "0" "$?"
 
-  # Check that the script was installed to /etc/profile.d
+  # Check that the script was installed to /usr/local/share/pengwin
   test -f "${SHELL_INTEGRATION_SCRIPT}"
-  assertEquals "Shell integration script should exist in /etc/profile.d" "0" "$?"
+  assertEquals "Shell integration script should exist" "0" "$?"
 
   grep -q "__wt_update_prompt" "${SHELL_INTEGRATION_SCRIPT}"
   assertEquals "Shell integration function should be present in script" "0" "$?"
@@ -51,7 +51,7 @@ function test_uninstall() {
     assertNotEquals "Shell integration marker should NOT be present after uninstall" "0" "$?"
   fi
 
-  # Verify the script was removed from /etc/profile.d
+  # Verify the script was removed
   test -f "${SHELL_INTEGRATION_SCRIPT}"
   assertNotEquals "Shell integration script should NOT exist after uninstall" "0" "$?"
 }

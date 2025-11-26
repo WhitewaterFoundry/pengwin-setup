@@ -7,14 +7,16 @@ source "$(dirname "$0")/common.sh" "$@"
 declare HOME
 
 readonly PENGWIN_SHELL_INTEGRATION_MARKER='### PENGWIN WINDOWS TERMINAL SHELL INTEGRATION'
-readonly SHELL_INTEGRATION_SCRIPT='/etc/profile.d/wt-shell-integration.sh'
+readonly SHELL_INTEGRATION_DIR='/usr/local/share/pengwin'
+readonly SHELL_INTEGRATION_SCRIPT="${SHELL_INTEGRATION_DIR}/wt-shell-integration.sh"
 
 #######################################
 # Install Windows Terminal shell integration
-# Installs script to /etc/profile.d and adds source line to ~/.bashrc
+# Installs script to /usr/local/share/pengwin and adds source line to ~/.bashrc
 # Globals:
 #   HOME
 #   PENGWIN_SHELL_INTEGRATION_MARKER
+#   SHELL_INTEGRATION_DIR
 #   SHELL_INTEGRATION_SCRIPT
 # Arguments:
 #   None
@@ -35,7 +37,10 @@ function install_shell_integration() {
     return 1
   fi
 
-  # Install shell integration script to /etc/profile.d
+  # Create the directory if it doesn't exist
+  sudo mkdir -p "${SHELL_INTEGRATION_DIR}"
+
+  # Install shell integration script
   # Based on: https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
   # and https://github.com/WhitewaterFoundry/pengwin-enterprise-rootfs-builds/blob/main/linux_files/bash-prompt-wsl.sh
   sudo tee "${SHELL_INTEGRATION_SCRIPT}" >/dev/null <<'SCRIPT_EOF'
