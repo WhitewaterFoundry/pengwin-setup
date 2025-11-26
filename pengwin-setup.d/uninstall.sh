@@ -29,6 +29,7 @@ function main() {
       "FISH" "Remove FISH Shell" ${OFF} \
       "FZF" "Remove command line fuzzy finder" ${OFF} \
       "GO" "Remove Go language" ${OFF} \
+      "GPU" "Remove GPU acceleration settings (re-enable D3D12 acceleration)" ${OFF} \
       "GUILIB" "Remove base GUI application libraries" ${OFF} \
       "HIDPI" "Remove Qt and GTK HiDPI modifications" ${OFF} \
       "HOMEBREW" "Remove the Homebrew package manager" ${OFF} \
@@ -149,6 +150,11 @@ function main() {
   if [[ ${menu_choice} == *"GO"* ]]; then
     echo "GO"
     bash "${UninstallDir}"/go.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"GPU"* ]]; then
+    echo "GPU"
+    bash "${UninstallDir}"/gpu-accel.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"GTERM"* ]]; then
