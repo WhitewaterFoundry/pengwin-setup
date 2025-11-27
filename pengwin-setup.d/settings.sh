@@ -11,10 +11,9 @@ function main() {
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Settings Menu" "${DIALOG_TYPE}" "Change various settings in Pengwin\n[ENTER to confirm]:" 15 97 6 \
+    menu --title "Settings Menu" "${DIALOG_TYPE}" "Change various settings in Pengwin\n[ENTER to confirm]:" 14 97 5 \
       "EXPLORER" "Enable right-click on folders in Windows Explorer to open them in Pengwin  " ${OFF} \
       "COLORTOOL" "Install ColorTool to set Windows console color schemes" ${OFF} \
-      "GPU" "Configure GPU hardware acceleration settings" ${OFF} \
       "LANGUAGE" "Change default language and keyboard setting in Pengwin" ${OFF} \
       "MOTD" "Configures the Message Of The Day behaviour" ${OFF} \
       "SHELLS" "Install and configure zsh, csh, fish or readline improvements" ${OFF}
@@ -38,12 +37,6 @@ function main() {
   if [[ ${menu_choice} == *"COLORTOOL"* ]]; then
     echo "COLORTOOL"
     bash "${SetupDir}"/colortool.sh "$@"
-    exit_status=$?
-  fi
-
-  if [[ ${menu_choice} == *"GPU"* ]]; then
-    echo "GPU"
-    bash "${SetupDir}"/gpu-accel.sh "$@"
     exit_status=$?
   fi
 

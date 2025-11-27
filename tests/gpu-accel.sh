@@ -8,7 +8,7 @@ source commons.sh
 #  None
 #######################################
 function test_gpu_disable() {
-  run_pengwinsetup install SETTINGS GPU GPU_ACCEL_DISABLE
+  run_pengwinsetup install GUI GPU GPU_ACCEL_DISABLE
 
   run test -f /etc/profile.d/disable-gpu-accel.sh
   assertTrue "File disable-gpu-accel.sh not created" "$?"
@@ -24,10 +24,10 @@ function test_gpu_disable() {
 #######################################
 function test_gpu_enable() {
   # First disable to create the files
-  run_pengwinsetup install SETTINGS GPU GPU_ACCEL_DISABLE
+  run_pengwinsetup install GUI GPU GPU_ACCEL_DISABLE
 
   # Then enable to remove them
-  run_pengwinsetup install SETTINGS GPU GPU_ACCEL_ENABLE
+  run_pengwinsetup install GUI GPU GPU_ACCEL_ENABLE
 
   run test -f /etc/profile.d/disable-gpu-accel.sh
   assertFalse "File disable-gpu-accel.sh still present after enable" "$?"
@@ -40,7 +40,7 @@ function test_gpu_enable() {
 #######################################
 function test_uninstall() {
   # First disable to create the files
-  run_pengwinsetup install SETTINGS GPU GPU_ACCEL_DISABLE
+  run_pengwinsetup install GUI GPU GPU_ACCEL_DISABLE
 
   # Then uninstall
   run_pengwinsetup install UNINSTALL GPU

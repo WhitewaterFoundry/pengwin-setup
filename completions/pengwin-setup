@@ -12,7 +12,7 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'CODE EMACS NEOVIM MSEDIT' -- "${cur}")
     ;;
   GUI)
-    mapfile -t COMPREPLY < <(compgen -W 'CONFIGURE DESKTOP NLI GUILIB HIDPI TERMINAL SYNAPTIC WINTHEME WSLG' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'CONFIGURE DESKTOP GPU NLI GUILIB HIDPI TERMINAL SYNAPTIC WINTHEME WSLG' -- "${cur}")
     ;;
   CONFIGURE)
     mapfile -t COMPREPLY < <(compgen -W 'DISPLAY STARTMENU VCXSRV X410' -- "${cur}")
@@ -39,7 +39,7 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W 'BUILTIN 10.6 10.7 10.8 10.9' -- "${cur}")
     ;;
   SETTINGS)
-    mapfile -t COMPREPLY < <(compgen -W 'EXPLORER COLORTOOL GPU LANGUAGE MOTD SHELLS' -- "${cur}")
+    mapfile -t COMPREPLY < <(compgen -W 'EXPLORER COLORTOOL LANGUAGE MOTD SHELLS' -- "${cur}")
     ;;
   GPU)
     mapfile -t COMPREPLY < <(compgen -W 'GPU_ACCEL_ENABLE GPU_ACCEL_DISABLE' -- "${cur}")
