@@ -273,9 +273,11 @@ Actions to be used after install command:
 
   EDITORS                        Available editors: CODE, EMACS, NEOVIM, MSEDIT.
 
-  GUI                            GUI-related options: CONFIGURE, DESKTOP, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
+  GUI                            GUI-related options: CONFIGURE, DESKTOP, GPU, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
 
   CONFIGURE                      Configuration options: DISPLAY, STARTMENU, VCXSRV, X410.
+
+  GPU                            GPU settings: GPU_ACCEL_ENABLE, GPU_ACCEL_DISABLE.
 
   DESKTOP                        Desktop environments: XFCE.
 
@@ -291,7 +293,7 @@ Actions to be used after install command:
 
   LAMP                           LAMP MySQL (MariaDB) versions: BUILTIN, 10.6, 10.7, 10.8, 10.9.
 
-  SETTINGS                       System settings: EXPLORER, COLORTOOL, LANGUAGE, SHELLS.
+  SETTINGS                       System settings: EXPLORER, COLORTOOL, LANGUAGE, MOTD, SHELLS.
 
   SHELLS                         Shell options: BASH-RL, CSH, FISH, ZSH.
 

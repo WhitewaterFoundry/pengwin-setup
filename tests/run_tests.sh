@@ -28,6 +28,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
   run_test ./latex.sh
+  run_test ./gpu-accel.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
@@ -40,6 +41,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #2
   run_test ./rclocal.sh
   run_test ./cpp-vs-clion_test.sh
   run_test ./hidpi.sh
+  run_test ./gpu-accel.sh
   run_test ./ansible.sh
   run_test ./synaptic.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #3
