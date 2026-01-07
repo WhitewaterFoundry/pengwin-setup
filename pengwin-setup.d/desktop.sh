@@ -162,6 +162,7 @@ function install_xfce() {
 
     start_indeterminate_progress
 
+    sudo groupadd --system polkitd 2>/dev/null || true
     install_packages xfce4 xfce4-terminal
 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
