@@ -77,6 +77,7 @@ function install_xrdp() {
     port="3395"
   fi
 
+  sudo groupadd --system polkitd 2>/dev/null || true
   install_packages xrdp xorgxrdp pulseaudio
 
   sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
@@ -162,7 +163,6 @@ function install_xfce() {
 
     start_indeterminate_progress
 
-    sudo groupadd --system polkitd 2>/dev/null || true
     install_packages xfce4 xfce4-terminal
 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
