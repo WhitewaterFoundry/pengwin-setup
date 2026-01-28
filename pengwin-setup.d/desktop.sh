@@ -61,7 +61,7 @@ function install_dependencies() {
     dependencies_instaled=1
     echo "There is a problem installing guilib utilities"
   fi
-  return $dependencies_instaled
+  return "$dependencies_instaled"
 }
 
 function install_xrdp() {
