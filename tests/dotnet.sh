@@ -11,9 +11,6 @@ function testMain() {
   done
 
   assertEquals ".NET Core was not installed" "1" "$(run /usr/bin/dotnet --version | grep -c '10.0')"
-
-  command -v /usr/bin/nuget
-  assertEquals "NUGet was not installed" "0" "$?"
 }
 
 function testUninstall() {
@@ -26,9 +23,6 @@ function testUninstall() {
 
   command -v /usr/bin/dotnet
   assertEquals ".NET Core was not uninstalled" "1" "$?"
-
-  command -v /usr/bin/nuget
-  assertEquals "NUGet was not uninstalled" "1" "$?"
 }
 
 # shellcheck disable=SC1091

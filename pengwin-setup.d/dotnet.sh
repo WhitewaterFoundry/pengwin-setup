@@ -19,13 +19,6 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
   install_packages dotnet-sdk-10.0
   cleantmp
 
-  if (confirm --title "NUGET" --yesno "Would you like to download and install NuGet?" 8 50) ; then
-    echo "Installing NuGet"
-    install_packages nuget
-  else
-    echo "Skipping NUGET"
-  fi
-
 else
   echo "Skipping DOTNET"
 fi
