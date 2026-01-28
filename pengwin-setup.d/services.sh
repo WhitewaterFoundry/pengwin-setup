@@ -211,6 +211,12 @@ function main() {
     return
   fi
 
+  if [[ "$1" == "--enable-systemd" ]]; then
+    enable_systemd
+
+    return
+  fi
+
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 

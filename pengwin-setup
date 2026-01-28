@@ -174,7 +174,7 @@ function install_menu() {
       "GUI" "Install an X server or various other GUI applications" ${OFF}  \
       "MAINTENANCE" "Various maintenance tasks like home backup" ${OFF}  \
       "PROGRAMMING" "Install various programming languages support" ${OFF}  \
-      "SERVICES" "Enable services support (SystemD, SSH, rc.local)" ${OFF}  \
+      "SERVICES" "Enable services support (systemd, SSH, rc.local)" ${OFF}  \
       "SETTINGS" "Change various settings in Pengwin" ${OFF}  \
       "TOOLS" "Install applications or servers" ${OFF}  \
       "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" ${OFF}
