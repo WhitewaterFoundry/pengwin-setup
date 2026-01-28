@@ -9,6 +9,10 @@ function test_main() {
   command -v /usr/local/bin/edit
   assertEquals "Microsoft Edit was not installed" "0" "$?"
   assertEquals "update-alternatives not configured" "1" "$(run update-alternatives --list editor | grep -c '/usr/local/bin/edit')"
+  
+  # Verify ICU library is installed for Search and Replace functionality
+  package_installed libicu-dev
+  assertTrue "ICU library is not installed" "$?"
 }
 
 function test_uninstall() {

@@ -8,7 +8,7 @@ declare WIN_CUR_VER
 if (confirm --title "GUI Libraries" --yesno "Would you like to install a base set of libraries for GUI applications?" 8 75); then
   echo "Installing GUILIB"
 
-  install_packages xclip gnome-themes-standard gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5a binutils libnss3 libegl1-mesa
+  install_packages xclip gtk2-engines-murrine dbus dbus-x11 mesa-utils libqt5core5t64 binutils libnss3 libegl1 libegl-mesa0
 
   if [[ -z ${WSL2} ]]; then
     # If WSL1 we patch libQt5Core.so
