@@ -83,6 +83,13 @@ function process_arguments() {
       export NON_INTERACTIVE=1
       shift
       ;;
+    -c | --casdial)
+      echo "Use casdial instead of dialog"
+      if command -v casdial; then
+        export DIALOG_COMMAND='casdial'
+      fi
+      shift
+      ;;
     -w | --whiptail)
       echo "Use whiptail instead of dialog"
       export DIALOG_COMMAND='whiptail'
