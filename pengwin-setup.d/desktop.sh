@@ -77,7 +77,6 @@ function install_xrdp() {
     port="3395"
   fi
 
-  sudo groupadd --system polkitd 2>/dev/null || true
   install_packages xrdp xorgxrdp pulseaudio crudini
 
   # Use crudini for safer INI file manipulation

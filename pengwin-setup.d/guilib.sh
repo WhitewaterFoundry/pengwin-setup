@@ -31,29 +31,64 @@ if (confirm --title "GUI Libraries" --yesno "Would you like to install a base se
   sudo tee "/etc/profile.d/dbus.sh" <<EOF
 #!/bin/sh
 
-# Check if we have Windows Path
-if ! ( command -v cmd.exe >/dev/null ); then
-  return
+setup_dbus() {
+  # if dbus-launch is installed, then load it
+  if ! (command -v dbus-launch >/dev/null); then
+    return
+  fi
+
+  # Enabled via systemd
+  if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ]; then
+    return
+  fi
+
+  # Use a per-user directory for storing the D-Bus environment
+  dbus_env_dir="\${XDG_RUNTIME_DIR:-${HOME}/.cache}"
+  mkdir -p "\${dbus_env_dir}" 2>/dev/null || true
+
+  dbus_pid="\$(pidof -s dbus-daemon)"
+
+  if [ -z "\${dbus_pid}" ]; then
+    dbus_env="\$(timeout 2s dbus-launch --auto-syntax)" || return
+
+    # Extract and export only the expected variables from dbus-launch output
+    DBUS_SESSION_BUS_ADDRESS="\$(printf '%s\n' "\${dbus_env}" | sed -n "s/^DBUS_SESSION_BUS_ADDRESS='\(.*\)';\\$/\1/p")"
+    DBUS_SESSION_BUS_PID="\$(printf '%s\n' "\${dbus_env}" | sed -n "s/^DBUS_SESSION_BUS_PID=\([0-9][0-9]*\);$/\1/p")"
+
+    if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ] && [ -n "\${DBUS_SESSION_BUS_PID}" ]; then
+      export DBUS_SESSION_BUS_ADDRESS
+      export DBUS_SESSION_BUS_PID
+
+      dbus_env_file="\${dbus_env_dir}/dbus_env_\${DBUS_SESSION_BUS_PID}"
+      {
+        echo "DBUS_SESSION_BUS_ADDRESS='\${DBUS_SESSION_BUS_ADDRESS}'"
+        echo "DBUS_SESSION_BUS_PID='\${DBUS_SESSION_BUS_PID}'"
+      } >"\${dbus_env_file}"
+      chmod 600 "\${dbus_env_file}" 2>/dev/null || true
+    fi
+
+    unset dbus_env
+  else
+    # Reuse existing dbus session
+    dbus_env_file="\${dbus_env_dir}/dbus_env_\${dbus_pid}"
+    if [ -f "\${dbus_env_file}" ]; then
+      DBUS_SESSION_BUS_ADDRESS="\$(sed -n "s/^DBUS_SESSION_BUS_ADDRESS='\(.*\)'\$/\1/p" "\${dbus_env_file}")"
+      DBUS_SESSION_BUS_PID="\$(sed -n "s/^DBUS_SESSION_BUS_PID='\([0-9][0-9]*\)'\$/\1/p" "\${dbus_env_file}")"
+      if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ] && [ -n "\${DBUS_SESSION_BUS_PID}" ]; then
+        export DBUS_SESSION_BUS_ADDRESS
+        export DBUS_SESSION_BUS_PID
+      fi
+    fi
+  fi
+
+  unset dbus_pid
+  unset dbus_env_file
+  unset dbus_env_dir
+}
+
+if [ -z "\$SYSTEMD_PID" ] && [ -z "\${DBUS_SESSION_BUS_ADDRESS}" ]; then
+  setup_dbus
 fi
-
-# Enabled via systemd
-if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ]; then
-  return
-fi
-
-dbus_pid="\$(pidof dbus-daemon | cut -d' ' -f1)"
-
-if [ -z "\${dbus_pid}" ]; then
-  dbus_env="\$(timeout 2s dbus-launch --auto-syntax)"
-  eval "\${dbus_env}"
-
-  echo "\${dbus_env}">"/tmp/dbus_env_\${DBUS_SESSION_BUS_PID}"
-
-  unset dbus_env
-else # Running from a previous session
-  eval "\$(cat "/tmp/dbus_env_\${dbus_pid}")"
-fi
-unset dbus_pid
 
 EOF
 
