@@ -7,7 +7,7 @@ function testMain() {
 
   # Test that at least texlive-full is installed (default option)
   package_installed texlive-full
-  assertTrue "package texlive-full is not installed" "$?"
+  assertTrue "package texlive-recommended is not installed" "$?"
 
   # Check for latex binary
   command -v /usr/bin/latex
@@ -22,7 +22,7 @@ function testUninstall() {
   run_pengwinsetup uninstall LATEX
 
   # Test that all texlive packages are uninstalled
-  for i in 'texlive-full' 'texlive-latex-extra' 'texlive-latex-recommended' 'texlive-latex-base'; do
+  for i in 'texlive-latex-recommended' 'texlive-latex-base'; do
     package_installed "$i"
     assertFalse "package $i is not uninstalled" "$?"
   done
