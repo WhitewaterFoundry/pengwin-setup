@@ -3,7 +3,7 @@
 source commons.sh
 
 function testMain() {
-  run_pengwinsetup install PROGRAMMING LATEX FULL
+  run_pengwinsetup install PROGRAMMING LATEX RECOMMENDED
 
   # Test that at least texlive-full is installed (default option)
   package_installed texlive-full
