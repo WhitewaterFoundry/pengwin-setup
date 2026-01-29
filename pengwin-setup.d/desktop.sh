@@ -171,7 +171,7 @@ function install_xfce() {
     systemd_pid="$(ps -C systemd -o pid= | head -n1)"
     if [ -z "$systemd_pid" ]; then
 
-      bash "${SetupDir}"/services.sh --enable-systemd
+      bash "${SetupDir}"/services.sh --enable-systemd --yes
     fi
 
 
