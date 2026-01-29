@@ -5,9 +5,9 @@ source commons.sh
 function testMain() {
   run_pengwinsetup install PROGRAMMING LATEX RECOMMENDED
 
-  # Test that at least texlive-full is installed (default option)
-  package_installed texlive-full
-  assertTrue "package texlive-recommended is not installed" "$?"
+  # Test that at least texlive-latex-recommended is installed (default option)
+  package_installed texlive-latex-recommended
+  assertTrue "package texlive-latex-recommended is not installed" "$?"
 
   # Check for latex binary
   command -v /usr/bin/latex
