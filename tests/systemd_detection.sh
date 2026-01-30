@@ -3,22 +3,29 @@
 source commons.sh
 
 #######################################
+# Helper to source the real is_systemd_running function from common.sh
+# This extracts just the function definition without executing setup_env
+# Arguments:
+#  None
+#######################################
+function source_is_systemd_running() {
+  # Extract and source only the is_systemd_running function from common.sh
+  # We use sed to extract the function definition between its start and end
+  local function_def
+  function_def=$(sed -n '/^function is_systemd_running()/,/^}/p' ../pengwin-setup.d/common.sh)
+  
+  # Evaluate the function definition in the current shell
+  eval "$function_def"
+}
+
+#######################################
 # Test systemd detection function
 # Arguments:
 #  None
 #######################################
 function test_systemd_detection() {
-  # Define the function locally for testing since sourcing common.sh requires WSL environment
-  function is_systemd_running() {
-    local init_process
-    init_process=$(ps -p 1 -o comm= 2>/dev/null || echo "")
-    
-    if [[ "${init_process}" == "systemd" ]]; then
-      return 0
-    else
-      return 1
-    fi
-  }
+  # Source the actual function from common.sh
+  source_is_systemd_running
   
   # Test the function exists
   type is_systemd_running >/dev/null 2>&1
