@@ -5,6 +5,7 @@ source commons.sh
 set -e
 
 run_test ./update_pengwin.sh
+run_test ./systemd_detection.sh
 
 i=0
 
