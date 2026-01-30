@@ -1,0 +1,456 @@
+# Pengwin-Setup Version Checklist
+#
+# This file is designed to be consumed by an AI agent monthly to verify that
+# pengwin-setup installs the latest versions of each component.
+#
+# For each component:
+#   - script_path: The installer script to update
+#   - variable_name: The shell variable containing the version (if any)
+#   - line_pattern: Pattern to find the version line in the script
+#   - version_check_url: URL to check for the latest version
+#   - version_check_method: How to extract version from the URL
+#   - download_url_pattern: The pattern used to download (for reference)
+#   - notes: Any special instructions or notes
+#
+# Version format legend:
+#   - "major": Single digit major version (e.g., 24, 25)
+#   - "major.minor": Two-part version (e.g., 3.14, 9.0)
+#   - "major.minor.patch": Three-part version (e.g., 1.13.4, 20.10.22)
+#   - "major-minor-patch": Three-part with dashes (e.g., 3-9-8)
+#
+# Last updated: 2026-01-30
+
+components:
+
+  # ============================================================================
+  # CLOUD TOOLS
+  # ============================================================================
+  
+  - name: Terraform
+    script_path: pengwin-setup.d/cloudcli.sh
+    variable_name: terraform_version
+    line_pattern: 'local terraform_version="'
+    current_version_format: "major.minor.patch"
+    version_check_url: https://api.github.com/repos/hashicorp/terraform/releases/latest
+    version_check_method: >
+      Parse JSON response for "tag_name" field, strip leading "v" prefix.
+      Example: "v1.13.4" -> "1.13.4"
+    download_url_pattern: https://releases.hashicorp.com/terraform/${version}/terraform_${version}_linux_$(dpkg --print-architecture).zip
+    notes: >
+      Terraform is downloaded as a ZIP file and extracted to /usr/bin.
+      Check both AMD64 and ARM64 availability.
+
+  # ============================================================================
+  # DOCKER
+  # ============================================================================
+  
+  - name: Docker (Static Binary)
+    script_path: pengwin-setup.d/docker.sh
+    variable_name: DOCKER_VERSION
+    line_pattern: 'DOCKER_VERSION="'
+    current_version_format: "major.minor.patch"
+    version_check_url: https://download.docker.com/linux/static/stable/x86_64/
+    version_check_method: >
+      Primary method: Parse the directory listing and find the latest docker-X.Y.Z.tgz file.
+      Extract version from filename pattern docker-(\d+\.\d+\.\d+)\.tgz.
+      Note: The directory listing is the authoritative source as it represents what's
+      actually available for download, whereas GitHub releases may have slight version differences.
+    download_url_pattern: https://download.docker.com/linux/static/stable/$(uname -m)/docker-${version}.tgz
+    notes: >
+      This is the Docker static binary, not the APT package.
+      Check availability for both x86_64 and aarch64 architectures.
+
+  - name: Docker Compose
+    script_path: pengwin-setup.d/docker.sh
+    variable_name: DOCKER_COMPOSE_VERSION
+    line_pattern: 'DOCKER_COMPOSE_VERSION="'
+    current_version_format: "major.minor.patch"
+    version_check_url: https://api.github.com/repos/docker/compose/releases/latest
+    version_check_method: >
+      Fetch the /releases/latest endpoint which returns only the latest stable release
+      (excludes pre-releases). Parse JSON response for "tag_name" field, strip leading "v" prefix.
+      Example: "v2.24.0" -> "2.24.0"
+    download_url_pattern: https://github.com/docker/compose/releases/download/${version}/docker-compose-$(uname -s)-$(uname -m)
+    notes: >
+      Consider migrating from v1.x to v2.x if not already done.
+      Docker Compose v2 is the current maintained version.
+      The script currently uses v1.29.2 which is end-of-life.
+
+  - name: Go (for Docker relay build)
+    script_path: pengwin-setup.d/docker.sh
+    variable_name: null
+    line_pattern: 'wget -c "https://dl.google.com/go/go'
+    current_version_format: "major.minor.patch"
+    version_check_url: https://go.dev/VERSION?m=text
+    version_check_method: >
+      Fetch plain text file, first line contains version like "go1.21.5".
+      Strip "go" prefix. Example: "go1.21.5" -> "1.21.5"
+    download_url_pattern: https://dl.google.com/go/go${version}.linux-$(dpkg --print-architecture).tar.gz
+    notes: >
+      This is a separate hardcoded version (go1.13.15) used only for building npiperelay.
+      It's on line 36 in docker.sh. Consider updating to match the main Go version.
+
+  # ============================================================================
+  # GO PROGRAMMING LANGUAGE
+  # ============================================================================
+  
+  - name: Go (Main Install)
+    script_path: pengwin-setup.d/common.sh
+    variable_name: GOVERSION
+    line_pattern: 'readonly GOVERSION="'
+    current_version_format: "major.minor.patch"
+    version_check_url: https://go.dev/VERSION?m=text
+    version_check_method: >
+      Fetch plain text file, first line contains version like "go1.21.5".
+      Strip "go" prefix. Example: "go1.19.4" -> "1.19.4"
+    download_url_pattern: https://dl.google.com/go/go${version}.linux-$(dpkg --print-architecture).tar.gz
+    additional_script_path: pengwin-setup.d/go.sh
+    notes: >
+      GOVERSION is defined in common.sh and used by go.sh and cloudcli.sh.
+      Update the single variable in common.sh to update all usages.
+
+  # ============================================================================
+  # NODE.JS
+  # ============================================================================
+  
+  - name: Node.js Latest
+    script_path: pengwin-setup.d/nodejs.sh
+    variable_name: NODEJS_LATEST_VERSION
+    line_pattern: 'NODEJS_LATEST_VERSION='
+    current_version_format: "major"
+    version_check_url: https://nodejs.org/dist/index.json
+    version_check_method: >
+      Parse JSON array, find the first (most recent) entry where "lts" is exactly false
+      (not a string). Extract the major version number from the "version" field.
+      Example: if version is "v25.1.0", extract 25.
+    download_url_pattern: Uses NodeSource repository (deb.nodesource.com/setup_${version}.x)
+    notes: >
+      This is the major version number only (e.g., 25).
+      NodeSource maintains repositories for major versions.
+      Check https://github.com/nodesource/distributions for supported versions.
+
+  - name: Node.js LTS
+    script_path: pengwin-setup.d/nodejs.sh
+    variable_name: NODEJS_LTS_VERSION
+    line_pattern: 'NODEJS_LTS_VERSION='
+    current_version_format: "major"
+    version_check_url: https://nodejs.org/dist/index.json
+    version_check_method: >
+      Parse JSON array, find entries where "lts" field is a non-empty string
+      (e.g., "Iron", "Hydrogen") rather than false. Select the first (most recent)
+      such entry and extract the major version number from the "version" field.
+      Example: if version is "v24.1.0" and lts is "Iron", extract 24.
+    download_url_pattern: Uses NodeSource repository (deb.nodesource.com/setup_${version}.x)
+    notes: >
+      This is the major version number only (e.g., 24).
+      LTS versions have codenames like "Iron", "Hydrogen", etc.
+      Check https://github.com/nodesource/distributions for supported versions.
+
+  # ============================================================================
+  # PYTHON
+  # ============================================================================
+  
+  - name: Python (pyenv)
+    script_path: pengwin-setup.d/pythonpi.sh
+    variable_name: PYTHON_TARGET
+    line_pattern: 'PYTHON_TARGET="'
+    current_version_format: "major.minor"
+    version_check_url: https://www.python.org/downloads/
+    version_check_method: >
+      Scrape the page for the latest stable Python version or use:
+      https://endoflife.date/api/python.json to get all versions.
+      Use the latest non-prerelease version. Extract major.minor only (e.g., 3.14).
+    download_url_pattern: Uses pyenv installer from github.com/pyenv/pyenv-installer
+    notes: >
+      This version is installed via pyenv, which compiles Python from source.
+      PYTHON_TARGET uses major.minor format (e.g., "3.14"), not major.minor.patch.
+
+  - name: Python (Debian)
+    script_path: pengwin-setup.d/pythonpi.sh
+    variable_name: PYTHON_DEBIAN
+    line_pattern: 'PYTHON_DEBIAN="'
+    current_version_format: "major.minor"
+    version_check_url: https://packages.debian.org/trixie/python3
+    version_check_method: >
+      Check the Debian Trixie (testing) repository for the python3 package version.
+      This should match the default Python3 version in Debian Trixie.
+      Extract major.minor only.
+    download_url_pattern: Uses APT packages (python3, python3-pip, python3-venv)
+    notes: >
+      This is the Debian-packaged Python version.
+      Format is major.minor (e.g., "3.13").
+
+  # ============================================================================
+  # .NET AND RELATED
+  # ============================================================================
+  
+  - name: .NET SDK
+    script_path: pengwin-setup.d/dotnet.sh
+    variable_name: null
+    line_pattern: 'install_packages dotnet-sdk-'
+    current_version_format: "major.minor"
+    version_check_url: https://dotnet.microsoft.com/en-us/download/dotnet
+    version_check_method: >
+      Check for the latest LTS or current .NET SDK version.
+      Verify availability in Microsoft's Debian repository:
+      https://packages.microsoft.com/repos/microsoft-debian-bookworm-prod/pool/main/d/
+    download_url_pattern: APT package name pattern "dotnet-sdk-{major.minor}" (e.g., dotnet-sdk-9.0)
+    notes: >
+      This uses Microsoft's APT repository. The version is embedded in the
+      package name (e.g., dotnet-sdk-9.0), not a download URL.
+      Check both LTS and Current versions. Microsoft provides both tracks.
+      Currently uses dotnet-sdk-9.0 from bookworm repository.
+
+  # ============================================================================
+  # KUBERNETES
+  # ============================================================================
+  
+  - name: Kubernetes kubectl
+    script_path: pengwin-setup.d/cloudcli.sh
+    variable_name: null
+    line_patterns:
+      - pattern: 'https://pkgs.k8s.io/core:/stable:/v1.'
+        description: "Release.key URL on line 161"
+      - pattern: 'https://pkgs.k8s.io/core:/stable:/v1.'
+        description: "sources.list URL on line 165"
+    current_version_format: "major.minor"
+    version_check_url: https://api.github.com/repos/kubernetes/kubernetes/releases/latest
+    version_check_method: >
+      Fetch the /releases/latest endpoint. Parse JSON response for "tag_name" field.
+      Extract major.minor version (e.g., "v1.33.1" -> "1.33").
+      The repository URL uses only major.minor, not the full version.
+    download_url_pattern: https://pkgs.k8s.io/core:/stable:/v{major.minor}/deb/
+    notes: >
+      The Kubernetes repository URL includes the major.minor version with "v" prefix (e.g., v1.33).
+      Two places to update in cloudcli.sh:
+      - Line 161: Release.key URL (https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key)
+      - Line 165: sources.list URL (https://pkgs.k8s.io/core:/stable:/v1.33/deb/)
+      Current version in script: v1.33.
+
+  # ============================================================================
+  # X SERVERS
+  # ============================================================================
+  
+  - name: VcXsrv
+    script_path: pengwin-setup.d/vcxsrv.sh
+    variable_name: version
+    line_pattern: 'version="'
+    current_version_format: "major.minor.patch"
+    version_check_url: https://api.github.com/repos/marchaesen/vcxsrv/releases/latest
+    version_check_method: >
+      Parse JSON response for "tag_name" field. The version format is major.minor.patch
+      (e.g., "21.1.13"). No prefix to strip.
+    download_url_pattern: https://github.com/marchaesen/vcxsrv/releases/download/${version}/vcxsrv-64.${version}.0.installer.noadmin.exe
+    notes: >
+      VcXsrv is a Windows X server. Check that the download URL pattern
+      matches the actual asset names in the release (may include .0 suffix).
+      This is a Windows executable downloaded and installed for WSL use.
+
+  # ============================================================================
+  # CMS / WEB FRAMEWORKS
+  # ============================================================================
+  
+  - name: Joomla
+    script_path: pengwin-setup.d/joomla.sh
+    variable_name: JOOMLA_VERSION
+    line_pattern: 'JOOMLA_VERSION="'
+    current_version_format: "major-minor-patch (dash-separated)"
+    version_check_url: https://downloads.joomla.org/api/v1/latest/cms
+    version_check_method: >
+      Parse JSON response for version info. Convert dots to dashes for the version value
+      (e.g., "3.9.8" -> "3-9-8"). Check for Joomla 4.x or 5.x stable releases as well.
+    download_url_pattern: https://downloads.joomla.org/cms/${major_version_path}/${version}/Joomla_${version}-Stable-Full_Package.tar.bz2
+    notes: >
+      The version format uses dashes (e.g., "3-9-8"). Current version is very old (3.9.8).
+      Consider updating to Joomla 4.x or 5.x.
+      IMPORTANT: The download URL path changes for major versions:
+      - Joomla 3.x: /cms/joomla3/{version}/...
+      - Joomla 4.x: /cms/joomla4/{version}/...
+      - Joomla 5.x: /cms/joomla5/{version}/...
+      When upgrading major versions, update both JOOMLA_VERSION and the URL path.
+
+  # ============================================================================
+  # MARIADB
+  # ============================================================================
+  
+  - name: MariaDB (LAMP Stack)
+    script_path: pengwin-setup.d/lamp.sh
+    variable_name: null
+    line_patterns:
+      - pattern: '"BUILTIN" "Install MariaDB'
+        description: "Menu option for built-in version"
+      - pattern: '"12.0" "Install MariaDB 12.0'
+        description: "Menu option for MariaDB 12.0"
+      - pattern: '"12.1" "Install MariaDB 12.1'
+        description: "Menu option for MariaDB 12.1"
+    current_version_format: "major.minor"
+    version_check_url: https://mariadb.org/mariadb/all-releases/
+    version_check_method: >
+      Check for the latest stable MariaDB releases. Look at:
+      https://downloads.mariadb.org/rest-api/mariadb/ for available versions.
+      Filter for stable releases only. The menu uses major.minor format.
+    download_url_pattern: Uses MariaDB APT repository
+    notes: >
+      The menu offers multiple versions (currently 11.8, 12.0, 12.1).
+      Update the menu options when new stable versions are available:
+      - Add new version options as they become stable
+      - Remove deprecated versions
+      - Update the BUILTIN description to match current Debian version
+      Check which versions are supported by the mirror (mirror.raiolanetworks.com).
+      Also update the comment in the sources file with correct date.
+
+  # ============================================================================
+  # EDITORS (Version-Pinned)
+  # ============================================================================
+  
+  - name: Visual Studio Code (WSL1 Pin)
+    script_path: pengwin-setup.d/editors.sh
+    variable_name: code_version
+    line_pattern: "code_version='=1."
+    current_version_format: "=X.Y.Z-timestamp"
+    version_check_url: null
+    version_check_method: >
+      This is a special case - VSCode is pinned to an old version for WSL1
+      compatibility. Only update if Microsoft fixes WSL1 compatibility in
+      newer versions. Check the Microsoft repo:
+      https://packages.microsoft.com/repos/vscode/pool/main/c/code/
+    download_url_pattern: Uses Microsoft APT repository (code package)
+    notes: >
+      The WSL1 version pin (1.42.1-1581432938) is intentional due to
+      compatibility issues with newer VSCode in WSL1.
+      WSL2 users get the latest version (empty code_version).
+      DO NOT update this without testing WSL1 compatibility.
+
+# ============================================================================
+# COMPONENTS THAT AUTO-UPDATE (No Version Tracking Needed)
+# ============================================================================
+
+components_auto_updated:
+  - name: Rust
+    script_path: pengwin-setup.d/rust.sh
+    reason: >
+      Installed via rustup which manages its own updates.
+      Uses https://sh.rustup.rs installer that fetches the latest version.
+
+  - name: Java
+    script_path: pengwin-setup.d/java.sh
+    reason: >
+      Installed via SDKMan which manages its own versions.
+      Uses https://get.sdkman.io installer that fetches the latest version.
+      Individual Java versions are managed by the user via sdk commands.
+
+  - name: Azure CLI
+    script_path: pengwin-setup.d/azurecli.sh
+    reason: >
+      Installed from Microsoft APT repository which provides latest stable.
+      The azure-cli package updates via normal apt upgrade.
+
+  - name: PowerShell
+    script_path: pengwin-setup.d/powershell.sh
+    reason: >
+      Installed from Microsoft APT repository which provides latest stable.
+      The powershell package updates via normal apt upgrade.
+
+  - name: AWS CLI
+    script_path: pengwin-setup.d/cloudcli.sh
+    reason: >
+      AWS CLI v2 is downloaded from awscli.amazonaws.com/awscli-exe-linux-*.zip
+      which always provides the latest version.
+
+  - name: DigitalOcean CLI (doctl)
+    script_path: pengwin-setup.d/cloudcli.sh
+    reason: >
+      Built from source via 'go get' which fetches the latest version.
+
+  - name: IBM Cloud CLI
+    script_path: pengwin-setup.d/cloudcli.sh
+    reason: >
+      Uses https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64
+      which always provides the latest version.
+
+  - name: OpenStack CLI
+    script_path: pengwin-setup.d/cloudcli.sh
+    reason: >
+      Installed via pip3 (python-openstackclient) which can be updated
+      with pip3 install --upgrade.
+
+  - name: Homebrew
+    script_path: pengwin-setup.d/brew.sh
+    reason: >
+      Installed via https://raw.githubusercontent.com/Homebrew/install/master/install.sh
+      which always provides the latest version. Brew self-updates.
+
+  - name: Microsoft Edit
+    script_path: pengwin-setup.d/microsoft-edit.sh
+    reason: >
+      Uses GitHub API (api.github.com/repos/microsoft/edit/releases/latest)
+      to automatically fetch the latest release.
+
+  - name: n (Node.js Version Manager)
+    script_path: pengwin-setup.d/nodejs.sh
+    reason: >
+      Installed via https://git.io/n-install which fetches the latest version.
+      n manages Node.js versions dynamically.
+
+  - name: nvm (Node.js Version Manager)
+    script_path: pengwin-setup.d/nodejs.sh
+    reason: >
+      Installed via nvm-sh/nvm installer from GitHub which fetches latest.
+      nvm manages Node.js versions dynamically.
+
+  - name: Poetry (Python)
+    script_path: pengwin-setup.d/pythonpi.sh
+    reason: >
+      Installed via https://install.python-poetry.org which fetches latest.
+      Also runs 'poetry self update' after installation.
+
+  - name: pyenv
+    script_path: pengwin-setup.d/pythonpi.sh
+    reason: >
+      Installed via pyenv-installer from GitHub which fetches the latest version.
+      pyenv manages Python versions dynamically.
+
+  - name: Helm
+    script_path: pengwin-setup.d/cloudcli.sh
+    reason: >
+      Installed via https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      which always provides the latest version.
+
+# ============================================================================
+# UPDATE INSTRUCTIONS FOR AI AGENT
+# ============================================================================
+
+update_instructions: |
+  Monthly Version Update Process:
+  
+  1. For each component in the 'components' list:
+     a. Fetch the version_check_url
+     b. Apply the version_check_method to extract the latest version
+     c. Compare with the current version in the script (check line_pattern)
+     d. If newer version available, update the script:
+        - Open the script_path file
+        - Find the line matching line_pattern
+        - Update the version number
+        - If additional_script_path is specified, check it for consistency
+  
+  2. Version format notes:
+     - Some versions use dots (1.2.3), others use dashes (1-2-3)
+     - Some are major-only (25), others are major.minor (3.14)
+     - Check current_version_format for each component
+  
+  3. Testing after updates:
+     - Run shellcheck on modified scripts
+     - Test installation in a Pengwin WSL environment if possible
+     - Verify download URLs are valid (curl -I to check)
+  
+  4. Special cases:
+     - VSCode WSL1 pin: DO NOT update without WSL1 testing
+     - Docker Compose: Consider migration from v1 to v2
+     - Joomla: Consider migration from v3 to v4/v5
+     - MariaDB: Update menu options for new stable releases
+     - Kubernetes: Update both Release.key URL and sources.list URL
+  
+  5. After updating:
+     - Commit changes with message: "Update [component] to version X.Y.Z"
+     - Test the installer if possible
+     - Update the "Last updated" date at the top of this file
