@@ -12,7 +12,9 @@ function source_is_systemd_running() {
   # Extract and source only the is_systemd_running function from common.sh
   # We use sed to extract the function definition between its start and end
   local function_def
-  function_def=$(sed -n '/^function is_systemd_running()/,/^}/p' ../pengwin-setup.d/common.sh)
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  function_def=$(sed -n '/^function is_systemd_running()/,/^}/p' "${script_dir}/../pengwin-setup.d/common.sh")
   
   # Evaluate the function definition in the current shell
   eval "$function_def"
