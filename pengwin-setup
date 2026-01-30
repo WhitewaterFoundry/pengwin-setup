@@ -49,7 +49,7 @@ function check_upgrades() {
 
   if [[ -z ${WSL2} ]]; then
     # If WSL1 fix systemd upgrades
-    sudo apt-get install -q -y opensysusers
+    cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
   fi
 
   # Check if there's any upgrades to pengwin-setup / pengwin-base
@@ -71,6 +71,11 @@ function check_upgrades() {
     upgrade_packages
   fi
 
+  if [[ -z ${WSL2} ]]; then
+    # If WSL1 fix systemd upgrades
+    cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
+  fi
+
   # Check for .dist-upgrade file in /etc/apt and inform user dist-upgrade available if so
   if [[ -f "/etc/apt/.dist-upgrade" ]]; then
     echo "Distribution upgrade flag noticed! Alerting user"
@@ -80,6 +85,11 @@ function check_upgrades() {
       sudo apt-get autoremove -y
       touch "${HOME}"/.should-restart
     fi
+  fi
+
+  if [[ -z ${WSL2} ]]; then
+    # If WSL1 fix systemd upgrades
+    cd /bin && sudo mv -f systemd-sysusers{,.org} && sudo ln -s echo systemd-sysusers && cd -
   fi
 
   if [[ -z ${WSL2} ]]; then
@@ -164,7 +174,7 @@ function install_menu() {
       "GUI" "Install an X server or various other GUI applications" ${OFF}  \
       "MAINTENANCE" "Various maintenance tasks like home backup" ${OFF}  \
       "PROGRAMMING" "Install various programming languages support" ${OFF}  \
-      "SERVICES" "Enable services support (SystemD, SSH, rc.local)" ${OFF}  \
+      "SERVICES" "Enable services support (systemd, SSH, rc.local)" ${OFF}  \
       "SETTINGS" "Change various settings in Pengwin" ${OFF}  \
       "TOOLS" "Install applications or servers" ${OFF}  \
       "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" ${OFF}
@@ -273,9 +283,11 @@ Actions to be used after install command:
 
   EDITORS                        Available editors: CODE, EMACS, NEOVIM, MSEDIT.
 
-  GUI                            GUI-related options: CONFIGURE, DESKTOP, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
+  GUI                            GUI-related options: CONFIGURE, DESKTOP, GPU, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
 
   CONFIGURE                      Configuration options: DISPLAY, STARTMENU, VCXSRV, X410.
+
+  GPU                            GPU settings: GPU_ACCEL_ENABLE, GPU_ACCEL_DISABLE.
 
   DESKTOP                        Desktop environments: XFCE.
 
@@ -291,7 +303,7 @@ Actions to be used after install command:
 
   LAMP                           LAMP MySQL (MariaDB) versions: BUILTIN, 10.6, 10.7, 10.8, 10.9.
 
-  SETTINGS                       System settings: EXPLORER, COLORTOOL, LANGUAGE, SHELLS.
+  SETTINGS                       System settings: EXPLORER, COLORTOOL, LANGUAGE, MOTD, SHELLS.
 
   SHELLS                         Shell options: BASH-RL, CSH, FISH, ZSH.
 

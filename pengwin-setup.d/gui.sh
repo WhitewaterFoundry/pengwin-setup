@@ -151,10 +151,11 @@ function main() {
   # shellcheck disable=SC2155,SC2188,SC2086
   local menu_choice=$(
 
-    menu --title "GUI Menu" "${DIALOG_TYPE}" "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((16 + more)) 99 $((7 + more)) \
+    menu --title "GUI Menu" "${DIALOG_TYPE}" "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((17 + more)) 99 $((8 + more)) \
       "${disable_wslg[@]}" \
       "${show_configure[@]}" \
       "DESKTOP" "Install Desktop environments" ${OFF} \
+      "GPU" "Configure GPU hardware acceleration settings" ${OFF} \
       "GUILIB" "Install a base set of libraries for GUI applications" ${OFF} \
       "HIDPI" "Configure Qt and GTK for HiDPI displays" ${OFF} \
       "NLI" "Install fcitx or iBus for improved non-Latin input support" ${OFF} \
@@ -196,6 +197,11 @@ function main() {
       gui_exit_status=$?
       return $gui_exit_status
     fi
+  fi
+
+  if [[ ${menu_choice} == *"GPU"* ]]; then
+    echo "GPU"
+    bash "${SetupDir}"/gpu-accel.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NLI"* ]]; then

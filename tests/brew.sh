@@ -12,6 +12,7 @@ function testMain() {
   run_pengwinsetup install TOOLS HOMEBREW
 
   assertTrue "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
+  run source /etc/profile.d/brew.sh
   assertEquals "Brew was not installed" "1" "$(run brew --version | grep -c 'Homebrew 5')"
 }
 
@@ -25,7 +26,7 @@ function testUninstall() {
   run_pengwinsetup uninstall HOMEBREW
 
   assertFalse "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
-
+  run source /etc/profile.d/brew.sh
   assertEquals "Brew was not uninstalled" "0" "$(run brew --version | grep -c 'Homebrew 5')"
 }
 

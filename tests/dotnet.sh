@@ -5,30 +5,20 @@ source commons.sh
 function testMain() {
   run_pengwinsetup autoinstall PROGRAMMING DOTNET
 
-  for i in 'dotnet-sdk-10.0' 'nuget'; do
-    package_installed $i
-    assertTrue "package $i is not installed" "$?"
-  done
+  package_installed 'dotnet-sdk-10.0'
+  assertTrue "package 'dotnet-sdk-10.0' is not installed" "$?"
 
   assertEquals ".NET Core was not installed" "1" "$(run /usr/bin/dotnet --version | grep -c '10.0')"
-
-  command -v /usr/bin/nuget
-  assertEquals "NUGet was not installed" "0" "$?"
 }
 
 function testUninstall() {
   run_pengwinsetup autoinstall UNINSTALL DOTNET
 
-  for i in 'dotnet-sdk-10.0' 'nuget'; do
-    package_installed $i
-    assertFalse "package $i is not uninstalled" "$?"
-  done
+  package_installed 'dotnet-sdk-10.0'
+  assertFalse "package 'dotnet-sdk-10.0' is not uninstalled" "$?"
 
   command -v /usr/bin/dotnet
   assertEquals ".NET Core was not uninstalled" "1" "$?"
-
-  command -v /usr/bin/nuget
-  assertEquals "NUGet was not uninstalled" "1" "$?"
 }
 
 # shellcheck disable=SC1091

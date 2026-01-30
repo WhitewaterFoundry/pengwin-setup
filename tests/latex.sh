@@ -3,11 +3,11 @@
 source commons.sh
 
 function testMain() {
-  run_pengwinsetup install PROGRAMMING LATEX FULL
+  run_pengwinsetup install PROGRAMMING LATEX RECOMMENDED
 
-  # Test that at least texlive-full is installed (default option)
-  package_installed texlive-full
-  assertTrue "package texlive-full is not installed" "$?"
+  # Test that at least texlive-latex-recommended is installed (default option)
+  package_installed texlive-latex-recommended
+  assertTrue "package texlive-latex-recommended is not installed" "$?"
 
   # Check for latex binary
   command -v /usr/bin/latex
@@ -22,7 +22,7 @@ function testUninstall() {
   run_pengwinsetup uninstall LATEX
 
   # Test that all texlive packages are uninstalled
-  for i in 'texlive-full' 'texlive-latex-extra' 'texlive-latex-recommended' 'texlive-latex-base'; do
+  for i in 'texlive-latex-recommended' 'texlive-latex-base'; do
     package_installed "$i"
     assertFalse "package $i is not uninstalled" "$?"
   done

@@ -9,7 +9,7 @@ readonly EDIT_INSTALL_DEST="/usr/local/bin/edit"
 function msedit_install() {
   if (confirm --title "Microsoft Edit" --yesno "Would you like to download and install Microsoft Edit?" 8 70); then
     echo "Installing Microsoft Edit"
-    install_packages jq zstd
+    install_packages jq zstd libicu-dev
 
     createtmp
 

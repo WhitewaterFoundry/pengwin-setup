@@ -61,7 +61,7 @@ function install_dependencies() {
     dependencies_instaled=1
     echo "There is a problem installing guilib utilities"
   fi
-  return $dependencies_instaled
+  return "$dependencies_instaled"
 }
 
 function install_xrdp() {
@@ -184,12 +184,20 @@ function install_xfce() {
     local exit_status=$?
 
     if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
-      return ${exit_status}
+      return "${exit_status}"
     fi
 
     start_indeterminate_progress
 
     install_packages xfce4 xfce4-terminal
+
+    local systemd_pid
+    systemd_pid="$(ps -C systemd -o pid= | head -n1)"
+    if [ -z "$systemd_pid" ]; then
+
+      bash "${SetupDir}"/services.sh --enable-systemd --yes
+    fi
+
 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
       create_shortcut "Xfce desktop - Full Screen" "/f" "/usr/share/pixmaps/xfce4_xicon.png"
