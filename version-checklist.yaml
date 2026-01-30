@@ -30,6 +30,7 @@ components:
     script_path: pengwin-setup.d/cloudcli.sh
     variable_name: terraform_version
     line_pattern: 'local terraform_version="'
+    current_version: "1.13.4"
     current_version_format: "major.minor.patch"
     version_check_url: https://api.github.com/repos/hashicorp/terraform/releases/latest
     version_check_method: >
@@ -79,14 +80,16 @@ components:
       Example: "v2.24.0" -> "2.24.0"
     download_url_pattern: https://github.com/docker/compose/releases/download/${version}/docker-compose-$(uname -s)-$(uname -m)
     notes: >
-      Consider migrating from v1.x to v2.x if not already done.
-      Docker Compose v2 is the current maintained version.
-      The script currently uses v1.29.2 which is end-of-life.
+      IMPORTANT: pengwin-setup.d/docker.sh is intentionally pinned to Docker Compose
+      v1.29.2 for backward compatibility with existing workflows and scripts.
+      Docker Compose v1.29.2 is end-of-life; v2.x is the current maintained branch.
+      When updating docker.sh to use v2.x, remove this note and adjust the install
+      logic and tests accordingly.
 
   - name: Go (for Docker relay build)
     script_path: pengwin-setup.d/docker.sh
     variable_name: null
-    line_pattern: 'wget -c "https://dl.google.com/go/go'
+    line_pattern: 'wget -c "https://dl.google.com/go/go1.13.15'
     current_version_format: "major.minor.patch"
     version_check_url: https://go.dev/VERSION?m=text
     version_check_method: >
@@ -114,10 +117,11 @@ components:
     additional_script_path: pengwin-setup.d/go.sh
     test_script:
       path: tests/go.sh
-      line_pattern: "grep -c '1.19'"
+      line_pattern: '"$(go version | grep -c '
       version_format: "major.minor"
       notes: >
         Test checks for major.minor version match (e.g., '1.19').
+        The actual line is: assertEquals "GO was not installed" "1" "$(go version | grep -c '1.19')"
         Update the grep pattern when the major.minor version changes.
     notes: >
       GOVERSION is defined in common.sh and used by go.sh and cloudcli.sh.
@@ -134,9 +138,12 @@ components:
     current_version_format: "major"
     version_check_url: https://nodejs.org/dist/index.json
     version_check_method: >
-      Parse JSON array, find the first (most recent) entry where "lts" is exactly false
-      (not a string). Extract the major version number from the "version" field.
-      Example: if version is "v25.1.0", extract 25.
+      Parse the JSON array of release objects. Find the first (most recent) entry
+      where the "lts" field is the boolean value false (i.e., entry.lts === false),
+      not the string "false" (entry.lts === "false") and not null or missing.
+      Then extract the major version number from the "version" field by stripping
+      the leading "v" and taking the part before the first ".". Example:
+      if version is "v25.1.0", extract 25.
     download_url_pattern: Uses NodeSource repository (deb.nodesource.com/setup_${version}.x)
     test_script:
       path: tests/nodejs_latest.sh
@@ -200,12 +207,16 @@ components:
     download_url_pattern: Uses pyenv installer from github.com/pyenv/pyenv-installer
     test_script:
       path: tests/pythonpi.sh
-      line_pattern: "grep -c '3.1'"
-      version_format: "major.minor (partial match for 3.1x range)"
+      line_pattern: "grep -c '.*3\\.1[0-9].*'"
+      version_format: "major.minor (3.1x range via 3\\.1[0-9])"
       notes: >
-        Test uses pattern '3.1' which matches Python 3.10 through 3.19.
-        This pattern will need updating when Python reaches 3.20.
-        Consider updating to a more specific pattern like '3\.1[0-9]' for clarity.
+        The test currently uses a grep pattern like:
+          grep -c '.*3\.1[0-9].*'
+        The "3\.1[0-9]" portion encodes the Python 3.10–3.19 range and is the
+        part that must be updated when the Python minor series changes (e.g.,
+        to "3\.2[0-9]" or a more specific "3\.12\.x" pattern).
+        When updating PYTHON_TARGET to a new minor series, update both this
+        line_pattern entry and the corresponding grep pattern in tests/pythonpi.sh.
     notes: >
       This version is installed via pyenv, which compiles Python from source.
       PYTHON_TARGET uses major.minor format (e.g., "3.14"), not major.minor.patch.
@@ -277,9 +288,7 @@ components:
     variable_name: null
     line_patterns:
       - pattern: 'https://pkgs.k8s.io/core:/stable:/v1.'
-        description: "Release.key URL on line 161"
-      - pattern: 'https://pkgs.k8s.io/core:/stable:/v1.'
-        description: "sources.list URL on line 165"
+        description: "Repository URLs in cloudcli.sh (Release.key and sources.list on lines 161 and 165)"
     current_version_format: "major.minor"
     version_check_url: https://api.github.com/repos/kubernetes/kubernetes/releases/latest
     version_check_method: >
@@ -339,14 +348,19 @@ components:
       Parse JSON response for version info. Convert dots to dashes for the version value
       (e.g., "3.9.8" -> "3-9-8"). Check for Joomla 4.x or 5.x stable releases as well.
     download_url_pattern: https://downloads.joomla.org/cms/${major_version_path}/${version}/Joomla_${version}-Stable-Full_Package.tar.bz2
+    additional_line_pattern:
+      pattern: 'https://downloads.joomla.org/cms/joomla3/'
+      location: "joomla.sh line 22"
+      notes: "Update 'joomla3' to 'joomla4' or 'joomla5' when changing major versions"
     notes: >
       The version format uses dashes (e.g., "3-9-8"). Current version is very old (3.9.8).
       Consider updating to Joomla 4.x or 5.x.
       IMPORTANT: The download URL path changes for major versions:
+      - Line 22 of joomla.sh contains the hardcoded URL with 'joomla3' path
       - Joomla 3.x: /cms/joomla3/{version}/...
       - Joomla 4.x: /cms/joomla4/{version}/...
       - Joomla 5.x: /cms/joomla5/{version}/...
-      When upgrading major versions, update both JOOMLA_VERSION and the URL path.
+      When upgrading major versions, update both JOOMLA_VERSION and the URL path on line 22.
 
   # ============================================================================
   # MARIADB
@@ -372,16 +386,22 @@ components:
     test_script:
       path: tests/lamp.sh
       line_pattern: 'mariadb_version_number="11.*MariaDB"'
-      version_format: "major.* pattern"
+      version_format: "major (regex in assignment)"
       notes: >
-        Test uses a regex pattern '11.*MariaDB' for the built-in version.
-        Update if Debian's default MariaDB major version changes (e.g., to 12.*).
+        In tests/lamp.sh this appears as a literal shell assignment:
+        mariadb_version_number="11.*MariaDB"
+        The right-hand side ("11.*MariaDB") is a regex used by the test,
+        not the actual version string. When Debian's default MariaDB
+        major version changes, update only the leading major number in
+        the pattern above (e.g., 11 -> 12), not the rest of the string.
     notes: >
-      The menu offers multiple versions (currently 11.8, 12.0, 12.1).
+      The menu offers multiple options: "BUILTIN" (currently installs MariaDB
+      11.8 from the Debian official repo), "12.0", and "12.1".
       Update the menu options when new stable versions are available:
-      - Add new version options as they become stable
+      - Add new numeric version options (e.g., "12.2") as they become stable
       - Remove deprecated versions
-      - Update the BUILTIN description to match current Debian version
+      - Update the BUILTIN description and related tests to match Debian's
+        current default MariaDB major.minor version
       Check which versions are supported by the mirror (mirror.raiolanetworks.com).
       Also update the comment in the sources file with correct date.
 
@@ -392,7 +412,7 @@ components:
   - name: Visual Studio Code (WSL1 Pin)
     script_path: pengwin-setup.d/editors.sh
     variable_name: code_version
-    line_pattern: "code_version='=1."
+    line_pattern: "code_version='=1.42.1-"
     current_version_format: "=X.Y.Z-timestamp"
     version_check_url: null
     version_check_method: >
@@ -526,7 +546,9 @@ update_instructions: |
         - If additional_script_path is specified, check it for consistency
      e. If test_script is specified, also update the test:
         - Open the test_script.path file
-        - Find the line(s) matching test_script.line_pattern(s)
+        - Find the line(s) matching test_script.line_pattern (singular) or
+          test_script.line_patterns (plural array) - check which format is used
+        - For line_patterns (array), update each pattern in the list
         - Update the version pattern to match the new version
   
   2. Version format notes:
