@@ -36,6 +36,13 @@ components:
       Parse JSON response for "tag_name" field, strip leading "v" prefix.
       Example: "v1.13.4" -> "1.13.4"
     download_url_pattern: https://releases.hashicorp.com/terraform/${version}/terraform_${version}_linux_$(dpkg --print-architecture).zip
+    test_script:
+      path: tests/terraform.sh
+      line_pattern: "grep -c '1.13'"
+      version_format: "major.minor"
+      notes: >
+        Test checks for major.minor version match (e.g., '1.13').
+        Update the grep pattern when the major.minor version changes.
     notes: >
       Terraform is downloaded as a ZIP file and extracted to /usr/bin.
       Check both AMD64 and ARM64 availability.
@@ -105,6 +112,13 @@ components:
       Strip "go" prefix. Example: "go1.19.4" -> "1.19.4"
     download_url_pattern: https://dl.google.com/go/go${version}.linux-$(dpkg --print-architecture).tar.gz
     additional_script_path: pengwin-setup.d/go.sh
+    test_script:
+      path: tests/go.sh
+      line_pattern: "grep -c '1.19'"
+      version_format: "major.minor"
+      notes: >
+        Test checks for major.minor version match (e.g., '1.19').
+        Update the grep pattern when the major.minor version changes.
     notes: >
       GOVERSION is defined in common.sh and used by go.sh and cloudcli.sh.
       Update the single variable in common.sh to update all usages.
@@ -124,6 +138,18 @@ components:
       (not a string). Extract the major version number from the "version" field.
       Example: if version is "v25.1.0", extract 25.
     download_url_pattern: Uses NodeSource repository (deb.nodesource.com/setup_${version}.x)
+    test_script:
+      path: tests/nodejs_latest.sh
+      line_patterns:
+        - pattern: "grep -c 'v25'"
+          description: "Checks node major version (v25)"
+        - pattern: "grep -c '11'"
+          description: "Checks npm major version (11)"
+      version_format: "major"
+      notes: >
+        Test checks for node major version (e.g., 'v25') and npm major version.
+        Both patterns need updating when Node.js major version changes.
+        npm version generally increases with Node.js major releases.
     notes: >
       This is the major version number only (e.g., 25).
       NodeSource maintains repositories for major versions.
@@ -141,6 +167,17 @@ components:
       such entry and extract the major version number from the "version" field.
       Example: if version is "v24.1.0" and lts is "Iron", extract 24.
     download_url_pattern: Uses NodeSource repository (deb.nodesource.com/setup_${version}.x)
+    test_script:
+      path: tests/nodejs_lts.sh
+      line_patterns:
+        - pattern: "grep -c 'v24'"
+          description: "Checks node LTS major version (v24)"
+        - pattern: "grep -c '11'"
+          description: "Checks npm major version (11)"
+      version_format: "major"
+      notes: >
+        Test checks for node LTS major version (e.g., 'v24') and npm major version.
+        Both patterns need updating when Node.js LTS major version changes.
     notes: >
       This is the major version number only (e.g., 24).
       LTS versions have codenames like "Iron", "Hydrogen", etc.
@@ -161,6 +198,14 @@ components:
       https://endoflife.date/api/python.json to get all versions.
       Use the latest non-prerelease version. Extract major.minor only (e.g., 3.14).
     download_url_pattern: Uses pyenv installer from github.com/pyenv/pyenv-installer
+    test_script:
+      path: tests/pythonpi.sh
+      line_pattern: "grep -c '3.1'"
+      version_format: "major.minor (partial match for 3.1x range)"
+      notes: >
+        Test uses pattern '3.1' which matches Python 3.10 through 3.19.
+        This pattern will need updating when Python reaches 3.20.
+        Consider updating to a more specific pattern like '3\.1[0-9]' for clarity.
     notes: >
       This version is installed via pyenv, which compiles Python from source.
       PYTHON_TARGET uses major.minor format (e.g., "3.14"), not major.minor.patch.
@@ -176,6 +221,17 @@ components:
       This should match the default Python3 version in Debian Trixie.
       Extract major.minor only.
     download_url_pattern: Uses APT packages (python3, python3-pip, python3-venv)
+    test_script:
+      path: tests/pythonpi-poetry.sh
+      line_patterns:
+        - pattern: "grep -c '^Python 3\\.13'"
+          description: "Checks Python version (3.13)"
+        - pattern: "grep -c '2.1'"
+          description: "Checks Poetry major.minor version (2.1)"
+      version_format: "major.minor"
+      notes: >
+        Test checks for Python version (e.g., '3.13') and Poetry version.
+        Update when Debian's default Python version changes.
     notes: >
       This is the Debian-packaged Python version.
       Format is major.minor (e.g., "3.13").
@@ -195,6 +251,17 @@ components:
       Verify availability in Microsoft's Debian repository:
       https://packages.microsoft.com/repos/microsoft-debian-bookworm-prod/pool/main/d/
     download_url_pattern: APT package name pattern "dotnet-sdk-{major.minor}" (e.g., dotnet-sdk-9.0)
+    test_script:
+      path: tests/dotnet.sh
+      line_patterns:
+        - pattern: "'dotnet-sdk-9.0'"
+          description: "Package name check"
+        - pattern: "grep -c '9.0'"
+          description: "Version output check"
+      version_format: "major.minor"
+      notes: >
+        Test checks for dotnet-sdk-9.0 package name and '9.0' version output.
+        Update both package name and grep pattern when .NET version changes.
     notes: >
       This uses Microsoft's APT repository. The version is embedded in the
       package name (e.g., dotnet-sdk-9.0), not a download URL.
@@ -220,6 +287,18 @@ components:
       Extract major.minor version (e.g., "v1.33.1" -> "1.33").
       The repository URL uses only major.minor, not the full version.
     download_url_pattern: https://pkgs.k8s.io/core:/stable:/v{major.minor}/deb/
+    test_script:
+      path: tests/kubernetes.sh
+      line_patterns:
+        - pattern: "grep -c 'v1.33'"
+          description: "kubectl version check"
+        - pattern: "grep -c 'v3'"
+          description: "helm major version check (v3)"
+      version_format: "major.minor for kubectl, major for helm"
+      notes: >
+        Test checks for kubectl version (e.g., 'v1.33') and helm major version (v3).
+        Update kubectl version pattern when Kubernetes version changes.
+        Helm major version (v3) rarely changes.
     notes: >
       The Kubernetes repository URL includes the major.minor version with "v" prefix (e.g., v1.33).
       Two places to update in cloudcli.sh:
@@ -290,6 +369,13 @@ components:
       https://downloads.mariadb.org/rest-api/mariadb/ for available versions.
       Filter for stable releases only. The menu uses major.minor format.
     download_url_pattern: Uses MariaDB APT repository
+    test_script:
+      path: tests/lamp.sh
+      line_pattern: 'mariadb_version_number="11.*MariaDB"'
+      version_format: "major.* pattern"
+      notes: >
+        Test uses a regex pattern '11.*MariaDB' for the built-in version.
+        Update if Debian's default MariaDB major version changes (e.g., to 12.*).
     notes: >
       The menu offers multiple versions (currently 11.8, 12.0, 12.1).
       Update the menu options when new stable versions are available:
@@ -356,6 +442,12 @@ components_auto_updated:
     reason: >
       AWS CLI v2 is downloaded from awscli.amazonaws.com/awscli-exe-linux-*.zip
       which always provides the latest version.
+    test_script:
+      path: tests/awscli.sh
+      line_pattern: "grep -c 'aws-cli/2'"
+      notes: >
+        Test checks for AWS CLI major version 2. Only update if AWS releases
+        a new major version (unlikely). This check validates v2 vs v1.
 
   - name: DigitalOcean CLI (doctl)
     script_path: pengwin-setup.d/cloudcli.sh
@@ -432,16 +524,22 @@ update_instructions: |
         - Find the line matching line_pattern
         - Update the version number
         - If additional_script_path is specified, check it for consistency
+     e. If test_script is specified, also update the test:
+        - Open the test_script.path file
+        - Find the line(s) matching test_script.line_pattern(s)
+        - Update the version pattern to match the new version
   
   2. Version format notes:
      - Some versions use dots (1.2.3), others use dashes (1-2-3)
      - Some are major-only (25), others are major.minor (3.14)
      - Check current_version_format for each component
+     - Tests often use looser patterns (e.g., '1.19' instead of '1.19.4')
   
   3. Testing after updates:
      - Run shellcheck on modified scripts
      - Test installation in a Pengwin WSL environment if possible
      - Verify download URLs are valid (curl -I to check)
+     - Run the specific test script to verify the version check works
   
   4. Special cases:
      - VSCode WSL1 pin: DO NOT update without WSL1 testing
@@ -449,8 +547,10 @@ update_instructions: |
      - Joomla: Consider migration from v3 to v4/v5
      - MariaDB: Update menu options for new stable releases
      - Kubernetes: Update both Release.key URL and sources.list URL
+     - Node.js tests: Update both node version (vXX) and npm version
   
   5. After updating:
      - Commit changes with message: "Update [component] to version X.Y.Z"
+     - Include test updates in the same commit
      - Test the installer if possible
      - Update the "Last updated" date at the top of this file
