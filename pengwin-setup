@@ -169,7 +169,7 @@ function install_menu() {
   local menu_choice=$(
 
     menu --title "pengwin-setup" "${DIALOG_TYPE}" "\nHand-curated add-ons [ENTER to confirm]:" 0 0 0  \
-      "AI" "Install AI tools and assistants" ${OFF}  \
+      "AITOOLS" "Install AI tools and assistants" ${OFF}  \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}" ${OFF}  \
       "GUI" "Install an X server or various other GUI applications" ${OFF}  \
       "MAINTENANCE" "Various maintenance tasks like home backup" ${OFF}  \
@@ -191,8 +191,8 @@ function install_menu() {
 
   local exit_status
 
-  if [[ ${menu_choice} == *"AI"* ]]; then
-    echo "AI"
+  if [[ ${menu_choice} == *"AITOOLS"* ]]; then
+    echo "AITOOLS"
     bash "${SetupDir}"/ai.sh "$@"
     exit_status=$?
   fi
@@ -279,7 +279,7 @@ Commands:
   startmenu                      Regenerate the start menu icons. Implies --noupdate, --noninteractive, and --yes.
 
 Actions to be used after install command:
-  AI                             AI tools: COPILOT-CLI.
+  AITOOLS                        AI tools: COPILOT-CLI.
 
   EDITORS                        Available editors: CODE, EMACS, NEOVIM, MSEDIT.
 
