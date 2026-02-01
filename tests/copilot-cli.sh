@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup install AI COPILOT-CLI
+  run_pengwinsetup install AIUTILS COPILOT-CLI
 
   # Check if github-copilot-cli is installed
   run command -v github-copilot-cli
