@@ -5,7 +5,7 @@ function _pengwin_setup() { #  By convention, the function name
   local prev=${COMP_WORDS[COMP_CWORD - 1]}
 
   case "$prev" in
-  AITOOLS)
+  AIUTILS)
     mapfile -t COMPREPLY < <(compgen -W 'COPILOT-CLI COPILOT-VIM' -- "${cur}")
     ;;
   EDITORS)
@@ -60,7 +60,7 @@ function _pengwin_setup() { #  By convention, the function name
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
     --quiet --noninteractive -w --whiptail -n --ncurses --dialog --alt --multiple --help \
     upgrade autoinstall install uninstall remove startmenu \
-    AITOOLS EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
+    AIUTILS EDITORS GUI MAINTENANCE PROGRAMMING SERVICES SETTINGS TOOLS UNINSTALL" -- "${cur}")
     ;;
   esac
 
