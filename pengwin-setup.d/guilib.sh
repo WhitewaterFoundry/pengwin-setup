@@ -43,7 +43,7 @@ setup_dbus() {
   fi
 
   # Use a per-user directory for storing the D-Bus environment
-  dbus_env_dir="\${XDG_RUNTIME_DIR:-${HOME}/.cache}"
+  dbus_env_dir="\${XDG_RUNTIME_DIR:-\${HOME}/.cache}"
   mkdir -p "\${dbus_env_dir}" 2>/dev/null || true
 
   dbus_pid="\$(pidof -s dbus-daemon)"
@@ -52,7 +52,7 @@ setup_dbus() {
     dbus_env="\$(timeout 2s dbus-launch --auto-syntax)" || return
 
     # Extract and export only the expected variables from dbus-launch output
-    DBUS_SESSION_BUS_ADDRESS="\$(printf '%s\n' "\${dbus_env}" | sed -n "s/^DBUS_SESSION_BUS_ADDRESS='\(.*\)';\\$/\1/p")"
+    DBUS_SESSION_BUS_ADDRESS="\$(printf '%s\n' "\${dbus_env}" | sed -n "s/^DBUS_SESSION_BUS_ADDRESS='\(.*\)';$/\1/p")"
     DBUS_SESSION_BUS_PID="\$(printf '%s\n' "\${dbus_env}" | sed -n "s/^DBUS_SESSION_BUS_PID=\([0-9][0-9]*\);$/\1/p")"
 
     if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ] && [ -n "\${DBUS_SESSION_BUS_PID}" ]; then
@@ -72,8 +72,8 @@ setup_dbus() {
     # Reuse existing dbus session
     dbus_env_file="\${dbus_env_dir}/dbus_env_\${dbus_pid}"
     if [ -f "\${dbus_env_file}" ]; then
-      DBUS_SESSION_BUS_ADDRESS="\$(sed -n "s/^DBUS_SESSION_BUS_ADDRESS='\(.*\)'\$/\1/p" "\${dbus_env_file}")"
-      DBUS_SESSION_BUS_PID="\$(sed -n "s/^DBUS_SESSION_BUS_PID='\([0-9][0-9]*\)'\$/\1/p" "\${dbus_env_file}")"
+      DBUS_SESSION_BUS_ADDRESS="\$(sed -n "s/^DBUS_SESSION_BUS_ADDRESS='\(.*\)'$/\1/p" "\${dbus_env_file}")"
+      DBUS_SESSION_BUS_PID="\$(sed -n "s/^DBUS_SESSION_BUS_PID='\([0-9][0-9]*\)'$/\1/p" "\${dbus_env_file}")"
       if [ -n "\${DBUS_SESSION_BUS_ADDRESS}" ] && [ -n "\${DBUS_SESSION_BUS_PID}" ]; then
         export DBUS_SESSION_BUS_ADDRESS
         export DBUS_SESSION_BUS_PID
