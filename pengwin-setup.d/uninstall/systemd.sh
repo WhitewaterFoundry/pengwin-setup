@@ -10,7 +10,7 @@ function main() {
   install_packages crudini
 
   # Use crudini to set systemd to false in the wsl.conf file
-  echo "Cleaning changes from /etc/wsl.conf"
+  echo "Setting systemd to false in /etc/wsl.conf"
   sudo crudini --set /etc/wsl.conf boot systemd false
 
   enable_should_restart
