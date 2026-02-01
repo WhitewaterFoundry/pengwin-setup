@@ -165,6 +165,14 @@ function install_xfce() {
 
     install_packages xfce4 xfce4-terminal
 
+    local systemd_pid
+    systemd_pid="$(ps -C systemd -o pid= | head -n1)"
+    if [ -z "$systemd_pid" ]; then
+
+      bash "${SetupDir}"/services.sh --enable-systemd --yes
+    fi
+
+
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
       create_shortcut "Xfce desktop - Full Screen" "/f" "/usr/share/pixmaps/xfce4_xicon.png"
       create_shortcut "Xfce desktop - 1024x768" "/w:1024 /h:768" "/usr/share/pixmaps/xfce4_xicon.png"
