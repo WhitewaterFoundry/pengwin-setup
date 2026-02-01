@@ -279,7 +279,7 @@ Commands:
   startmenu                      Regenerate the start menu icons. Implies --noupdate, --noninteractive, and --yes.
 
 Actions to be used after install command:
-  AITOOLS                        AI tools: COPILOT-CLI.
+  AITOOLS                        AI tools: COPILOT-CLI, COPILOT-VIM.
 
   EDITORS                        Available editors: CODE, EMACS, NEOVIM, MSEDIT.
 
