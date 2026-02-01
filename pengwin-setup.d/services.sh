@@ -167,22 +167,12 @@ function enable_systemd() {
   if (confirm --title "SystemD" --yesno "Would you like to enable SystemD support for this distro?" 10 60); then
     echo "Enabling SystemD..."
 
+    install_packages crudini
+
     local wsl_conf="/etc/wsl.conf"
 
-    # shellcheck disable=SC2155
-    local systemd_exists=$(grep -c -E "^systemd.*=.*$" "${wsl_conf}")
-    if [[ ${systemd_exists} -eq 0 ]]; then
-
-      # shellcheck disable=SC2155
-      local boot_section_exists=$(grep -c "\[boot\]" "${wsl_conf}")
-      if [[ ${boot_section_exists} -eq 0 ]]; then
-        echo -e "\n[boot]" | sudo tee -a "${wsl_conf}"
-      fi
-
-      sudo sed -i 's/\[boot\]/\0\nsystemd=true/' "${wsl_conf}"
-    else
-      sudo sed -i 's/^systemd.*=.*$/systemd=true/' "${wsl_conf}"
-    fi
+    # Use crudini for safer INI file manipulation
+    sudo crudini --set "${wsl_conf}" boot systemd true
 
     touch "${HOME}"/.should-restart
   else
