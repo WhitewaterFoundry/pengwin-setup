@@ -3,14 +3,15 @@
 # shellcheck source=./uninstall-common.sh
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
-wslconf_rgx='^[^#]*systemd.*=.*true$'
-
 function main() {
 
   echo "Disabling SystemD"
 
-  echo "Cleaning changes from /etc/wsl.conf"
-  sudo_clean_file "/etc/wsl.conf" "${wslconf_rgx}"
+  install_packages crudini
+
+  # Use crudini to set systemd to false in the wsl.conf file
+  echo "Setting systemd to false in /etc/wsl.conf"
+  sudo crudini --set /etc/wsl.conf boot systemd false
 
   enable_should_restart
 }
