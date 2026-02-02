@@ -13,8 +13,23 @@ function source_is_systemd_running() {
   # We use sed to extract the function definition between its start and end
   local function_def
   local script_dir
+  local common_sh_path
+  
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  function_def=$(sed -n '/^function is_systemd_running()/,/^}/p' "${script_dir}/../pengwin-setup.d/common.sh")
+  
+  # Try multiple possible locations for common.sh
+  # 1. Normal development: ../pengwin-setup.d/common.sh relative to tests/
+  # 2. CircleCI: /usr/local/pengwin-setup.d/common.sh (tests in /usr/local/bin/tests, pengwin-setup.d in /usr/local/)
+  if [[ -f "${script_dir}/../pengwin-setup.d/common.sh" ]]; then
+    common_sh_path="${script_dir}/../pengwin-setup.d/common.sh"
+  elif [[ -f "/usr/local/pengwin-setup.d/common.sh" ]]; then
+    common_sh_path="/usr/local/pengwin-setup.d/common.sh"
+  else
+    echo "Error: Cannot find pengwin-setup.d/common.sh" >&2
+    return 1
+  fi
+  
+  function_def=$(sed -n '/^function is_systemd_running()/,/^}/p' "${common_sh_path}")
   
   # Evaluate the function definition in the current shell
   eval "$function_def"
