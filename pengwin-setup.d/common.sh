@@ -601,4 +601,29 @@ function ensure_nodejs_version() {
   return 0
 }
 
+#######################################
+# Check if systemd is running as PID 1
+# Detects if the system was booted with systemd by checking if PID 1 is systemd
+# This function is used by installer scripts to determine whether to use systemctl
+# or traditional service commands.
+#
+# Note: Startup scripts in /etc/profile.d cannot source common.sh (requires WSL environment),
+# so they use inline detection: [ "$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]
+#
+# Arguments:
+#   None
+# Returns:
+#   0 if systemd is running as PID 1, 1 otherwise
+#######################################
+function is_systemd_running() {
+  local init_process
+  init_process=$(ps -p 1 -o comm= 2>/dev/null || echo "")
+  
+  if [[ "${init_process}" == "systemd" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 setup_env "$@"
