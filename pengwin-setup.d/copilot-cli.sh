@@ -23,9 +23,11 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
   fi
 
   # Make the script executable and run it
+  # Note: Unset VERSION to avoid conflict with pengwin-setup's VERSION variable
+  # The GitHub install script uses VERSION to determine which copilot version to download
   chmod +x "${install_script}"
   echo "Running GitHub Copilot CLI installer..."
-  if ! bash "${install_script}"; then
+  if ! VERSION="" bash "${install_script}"; then
     echo "ERROR: Failed to install GitHub Copilot CLI."
     echo "Please check the error messages above for details."
     cleantmp
