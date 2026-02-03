@@ -10,13 +10,29 @@ if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-po
   mkdir -p "${HOME}/.local/bin"
   export PATH="${HOME}/.local/bin:${PATH}"
 
-  # Install GitHub Copilot CLI using the official install script
-  echo "Downloading and installing GitHub Copilot CLI..."
-  if ! curl -fsSL https://gh.io/copilot-install | bash; then
-    echo "ERROR: Failed to install GitHub Copilot CLI."
-    echo "Please check the error messages above for details."
+  # Create temporary directory for the installer
+  createtmp
+  install_script="${TMPDIR}/copilot-install.sh"
+
+  # Download the installer script
+  echo "Downloading GitHub Copilot CLI installer..."
+  if ! curl -fsSL https://gh.io/copilot-install -o "${install_script}"; then
+    echo "ERROR: Failed to download GitHub Copilot CLI installer."
+    cleantmp
     exit 1
   fi
+
+  # Make the script executable and run it
+  chmod +x "${install_script}"
+  echo "Running GitHub Copilot CLI installer..."
+  if ! bash "${install_script}"; then
+    echo "ERROR: Failed to install GitHub Copilot CLI."
+    echo "Please check the error messages above for details."
+    cleantmp
+    exit 1
+  fi
+
+  cleantmp
 
   # Create profile.d script to add $HOME/.local/bin to PATH on login
   echo "Setting up PATH configuration in /etc/profile.d/github-copilot.sh"
