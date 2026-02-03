@@ -2,8 +2,6 @@
 
 SetupDir="/usr/share/pengwin-setup.d"
 
-export VERSION="1.2a"
-
 # shellcheck disable=SC1090
 source ${SetupDir}/common.sh "$@"
 
