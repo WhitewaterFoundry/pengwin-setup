@@ -8,22 +8,13 @@ function main() {
   echo "Uninstalling GitHub Copilot CLI"
 
   # Remove copilot binary from user's local bin
-  if [[ -f "${HOME}/.local/bin/copilot" ]]; then
-    rm -f "${HOME}/.local/bin/copilot"
-    echo "Removed copilot binary from ${HOME}/.local/bin"
-  fi
+  rem_file "${HOME}/.local/bin/copilot"
 
   # Remove copilot binary from system-wide location (if installed with sudo)
-  if [[ -f "/usr/local/bin/copilot" ]]; then
-    sudo rm -f /usr/local/bin/copilot
-    echo "Removed copilot binary from /usr/local/bin"
-  fi
+  sudo_rem_file "/usr/local/bin/copilot"
 
   # Remove legacy shell integration files (from previous npm-based installation)
-  if [[ -f /etc/profile.d/github-copilot-cli.sh ]]; then
-    sudo rm -f /etc/profile.d/github-copilot-cli.sh
-    echo "Removed legacy shell integration file"
-  fi
+  sudo_rem_file "/etc/profile.d/github-copilot-cli.sh"
 
   # Remove legacy fish configuration
   rem_file "${HOME}/.config/fish/conf.d/github-copilot-cli.fish"
