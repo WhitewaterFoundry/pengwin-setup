@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup install AIUTILS COPILOT-CLI
+  run_pengwinsetup install AIUTILS COPILOT-CLI --debug
 
   # Check if copilot binary is installed in user's local bin
   assertTrue "copilot binary was not installed" "[ -f /home/${TEST_USER}/.local/bin/copilot ]"
