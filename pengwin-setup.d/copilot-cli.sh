@@ -3,7 +3,7 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nWould you like to install GitHub Copilot CLI?" 8 60); then
+if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis installer downloads and runs the official GitHub install script.\n\nWould you like to install GitHub Copilot CLI?" 10 65); then
   echo "Installing GitHub Copilot CLI"
 
   # Install GitHub Copilot CLI using the official install script

@@ -31,9 +31,12 @@ function main() {
   # Remove legacy npm package if still present
   if command -v npm &> /dev/null; then
     if npm list -g @githubnext/github-copilot-cli &>/dev/null; then
-      npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null || \
-        sudo npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null
-      echo "Removed legacy npm package"
+      if npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null || \
+         sudo npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null; then
+        echo "Removed legacy npm package"
+      else
+        echo "Note: Could not remove legacy npm package @githubnext/github-copilot-cli"
+      fi
     fi
   fi
 
