@@ -5,7 +5,7 @@ source commons.sh
 source mocks.sh
 
 function testX410() {
-  run_pengwinsetup install GUI CONFIGURE X410
+  run_pengwinsetup install GUI X410
 
   assertTrue "FILE PROFILE-X410" "[ -f /etc/profile.d/02-x410.sh ]"
 

@@ -27,11 +27,8 @@ function enable_disable_wslg() {
 
     enable_should_restart
 
-    if (confirm --title "Setup X server" --yesno "Once WSLg is disabled, you will need an X server, would you like to configure one now?" 10 55); then
-      echo "CONFIGURE"
-
-      export WSL2=1
-      configure_gui "$@"
+    if (confirm --title "Setup X server" --yesno "Once WSLg is disabled, you will need an X server. X410 and VcXsrv options are available in the GUI menu." 10 55); then
+      echo "User can select X server from GUI menu"
     fi
   fi
 }
@@ -128,32 +125,37 @@ function main() {
   fi
 
   local -i more=0
+  
+  # Show WSLG option only if WSL2 with WSLg support is available
   if [[ "${WSL2}" == "${WSLG}" ]]; then
-    # shellcheck disable=SC2206
-    local -a disable_wslg=("WSLG" "Force disable WSLg just for Pengwin" ${OFF})
-    more=$((more + 1))
-
-    local -a show_configure
-  else
     if [[ "${wslg_disabled}" == true ]]; then
       # shellcheck disable=SC2206
       local -a disable_wslg=("WSLG" "Enable WSLg just for Pengwin" ${OFF})
-      more=$((more + 1))
     else
-      local -a disable_wslg
+      # shellcheck disable=SC2206
+      local -a disable_wslg=("WSLG" "Force disable WSLg just for Pengwin" ${OFF})
     fi
-
-    # shellcheck disable=SC2206
-    local show_configure=("CONFIGURE" "Configure GUI (Check this first)" ${OFF})
     more=$((more + 1))
+  else
+    local -a disable_wslg
   fi
+
+  # Always show X410 and VcXsrv options
+  # shellcheck disable=SC2206
+  local -a x410_option=("X410" "Configure X410 to start on Pengwin launch or view install link" ${OFF})
+  more=$((more + 1))
+  
+  # shellcheck disable=SC2206
+  local -a vcxsrv_option=("VCXSRV" "Install the VcXsrv open source X-server" ${OFF})
+  more=$((more + 1))
 
   # shellcheck disable=SC2155,SC2188,SC2086
   local menu_choice=$(
 
     menu --title "GUI Menu" "${DIALOG_TYPE}" "Install an X server or various other GUI applications\n[SPACE to select, ENTER to confirm]:" $((16 + more)) 99 $((7 + more)) \
       "${disable_wslg[@]}" \
-      "${show_configure[@]}" \
+      "${x410_option[@]}" \
+      "${vcxsrv_option[@]}" \
       "DESKTOP" "Install Desktop environments" ${OFF} \
       "GUILIB" "Install a base set of libraries for GUI applications" ${OFF} \
       "HIDPI" "Configure Qt and GTK for HiDPI displays" ${OFF} \
@@ -174,9 +176,14 @@ function main() {
     enable_disable_wslg "$@"
   fi
 
-  if [[ ${menu_choice} == *"CONFIGURE"* ]]; then
-    echo "CONFIGURE"
-    configure_gui "$@"
+  if [[ ${menu_choice} == *"X410"* ]]; then
+    echo "X410"
+    bash "${SetupDir}"/x410.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"VCXSRV"* ]]; then
+    echo "VCXSRV"
+    bash "${SetupDir}"/vcxsrv.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"GUILIB"* ]]; then
