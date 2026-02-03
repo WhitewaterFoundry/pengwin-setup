@@ -16,8 +16,12 @@ function main() {
   # Remove legacy shell integration files (from previous npm-based installation)
   sudo_rem_file "/etc/profile.d/github-copilot-cli.sh"
 
-  # Remove legacy fish configuration
+  # Remove PATH configuration added by the new binary installer
+  sudo_rem_file "/etc/profile.d/github-copilot.sh"
+
+  # Remove fish configuration
   rem_file "${HOME}/.config/fish/conf.d/github-copilot-cli.fish"
+  sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/github-copilot.fish"
 
   # Remove legacy npm package if still present
   if command -v npm &> /dev/null; then

@@ -11,6 +11,9 @@ function test_main() {
   # Check if copilot command is executable
   run test -x /home/${TEST_USER}/.local/bin/copilot
   assertTrue "copilot binary is not executable" "$?"
+
+  # Check if PATH configuration file exists
+  assertTrue "PATH configuration file not found" "[ -f /etc/profile.d/github-copilot.sh ]"
 }
 
 function test_uninstall() {
@@ -18,6 +21,9 @@ function test_uninstall() {
 
   # Check if copilot binary is removed from user's local bin
   assertFalse "copilot binary was not uninstalled" "[ -f /home/${TEST_USER}/.local/bin/copilot ]"
+
+  # Check if PATH configuration file is removed
+  assertFalse "PATH configuration file still exists" "[ -f /etc/profile.d/github-copilot.sh ]"
 }
 
 # shellcheck disable=SC1091
