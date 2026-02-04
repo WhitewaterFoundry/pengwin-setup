@@ -3,29 +3,27 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup install AIUTILS COPILOT-CLI
+  run_pengwinsetup install AIUTILS COPILOT-CLI --debug
 
-  # Check if github-copilot-cli is installed
-  run command -v github-copilot-cli
-  assertTrue "GitHub Copilot CLI was not installed" "$?"
+  # Check if copilot binary is installed in user's local bin
+  assertTrue "copilot binary was not installed" "[ -f /home/${TEST_USER}/.local/bin/copilot ]"
 
-  # Check if shell integration file exists
-  assertTrue "Shell integration file not found" "[ -f /etc/profile.d/github-copilot-cli.sh ]"
+  # Check if copilot command is executable
+  run test -x /home/${TEST_USER}/.local/bin/copilot
+  assertTrue "copilot binary is not executable" "$?"
 
-  # Verify npm package is installed (run as test user)
-  run npm list -g @githubnext/github-copilot-cli
-  assertTrue "GitHub Copilot CLI npm package not found" "$?"
+  # Check if PATH configuration file exists
+  assertTrue "PATH configuration file not found" "[ -f /etc/profile.d/github-copilot.sh ]"
 }
 
 function test_uninstall() {
   run_pengwinsetup install UNINSTALL COPILOT-CLI
 
-  # Check if github-copilot-cli is removed
-  run command -v github-copilot-cli
-  assertFalse "GitHub Copilot CLI was not uninstalled" "$?"
+  # Check if copilot binary is removed from user's local bin
+  assertFalse "copilot binary was not uninstalled" "[ -f /home/${TEST_USER}/.local/bin/copilot ]"
 
-  # Check if shell integration file is removed
-  assertFalse "Shell integration file still exists" "[ -f /etc/profile.d/github-copilot-cli.sh ]"
+  # Check if PATH configuration file is removed
+  assertFalse "PATH configuration file still exists" "[ -f /etc/profile.d/github-copilot.sh ]"
 }
 
 # shellcheck disable=SC1091

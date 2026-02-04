@@ -12,7 +12,7 @@ function main() {
   local menu_choice=$(
 
     menu --title "AI Menu" "${DIALOG_TYPE}" "Install AI tools and assistants\n[ENTER to confirm]:" 14 87 2 \
-      "COPILOT-CLI" "Install GitHub Copilot CLI (requires Node.js 22+ and npm 10+)" ${OFF} \
+      "COPILOT-CLI" "Install GitHub Copilot CLI" ${OFF} \
       "COPILOT-VIM" "Install GitHub Copilot for Vim/Neovim (requires Node.js 18+)" ${OFF}
 
     # shellcheck disable=SC2188
