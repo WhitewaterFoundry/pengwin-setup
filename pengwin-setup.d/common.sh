@@ -407,10 +407,32 @@ function setup_env() {
 
 }
 
-function install_packages() {
-
-  sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
+function start_apt_progress() {
+  if [[ ! ${APT_PROGRESS_STARTED} ]]; then
+    if [[ ! ${NON_INTERACTIVE} ]]; then
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --start
+      APT_PROGRESS_STARTED=1
+    fi
+  fi
 }
+
+function install_packages() {
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
+  else
+    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get install -y -q "$@"
+  fi
+}
+
+function end_apt_progress() {
+  if [[ ${APT_PROGRESS_STARTED} ]]; then
+    if [[ ! ${NON_INTERACTIVE} ]]; then
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --end
+      APT_PROGRESS_STARTED=0
+    fi
+  fi
+}
+
 
 #######################################
 # Updates package lists using apt-get update

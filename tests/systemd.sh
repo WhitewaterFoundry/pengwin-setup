@@ -9,7 +9,7 @@ function test_systemd_1() {
   run_pengwinsetup install SERVICES SYSTEMD
 
   assertEquals "[boot] section is not there" "1" "$(grep -c -E "^\[boot\]$" /etc/wsl.conf)"
-  assertEquals "SystemD was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
+  assertEquals "systemd was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
 }
 
 function test_systemd_2() {
@@ -18,7 +18,7 @@ function test_systemd_2() {
 
   run_pengwinsetup install SERVICES SYSTEMD
   assertEquals "[boot] section is not there" "1" "$(grep -c -E "^\[boot\]$" /etc/wsl.conf)"
-  assertEquals "SystemD was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
+  assertEquals "systemd was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
 }
 
 function test_systemd_3() {
@@ -27,7 +27,7 @@ function test_systemd_3() {
 
   run_pengwinsetup install SERVICES SYSTEMD
   assertEquals "[boot] section is not there" "1" "$(grep -c -E "^\[boot\]$" /etc/wsl.conf)"
-  assertEquals "SystemD was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
+  assertEquals "systemd was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
 }
 
 
@@ -35,7 +35,7 @@ function test_uninstall() {
 
   run_pengwinsetup uninstall SYSTEMD
 
-  assertEquals "SystemD was not disabled" "0" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
+  assertEquals "systemd was not disabled" "0" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
 }
 
 # shellcheck disable=SC1091

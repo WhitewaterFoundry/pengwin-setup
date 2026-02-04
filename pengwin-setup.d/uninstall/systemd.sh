@@ -5,7 +5,7 @@ source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 function main() {
 
-  echo "Disabling SystemD"
+  echo "Disabling systemd"
 
   install_packages crudini
 
@@ -16,6 +16,6 @@ function main() {
   enable_should_restart
 }
 
-if show_warning "SystemD support" "$@"; then
+if show_warning "systemd support" "$@"; then
   main "$@"
 fi

@@ -219,7 +219,7 @@ EOF
 }
 
 #######################################
-# Enables the SystemD support in the wsl.conf file
+# Enables the systemd support in the wsl.conf file
 # Arguments:
 #  None
 # Returns:
@@ -228,12 +228,12 @@ EOF
 function enable_systemd() {
 
   if [[ -z "${WSL2}" ]]; then
-    message --title "SystemD" --msgbox "SystemD is only available in WSL2\n\nIf you want to start services in WSL1 you can use the \"service\" or the \"wslsystemctl\" commands." 11 60
+    message --title "systemd" --msgbox "systemd is only available in WSL2\n\nIf you want to start services in WSL1 you can use the \"service\" or the \"wslsystemctl\" commands." 11 60
     return 0
   fi
 
-  if (confirm --title "SystemD" --yesno "Would you like to enable SystemD support for this distro?" 10 60); then
-    echo "Enabling SystemD..."
+  if (confirm --title "systemd" --yesno "Would you like to enable systemd support for this distro?" 10 60); then
+    echo "Enabling systemd..."
 
     install_packages crudini
 
@@ -244,7 +244,7 @@ function enable_systemd() {
 
     touch "${HOME}"/.should-restart
   else
-    echo "Skipping SystemD"
+    echo "Skipping systemd"
 
     return 1
   fi
@@ -284,7 +284,7 @@ function main() {
       "LAMP" "Install LAMP Stack" ${OFF} \
       "RCLOCAL" "Enable running scripts at startup from rc.local " ${OFF} \
       "SSH" "Enable SSH server" ${OFF} \
-      "SYSTEMD" "Enable SystemD support" ${OFF}
+      "SYSTEMD" "Enable systemd support" ${OFF}
 
     # shellcheck disable=SC2188
     3>&1 1>&2 2>&3

@@ -9,7 +9,9 @@ declare SetupDir
 if (confirm --title "DOTNET" --yesno "Would you like to download and install the .NET SDK for Linux?" 8 75) ; then
   echo "Installing DOTNET"
   createtmp
-  
+
+  start_apt_progress
+
   wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   rm packages-microsoft-prod.deb
@@ -17,6 +19,8 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
   update_packages
 
   install_packages dotnet-sdk-10.0
+
+  end_apt_progress
   cleantmp
 
 else

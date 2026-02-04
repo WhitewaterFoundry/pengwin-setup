@@ -55,7 +55,7 @@ function main() {
       "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" ${OFF} \
       "SSH" "Remove SSH server" ${OFF} \
       "SYNAPTIC" "Remove Synaptic package manager" ${OFF} \
-      "SYSTEMD" "Disable SystemD support" ${OFF} \
+      "SYSTEMD" "Disable systemd support" ${OFF} \
       "TERRAFORM" "Remove Terraform CLI tools" ${OFF} \
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
       "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
