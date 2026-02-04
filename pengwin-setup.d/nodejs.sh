@@ -40,7 +40,9 @@ function install_nodejs_nodesource() {
   install_packages nodejs="${version}"
 }
 
-# Adjust versions for WSL1 compatibility
+# Adjust versions for WSL1 compatibility - modifying these global constants before
+# the menu is intentional so the user sees the correct version numbers in the menu
+# and all installation methods (n, nvm, nodesource) use WSL1-compatible versions
 if is_wsl1; then
   echo "WSL1 detected: Limiting Node.js versions to ${NODEJS_WSL1_MAX_VERSION}"
   if [[ ${NODEJS_LATEST_VERSION} -gt ${NODEJS_WSL1_MAX_VERSION} ]]; then
