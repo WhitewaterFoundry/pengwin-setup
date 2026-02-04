@@ -407,6 +407,21 @@ function setup_env() {
 
 }
 
+#######################################
+# Starts the APT package installation progress dialog.
+# Initializes debconf-apt-progress to display a visual progress indicator
+# for package installation operations in interactive mode. This should be
+# called before a series of install_packages calls to show a unified progress
+# display. Has no effect in non-interactive mode.
+# Globals:
+#   APT_PROGRESS_STARTED - Flag indicating if progress dialog is active
+#   NON_INTERACTIVE - Flag for non-interactive mode
+#   NEWT_COLORS - Terminal color configuration preserved in sudo
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 function start_apt_progress() {
   if [[ ! ${APT_PROGRESS_STARTED} ]]; then
     if [[ ! ${NON_INTERACTIVE} ]]; then
@@ -416,14 +431,49 @@ function start_apt_progress() {
   fi
 }
 
+#######################################
+# Installs APT packages with progress display.
+# Uses apt-get to install specified packages with different progress display
+# modes based on interactive/non-interactive mode. In interactive mode, uses
+# debconf-apt-progress to show visual feedback. Supports custom progress ranges
+# when APT_PROGRESS_FROM and APT_PROGRESS_TO environment variables are set.
+# Globals:
+#   NON_INTERACTIVE - Flag for non-interactive mode
+#   APT_PROGRESS_FROM - Optional progress range start percentage
+#   APT_PROGRESS_TO - Optional progress range end percentage
+#   NEWT_COLORS - Terminal color configuration preserved in sudo
+# Arguments:
+#   Package names to install
+# Returns:
+#   None
+#######################################
 function install_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
   else
-    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get install -y -q "$@"
+    if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --from "${APT_PROGRESS_FROM}" --to "${APT_PROGRESS_TO}" -- apt-get install -y -q "$@"
+    else
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get install -y -q "$@"
+    fi
   fi
 }
 
+#######################################
+# Ends the APT package installation progress dialog.
+# Closes the debconf-apt-progress dialog if it was previously started by
+# start_apt_progress. This should be called after completing a series of
+# install_packages operations to properly clean up the progress display.
+# Has no effect in non-interactive mode or if progress was never started.
+# Globals:
+#   APT_PROGRESS_STARTED - Flag indicating if progress dialog is active
+#   NON_INTERACTIVE - Flag for non-interactive mode
+#   NEWT_COLORS - Terminal color configuration preserved in sudo
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 function end_apt_progress() {
   if [[ ${APT_PROGRESS_STARTED} ]]; then
     if [[ ! ${NON_INTERACTIVE} ]]; then
@@ -432,7 +482,6 @@ function end_apt_progress() {
     fi
   fi
 }
-
 
 #######################################
 # Updates package lists using apt-get update
