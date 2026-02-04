@@ -876,6 +876,27 @@ function ensure_nodejs_version() {
 }
 
 #######################################
+# Check if running in WSL1
+# Detects if the system is running in WSL1 by checking if the WSL2 environment
+# variable is not set. The WSL2 variable is set by Pengwin when running in WSL2.
+# This function is used by installer scripts to apply WSL1-specific workarounds.
+#
+# Globals:
+#   WSL2 - Environment variable set when running in WSL2
+# Arguments:
+#   None
+# Returns:
+#   0 if running in WSL1, 1 otherwise
+#######################################
+function is_wsl1() {
+  if [[ -z "${WSL2}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+#######################################
 # Check if systemd is running as PID 1
 # Detects if the system was booted with systemd by checking if PID 1 is systemd
 # This function is used by installer scripts to determine whether to use systemctl
