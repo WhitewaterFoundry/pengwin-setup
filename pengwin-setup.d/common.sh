@@ -4,9 +4,9 @@ declare -a -x CMD_MENU_OPTIONS
 
 export LANG=en_US.utf8
 export NEWT_COLORS='
-    root=lightgray,black
-    roottext=lightgray,black
-    shadow=black,gray
+    root=default,default
+    roottext=default,default
+    shadow=default,default
     title=magenta,lightgray
     checkbox=lightgray,blue
     actcheckbox=lightgray,magenta
