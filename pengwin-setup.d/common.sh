@@ -594,46 +594,6 @@ function is_nvm_installed() {
 }
 
 #######################################
-# Check if Node.js is installed via a version manager (N or NVM)
-# Determines if the current node binary is managed by N or NVM
-# Globals:
-#   N_PREFIX - N version manager prefix directory
-#   NVM_DIR - NVM installation directory
-#   HOME - User's home directory
-# Arguments:
-#   None
-# Returns:
-#   0 if node is managed by a version manager, 1 otherwise
-#######################################
-function is_node_from_version_manager() {
-  local node_path
-
-  if ! command -v node &> /dev/null; then
-    return 1
-  fi
-
-  node_path=$(command -v node)
-
-  # Check if node is from N version manager
-  if is_n_installed; then
-    local n_prefix="${N_PREFIX:-${HOME}/n}"
-    if [[ "${node_path}" == "${n_prefix}"* ]]; then
-      return 0
-    fi
-  fi
-
-  # Check if node is from NVM
-  if is_nvm_installed; then
-    local nvm_dir="${NVM_DIR:-${HOME}/.nvm}"
-    if [[ "${node_path}" == "${nvm_dir}"* ]]; then
-      return 0
-    fi
-  fi
-
-  return 1
-}
-
-#######################################
 # Install or upgrade Node.js using N version manager
 # Installs N version manager and latest Node.js version
 # Globals:
@@ -666,9 +626,11 @@ function install_nodejs_via_n() {
 }
 
 #######################################
-# Install or upgrade Node.js using NVM version manager
+# Install or upgrade Node.js using NVM version manager (requires NVM preinstalled)
 # Installs latest Node.js version via NVM (using 'node' alias which points to latest)
 # In NVM, 'nvm install node' installs/upgrades to the latest available version
+# Note: This function assumes NVM is already installed and available in ${NVM_DIR}
+#   or ${HOME}/.nvm; it does not install NVM itself.
 # Globals:
 #   NVM_DIR - NVM installation directory
 #   HOME - User's home directory
@@ -767,56 +729,63 @@ function ensure_nodejs_version() {
     return 0
   fi
 
-  # Node.js exists - check if it's from a version manager
-  if [[ "${has_version_manager}" == false ]]; then
-    # Node.js is installed but no version manager detected
-    # This likely means it was installed via package manager which causes npm permission issues
-    echo "Node.js is installed but no version manager (N or NVM) detected."
-    echo "Installing via package manager can cause npm permission issues."
+  # Node.js exists - extract and validate version
+  node_version=$(node --version 2>/dev/null | sed 's/^v//' | cut -d'.' -f1)
 
-    if (confirm --title "Install Node.js Version Manager" --yesno "Node.js is installed via package manager, which can cause npm permission issues for plugins like ${product_name}.\n\nWould you like to install the N version manager to manage Node.js properly?\n\nNote: This will install Node.js in your home directory." 14 80); then
-      echo "Installing N version manager..."
-      if ! install_nodejs_via_n; then
-        echo "Failed to install N version manager. Cannot proceed with ${product_name} installation."
-        return 1
-      fi
-      return 0
-    else
-      echo "Continuing with system Node.js installation."
-    fi
+  # Validate that node_version is a valid integer
+  if ! [[ "${node_version}" =~ ^[0-9]+$ ]]; then
+    echo "Error: Unable to determine Node.js version. Got: '${node_version}'"
+    echo "Please check your Node.js installation."
+    return 1
   fi
 
-  # Version manager is installed or user chose to continue with system Node.js
-  # Check if node version meets requirements
-  node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
+  # Check version first to avoid prompting about version manager if version is already sufficient
+  if [[ ${node_version} -ge ${min_version} ]]; then
+    # Version is sufficient
+    if [[ "${has_version_manager}" == false ]]; then
+      # Node.js is installed via package manager but version is sufficient
+      # Offer to install version manager to avoid potential npm permission issues
+      echo "Node.js version ${node_version} meets requirements, but no version manager detected."
+      echo "Installing via package manager can cause npm permission issues."
 
-  if [[ ${node_version} -lt ${min_version} ]]; then
-    echo "Node.js version ${node_version} is below required version ${min_version}."
-
-    if [[ "${has_version_manager}" == true ]]; then
-      # Version manager installed, offer to upgrade via it
-      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js using the version manager?" 10 80); then
-        echo "Upgrading Node.js..."
-        if ! upgrade_nodejs_via_version_manager; then
-          echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
-          return 1
+      if (confirm --title "Install Node.js Version Manager" --yesno "Node.js is installed via package manager, which can cause npm permission issues for plugins like ${product_name}.\n\nWould you like to install the N version manager to manage Node.js properly?\n\nNote: This will install Node.js in your home directory." 14 80); then
+        echo "Installing N version manager..."
+        if ! install_nodejs_via_n; then
+          echo "Failed to install N version manager. Continuing with system Node.js."
         fi
       else
-        echo "Skipping ${product_name} installation due to incompatible Node.js version."
+        echo "Continuing with system Node.js installation."
+      fi
+    fi
+    return 0
+  fi
+
+  # Version is insufficient - need to upgrade
+  echo "Node.js version ${node_version} is below required version ${min_version}."
+
+  if [[ "${has_version_manager}" == true ]]; then
+    # Version manager installed, offer to upgrade via it
+    if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js using the version manager?" 10 80); then
+      echo "Upgrading Node.js..."
+      if ! upgrade_nodejs_via_version_manager; then
+        echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
         return 1
       fi
     else
-      # No version manager, offer to install N version manager
-      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to install the N version manager and upgrade Node.js?\n\nNote: This is recommended to avoid npm permission issues." 12 80); then
-        echo "Installing N version manager and upgrading Node.js..."
-        if ! install_nodejs_via_n; then
-          echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
-          return 1
-        fi
-      else
-        echo "Skipping ${product_name} installation due to incompatible Node.js version."
+      echo "Skipping ${product_name} installation due to incompatible Node.js version."
+      return 1
+    fi
+  else
+    # No version manager, offer to install N version manager
+    if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to install the N version manager and upgrade Node.js?\n\nNote: This is recommended to avoid npm permission issues." 12 80); then
+      echo "Installing N version manager and upgrading Node.js..."
+      if ! install_nodejs_via_n; then
+        echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
         return 1
       fi
+    else
+      echo "Skipping ${product_name} installation due to incompatible Node.js version."
+      return 1
     fi
   fi
 
