@@ -548,17 +548,17 @@ function is_n_installed() {
     # shellcheck source=/dev/null
     source "/etc/profile.d/n-prefix.sh"
   fi
-  
+
   # Check if N_PREFIX is set and n binary exists
   if [[ -n "${N_PREFIX}" ]] && [[ -x "${N_PREFIX}/bin/n" ]]; then
     return 0
   fi
-  
+
   # Also check default location
   if [[ -x "${HOME}/n/bin/n" ]]; then
     return 0
   fi
-  
+
   return 1
 }
 
@@ -579,17 +579,17 @@ function is_nvm_installed() {
     # shellcheck source=/dev/null
     source "/etc/profile.d/nvm-prefix.sh"
   fi
-  
+
   # Check if NVM_DIR is set and nvm.sh exists
   if [[ -n "${NVM_DIR}" ]] && [[ -s "${NVM_DIR}/nvm.sh" ]]; then
     return 0
   fi
-  
+
   # Also check default location
   if [[ -s "${HOME}/.nvm/nvm.sh" ]]; then
     return 0
   fi
-  
+
   return 1
 }
 
@@ -607,13 +607,13 @@ function is_nvm_installed() {
 #######################################
 function is_node_from_version_manager() {
   local node_path
-  
+
   if ! command -v node &> /dev/null; then
     return 1
   fi
-  
+
   node_path=$(command -v node)
-  
+
   # Check if node is from N version manager
   if is_n_installed; then
     local n_prefix="${N_PREFIX:-${HOME}/n}"
@@ -621,7 +621,7 @@ function is_node_from_version_manager() {
       return 0
     fi
   fi
-  
+
   # Check if node is from NVM
   if is_nvm_installed; then
     local nvm_dir="${NVM_DIR:-${HOME}/.nvm}"
@@ -629,7 +629,7 @@ function is_node_from_version_manager() {
       return 0
     fi
   fi
-  
+
   return 1
 }
 
@@ -648,20 +648,20 @@ function install_nodejs_via_n() {
   bash "${SetupDir}"/nodejs.sh install PROGRAMMING NODEJS NVERMAN
   local status=$?
   unset SKIP_YARN
-  
+
   if [[ ${status} != 0 ]]; then
     return "${status}"
   fi
-  
+
   # Refresh the command hash table to recognize newly installed binaries
   hash -r
-  
+
   # Source the N profile to get the updated PATH
   if [[ -f "/etc/profile.d/n-prefix.sh" ]]; then
     # shellcheck source=/dev/null
     source "/etc/profile.d/n-prefix.sh"
   fi
-  
+
   return 0
 }
 
@@ -687,7 +687,7 @@ function install_nodejs_lts() {
 # manager, installs N version manager to avoid npm permission issues.
 # Globals:
 #   N_PREFIX - N version manager prefix directory
-#   NVM_DIR - NVM installation directory  
+#   NVM_DIR - NVM installation directory
 #   HOME - User's home directory
 # Arguments:
 #   $1: minimum required version (e.g., 18)
@@ -700,13 +700,13 @@ function ensure_nodejs_version() {
   local product_name="$2"
   local has_version_manager=false
   local node_version
-  
+
   # Check if a version manager is installed (N or NVM)
   if is_n_installed || is_nvm_installed; then
     has_version_manager=true
     echo "Node.js version manager detected."
   fi
-  
+
   # Check if Node.js is available
   if ! command -v node &> /dev/null; then
     echo "Node.js not found. Installing Node.js via N version manager..."
@@ -716,14 +716,14 @@ function ensure_nodejs_version() {
     fi
     return 0
   fi
-  
+
   # Node.js exists - check if it's from a version manager
   if [[ "${has_version_manager}" == false ]]; then
     # Node.js is installed but no version manager detected
     # This likely means it was installed via package manager which causes npm permission issues
     echo "Node.js is installed but no version manager (N or NVM) detected."
     echo "Installing via package manager can cause npm permission issues."
-    
+
     if (confirm --title "Install Node.js Version Manager" --yesno "Node.js is installed via package manager, which can cause npm permission issues for plugins like ${product_name}.\n\nWould you like to install the N version manager to manage Node.js properly?\n\nNote: This will install Node.js in your home directory." 14 80); then
       echo "Installing N version manager..."
       if ! install_nodejs_lts; then
@@ -735,14 +735,14 @@ function ensure_nodejs_version() {
       echo "Continuing with system Node.js installation."
     fi
   fi
-  
+
   # Version manager is installed or user chose to continue with system Node.js
   # Check if node version meets requirements
   node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
-  
+
   if [[ ${node_version} -lt ${min_version} ]]; then
     echo "Node.js version ${node_version} is below required version ${min_version}."
-    
+
     if [[ "${has_version_manager}" == true ]]; then
       # Version manager installed, offer to upgrade via it
       if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js using the version manager?" 10 80); then
@@ -769,7 +769,7 @@ function ensure_nodejs_version() {
       fi
     fi
   fi
-  
+
   return 0
 }
 
@@ -790,7 +790,7 @@ function ensure_nodejs_version() {
 function is_systemd_running() {
   local init_process
   init_process=$(ps -p 1 -o comm= 2>/dev/null || echo "")
-  
+
   if [[ "${init_process}" == "systemd" ]]; then
     return 0
   else
