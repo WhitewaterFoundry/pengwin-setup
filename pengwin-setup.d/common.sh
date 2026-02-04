@@ -666,18 +666,66 @@ function install_nodejs_via_n() {
 }
 
 #######################################
-# Install or upgrade Node.js LTS
-# Installs Node.js via N version manager (preferred) to avoid npm permission issues
+# Install or upgrade Node.js using NVM version manager
+# Installs latest Node.js version via NVM
 # Globals:
-#   SetupDir - Directory containing setup scripts
+#   NVM_DIR - NVM installation directory
+#   HOME - User's home directory
 # Arguments:
 #   None
 # Returns:
 #   0 on success, non-zero on failure
 #######################################
-function install_nodejs_lts() {
-  # Always install via N version manager to avoid npm permission issues
-  install_nodejs_via_n
+function install_nodejs_via_nvm() {
+  # Ensure NVM is loaded
+  local nvm_dir="${NVM_DIR:-${HOME}/.nvm}"
+
+  if [[ -s "${nvm_dir}/nvm.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${nvm_dir}/nvm.sh"
+  else
+    echo "NVM not found at ${nvm_dir}"
+    return 1
+  fi
+
+  echo "Installing latest Node.js via NVM..."
+  if ! nvm install node --latest-npm; then
+    echo "Failed to install Node.js via NVM"
+    return 1
+  fi
+
+  # Refresh the command hash table to recognize newly installed binaries
+  hash -r
+
+  return 0
+}
+
+#######################################
+# Upgrade Node.js using the installed version manager
+# Detects which version manager is installed (N or NVM) and uses it to upgrade
+# Globals:
+#   N_PREFIX - N version manager prefix directory
+#   NVM_DIR - NVM installation directory
+#   HOME - User's home directory
+# Arguments:
+#   None
+# Returns:
+#   0 on success, non-zero on failure
+#######################################
+function upgrade_nodejs_via_version_manager() {
+  # Check which version manager is installed and use it
+  if is_n_installed; then
+    echo "Upgrading Node.js via N version manager..."
+    install_nodejs_via_n
+    return $?
+  elif is_nvm_installed; then
+    echo "Upgrading Node.js via NVM..."
+    install_nodejs_via_nvm
+    return $?
+  else
+    echo "No version manager detected"
+    return 1
+  fi
 }
 
 #######################################
@@ -710,7 +758,7 @@ function ensure_nodejs_version() {
   # Check if Node.js is available
   if ! command -v node &> /dev/null; then
     echo "Node.js not found. Installing Node.js via N version manager..."
-    if ! install_nodejs_lts; then
+    if ! install_nodejs_via_n; then
       echo "Failed to install Node.js. Cannot proceed with ${product_name} installation."
       return 1
     fi
@@ -726,7 +774,7 @@ function ensure_nodejs_version() {
 
     if (confirm --title "Install Node.js Version Manager" --yesno "Node.js is installed via package manager, which can cause npm permission issues for plugins like ${product_name}.\n\nWould you like to install the N version manager to manage Node.js properly?\n\nNote: This will install Node.js in your home directory." 14 80); then
       echo "Installing N version manager..."
-      if ! install_nodejs_lts; then
+      if ! install_nodejs_via_n; then
         echo "Failed to install N version manager. Cannot proceed with ${product_name} installation."
         return 1
       fi
@@ -747,7 +795,7 @@ function ensure_nodejs_version() {
       # Version manager installed, offer to upgrade via it
       if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js using the version manager?" 10 80); then
         echo "Upgrading Node.js..."
-        if ! install_nodejs_lts; then
+        if ! upgrade_nodejs_via_version_manager; then
           echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
           return 1
         fi
@@ -759,7 +807,7 @@ function ensure_nodejs_version() {
       # No version manager, offer to install N version manager
       if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to install the N version manager and upgrade Node.js?\n\nNote: This is recommended to avoid npm permission issues." 12 80); then
         echo "Installing N version manager and upgrading Node.js..."
-        if ! install_nodejs_lts; then
+        if ! install_nodejs_via_n; then
           echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
           return 1
         fi
