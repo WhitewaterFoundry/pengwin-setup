@@ -41,8 +41,8 @@ function install_copilot_npm() {
   fi
 
   # Create profile.d script with alias for WSL1
-  # Note: Using single-quoted heredoc ('EOF') is intentional - $HOME must expand at
-  # runtime (when user logs in) not at installation time, so each user gets their own path
+  # Note: Using single-quoted heredoc ('EOF') is intentional - variables expand at
+  # runtime (when user logs in) not at installation time
   echo "Setting up alias in /etc/profile.d/github-copilot.sh"
   sudo tee "/etc/profile.d/github-copilot.sh" <<'EOF'
 #!/bin/sh
@@ -56,12 +56,15 @@ if [ -d "${HOME}/.local/bin" ]; then
 fi
 
 # Alias for WSL1 compatibility - run copilot binary with explicit ld-linux loader
-# Note: $HOME expands at runtime when user invokes the alias
-alias copilot='/lib64/ld-linux-x86-64.so.2 ${HOME}/.local/bin/copilot'
+# Only apply the workaround if WSL2 is not set (i.e., we're in WSL1)
+# This allows users who switch to WSL2 to run copilot directly
+if [ -z "${WSL2}" ]; then
+  alias copilot='/lib64/ld-linux-x86-64.so.2 ${HOME}/.local/bin/copilot'
+fi
 EOF
 
   # Also set up for fish shell
-  # Note: Using single-quoted heredoc - $HOME expands at runtime for each user
+  # Note: Using single-quoted heredoc - variables expand at runtime for each user
   sudo mkdir -p "${__fish_sysconf_dir:=/etc/fish/conf.d}"
   sudo tee "${__fish_sysconf_dir}/github-copilot.fish" <<'EOF'
 #!/bin/fish
@@ -74,8 +77,11 @@ if test -d "$HOME/.local/bin"
 end
 
 # Alias for WSL1 compatibility - run copilot binary with explicit ld-linux loader
-# Note: $HOME expands at runtime when user invokes the alias
-alias copilot '/lib64/ld-linux-x86-64.so.2 $HOME/.local/bin/copilot'
+# Only apply the workaround if WSL2 is not set (i.e., we're in WSL1)
+# This allows users who switch to WSL2 to run copilot directly
+if not set -q WSL2
+  alias copilot '/lib64/ld-linux-x86-64.so.2 $HOME/.local/bin/copilot'
+end
 EOF
 
   return 0
