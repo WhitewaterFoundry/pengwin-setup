@@ -91,6 +91,9 @@ EOF
       cleantmp
     fi
 
+    sudo mkdir -p /run/mysqld/
+    sudo chown -R mysql:mysql /run/mysqld/
+
     echo "Installing Apache Web Server"
     install_packages apache2 apache2-utils
     
