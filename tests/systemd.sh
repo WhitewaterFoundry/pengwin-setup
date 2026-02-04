@@ -25,7 +25,7 @@ function test_systemd_3() {
   #Test the case when systemd=false is already present
   sudo sed -i 's$\(systemd=\)\(.*\)$\1false$' /etc/wsl.conf
 
-  run_pengwinsetup install SERVICES SYSTEMD --debug
+  run_pengwinsetup install SERVICES SYSTEMD
   assertEquals "[boot] section is not there" "1" "$(grep -c -E "^\[boot\]$" /etc/wsl.conf)"
   assertEquals "SystemD was not enabled" "1" "$(grep -c -E "^systemd.*=.*true$" /etc/wsl.conf)"
 }
