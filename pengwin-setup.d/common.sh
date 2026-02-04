@@ -532,8 +532,110 @@ function setup_pengwin_config() {
 }
 
 #######################################
-# Install or upgrade Node.js LTS
-# Installs Node.js LTS version without Yarn
+# Check if N version manager is installed
+# Checks for N_PREFIX environment variable and n binary
+# Globals:
+#   N_PREFIX - N version manager prefix directory
+#   HOME - User's home directory
+# Arguments:
+#   None
+# Returns:
+#   0 if N is installed, 1 otherwise
+#######################################
+function is_n_installed() {
+  # Source the profile script if it exists but N_PREFIX is not set
+  if [[ -z "${N_PREFIX}" ]] && [[ -f "/etc/profile.d/n-prefix.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "/etc/profile.d/n-prefix.sh"
+  fi
+  
+  # Check if N_PREFIX is set and n binary exists
+  if [[ -n "${N_PREFIX}" ]] && [[ -x "${N_PREFIX}/bin/n" ]]; then
+    return 0
+  fi
+  
+  # Also check default location
+  if [[ -x "${HOME}/n/bin/n" ]]; then
+    return 0
+  fi
+  
+  return 1
+}
+
+#######################################
+# Check if NVM (Node Version Manager) is installed
+# Checks for NVM_DIR environment variable and nvm function/script
+# Globals:
+#   NVM_DIR - NVM installation directory
+#   HOME - User's home directory
+# Arguments:
+#   None
+# Returns:
+#   0 if NVM is installed, 1 otherwise
+#######################################
+function is_nvm_installed() {
+  # Source the profile script if it exists but NVM_DIR is not set
+  if [[ -z "${NVM_DIR}" ]] && [[ -f "/etc/profile.d/nvm-prefix.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "/etc/profile.d/nvm-prefix.sh"
+  fi
+  
+  # Check if NVM_DIR is set and nvm.sh exists
+  if [[ -n "${NVM_DIR}" ]] && [[ -s "${NVM_DIR}/nvm.sh" ]]; then
+    return 0
+  fi
+  
+  # Also check default location
+  if [[ -s "${HOME}/.nvm/nvm.sh" ]]; then
+    return 0
+  fi
+  
+  return 1
+}
+
+#######################################
+# Check if Node.js is installed via a version manager (N or NVM)
+# Determines if the current node binary is managed by N or NVM
+# Globals:
+#   N_PREFIX - N version manager prefix directory
+#   NVM_DIR - NVM installation directory
+#   HOME - User's home directory
+# Arguments:
+#   None
+# Returns:
+#   0 if node is managed by a version manager, 1 otherwise
+#######################################
+function is_node_from_version_manager() {
+  local node_path
+  
+  if ! command -v node &> /dev/null; then
+    return 1
+  fi
+  
+  node_path=$(command -v node)
+  
+  # Check if node is from N version manager
+  if is_n_installed; then
+    local n_prefix="${N_PREFIX:-${HOME}/n}"
+    if [[ "${node_path}" == "${n_prefix}"* ]]; then
+      return 0
+    fi
+  fi
+  
+  # Check if node is from NVM
+  if is_nvm_installed; then
+    local nvm_dir="${NVM_DIR:-${HOME}/.nvm}"
+    if [[ "${node_path}" == "${nvm_dir}"* ]]; then
+      return 0
+    fi
+  fi
+  
+  return 1
+}
+
+#######################################
+# Install or upgrade Node.js using N version manager
+# Installs N version manager and latest Node.js version
 # Globals:
 #   SetupDir - Directory containing setup scripts
 # Arguments:
@@ -541,9 +643,9 @@ function setup_pengwin_config() {
 # Returns:
 #   0 on success, non-zero on failure
 #######################################
-function install_nodejs_lts() {
+function install_nodejs_via_n() {
   export SKIP_YARN=1
-  bash "${SetupDir}"/nodejs.sh install PROGRAMMING NODEJS LTS
+  bash "${SetupDir}"/nodejs.sh install PROGRAMMING NODEJS NVERMAN
   local status=$?
   unset SKIP_YARN
   
@@ -553,15 +655,40 @@ function install_nodejs_lts() {
   
   # Refresh the command hash table to recognize newly installed binaries
   hash -r
+  
+  # Source the N profile to get the updated PATH
+  if [[ -f "/etc/profile.d/n-prefix.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "/etc/profile.d/n-prefix.sh"
+  fi
+  
   return 0
 }
 
 #######################################
-# Ensure Node.js meets minimum version requirement
-# Checks if Node.js is installed and meets minimum version.
-# Prompts to install or upgrade if needed.
+# Install or upgrade Node.js LTS
+# Installs Node.js via N version manager (preferred) to avoid npm permission issues
 # Globals:
+#   SetupDir - Directory containing setup scripts
+# Arguments:
 #   None
+# Returns:
+#   0 on success, non-zero on failure
+#######################################
+function install_nodejs_lts() {
+  # Always install via N version manager to avoid npm permission issues
+  install_nodejs_via_n
+}
+
+#######################################
+# Ensure Node.js meets minimum version requirement
+# Checks if Node.js is installed via a version manager (N or NVM) and meets
+# minimum version. If Node.js is installed via package manager but no version
+# manager, installs N version manager to avoid npm permission issues.
+# Globals:
+#   N_PREFIX - N version manager prefix directory
+#   NVM_DIR - NVM installation directory  
+#   HOME - User's home directory
 # Arguments:
 #   $1: minimum required version (e.g., 18)
 #   $2: product name for error messages (e.g., "GitHub Copilot")
@@ -571,22 +698,67 @@ function install_nodejs_lts() {
 function ensure_nodejs_version() {
   local min_version="$1"
   local product_name="$2"
+  local has_version_manager=false
+  local node_version
   
-  # Check if nodejs is installed and if version meets requirements
+  # Check if a version manager is installed (N or NVM)
+  if is_n_installed || is_nvm_installed; then
+    has_version_manager=true
+    echo "Node.js version manager detected."
+  fi
+  
+  # Check if Node.js is available
   if ! command -v node &> /dev/null; then
-    echo "Node.js not found. Installing Node.js LTS..."
+    echo "Node.js not found. Installing Node.js via N version manager..."
     if ! install_nodejs_lts; then
       echo "Failed to install Node.js. Cannot proceed with ${product_name} installation."
       return 1
     fi
-  else
-    # Check Node.js version - handle both vX.Y.Z and X.Y.Z formats
-    local node_version
-    node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
-    if [[ ${node_version} -lt ${min_version} ]]; then
-      echo "Node.js version ${node_version} is below required version ${min_version}."
-      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js to LTS?" 10 80); then
-        echo "Upgrading Node.js to LTS..."
+    return 0
+  fi
+  
+  # Node.js exists - check if it's from a version manager
+  if [[ "${has_version_manager}" == false ]]; then
+    # Node.js is installed but no version manager detected
+    # This likely means it was installed via package manager which causes npm permission issues
+    echo "Node.js is installed but no version manager (N or NVM) detected."
+    echo "Installing via package manager can cause npm permission issues."
+    
+    if (confirm --title "Install Node.js Version Manager" --yesno "Node.js is installed via package manager, which can cause npm permission issues for plugins like ${product_name}.\n\nWould you like to install the N version manager to manage Node.js properly?\n\nNote: This will install Node.js in your home directory." 14 80); then
+      echo "Installing N version manager..."
+      if ! install_nodejs_lts; then
+        echo "Failed to install N version manager. Cannot proceed with ${product_name} installation."
+        return 1
+      fi
+      return 0
+    else
+      echo "Continuing with system Node.js installation."
+    fi
+  fi
+  
+  # Version manager is installed or user chose to continue with system Node.js
+  # Check if node version meets requirements
+  node_version=$(node --version | sed 's/^v//' | cut -d'.' -f1)
+  
+  if [[ ${node_version} -lt ${min_version} ]]; then
+    echo "Node.js version ${node_version} is below required version ${min_version}."
+    
+    if [[ "${has_version_manager}" == true ]]; then
+      # Version manager installed, offer to upgrade via it
+      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to upgrade Node.js using the version manager?" 10 80); then
+        echo "Upgrading Node.js..."
+        if ! install_nodejs_lts; then
+          echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
+          return 1
+        fi
+      else
+        echo "Skipping ${product_name} installation due to incompatible Node.js version."
+        return 1
+      fi
+    else
+      # No version manager, offer to install N version manager
+      if (confirm --title "Node.js Upgrade" --yesno "Your Node.js version (${node_version}) is below the required version (${min_version}).\n\nWould you like to install the N version manager and upgrade Node.js?\n\nNote: This is recommended to avoid npm permission issues." 12 80); then
+        echo "Installing N version manager and upgrading Node.js..."
         if ! install_nodejs_lts; then
           echo "Failed to upgrade Node.js. Cannot proceed with ${product_name} installation."
           return 1
