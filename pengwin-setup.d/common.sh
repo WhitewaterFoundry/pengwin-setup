@@ -667,7 +667,8 @@ function install_nodejs_via_n() {
 
 #######################################
 # Install or upgrade Node.js using NVM version manager
-# Installs latest Node.js version via NVM
+# Installs latest Node.js version via NVM (using 'node' alias which points to latest)
+# In NVM, 'nvm install node' installs/upgrades to the latest available version
 # Globals:
 #   NVM_DIR - NVM installation directory
 #   HOME - User's home directory
@@ -688,6 +689,7 @@ function install_nodejs_via_nvm() {
     return 1
   fi
 
+  # 'node' is an NVM alias for the latest Node.js version
   echo "Installing latest Node.js via NVM..."
   if ! nvm install node --latest-npm; then
     echo "Failed to install Node.js via NVM"
