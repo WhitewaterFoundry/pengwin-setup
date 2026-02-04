@@ -425,8 +425,8 @@ function setup_env() {
 function start_apt_progress() {
   if [[ ! ${APT_PROGRESS_STARTED} ]]; then
     if [[ ! ${NON_INTERACTIVE} ]]; then
-      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --start
-      APT_PROGRESS_STARTED=1
+      echo sudo --preserve-env=NEWT_COLORS debconf-apt-progress --start
+      echo APT_PROGRESS_STARTED=1
     fi
   fi
 }
@@ -450,12 +450,16 @@ function start_apt_progress() {
 function install_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
-  else
+
+  elif [[ ${APT_PROGRESS_STARTED} ]]; then
     if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
       sudo --preserve-env=NEWT_COLORS debconf-apt-progress --from "${APT_PROGRESS_FROM}" --to "${APT_PROGRESS_TO}" -- apt-get install -y -q "$@"
     else
       sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get install -y -q "$@"
     fi
+
+  else
+    sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
   fi
 }
 
@@ -477,8 +481,8 @@ function install_packages() {
 function end_apt_progress() {
   if [[ ${APT_PROGRESS_STARTED} ]]; then
     if [[ ! ${NON_INTERACTIVE} ]]; then
-      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --end
-      APT_PROGRESS_STARTED=0
+      echo sudo --preserve-env=NEWT_COLORS debconf-apt-progress --end
+      echo APT_PROGRESS_STARTED=0
     fi
   fi
 }
