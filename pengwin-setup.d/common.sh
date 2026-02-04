@@ -449,7 +449,7 @@ function start_apt_progress() {
 #######################################
 function install_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
-    sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
+    sudo apt-get install -y -q "$@"
 
   elif [[ ${APT_PROGRESS_STARTED} ]]; then
     if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
@@ -500,13 +500,18 @@ function end_apt_progress() {
 function update_packages() {
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo apt-get update -y -q
-  else
+
+  elif [[ ${APT_PROGRESS_STARTED} ]]; then
     if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
       sudo --preserve-env=NEWT_COLORS debconf-apt-progress --from "${APT_PROGRESS_FROM}" --to "${APT_PROGRESS_TO}" -- apt-get update -y
     else
       sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
     fi
+
+  else
+    sudo --preserve-env=NEWT_COLORS -- apt-get update -y
   fi
+
 }
 
 #######################################
