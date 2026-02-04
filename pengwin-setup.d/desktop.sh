@@ -193,9 +193,9 @@ function install_xfce() {
 
     local systemd_pid
     systemd_pid="$(ps -C systemd -o pid= | head -n1)"
-    if [ -z "$systemd_pid" ]; then
+    if [ -z "$systemd_pid" ] && [ -n "${WSL2}" ]; then
 
-      bash "${SetupDir}"/services.sh --enable-systemd --yes
+      bash "${SetupDir}"/services.sh --enable-systemd --yes --noninteractive
     fi
 
 
@@ -223,6 +223,11 @@ Just click on one of them and login with your Pengwin credentials." 15 80
 }
 
 function main() {
+  if [[ -z "${WSL2}" ]]; then
+    message --title "desktop" --msgbox "For now desktop installation is only available in WSL2." 7 60
+    return 0
+  fi
+
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
