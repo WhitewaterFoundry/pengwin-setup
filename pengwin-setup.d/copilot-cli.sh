@@ -71,6 +71,8 @@ EOF
   echo "To authenticate, run: copilot /login"
   
   message --title "GitHub Copilot CLI" --msgbox "GitHub Copilot CLI installed successfully!\n\nTo authenticate, run:\n  copilot /login" 10 50
+
+  enable_should_restart
 else
   echo "Skipping GitHub Copilot CLI"
 fi
