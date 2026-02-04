@@ -42,14 +42,18 @@ function install_lamp() {
       return 1
     fi
 
+    start_apt_progress
     # shellcheck disable=SC2155
     local selected_version=$(echo "${menu_choice##* }" | grep -E "1[0-9]\.[0-9]+")
+
     if [[ -z ${selected_version} || ${menu_choice} == *"BUILTIN"* ]]; then
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
         export DEBIAN_FRONTEND=noninteractive
       fi
 
+      APT_PROGRESS_FROM=0
+      APT_PROGRESS_TO=50
       install_packages mariadb-server mariadb-client
       apt-cache policy mariadb-server
 
@@ -77,6 +81,8 @@ Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
 
 EOF
 
+      APT_PROGRESS_FROM=0
+      APT_PROGRESS_TO=25
       update_packages
 
       if [[ -n ${NON_INTERACTIVE} ]]; then
@@ -85,6 +91,8 @@ EOF
         sudo debconf-set-selections <<<"mariadb-server-${selected_version} mysql-server/root_password_again password PASS"
       fi
 
+      APT_PROGRESS_FROM=25
+      APT_PROGRESS_TO=50
       install_packages -t trixie mariadb-server mariadb-client mariadb-backup
       apt-cache policy mariadb-server
 
@@ -95,6 +103,8 @@ EOF
     sudo chown -R mysql:mysql /run/mysqld/
 
     echo "Installing Apache Web Server"
+    APT_PROGRESS_FROM=50
+    APT_PROGRESS_TO=75
     install_packages apache2 apache2-utils
     
     # Enable and start apache2 based on init system
@@ -114,6 +124,8 @@ EOF
     fi
 
     echo "Installing PHP"
+    APT_PROGRESS_FROM=75
+    APT_PROGRESS_TO=100
     install_packages php libapache2-mod-php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
     if [[ $? -ne 0 ]]; then
       echo "Error: Failed to install PHP packages. Skipping PHP module enablement."

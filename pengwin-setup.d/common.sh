@@ -494,11 +494,14 @@ function end_apt_progress() {
 #   None
 #######################################
 function update_packages() {
-
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo apt-get update -y -q
   else
-    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
+    if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --from "${APT_PROGRESS_FROM}" --to "${APT_PROGRESS_TO}" -- apt-get update -y
+    else
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
+    fi
   fi
 }
 
