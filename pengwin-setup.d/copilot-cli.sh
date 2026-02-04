@@ -6,6 +6,9 @@ source "$(dirname "$0")/common.sh" "$@"
 if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis installer downloads and runs the official GitHub install script.\n\nWould you like to install GitHub Copilot CLI?" 10 65); then
   echo "Installing GitHub Copilot CLI"
 
+  # Ensure curl is installed for downloading
+  install_packages curl
+
   # Ensure $HOME/.local/bin exists and is in the PATH
   mkdir -p "${HOME}/.local/bin"
   export PATH="${HOME}/.local/bin:${PATH}"
