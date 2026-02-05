@@ -61,6 +61,16 @@ function test_wsl1_install() {
 
   # Check that the alias includes the WSL2 runtime check
   assertTrue "WSL1 profile.d should check WSL2 at runtime" "grep -q 'if \[ -z \"\${WSL2}\" \]' /etc/profile.d/github-copilot.sh"
+
+  # Check that the alias uses N_PREFIX for npm global bin location
+  assertTrue "WSL1 alias should use N_PREFIX bin" "grep -q 'N_PREFIX' /etc/profile.d/github-copilot.sh"
+
+  # Check if copilot is available via npm (installed in N_PREFIX/bin)
+  # Source the n-prefix profile to get N_PREFIX
+  if [ -f /etc/profile.d/n-prefix.sh ]; then
+    source /etc/profile.d/n-prefix.sh
+    assertTrue "copilot should be installed in N_PREFIX/bin" "[ -f ${N_PREFIX:-/home/${TEST_USER}/n}/bin/copilot ]"
+  fi
 }
 
 #######################################

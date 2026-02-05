@@ -50,19 +50,12 @@ function install_copilot_npm() {
   sudo tee "/etc/profile.d/github-copilot.sh" <<'EOF'
 #!/bin/sh
 
-# Add $HOME/.local/bin to PATH for GitHub Copilot CLI
-if [ -d "${HOME}/.local/bin" ]; then
-  case ":${PATH}:" in
-    *":${HOME}/.local/bin:"*) ;;
-    *) export PATH="${HOME}/.local/bin:${PATH}" ;;
-  esac
-fi
-
 # Alias for WSL1 compatibility - run copilot binary with explicit ld-linux loader
 # Only apply the workaround if WSL2 is not set (i.e., we're in WSL1)
 # This allows users who switch to WSL2 to run copilot directly
+# npm global packages are installed to N_PREFIX/bin when using N version manager
 if [ -z "${WSL2}" ]; then
-  alias copilot='/lib64/ld-linux-x86-64.so.2 ${HOME}/.local/bin/copilot'
+  alias copilot='/lib64/ld-linux-x86-64.so.2 ${N_PREFIX:-$HOME/n}/bin/copilot'
 fi
 EOF
 
@@ -72,18 +65,15 @@ EOF
   sudo tee "${__fish_sysconf_dir}/github-copilot.fish" <<'EOF'
 #!/bin/fish
 
-# Add $HOME/.local/bin to PATH for GitHub Copilot CLI
-if test -d "$HOME/.local/bin"
-  if not contains "$HOME/.local/bin" $PATH
-    set --export PATH "$HOME/.local/bin" $PATH
-  end
-end
-
 # Alias for WSL1 compatibility - run copilot binary with explicit ld-linux loader
 # Only apply the workaround if WSL2 is not set (i.e., we're in WSL1)
 # This allows users who switch to WSL2 to run copilot directly
+# npm global packages are installed to N_PREFIX/bin when using N version manager
 if not set -q WSL2
-  alias copilot '/lib64/ld-linux-x86-64.so.2 $HOME/.local/bin/copilot'
+  if not set -q N_PREFIX
+    set -l N_PREFIX "$HOME/n"
+  end
+  alias copilot "/lib64/ld-linux-x86-64.so.2 $N_PREFIX/bin/copilot"
 end
 EOF
 
