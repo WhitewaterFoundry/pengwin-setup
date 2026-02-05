@@ -800,6 +800,28 @@ function ensure_nodejs_version() {
   if is_n_installed || is_nvm_installed; then
     has_version_manager=true
     echo "Node.js version manager detected."
+
+    # Check if Node.js is available
+    if ! command -v node &> /dev/null; then
+      echo "Node.js not found. Loading version manager startup scripts"
+      if is_n_installed; then
+        # Source the profile script if it exists but N_PREFIX is not set
+        if [[ -f "/etc/profile.d/n-prefix.sh" ]]; then
+          # shellcheck source=/dev/null
+          source "/etc/profile.d/n-prefix.sh"
+        fi
+      fi
+
+      if is_nvm_installed; then
+        # Ensure NVM is loaded
+        local nvm_dir="${NVM_DIR:-${HOME}/.nvm}"
+
+        if [[ -s "${nvm_dir}/nvm.sh" ]]; then
+          # shellcheck source=/dev/null
+          source "${nvm_dir}/nvm.sh"
+        fi
+      fi
+    fi
   fi
 
   # Check if Node.js is available
