@@ -116,7 +116,7 @@ function run_pengwinsetup() {
 #  None
 #######################################
 function run() {
-  sudo --preserve-env=WSL2 su - -c "env WSL2=${WSL2} $*" "${TEST_USER}" 2>/dev/null
+  sudo --preserve-env=WSL2 su - -c "$*" "${TEST_USER}" 2>/dev/null
 }
 
 #######################################
