@@ -17,7 +17,6 @@ if (confirm --title "DOTNET" --yesno "Would you like to download and install the
   rm packages-microsoft-prod.deb
 
   update_packages
-
   install_packages dotnet-sdk-10.0
 
   end_apt_progress

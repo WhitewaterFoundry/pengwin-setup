@@ -22,8 +22,6 @@ function install_joomla() {
 
   if (confirm --title "Joomla" --yesno "Would you like to install the Joomla ${JOOMLA_VERSION} development server? It includes LAMP Stack" 10 70) ; then
 
-    start_apt_progress
-
     echo "Installing LAMP Stack for Joomla"
     if ! bash "${SetupDir}"/lamp.sh "$@" --yes; then
       echo "Error: Failed to install LAMP stack. Cannot continue with Joomla installation."
@@ -88,8 +86,6 @@ EOF
     then
       echo "Warning: Database setup may have failed. You may need to configure it manually."
     fi
-
-    end_apt_progress
 
     echo ""
     echo "Joomla ${JOOMLA_VERSION} installation complete!"

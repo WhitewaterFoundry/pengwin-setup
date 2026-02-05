@@ -509,7 +509,7 @@ function update_packages() {
     fi
 
   else
-    sudo --preserve-env=NEWT_COLORS -- apt-get update -y
+    sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
   fi
 
 }
