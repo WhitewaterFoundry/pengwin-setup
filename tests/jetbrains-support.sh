@@ -3,6 +3,7 @@ source commons.sh
 
 function test_install() {
 
+  export WSL2=1
   run_pengwinsetup install PROGRAMMING JETBRAINS
 
   local i
@@ -16,6 +17,7 @@ function test_install() {
 
 function test_uninstall() {
 
+  export WSL2=1
   run_pengwinsetup install UNINSTALL JETBRAINS
 
   assertFalse "Toolbox directory still exists" "[ -d /home/${TEST_USER}/.local/share/JetBrains/Toolbox ]"
