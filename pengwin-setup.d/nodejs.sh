@@ -7,6 +7,7 @@ declare SKIP_CONFIMATIONS
 
 NODEJS_LATEST_VERSION=25
 NODEJS_LTS_VERSION=24
+NODEJS_WSL1_MAX_VERSION=22.22.0
 
 #######################################
 # Install the packaged version of NodeJS from nodesource repos
@@ -38,6 +39,19 @@ function install_nodejs_nodesource() {
   
   install_packages nodejs="${version}"
 }
+
+# Adjust versions for WSL1 compatibility - modifying these global constants before
+# the menu is intentional so the user sees the correct version numbers in the menu
+# and all installation methods (n, nvm, nodesource) use WSL1-compatible versions
+if is_wsl1; then
+  echo "WSL1 detected: Limiting Node.js versions to ${NODEJS_WSL1_MAX_VERSION}"
+  if [[ ${NODEJS_LATEST_VERSION} -gt ${NODEJS_WSL1_MAX_VERSION} ]]; then
+    NODEJS_LATEST_VERSION=${NODEJS_WSL1_MAX_VERSION}
+  fi
+  if [[ ${NODEJS_LTS_VERSION} -gt ${NODEJS_WSL1_MAX_VERSION} ]]; then
+    NODEJS_LTS_VERSION=${NODEJS_WSL1_MAX_VERSION}
+  fi
+fi
 
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
@@ -124,8 +138,14 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
   echo "Defaults secure_path=\"${SUDO_PATH}:${N_PREFIX}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
-  echo "Installing latest node.js release"
-  n latest
+  # Install Node.js - use specific version for WSL1 compatibility
+  if is_wsl1; then
+    echo "Installing Node.js ${NODEJS_WSL1_MAX_VERSION} (WSL1 compatible version)"
+    n "${NODEJS_WSL1_MAX_VERSION}"
+  else
+    echo "Installing latest node.js release"
+    n latest
+  fi
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -207,8 +227,14 @@ EOF
   #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
   #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
-  echo "Installing latest Node.js release"
-  nvm install node --latest-npm
+  # Install Node.js - use specific version for WSL1 compatibility
+  if is_wsl1; then
+    echo "Installing Node.js ${NODEJS_WSL1_MAX_VERSION} (WSL1 compatible version)"
+    nvm install "${NODEJS_WSL1_MAX_VERSION}" --latest-npm
+  else
+    echo "Installing latest Node.js release"
+    nvm install node --latest-npm
+  fi
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp

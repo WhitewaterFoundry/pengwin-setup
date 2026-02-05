@@ -3,12 +3,15 @@
 source commons.sh
 
 #######################################
-# description
+# Test Node.js LTS installation in WSL2 mode
 # Arguments:
 #  None
 #######################################
 function test_main() {
-  run_pengwinsetup install PROGRAMMING NODEJS LTS
+  # Set WSL2=1 to test WSL2 behavior (full versions available)
+  export WSL2=1
+  
+  run_pengwinsetup install PROGRAMMING NODEJS LTS --debug
 
   run npm --version
   run node --version
@@ -22,7 +25,7 @@ function test_main() {
 }
 
 #######################################
-# description
+# Test Node.js uninstallation
 # Arguments:
 #  None
 #######################################

@@ -23,8 +23,18 @@ function main() {
   rem_file "${HOME}/.config/fish/conf.d/github-copilot-cli.fish"
   sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/github-copilot.fish"
 
-  # Remove legacy npm package if still present
+  # Remove @github/copilot npm package (WSL1 installation method)
   if command -v npm &> /dev/null; then
+    if npm list -g @github/copilot &>/dev/null; then
+      if npm uninstall -g @github/copilot 2>/dev/null || \
+         sudo npm uninstall -g @github/copilot 2>/dev/null; then
+        echo "Removed @github/copilot npm package"
+      else
+        echo "Note: Could not remove npm package @github/copilot"
+      fi
+    fi
+
+    # Remove legacy npm package if still present
     if npm list -g @githubnext/github-copilot-cli &>/dev/null; then
       if npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null || \
          sudo npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null; then

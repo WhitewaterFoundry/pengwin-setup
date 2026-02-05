@@ -3,12 +3,15 @@
 source commons.sh
 
 #######################################
-# description
+# Test Node.js installation with nvm in WSL2 mode
 # Arguments:
 #  None
 #######################################
 function test_main() {
-  run_pengwinsetup install PROGRAMMING NODEJS NVM
+  # Set WSL2=1 to test WSL2 behavior (full versions available)
+  export WSL2=1
+  
+  run_pengwinsetup install PROGRAMMING NODEJS NVM --debug
 
   assertTrue "FILE PROFILE-NVM" "[ -f /etc/profile.d/nvm-prefix.sh ]"
 
@@ -28,7 +31,7 @@ function test_main() {
 }
 
 #######################################
-# description
+# Test Node.js uninstallation
 # Arguments:
 #  None
 #######################################
