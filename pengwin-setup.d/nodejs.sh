@@ -7,7 +7,7 @@ declare SKIP_CONFIMATIONS
 
 NODEJS_LATEST_VERSION=25
 NODEJS_LTS_VERSION=24
-NODEJS_WSL1_MAX_VERSION=22
+NODEJS_WSL1_MAX_VERSION=22.22.0
 
 #######################################
 # Install the packaged version of NodeJS from nodesource repos
