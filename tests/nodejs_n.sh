@@ -3,11 +3,14 @@
 source commons.sh
 
 #######################################
-# description
+# Test Node.js installation with n version manager in WSL2 mode
 # Arguments:
 #  None
 #######################################
 function test_main() {
+  # Set WSL2=1 to test WSL2 behavior (full versions available)
+  export WSL2=1
+  
   run_pengwinsetup install PROGRAMMING NODEJS NVERMAN
 
   assertTrue "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
@@ -29,7 +32,7 @@ function test_main() {
 }
 
 #######################################
-# description
+# Test Node.js uninstallation
 # Arguments:
 #  None
 #######################################

@@ -3,6 +3,9 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
+# shellcheck source=nodejs-common.sh
+source "$(dirname "$0")/nodejs-common.sh"
+
 # Imported from common.sh
 declare SetupDir
 
