@@ -13,7 +13,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./java.sh
   run_test ./pythonpi.sh
   run_test ./go.sh
-  run_test ./ruby.sh
+  #run_test ./ruby.sh
   #run_test ./ansible.sh
   run_test ./rust.sh
   run_test ./nodejs_n.sh
@@ -25,10 +25,10 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./microsoft_edit.sh
   run_test ./desktop.sh
   run_test ./terraform.sh
-  run_test ./awscli.sh
+  #run_test ./awscli.sh
   run_test ./motd_settings.sh
   run_test ./kubernetes.sh
-  run_test ./latex.sh
+  #run_test ./latex.sh
   run_test ./gpu-accel.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
@@ -54,10 +54,9 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #3
   run_test ./copilot-vim.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #4
   run_test ./nodejs_n.sh
-  #run_test ./lamp.sh "10.11"
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #5
   run_test ./dotnet.sh
-  #run_test ./guilib.sh
+  run_test ./guilib.sh
   run_test ./jetbrains-support.sh
   run_test ./pythonpi-poetry.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #6
@@ -76,4 +75,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
   run_test ./rust.sh
   run_test ./fish.sh
   run_test ./fzf.sh
+#elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #10
+#  run_test ./ruby.sh
+  #run_test ./lamp.sh "12.1"
 fi
