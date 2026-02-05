@@ -11,7 +11,7 @@ function test_main() {
   # Set WSL2=1 to test WSL2 behavior (full versions available)
   export WSL2=1
   
-  run_pengwinsetup install PROGRAMMING NODEJS NVERMAN
+  run_pengwinsetup install PROGRAMMING NODEJS NVERMAN --debug
 
   assertTrue "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
 
