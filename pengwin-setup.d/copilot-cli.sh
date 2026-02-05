@@ -3,6 +3,9 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
+# shellcheck source=nodejs-common.sh
+source "$(dirname "$0")/nodejs-common.sh"
+
 # Minimum Node.js version required for GitHub Copilot CLI
 readonly COPILOT_MIN_NODEJS_VERSION=18
 
