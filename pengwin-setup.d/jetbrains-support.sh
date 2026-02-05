@@ -11,6 +11,10 @@ function install_jetbrains_support() {
     return
   fi
 
+  if [[ -z "${WSL2}" ]]; then
+    return
+  fi
+
   if (confirm --title "JetBrains Toolbox support" --yesno "Would you like to install JetBrains Toolbox to run inside WSL?${REQUIRES_X}" 10 52); then
     install_packages libfuse2 libxi6 libxrender1 libxtst6 mesa-utils libfontconfig1 libgtk-3-bin tar dbus-user-session
     curl -fsSL https://raw.githubusercontent.com/WhitewaterFoundry/jetbrains-toolbox-install/master/jetbrains-toolbox.sh | bash
