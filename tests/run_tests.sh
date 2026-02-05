@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export WSL2=1
-
 source commons.sh
 
 set -e
