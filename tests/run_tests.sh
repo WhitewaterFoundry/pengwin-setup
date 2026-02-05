@@ -76,4 +76,6 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #9
   run_test ./rust.sh
   run_test ./fish.sh
   run_test ./fzf.sh
+elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #10
+  run_test ./ruby.sh
 fi
