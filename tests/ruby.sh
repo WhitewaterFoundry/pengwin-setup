@@ -4,7 +4,7 @@ source commons.sh
 
 function test_ruby() {
   run_pengwinsetup install PROGRAMMING RUBY --debug
-  set -x
+
   assertTrue "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
   assertTrue "FILE FISH-RUBY" "[ -f /etc/fish/conf.d/ruby.fish ]"
 
@@ -25,13 +25,12 @@ function test_ruby() {
 
   shellcheck "${installed_script}"
   assertEquals "shellcheck reported errors on ${installed_script}" "0" "$?"
-  set +x
 }
 
 function test_uninstall() {
 
   run_pengwinsetup install UNINSTALL RUBY --debug
-set -x
+
   assertFalse "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
   assertFalse "FILE FISH-RUBY" "[ -f /etc/fish/conf.d/ruby.fish ]"
 
@@ -40,8 +39,6 @@ set -x
 
   command -v rbenv
   assertEquals "rbenv was not uninstalled" "1" "$?"
-  set +x
-
 }
 
 # shellcheck disable=SC1091
