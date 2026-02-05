@@ -7,16 +7,6 @@ function main() {
 
   echo "Uninstalling nodejs (including n version manager, npm and yarn package managers)"
 
-  # Check for ruby rails install
-  echo "Checking if Ruby on Rails installed..."
-  if gem list --local | grep '^rails' >/dev/null 2>&1; then
-    echo "Rails install detected. Showing user warning"
-    if ! (confirm --title "nodejs" --yesno "A Ruby on Rails install has been detected, which relies upon nodejs. Are you sure you'd like to continue uninstalling nodejs? As this may break your Ruby on Rails install" 9 85); then
-      echo "User cancelled nodejs uninstall"
-      exit 1
-    fi
-  fi
-
   corepack disable
   rm -rf ~/.local/share/corepack
 
