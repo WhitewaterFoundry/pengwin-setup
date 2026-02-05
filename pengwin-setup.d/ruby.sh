@@ -70,7 +70,7 @@ fi
 if (confirm --title "RAILS" --yesno "Would you like to download and install Rails from RubyGems?" 8 65); then
   echo "Installing RAILS"
 
-  install_packages git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev slibffi-dev
+  install_packages git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev
   createtmp
   gem install rails -v 8.1.2
   rbenv rehash
