@@ -55,7 +55,7 @@ jobs:
     docker:
       - image: debian:trixie
     resource_class: medium
-    parallelism: 11
+    parallelism: 10
     steps:
       - checkout
       - run:
