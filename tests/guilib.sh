@@ -7,7 +7,7 @@ function testMain() {
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
 
-  run_pengwinsetup autoinstall GUI GUILIB
+  run_pengwinsetup install GUI GUILIB
 
   for i in 'xclip' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libnss3' 'libegl1' 'libegl-mesa0' ; do
     package_installed  "$i"
@@ -54,7 +54,7 @@ function testUninstall() {
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
 
-  run_pengwinsetup autoinstall UNINSTALL GUILIB
+  run_pengwinsetup install UNINSTALL GUILIB
 
   for i in 'xclip' 'dbus-x11' ; do
     package_installed "$i"
