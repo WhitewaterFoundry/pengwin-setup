@@ -24,7 +24,9 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   conf_path='/etc/profile.d/ruby.sh'
 
   # shellcheck disable=SC2016
-  echo 'export PATH="${HOME}/.rbenv/bin:${PATH}"' | sudo tee "${conf_path}"
+  echo '#!/bin/sh' | sudo tee "${conf_path}"
+  # shellcheck disable=SC2016
+  echo 'export PATH="${HOME}/.rbenv/bin:${PATH}"' | sudo tee -a "${conf_path}"
   # shellcheck disable=SC2016
   echo 'eval "$(rbenv init -)"' | sudo tee -a "${conf_path}"
 

@@ -30,7 +30,7 @@ function test_ruby() {
 
 function test_uninstall() {
 
-  run_pengwinsetup install UNINSTALL RUBY
+  run_pengwinsetup install UNINSTALL RUBY --debug
 
   assertFalse "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
   assertFalse "FILE FISH-RUBY" "[ -f /etc/fish/conf.d/ruby.fish ]"
