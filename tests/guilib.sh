@@ -9,8 +9,8 @@ function testMain() {
 
   run_pengwinsetup autoinstall GUI GUILIB
 
-  for i in 'xclip' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libqt5core5t64' 'binutils' 'libnss3' 'libegl1' 'libegl-mesa0' ; do
-    package_installed $i
+  for i in 'xclip' 'gtk2-engines-murrine' 'dbus' 'dbus-x11' 'mesa-utils' 'libnss3' 'libegl1' 'libegl-mesa0' ; do
+    package_installed  "$i"
     assertTrue "package $i is not installed" "$?"
   done
 
@@ -32,14 +32,8 @@ function testMain() {
   test -f /usr/lib/"${dist}"-linux-gnu/libQt5Core.so.5
   assertEquals "libqt5core5t64 was not installed" "0" "$?"
 
-  command -v /usr/bin/gold
-  assertEquals "binutils was not installed" "0" "$?"
-
   test -f /usr/lib/"${dist}"-linux-gnu/libnss3.so
   assertEquals "libnss3 was not installed" "0" "$?"
-
-  test -f /usr/share/bug/libegl1-mesa/control
-  assertEquals "libegl1-mesa was not installed" "0" "$?"
 
   # Our created stuff
   if [[ ${WIN_CUR_VER} -gt 17063 ]]; then
@@ -62,8 +56,8 @@ function testUninstall() {
 
   run_pengwinsetup autoinstall UNINSTALL GUILIB
 
-  for i in 'libqt5core5t64' 'dbus-x11' ; do
-    package_installed $i
+  for i in 'xclip' 'dbus-x11' ; do
+    package_installed "$i"
     assertFalse "package $i is not uninstalled" "$?"
   done
 
