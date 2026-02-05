@@ -11,7 +11,7 @@ function test_main() {
   # Set WSL2=1 to test WSL2 behavior (full versions available)
   export WSL2=1
   
-  run_pengwinsetup install PROGRAMMING NODEJS LATEST --debug
+  run_pengwinsetup install PROGRAMMING NODEJS LATEST
 
   run npm --version
   run node --version

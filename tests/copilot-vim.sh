@@ -3,7 +3,7 @@
 source commons.sh
 
 function test_main() {
-  run_pengwinsetup install AIUTILS COPILOT-VIM --debug
+  run_pengwinsetup install AIUTILS COPILOT-VIM
 
   # Check if vim-plug is installed for vim or neovim
   local vim_plug_found=false
