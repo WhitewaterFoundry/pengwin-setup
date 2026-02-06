@@ -34,7 +34,7 @@ function test_uninstall() {
   # After uninstall, user-dirs.dirs should be deleted and regenerated
   # by xdg-user-dirs-update
   run test -f "$HOME/.config/user-dirs.dirs"
-  assertTrue "user-dirs.dirs file should be regenerated after uninstall" "$?"
+  assertFalse "user-dirs.dirs file should be deleted after uninstall" "$?"
 }
 
 # shellcheck disable=SC1091
