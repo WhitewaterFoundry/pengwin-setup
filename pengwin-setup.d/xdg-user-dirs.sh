@@ -119,6 +119,33 @@ function convert_to_linux_path() {
 }
 
 #######################################
+# Try to resolve a Windows key to a valid Linux path
+# Globals:
+#   None
+# Arguments:
+#   1 - Windows key (e.g., "Desktop", "{GUID}")
+# Returns:
+#   Linux path if valid and exists, empty string otherwise
+#######################################
+function try_resolve_windows_key() {
+  local win_key="$1"
+  local win_path
+  local linux_path
+
+  if [[ -n "${win_key}" ]]; then
+    win_path=$(get_windows_path "${win_key}")
+    linux_path=$(convert_to_linux_path "${win_path}")
+
+    if [[ -n "${linux_path}" && -d "${linux_path}" ]]; then
+      echo "${linux_path}"
+      return
+    fi
+  fi
+
+  echo ""
+}
+
+#######################################
 # Get the Windows path for an XDG directory constant
 # Tries primary key first, then alternate key
 # Globals:
@@ -131,33 +158,17 @@ function convert_to_linux_path() {
 #######################################
 function get_xdg_windows_path() {
   local xdg_const="$1"
-  local win_key
-  local win_path
   local linux_path
 
-  # Try primary key
-  win_key="${XDG_TO_WINDOWS[${xdg_const}]}"
-  if [[ -n "${win_key}" ]]; then
-    win_path=$(get_windows_path "${win_key}")
-    linux_path=$(convert_to_linux_path "${win_path}")
-
-    if [[ -n "${linux_path}" && -d "${linux_path}" ]]; then
+  # Try primary key first, then alternate key (for OneDrive-synced folders)
+  for mapping_array in "XDG_TO_WINDOWS" "XDG_TO_WINDOWS_ALT"; do
+    local -n arr="${mapping_array}"
+    linux_path=$(try_resolve_windows_key "${arr[${xdg_const}]}")
+    if [[ -n "${linux_path}" ]]; then
       echo "${linux_path}"
       return
     fi
-  fi
-
-  # Try alternate key (for OneDrive-synced folders)
-  win_key="${XDG_TO_WINDOWS_ALT[${xdg_const}]}"
-  if [[ -n "${win_key}" ]]; then
-    win_path=$(get_windows_path "${win_key}")
-    linux_path=$(convert_to_linux_path "${win_path}")
-
-    if [[ -n "${linux_path}" && -d "${linux_path}" ]]; then
-      echo "${linux_path}"
-      return
-    fi
-  fi
+  done
 
   echo ""
 }

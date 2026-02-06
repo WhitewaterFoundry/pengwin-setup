@@ -81,25 +81,25 @@ function main() {
         remove_xdg_symlink "${xdg_dir_path}"
       fi
     done
-
-    # Delete the user-dirs.dirs file
-    echo "Removing user-dirs.dirs configuration file..."
-    rm -f "${user_dirs_file}"
   else
     echo "user-dirs.dirs file not found, skipping symlink removal"
   fi
 
-  # Regenerate XDG directories
-  if command -v xdg-user-dirs-update &>/dev/null; then
-    echo "Regenerating XDG user directories..."
-    xdg-user-dirs-update
-  fi
-
   # Ask if user wants to remove xdg-user-dirs package
   if (confirm --title "xdg-user-dirs Package" --yesno "Would you like to also remove the xdg-user-dirs package?" 8 60); then
+    # Delete the user-dirs.dirs file only when uninstalling the package
+    if [[ -f "${user_dirs_file}" ]]; then
+      echo "Removing user-dirs.dirs configuration file..."
+      rm -f "${user_dirs_file}"
+    fi
     remove_package "xdg-user-dirs"
   else
     echo "Keeping xdg-user-dirs package installed"
+    # Regenerate XDG directories only if keeping the package
+    if command -v xdg-user-dirs-update &>/dev/null; then
+      echo "Regenerating XDG user directories..."
+      xdg-user-dirs-update
+    fi
   fi
 
   echo "XDG user directories mapping removed successfully!"
