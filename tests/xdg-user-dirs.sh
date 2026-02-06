@@ -23,26 +23,25 @@ function test_main() {
 
 #######################################
 # Test XDG user directories mapping uninstallation
+# Note: This test requires test_main to have run first to create symlinks.
+# In WSL environment, symlinks would be created to Windows folders.
+# In test environment without Windows, we verify the uninstall logic works.
 # Arguments:
 #   None
 #######################################
 function test_uninstall() {
-  # First create some test symlinks
   local test_dirs=("Desktop" "Documents" "Downloads" "Music" "Pictures" "Videos" "Templates" "Public")
 
-  for dir in "${test_dirs[@]}"; do
-    if [[ -L "$HOME/$dir" ]]; then
-      echo "Symlink exists for $dir"
-    fi
-  done
-
+  # Run uninstall
   run_pengwinsetup install UNINSTALL USERDIRS
 
-  # After uninstall, the symlinks should be replaced with directories
+  # After uninstall, any symlinks that were created should be replaced with directories
+  # or not be symlinks anymore
   for dir in "${test_dirs[@]}"; do
-    if [[ -L "$HOME/$dir" ]]; then
-      assertFalse "Symlink for $dir should have been removed" "true"
-    fi
+    run test -L "$HOME/$dir"
+    local is_symlink=$?
+    # If it's still a symlink, the uninstall didn't work properly
+    assertNotEquals "Symlink for $dir should have been removed" "0" "$is_symlink"
   done
 }
 

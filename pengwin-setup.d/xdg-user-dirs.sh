@@ -162,8 +162,13 @@ function create_xdg_symlink() {
   # If symlink already exists and points to correct location, skip
   if [[ -L "${xdg_path}" ]]; then
     local current_target
-    current_target=$(readlink -f "${xdg_path}")
-    if [[ "${current_target}" == "${target_path}" ]]; then
+    current_target=$(readlink "${xdg_path}")
+    # Canonicalize both paths for proper comparison
+    local canonical_current
+    local canonical_target
+    canonical_current=$(readlink -f "${xdg_path}" 2>/dev/null || echo "")
+    canonical_target=$(readlink -f "${target_path}" 2>/dev/null || echo "")
+    if [[ "${canonical_current}" == "${canonical_target}" ]]; then
       echo "Symlink already exists and is correct: ${xdg_path} -> ${target_path}"
       return 0
     else
