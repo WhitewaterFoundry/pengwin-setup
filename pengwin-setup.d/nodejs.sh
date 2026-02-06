@@ -119,7 +119,7 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing n, Node.js version manager"
   curl -L https://git.io/n-install -o n-install.sh
-  env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
+  env SHELL="$(command -v bash)" bash n-install.sh -y "${NODEJS_LTS_VERSION}"
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -138,14 +138,6 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
   echo "Defaults secure_path=\"${SUDO_PATH}:${N_PREFIX}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
-  # Install Node.js - use specific version for WSL1 compatibility
-  if is_wsl1; then
-    echo "Installing Node.js ${NODEJS_WSL1_MAX_VERSION} (WSL1 compatible version)"
-    n "${NODEJS_WSL1_MAX_VERSION}"
-  else
-    echo "Installing latest node.js release"
-    n latest
-  fi
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -223,18 +215,7 @@ function node
 end
 EOF
 
-  # Add the path for sudo
-  #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
-  #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
-
-  # Install Node.js - use specific version for WSL1 compatibility
-  if is_wsl1; then
-    echo "Installing Node.js ${NODEJS_WSL1_MAX_VERSION} (WSL1 compatible version)"
-    nvm install "${NODEJS_WSL1_MAX_VERSION}" --latest-npm
-  else
-    echo "Installing latest Node.js release"
-    nvm install node --latest-npm
-  fi
+  nvm install "${NODEJS_LTS_VERSION}" --latest-npm
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -244,7 +225,7 @@ EOF
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
 
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
   install_nodejs_nodesource "${NODEJS_LATEST_VERSION}"
   exit_status=$?
