@@ -13,11 +13,13 @@ function main() {
   # Remove copilot binary from system-wide location (if installed with sudo)
   sudo_rem_file "/usr/local/bin/copilot"
 
-  # Remove PATH configuration added by the new binary installer
+  # Remove PATH configuration (new and legacy profile.d scripts)
   sudo_rem_file "/etc/profile.d/z-github-copilot.sh"
+  sudo_rem_file "/etc/profile.d/github-copilot-cli.sh"
 
-  # Remove fish configuration
+  # Remove fish configuration (new and legacy files)
   rem_file "${HOME}/.config/fish/conf.d/z-github-copilot-cli.fish"
+  rem_file "${HOME}/.config/fish/conf.d/github-copilot-cli.fish"
   sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/z-github-copilot.fish"
 
   # Remove @github/copilot npm package (WSL1 installation method)

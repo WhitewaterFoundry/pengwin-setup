@@ -163,7 +163,7 @@ EOF
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
 
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
