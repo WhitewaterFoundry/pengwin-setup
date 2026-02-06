@@ -13,15 +13,14 @@ function main() {
   # Remove copilot binary from system-wide location (if installed with sudo)
   sudo_rem_file "/usr/local/bin/copilot"
 
-  # Remove legacy shell integration files (from previous npm-based installation)
+  # Remove PATH configuration (new and legacy profile.d scripts)
+  sudo_rem_file "/etc/profile.d/z-github-copilot.sh"
   sudo_rem_file "/etc/profile.d/github-copilot-cli.sh"
 
-  # Remove PATH configuration added by the new binary installer
-  sudo_rem_file "/etc/profile.d/github-copilot.sh"
-
-  # Remove fish configuration
+  # Remove fish configuration (new and legacy files)
+  rem_file "${HOME}/.config/fish/conf.d/z-github-copilot-cli.fish"
   rem_file "${HOME}/.config/fish/conf.d/github-copilot-cli.fish"
-  sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/github-copilot.fish"
+  sudo_rem_file "${__fish_sysconf_dir:=/etc/fish/conf.d}/z-github-copilot.fish"
 
   # Remove @github/copilot npm package (WSL1 installation method)
   if command -v npm &> /dev/null; then
@@ -31,16 +30,6 @@ function main() {
         echo "Removed @github/copilot npm package"
       else
         echo "Note: Could not remove npm package @github/copilot"
-      fi
-    fi
-
-    # Remove legacy npm package if still present
-    if npm list -g @githubnext/github-copilot-cli &>/dev/null; then
-      if npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null || \
-         sudo npm uninstall -g @githubnext/github-copilot-cli 2>/dev/null; then
-        echo "Removed legacy npm package"
-      else
-        echo "Note: Could not remove legacy npm package @githubnext/github-copilot-cli"
       fi
     fi
   fi

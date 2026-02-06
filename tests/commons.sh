@@ -40,8 +40,8 @@ function oneTimeSetUp() {
 
   # Add the stub path
 
-  echo "[ \"\$USER\"=\"${TEST_USER}\" ] && PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
-  echo "[ \"\$USER\"=\"${TEST_USER}\" ] && TERM='xterm-256color'" | sudo tee -a /etc/profile.d/00-a.sh
+  echo "[ \"\$USER\" = \"${TEST_USER}\" ] && export PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
+  echo "[ \"\$USER\" = \"${TEST_USER}\" ] && export TERM='xterm-256color'" | sudo tee -a /etc/profile.d/00-a.sh
 
   export SHUNIT_TMPDIR
 }
