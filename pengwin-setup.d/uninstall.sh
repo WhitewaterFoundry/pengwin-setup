@@ -57,6 +57,7 @@ function main() {
       "SYNAPTIC" "Remove Synaptic package manager" ${OFF} \
       "SYSTEMD" "Disable systemd support" ${OFF} \
       "TERRAFORM" "Remove Terraform CLI tools" ${OFF} \
+      "USERDIRS" "Remove XDG user directories mapping to Windows folders" ${OFF} \
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
       "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
       "WINTHEME" "Remove Windows 10 theme and LXAppearance" ${OFF} \
@@ -295,6 +296,11 @@ function main() {
   if [[ ${menu_choice} == *"TERRAFORM"* ]]; then
     echo "TERRAFORM"
     bash "${UninstallDir}"/terraform.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"USERDIRS"* ]]; then
+    echo "USERDIRS"
+    bash "${UninstallDir}"/xdg-user-dirs.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"VCXSRV"* ]]; then
