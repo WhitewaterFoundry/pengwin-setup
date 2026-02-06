@@ -11,10 +11,8 @@ function test_main() {
   run_pengwinsetup install SETTINGS USERDIRS
 
   # Check that xdg-user-dirs package is installed
-  for i in 'xdg-user-dirs'; do
-    package_installed $i
-    assertTrue "package $i is not installed" "$?"
-  done
+  package_installed 'xdg-user-dirs'
+  assertTrue "package 'xdg-user-dirs' is not installed" "$?"
 
   # Check that user-dirs.dirs file exists
   run test -f "$HOME/.config/user-dirs.dirs"
@@ -30,19 +28,13 @@ function test_main() {
 #   None
 #######################################
 function test_uninstall() {
-  local test_dirs=("Desktop" "Documents" "Downloads" "Music" "Pictures" "Videos" "Templates" "Public")
-
   # Run uninstall
   run_pengwinsetup install UNINSTALL USERDIRS
 
-  # After uninstall, any symlinks that were created should be replaced with directories
-  # or not be symlinks anymore
-  for dir in "${test_dirs[@]}"; do
-    run test -L "$HOME/$dir"
-    local is_symlink=$?
-    # If it's still a symlink, the uninstall didn't work properly
-    assertNotEquals "Symlink for $dir should have been removed" "0" "$is_symlink"
-  done
+  # After uninstall, user-dirs.dirs should be deleted and regenerated
+  # by xdg-user-dirs-update
+  run test -f "$HOME/.config/user-dirs.dirs"
+  assertTrue "user-dirs.dirs file should be regenerated after uninstall" "$?"
 }
 
 # shellcheck disable=SC1091

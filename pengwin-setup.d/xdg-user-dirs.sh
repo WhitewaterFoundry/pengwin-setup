@@ -3,36 +3,83 @@
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh" "$@"
 
-# Mapping of XDG directory names to Windows Known Folder identifiers
-# Format: XDG_NAME:WSLVAR_KEY[:ALT_KEY]
-# Some folders have multiple possible Windows identifiers (e.g., OneDrive-synced folders)
+# Mapping of XDG constants to Windows Known Folder identifiers
+# Primary keys for wslvar -L
 declare -A XDG_TO_WINDOWS
 XDG_TO_WINDOWS=(
-  ["DESKTOP"]="Desktop"
-  ["DOCUMENTS"]="Personal"
-  ["DOWNLOAD"]="{374DE290-123F-4565-9164-39C4925E467B}"
-  ["MUSIC"]="My Music"
-  ["PICTURES"]="My Pictures"
-  ["VIDEOS"]="My Video"
-  ["TEMPLATES"]="Templates"
+  ["XDG_DESKTOP_DIR"]="Desktop"
+  ["XDG_DOCUMENTS_DIR"]="Personal"
+  ["XDG_DOWNLOAD_DIR"]="{374DE290-123F-4565-9164-39C4925E467B}"
+  ["XDG_MUSIC_DIR"]="My Music"
+  ["XDG_PICTURES_DIR"]="My Pictures"
+  ["XDG_VIDEOS_DIR"]="My Video"
+  ["XDG_TEMPLATES_DIR"]="Templates"
+  ["XDG_PUBLICSHARE_DIR"]="PUBLIC"
 )
 
-# Additional mappings for OneDrive-synced folders
+# Alternate mappings for OneDrive-synced folders
 declare -A XDG_TO_WINDOWS_ALT
 XDG_TO_WINDOWS_ALT=(
-  ["DOWNLOAD"]="{7D83EE9B-2244-4E70-B1F5-5393042AF1E4}"
-  ["DOCUMENTS"]="{24D89E24-2F19-4534-9DDE-6A6671FBB8FE}"
-  ["MUSIC"]="{A0C69A99-21C8-4671-8703-7934162FCF1D}"
-  ["PICTURES"]="{0DDD015D-B06C-45D5-8C4C-F59713854639}"
-  ["VIDEOS"]="{35286A68-3C57-41A1-BBB1-0EAE73D76C95}"
+  ["XDG_DOWNLOAD_DIR"]="{7D83EE9B-2244-4E70-B1F5-5393042AF1E4}"
+  ["XDG_DOCUMENTS_DIR"]="{24D89E24-2F19-4534-9DDE-6A6671FBB8FE}"
+  ["XDG_MUSIC_DIR"]="{A0C69A99-21C8-4671-8703-7934162FCF1D}"
+  ["XDG_PICTURES_DIR"]="{0DDD015D-B06C-45D5-8C4C-F59713854639}"
+  ["XDG_VIDEOS_DIR"]="{35286A68-3C57-41A1-BBB1-0EAE73D76C95}"
 )
 
+# Cached wslvar results (populated once)
+declare -A WSLVAR_L_CACHE
+declare -A WSLVAR_S_CACHE
+
 #######################################
-# Get Windows folder path using wslvar
+# Load wslvar -L results into cache
 # Globals:
-#   None
+#   WSLVAR_L_CACHE
 # Arguments:
-#   1 - wslvar key (e.g., "Desktop", "{GUID}")
+#   None
+# Returns:
+#   None
+#######################################
+function load_wslvar_l_cache() {
+  local line key value
+  while IFS= read -r line; do
+    # Parse "Key : Value" format
+    key=$(echo "${line}" | cut -d':' -f1 | sed 's/[[:space:]]*$//')
+    value=$(echo "${line}" | cut -d':' -f2- | sed 's/^[[:space:]]*//' | tr -d '\r')
+    if [[ -n "${key}" && -n "${value}" ]]; then
+      WSLVAR_L_CACHE["${key}"]="${value}"
+    fi
+  done < <(wslvar -L 2>/dev/null)
+}
+
+#######################################
+# Load wslvar -S results into cache
+# Globals:
+#   WSLVAR_S_CACHE
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+function load_wslvar_s_cache() {
+  local line key value
+  while IFS= read -r line; do
+    # Parse "Key : Value" format
+    key=$(echo "${line}" | cut -d':' -f1 | sed 's/[[:space:]]*$//')
+    value=$(echo "${line}" | cut -d':' -f2- | sed 's/^[[:space:]]*//' | tr -d '\r')
+    if [[ -n "${key}" && -n "${value}" ]]; then
+      WSLVAR_S_CACHE["${key}"]="${value}"
+    fi
+  done < <(wslvar -S 2>/dev/null)
+}
+
+#######################################
+# Get Windows folder path from cache
+# Globals:
+#   WSLVAR_L_CACHE
+#   WSLVAR_S_CACHE
+# Arguments:
+#   1 - wslvar key (e.g., "Desktop", "{GUID}", "PUBLIC")
 # Returns:
 #   Windows path or empty string if not found
 #######################################
@@ -40,12 +87,12 @@ function get_windows_path() {
   local key="$1"
   local win_path
 
-  # Try wslvar -L first (for Known Folders)
-  win_path=$(wslvar -L "${key}" 2>/dev/null | tr -d '\r')
+  # Try wslvar -L cache first
+  win_path="${WSLVAR_L_CACHE[${key}]}"
 
   if [[ -z "${win_path}" ]]; then
-    # Try wslvar -S for shell folders
-    win_path=$(wslvar -S "${key}" 2>/dev/null | tr -d '\r')
+    # Try wslvar -S cache
+    win_path="${WSLVAR_S_CACHE[${key}]}"
   fi
 
   echo "${win_path}"
@@ -72,24 +119,24 @@ function convert_to_linux_path() {
 }
 
 #######################################
-# Get the Windows path for an XDG directory
+# Get the Windows path for an XDG directory constant
 # Tries primary key first, then alternate key
 # Globals:
 #   XDG_TO_WINDOWS
 #   XDG_TO_WINDOWS_ALT
 # Arguments:
-#   1 - XDG directory name (e.g., "DESKTOP", "DOCUMENTS")
+#   1 - XDG constant name (e.g., "XDG_DESKTOP_DIR", "XDG_DOCUMENTS_DIR")
 # Returns:
 #   Linux path to Windows folder or empty string
 #######################################
 function get_xdg_windows_path() {
-  local xdg_name="$1"
+  local xdg_const="$1"
   local win_key
   local win_path
   local linux_path
 
   # Try primary key
-  win_key="${XDG_TO_WINDOWS[${xdg_name}]}"
+  win_key="${XDG_TO_WINDOWS[${xdg_const}]}"
   if [[ -n "${win_key}" ]]; then
     win_path=$(get_windows_path "${win_key}")
     linux_path=$(convert_to_linux_path "${win_path}")
@@ -101,7 +148,7 @@ function get_xdg_windows_path() {
   fi
 
   # Try alternate key (for OneDrive-synced folders)
-  win_key="${XDG_TO_WINDOWS_ALT[${xdg_name}]}"
+  win_key="${XDG_TO_WINDOWS_ALT[${xdg_const}]}"
   if [[ -n "${win_key}" ]]; then
     win_path=$(get_windows_path "${win_key}")
     linux_path=$(convert_to_linux_path "${win_path}")
@@ -116,42 +163,48 @@ function get_xdg_windows_path() {
 }
 
 #######################################
-# Get PUBLIC folder path using wslvar -S
+# Parse user-dirs.dirs file and extract directory path for a given XDG constant
 # Globals:
-#   None
+#   HOME
 # Arguments:
-#   None
+#   1 - user_dirs_file path
+#   2 - XDG constant name (e.g., "XDG_DESKTOP_DIR")
 # Returns:
-#   Linux path to Windows Public folder
+#   Absolute path to the directory
 #######################################
-function get_public_path() {
-  local win_path
-  local linux_path
+function get_xdg_dir_from_config() {
+  local user_dirs_file="$1"
+  local xdg_const="$2"
+  local dir_value
 
-  win_path=$(wslvar -S PUBLIC 2>/dev/null | tr -d '\r')
-  if [[ -n "${win_path}" ]]; then
-    linux_path=$(wslpath -u "${win_path}" 2>/dev/null)
-    echo "${linux_path}"
-  else
+  # Extract the value for the given XDG constant
+  dir_value=$(grep "^${xdg_const}=" "${user_dirs_file}" 2>/dev/null | cut -d'=' -f2 | tr -d '"')
+
+  if [[ -z "${dir_value}" ]]; then
     echo ""
+    return
   fi
+
+  # Replace $HOME with actual home directory
+  dir_value="${dir_value/\$HOME/${HOME}}"
+
+  echo "${dir_value}"
 }
 
 #######################################
 # Create symlink from XDG directory to Windows folder
 # Removes empty XDG directory if it exists and creates symlink
 # Globals:
-#   HOME
+#   None
 # Arguments:
-#   1 - XDG directory name (e.g., "Desktop", "Documents")
+#   1 - XDG directory path (full path from user-dirs.dirs)
 #   2 - Target path (Windows folder in Linux path format)
 # Returns:
 #   0 on success, 1 on failure
 #######################################
 function create_xdg_symlink() {
-  local xdg_dir_name="$1"
+  local xdg_path="$1"
   local target_path="$2"
-  local xdg_path="${HOME}/${xdg_dir_name}"
 
   # Check if target exists
   if [[ ! -d "${target_path}" ]]; then
@@ -161,8 +214,6 @@ function create_xdg_symlink() {
 
   # If symlink already exists and points to correct location, skip
   if [[ -L "${xdg_path}" ]]; then
-    local current_target
-    current_target=$(readlink "${xdg_path}")
     # Canonicalize both paths for proper comparison
     local canonical_current
     local canonical_target
@@ -217,35 +268,37 @@ function map_xdg_dirs() {
     return 1
   fi
 
+  echo "Loading Windows folder paths (this may take a moment)..."
+  load_wslvar_l_cache
+  load_wslvar_s_cache
+
   echo "Mapping XDG directories to Windows folders..."
 
-  # Map each XDG directory
-  local xdg_names=("DESKTOP" "DOCUMENTS" "DOWNLOAD" "MUSIC" "PICTURES" "VIDEOS" "TEMPLATES")
-  local dir_names=("Desktop" "Documents" "Downloads" "Music" "Pictures" "Videos" "Templates")
+  # XDG constants to process (read from user-dirs.dirs for localized names)
+  local xdg_constants=("XDG_DESKTOP_DIR" "XDG_DOCUMENTS_DIR" "XDG_DOWNLOAD_DIR" "XDG_MUSIC_DIR" "XDG_PICTURES_DIR" "XDG_VIDEOS_DIR" "XDG_TEMPLATES_DIR" "XDG_PUBLICSHARE_DIR")
 
-  local i
-  for i in "${!xdg_names[@]}"; do
-    local xdg_name="${xdg_names[$i]}"
-    local dir_name="${dir_names[$i]}"
+  local xdg_const
+  for xdg_const in "${xdg_constants[@]}"; do
+    local xdg_dir_path
     local target_path
 
-    target_path=$(get_xdg_windows_path "${xdg_name}")
+    # Get the directory path from user-dirs.dirs (handles localization)
+    xdg_dir_path=$(get_xdg_dir_from_config "${user_dirs_file}" "${xdg_const}")
+
+    if [[ -z "${xdg_dir_path}" ]]; then
+      echo "Could not find ${xdg_const} in user-dirs.dirs"
+      continue
+    fi
+
+    # Get the corresponding Windows folder path
+    target_path=$(get_xdg_windows_path "${xdg_const}")
 
     if [[ -n "${target_path}" ]]; then
-      create_xdg_symlink "${dir_name}" "${target_path}"
+      create_xdg_symlink "${xdg_dir_path}" "${target_path}"
     else
-      echo "Could not find Windows path for ${xdg_name}"
+      echo "Could not find Windows path for ${xdg_const}"
     fi
   done
-
-  # Handle Public folder separately (uses wslvar -S PUBLIC)
-  local public_path
-  public_path=$(get_public_path)
-  if [[ -n "${public_path}" ]]; then
-    create_xdg_symlink "Public" "${public_path}"
-  else
-    echo "Could not find Windows Public folder path"
-  fi
 
   echo "XDG user directories mapped successfully!"
   return 0
