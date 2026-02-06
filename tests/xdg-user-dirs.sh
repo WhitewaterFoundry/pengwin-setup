@@ -31,8 +31,7 @@ function test_uninstall() {
   # Run uninstall
   run_pengwinsetup install UNINSTALL USERDIRS
 
-  # After uninstall, user-dirs.dirs should be deleted and regenerated
-  # by xdg-user-dirs-update
+  # After uninstall with package removal, user-dirs.dirs should be deleted
   run test -f "$HOME/.config/user-dirs.dirs"
   assertFalse "user-dirs.dirs file should be deleted after uninstall" "$?"
 }
