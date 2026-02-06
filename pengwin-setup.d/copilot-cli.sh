@@ -53,7 +53,7 @@ function install_copilot_npm() {
 # Alias for WSL1 compatibility - run copilot binary with explicit ld-linux loader
 # Only apply the workaround if WSL2 is not set (i.e., we're in WSL1)
 # This allows users who switch to WSL2 to run copilot directly
-if [ -z "${WSL2}" ] && command -v npm; then
+if [ -z "${WSL2}" ] && command -v npm > /dev/null 2>&1; then
   alias copilot="/lib64/ld-linux-x86-64.so.2 $(npm root -g)/@github/copilot/node_modules/@github/copilot-linux-x64/copilot"
 fi
 EOF
