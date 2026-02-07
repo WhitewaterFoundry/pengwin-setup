@@ -198,7 +198,6 @@ function install_xfce() {
       bash "${SetupDir}"/services.sh --enable-systemd --yes --noninteractive
     fi
 
-
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
       create_shortcut "Xfce desktop - Full Screen" "/f" "/usr/share/pixmaps/xfce4_xicon.png"
       create_shortcut "Xfce desktop - 1024x768" "/w:1024 /h:768" "/usr/share/pixmaps/xfce4_xicon.png"
@@ -225,7 +224,7 @@ Just click on one of them and login with your Pengwin credentials." 15 80
 function main() {
   if [[ -z "${WSL2}" ]]; then
     message --title "desktop" --msgbox "For now desktop installation is only available in WSL2." 7 60
-    return 0
+    return 1
   fi
 
   # shellcheck disable=SC2155,SC2188
