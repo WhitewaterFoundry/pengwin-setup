@@ -108,8 +108,8 @@ function run_pengwinsetup() {
   local args
   # Build properly quoted argument string without trailing space
   if [[ $# -gt 0 ]]; then
-    # shellcheck disable=SC2046
-    args=$(printf '%q ' "$@" | sed 's/ $//')
+    args=$(printf '%q ' "$@")
+    args=${args% }  # Remove trailing space
   else
     args=""
   fi
@@ -127,8 +127,8 @@ function run() {
   local args
   # Build properly quoted argument string without trailing space
   if [[ $# -gt 0 ]]; then
-    # shellcheck disable=SC2046
-    args=$(printf '%q ' "$@" | sed 's/ $//')
+    args=$(printf '%q ' "$@")
+    args=${args% }  # Remove trailing space
   else
     args=""
   fi
