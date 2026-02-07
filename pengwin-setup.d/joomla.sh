@@ -94,6 +94,8 @@ EOF
     echo "Database Password: joomla"
     echo ""
     echo "Opening Joomla installer in browser..."
+
+    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: joomla\nDatabase User: joomla\nDatabase Password: joomla\n\nOpening Joomla installer in browser..." 12 70
     
     wslview "http://localhost/joomla_root/index.php" 2>/dev/null || echo "Please open http://localhost/joomla_root/index.php in your browser"
 
