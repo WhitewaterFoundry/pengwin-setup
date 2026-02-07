@@ -105,7 +105,19 @@ function run_test() {
 #  None
 #######################################
 function run_pengwinsetup() {
-  sudo --preserve-env=WSL2 su - -c "env WSL2=${WSL2} $(pwd)/run-pengwin-setup.sh $*" "${TEST_USER}"
+  local args
+  # Build properly quoted argument string without trailing space
+  if [[ $# -gt 0 ]]; then
+    args=$(printf '%q ' "$@")
+    args=${args% }  # Remove trailing space
+  else
+    args=""
+  fi
+  # Safely escape WSL2 and script path to avoid breaking quoting in su -c
+  local script_path wsl2_quoted
+  script_path=$(printf '%q' "$(pwd)/run-pengwin-setup.sh")
+  wsl2_quoted=$(printf '%q' "${WSL2}")
+  sudo --preserve-env=WSL2 su - -c "env WSL2=${wsl2_quoted} ${script_path} ${args}" "${TEST_USER}"
 }
 
 #######################################
@@ -116,7 +128,15 @@ function run_pengwinsetup() {
 #  None
 #######################################
 function run() {
-  sudo --preserve-env=WSL2 su - -c "$*" "${TEST_USER}" 2>/dev/null
+  local args
+  # Build properly quoted argument string without trailing space
+  if [[ $# -gt 0 ]]; then
+    args=$(printf '%q ' "$@")
+    args=${args% }  # Remove trailing space
+  else
+    args=""
+  fi
+  sudo --preserve-env=WSL2 su - -c "${args}" "${TEST_USER}" 2>/dev/null
 }
 
 #######################################

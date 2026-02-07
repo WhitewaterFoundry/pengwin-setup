@@ -2,7 +2,7 @@
 
 source commons.sh
 
-function test_ruby() {
+function test_main() {
   run_pengwinsetup install PROGRAMMING RUBY --debug
 
   assertTrue "FILE PROFILE-RUBY" "[ -f /etc/profile.d/ruby.sh ]"
