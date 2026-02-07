@@ -36,6 +36,12 @@ function install_copilot_npm() {
     source "/etc/profile.d/n-prefix.sh"
   fi
 
+  # Be sure Windows npm don't get in the way
+  if [[ -f "/etc/profile.d/rm-win-npm-path.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "/etc/profile.d/rm-win-npm-path.sh"
+  fi
+
   # Install @github/copilot package globally via npm
   echo "Installing @github/copilot npm package..."
   if ! npm install -g @github/copilot; then

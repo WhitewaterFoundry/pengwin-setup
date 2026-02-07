@@ -82,27 +82,32 @@ if [[ "$(command -v npm)" == $(wslpath 'C:\')* ]]; then
     exit 1
   fi
 
-  sudo tee "${NPM_WIN_PROFILE}" <<EOF
-#!/bin/bash
+  sudo tee "${NPM_WIN_PROFILE}" <<'EOF'
+#!/bin/sh
 
 # Check if we have Windows Path
-if ( command -v cmd.exe >/dev/null ); then
+if command -v cmd.exe >/dev/null 2>&1; then
 
-  WIN_C_PATH="\$(wslpath 'C:\')"
+  WIN_C_PATH="$(wslpath 'C:\')"
 
-  while [[ true ]]; do
+  while true; do
 
-    WIN_YARN_PATH="\$(dirname "\$(command -v yarn)")"
-    if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
-      export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
-    fi
+    WIN_YARN_PATH="$(dirname "$(command -v yarn)")"
+    case "${WIN_YARN_PATH}" in
+      "${WIN_C_PATH}"*)
+        export PATH=$(echo "${PATH}" | sed -e "s#${WIN_YARN_PATH}##")
+        ;;
+    esac
 
-    WIN_NPM_PATH="\$(dirname "\$(command -v npm)")"
-    if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
-      export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
-    else
-      break
-    fi
+    WIN_NPM_PATH="$(dirname "$(command -v npm)")"
+    case "${WIN_NPM_PATH}" in
+      "${WIN_C_PATH}"*)
+        export PATH=$(echo "${PATH}" | sed -e "s#${WIN_NPM_PATH}##")
+        ;;
+      *)
+        break
+        ;;
+    esac
 
   done
 fi

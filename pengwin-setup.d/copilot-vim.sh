@@ -203,7 +203,22 @@ function main() {
   if ! ensure_nodejs_version 18 "GitHub Copilot"; then
     return 1
   fi
-  
+
+  # Refresh command hash table after possible Node.js installation
+  hash -r
+
+  # Source the N profile to get the updated PATH
+  if [[ -f "/etc/profile.d/n-prefix.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "/etc/profile.d/n-prefix.sh"
+  fi
+
+  # Be sure Windows npm don't get in the way
+  if [[ -f "/etc/profile.d/rm-win-npm-path.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "/etc/profile.d/rm-win-npm-path.sh"
+  fi
+
   # Determine which editor(s) to configure
   local has_vim=false
   local has_nvim=false
