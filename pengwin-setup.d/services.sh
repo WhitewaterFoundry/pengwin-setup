@@ -229,7 +229,7 @@ function enable_systemd() {
 
   if [[ -z "${WSL2}" ]]; then
     message --title "systemd" --msgbox "systemd is only available in WSL2\n\nIf you want to start services in WSL1 you can use the \"service\" or the \"wslsystemctl\" commands." 11 60
-    return 0
+    return 1
   fi
 
   if (confirm --title "systemd" --yesno "Would you like to enable systemd support for this distro?" 10 60); then

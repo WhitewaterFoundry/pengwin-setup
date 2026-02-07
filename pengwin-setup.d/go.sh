@@ -42,6 +42,8 @@ set --export PATH "\$GOPATH/bin:\$GOROOT/bin:/usr/local/go/bin:\$PATH"
 EOF
 
   cleantmp
+
+  enable_should_restart
 else
   echo "Skipping GO"
 fi

@@ -86,7 +86,11 @@ function process_arguments() {
     -c | --casdial)
       echo "Use casdial instead of dialog"
       if command -v casdial; then
-        export DIALOG_COMMAND='casdial'
+        if is_wsl1; then
+          export DIALOG_COMMAND='/lib64/ld-linux-x86-64.so.2 /usr/bin/casdial'
+        else
+          export DIALOG_COMMAND='casdial'
+        fi
       fi
       shift
       ;;
@@ -348,6 +352,7 @@ function menu() {
 #   wHomeWinPath
 #   wHome
 #   CANCELLED
+#   CASCIIANRC
 #   WIN_CUR_VER
 #   SHORTCUTS_FOLDER
 #   GOVERSION
@@ -356,6 +361,7 @@ function menu() {
 # Returns:
 #   0 if environment setup succeeds, non-zero on failure
 #######################################
+# bashsupport disable=BP2001
 function setup_env() {
   SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
   export SetupDir
@@ -363,6 +369,7 @@ function setup_env() {
   # bashsupport disable=BP2001
   export DIALOGOPTS="--keep-tite --erase-on-exit --ignore --backtitle \"${PENGWIN_SETUP_TITLE}\""
   export DIALOGRC="${SetupDir}/dialogrc"
+  export CASCIIANRC="${SetupDir}/pengwin.theme"
 
   export DIALOG_COMMAND="whiptail"
 
