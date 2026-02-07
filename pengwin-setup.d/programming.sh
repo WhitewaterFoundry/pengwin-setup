@@ -12,7 +12,7 @@ function main() {
 
     menu --title "Programming Menu" "${DIALOG_TYPE}" "Install various programming languages support\n[ENTER to confirm]:" 22 95 12 \
       "C++" "Install support for Linux C/C++ programming in Visual Studio and CLion  " ${OFF} \
-      "DOTNET" "Install .NET Core SDK from Microsoft and optionally install NuGet  " ${OFF} \
+      "DOTNET" "Install .NET Core SDK from Microsoft  " ${OFF} \
       "GO" "Install the latest Go from Google" ${OFF} \
       "JAVA" "Install the SDKMan to manage Java SDKs" ${OFF} \
       "JETBRAINS" "Install required support to jetbrains tools" ${OFF} \

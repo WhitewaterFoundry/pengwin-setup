@@ -4,9 +4,9 @@ declare -a -x CMD_MENU_OPTIONS
 
 export LANG=en_US.utf8
 export NEWT_COLORS='
-    root=lightgray,black
-    roottext=lightgray,black
-    shadow=black,gray
+    root=default,default
+    roottext=default,default
+    shadow=default,default
     title=magenta,lightgray
     checkbox=lightgray,blue
     actcheckbox=lightgray,magenta
@@ -81,6 +81,17 @@ function process_arguments() {
     -q | --quiet | --noninteractive)
       echo "Skipping confirmations"
       export NON_INTERACTIVE=1
+      shift
+      ;;
+    -c | --casdial)
+      echo "Use casdial instead of dialog"
+      if command -v casdial; then
+        if is_wsl1; then
+          export DIALOG_COMMAND='/lib64/ld-linux-x86-64.so.2 /usr/bin/casdial'
+        else
+          export DIALOG_COMMAND='casdial'
+        fi
+      fi
       shift
       ;;
     -w | --whiptail)
@@ -341,6 +352,7 @@ function menu() {
 #   wHomeWinPath
 #   wHome
 #   CANCELLED
+#   CASCIIANRC
 #   WIN_CUR_VER
 #   SHORTCUTS_FOLDER
 #   GOVERSION
@@ -349,6 +361,7 @@ function menu() {
 # Returns:
 #   0 if environment setup succeeds, non-zero on failure
 #######################################
+# bashsupport disable=BP2001
 function setup_env() {
   SetupDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
   export SetupDir
@@ -356,6 +369,7 @@ function setup_env() {
   # bashsupport disable=BP2001
   export DIALOGOPTS="--keep-tite --erase-on-exit --ignore --backtitle \"${PENGWIN_SETUP_TITLE}\""
   export DIALOGRC="${SetupDir}/dialogrc"
+  export CASCIIANRC="${SetupDir}/pengwin.theme"
 
   export DIALOG_COMMAND="whiptail"
 
@@ -400,9 +414,84 @@ function setup_env() {
 
 }
 
-function install_packages() {
+#######################################
+# Starts the APT package installation progress dialog.
+# Initializes debconf-apt-progress to display a visual progress indicator
+# for package installation operations in interactive mode. This should be
+# called before a series of install_packages calls to show a unified progress
+# display. Has no effect in non-interactive mode.
+# Globals:
+#   APT_PROGRESS_STARTED - Flag indicating if progress dialog is active
+#   NON_INTERACTIVE - Flag for non-interactive mode
+#   NEWT_COLORS - Terminal color configuration preserved in sudo
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+function start_apt_progress() {
+  if [[ ! ${APT_PROGRESS_STARTED} ]]; then
+    if [[ ! ${NON_INTERACTIVE} ]]; then
+      echo sudo --preserve-env=NEWT_COLORS debconf-apt-progress --start
+      echo APT_PROGRESS_STARTED=1
+    fi
+  fi
+}
 
-  sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
+#######################################
+# Installs APT packages with progress display.
+# Uses apt-get to install specified packages with different progress display
+# modes based on interactive/non-interactive mode. In interactive mode, uses
+# debconf-apt-progress to show visual feedback. Supports custom progress ranges
+# when APT_PROGRESS_FROM and APT_PROGRESS_TO environment variables are set.
+# Globals:
+#   NON_INTERACTIVE - Flag for non-interactive mode
+#   APT_PROGRESS_FROM - Optional progress range start percentage
+#   APT_PROGRESS_TO - Optional progress range end percentage
+#   NEWT_COLORS - Terminal color configuration preserved in sudo
+# Arguments:
+#   Package names to install
+# Returns:
+#   None
+#######################################
+function install_packages() {
+  if [[ ${NON_INTERACTIVE} ]]; then
+    sudo apt-get install -y -q "$@"
+
+  elif [[ ${APT_PROGRESS_STARTED} ]]; then
+    if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --from "${APT_PROGRESS_FROM}" --to "${APT_PROGRESS_TO}" -- apt-get install -y -q "$@"
+    else
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get install -y -q "$@"
+    fi
+
+  else
+    sudo --preserve-env=NEWT_COLORS apt-get install -y -q "$@"
+  fi
+}
+
+#######################################
+# Ends the APT package installation progress dialog.
+# Closes the debconf-apt-progress dialog if it was previously started by
+# start_apt_progress. This should be called after completing a series of
+# install_packages operations to properly clean up the progress display.
+# Has no effect in non-interactive mode or if progress was never started.
+# Globals:
+#   APT_PROGRESS_STARTED - Flag indicating if progress dialog is active
+#   NON_INTERACTIVE - Flag for non-interactive mode
+#   NEWT_COLORS - Terminal color configuration preserved in sudo
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+function end_apt_progress() {
+  if [[ ${APT_PROGRESS_STARTED} ]]; then
+    if [[ ! ${NON_INTERACTIVE} ]]; then
+      echo sudo --preserve-env=NEWT_COLORS debconf-apt-progress --end
+      echo APT_PROGRESS_STARTED=0
+    fi
+  fi
 }
 
 #######################################
@@ -416,12 +505,20 @@ function install_packages() {
 #   None
 #######################################
 function update_packages() {
-
   if [[ ${NON_INTERACTIVE} ]]; then
     sudo apt-get update -y -q
+
+  elif [[ ${APT_PROGRESS_STARTED} ]]; then
+    if [[ -n "${APT_PROGRESS_FROM}" && -n "${APT_PROGRESS_TO}" ]]; then
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress --from "${APT_PROGRESS_FROM}" --to "${APT_PROGRESS_TO}" -- apt-get update -y
+    else
+      sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
+    fi
+
   else
     sudo --preserve-env=NEWT_COLORS debconf-apt-progress -- apt-get update -y
   fi
+
 }
 
 #######################################
@@ -522,6 +619,52 @@ function enable_should_restart() {
 #######################################
 function setup_pengwin_config() {
   mkdir -p "${PENGWIN_CONFIG_DIR}"
+}
+
+#######################################
+# Check if running in WSL1
+# Detects if the system is running in WSL1 by checking if the WSL2 environment
+# variable is not set. The WSL2 variable is set by Pengwin when running in WSL2.
+# This function is used by installer scripts to apply WSL1-specific workarounds.
+#
+# Globals:
+#   WSL2 - Environment variable set when running in WSL2
+# Arguments:
+#   None
+# Returns:
+#   0 if running in WSL1, 1 otherwise
+#######################################
+function is_wsl1() {
+  if [[ -z "${WSL2}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+#######################################
+# Check if systemd is running as PID 1
+# Detects if the system was booted with systemd by checking if PID 1 is systemd
+# This function is used by installer scripts to determine whether to use systemctl
+# or traditional service commands.
+#
+# Note: Startup scripts in /etc/profile.d cannot source common.sh (requires WSL environment),
+# so they use inline detection: [ "$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]
+#
+# Arguments:
+#   None
+# Returns:
+#   0 if systemd is running as PID 1, 1 otherwise
+#######################################
+function is_systemd_running() {
+  local init_process
+  init_process=$(ps -p 1 -o comm= 2>/dev/null || echo "")
+
+  if [[ "${init_process}" == "systemd" ]]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 setup_env "$@"

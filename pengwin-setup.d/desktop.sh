@@ -61,7 +61,7 @@ function install_dependencies() {
     dependencies_instaled=1
     echo "There is a problem installing guilib utilities"
   fi
-  return $dependencies_instaled
+  return "$dependencies_instaled"
 }
 
 function install_xrdp() {
@@ -77,26 +77,34 @@ function install_xrdp() {
     port="3395"
   fi
 
-  sudo groupadd --system polkitd 2>/dev/null || true
-  install_packages xrdp xorgxrdp pulseaudio
+  install_packages xrdp xorgxrdp pulseaudio crudini
 
-  sudo sed -i "s/^\(port=\)\([0-9]*\)$/\1${port}/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bitmap_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(bulk_compression=\)\(true\)$/\1false/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(max_bpp=\)\(32\)$/\124/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(blue=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(#\)\(ls_title=\)\(.*\)$/\2Welcome to Pengwin/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s/^\(ls_top_window_bg_color=\)\(.*\)$/\141004d/" /etc/xrdp/xrdp.ini
-  sudo sed -i "s|^\(ls_logo_filename=\)\(.*\)$|\1/usr/share/images/pengwin-xrdp.bmp|" /etc/xrdp/xrdp.ini
+  # Use crudini for safer INI file manipulation
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals port "${port}"
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals bitmap_cache true
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals bitmap_compression true
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals bulk_compression true
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals max_bpp 24
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals blue 41004d
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_title "Welcome to Pengwin"
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_top_window_bg_color 41004d
+  sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_logo_filename /usr/share/images/pengwin-xrdp.bmp
 
   # shellcheck disable=SC2155
   local sesman_port=$(echo "${port} - 50" | bc)
 
   # Fix the thinclient_drives error, also not needed in WSL
-  sudo sed -i "s/^\(FuseMountName=\)\(thinclient_drives\)$/\1\/tmp\/%u\/\2/" /etc/xrdp/sesman.ini
-  sudo sed -i "s/^\(ListenPort=\)\([0-9]*\)$/\1${sesman_port}/" /etc/xrdp/sesman.ini
+  # Use crudini for safer INI file manipulation
+  sudo crudini --set /etc/xrdp/sesman.ini Chansrv FuseMountName "/tmp/%u/thinclient_drives"
+  sudo crudini --set /etc/xrdp/sesman.ini Globals ListenPort "${sesman_port}"
 
-  sudo /etc/init.d/xrdp start
+  # Enable and start xrdp based on init system
+  if is_systemd_running; then
+    echo "Systemd detected, enabling xrdp service"
+    sudo systemctl enable --now xrdp
+  else
+    sudo /etc/init.d/xrdp start
+  fi
 
   sudo tee '/usr/local/bin/remote_desktop.sh' <<EOF
 #!/bin/bash
@@ -123,7 +131,16 @@ EOF
   sudo tee '/usr/local/bin/start-xrdp' <<EOF
 #!/bin/bash
 
-sudo service xrdp start >/dev/null 2>&1
+# Check if systemd is running (PID 1)
+if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+  # Using systemd - check and start service if not active
+  if ! systemctl is-active --quiet xrdp; then
+    systemctl start xrdp >/dev/null 2>&1
+  fi
+else
+  # Using traditional init - use service command
+  service xrdp start >/dev/null 2>&1
+fi
 EOF
 
   sudo tee '/etc/profile.d/start-xrdp.sh' <<EOF
@@ -136,7 +153,16 @@ fi
 saved_param="\${PENGWIN_REMOTE_DESKTOP}"
 unset PENGWIN_REMOTE_DESKTOP
 
-sudo /usr/local/bin/start-xrdp
+# Check if systemd is running
+if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
+  # Service managed by systemd, only start if not already active
+  if ! systemctl is-active --quiet xrdp; then
+    sudo /usr/local/bin/start-xrdp
+  fi
+else
+  # Traditional init, always run the start script
+  sudo /usr/local/bin/start-xrdp
+fi
 
 if [ -n "\${saved_param}" ]; then
   /usr/local/bin/remote_desktop.sh \${saved_param}
@@ -158,7 +184,7 @@ function install_xfce() {
     local exit_status=$?
 
     if [[ ${exit_status} != 0 && ! ${NON_INTERACTIVE} ]]; then
-      return ${exit_status}
+      return "${exit_status}"
     fi
 
     start_indeterminate_progress
@@ -167,11 +193,10 @@ function install_xfce() {
 
     local systemd_pid
     systemd_pid="$(ps -C systemd -o pid= | head -n1)"
-    if [ -z "$systemd_pid" ]; then
+    if [ -z "$systemd_pid" ] && [ -n "${WSL2}" ]; then
 
-      bash "${SetupDir}"/services.sh --enable-systemd --yes
+      bash "${SetupDir}"/services.sh --enable-systemd --yes --noninteractive
     fi
-
 
     if package_installed "xfce4-terminal" && package_installed "xfce4"; then
       create_shortcut "Xfce desktop - Full Screen" "/f" "/usr/share/pixmaps/xfce4_xicon.png"
@@ -197,6 +222,11 @@ Just click on one of them and login with your Pengwin credentials." 15 80
 }
 
 function main() {
+  if [[ -z "${WSL2}" ]]; then
+    message --title "desktop" --msgbox "For now desktop installation is only available in WSL2." 7 60
+    return 1
+  fi
+
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 

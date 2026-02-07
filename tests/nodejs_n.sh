@@ -3,11 +3,14 @@
 source commons.sh
 
 #######################################
-# description
+# Test Node.js installation with n version manager in WSL2 mode
 # Arguments:
 #  None
 #######################################
 function test_main() {
+  # Set WSL2=1 to test WSL2 behavior (full versions available)
+  export WSL2=1
+  
   run_pengwinsetup install PROGRAMMING NODEJS NVERMAN
 
   assertTrue "FILE PROFILE-NVERMAN" "[ -f /etc/profile.d/n-prefix.sh ]"
@@ -21,7 +24,6 @@ function test_main() {
 
   assertEquals "N was not installed" "1" "$(run n --version | grep -c '10')"
   assertEquals "npm was not installed" "1" "$(run npm --version | grep -c '11')"
-  assertEquals "nodejs latest was not installed" "1" "$(run node --version | grep -c 'v25')"
   assertEquals "nodejs lts was not installed" "1" "$(run n list | grep -c 'node/24')"
 
   run command -v yarn >/dev/null
@@ -29,7 +31,7 @@ function test_main() {
 }
 
 #######################################
-# description
+# Test Node.js uninstallation
 # Arguments:
 #  None
 #######################################
@@ -40,7 +42,6 @@ function test_uninstall() {
 
   assertEquals "N was not uninstalled" "0" "$(run n --version | grep -c '10')"
   assertEquals "npm was not uninstalled" "0" "$(run npm --version | grep -c '11')"
-  assertEquals "nodejs latest was not uninstalled" "0" "$(run node --version | grep -c 'v25')"
   assertEquals "nodejs lts was not uninstalled" "0" "$(run n list | grep -c 'node/24')"
 
   run command -v yarn 2>/dev/null

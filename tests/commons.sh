@@ -24,12 +24,12 @@ function oneTimeSetUp() {
   export TERM="xterm-256color"
   export LANG=en_US.utf8
 
-  sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' ${TEST_USER}
-  sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev ${TEST_USER}
+  sudo /usr/sbin/adduser --quiet --disabled-password --gecos '' "${TEST_USER}"
+  sudo /usr/sbin/usermod -aG adm,cdrom,sudo,dip,plugdev "${TEST_USER}"
 
   if [[ -n "${USER}" ]]; then
-    sudo /usr/sbin/usermod -aG "${USER}" ${TEST_USER}
-    sudo /usr/sbin/usermod -aG ${TEST_USER} "${USER}"
+    sudo /usr/sbin/usermod -aG "${USER}" "${TEST_USER}"
+    sudo /usr/sbin/usermod -aG "${TEST_USER}" "${USER}"
   fi
 
   echo "%${TEST_USER} ALL=(ALL) NOPASSWD:ALL" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/passwordless-sudo
@@ -40,8 +40,8 @@ function oneTimeSetUp() {
 
   # Add the stub path
 
-  echo "PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
-  echo 'TERM="xterm-256color"' | sudo tee -a /etc/profile.d/00-a.sh
+  echo "[ \"\$USER\" = \"${TEST_USER}\" ] && export PATH=\"$(pwd)/stubs:\${PATH}\"" | sudo tee /etc/profile.d/00-a.sh
+  echo "[ \"\$USER\" = \"${TEST_USER}\" ] && export TERM='xterm-256color'" | sudo tee -a /etc/profile.d/00-a.sh
 
   export SHUNIT_TMPDIR
 }
@@ -56,10 +56,10 @@ function oneTimeSetUp() {
 function oneTimeTearDown() {
   if id "${TEST_USER}" &>/dev/null; then
     sudo killall -u "${TEST_USER}"
-    sudo /usr/sbin/deluser ${TEST_USER}
+    sudo /usr/sbin/deluser "${TEST_USER}"
 
     if [[ $(cat /etc/group | grep -c "${TEST_USER}") != 0 ]]; then
-      sudo /usr/sbin/groupdel ${TEST_USER}
+      sudo /usr/sbin/groupdel "${TEST_USER}"
     fi
   fi
 }
@@ -74,7 +74,7 @@ function oneTimeTearDown() {
 #######################################
 function package_installed() {
 
-  local result=$(apt -qq list "$1" 2>/dev/null | grep -c "\[install\|\[upgradable") # so it matches english "install" and also german "installiert"
+  local result=$(apt -qq list "$1" 2>/dev/null | grep -c "\[install\|\[upgradable") # so it matches English "install" and also German "installiert"
 
   if [[ $result == 0 ]]; then
     return 1
@@ -105,7 +105,19 @@ function run_test() {
 #  None
 #######################################
 function run_pengwinsetup() {
-  sudo su - -c "$(pwd)/run-pengwin-setup.sh $*" ${TEST_USER}
+  local args
+  # Build properly quoted argument string without trailing space
+  if [[ $# -gt 0 ]]; then
+    args=$(printf '%q ' "$@")
+    args=${args% }  # Remove trailing space
+  else
+    args=""
+  fi
+  # Safely escape WSL2 and script path to avoid breaking quoting in su -c
+  local script_path wsl2_quoted
+  script_path=$(printf '%q' "$(pwd)/run-pengwin-setup.sh")
+  wsl2_quoted=$(printf '%q' "${WSL2}")
+  sudo --preserve-env=WSL2 su - -c "env WSL2=${wsl2_quoted} ${script_path} ${args}" "${TEST_USER}"
 }
 
 #######################################
@@ -116,7 +128,15 @@ function run_pengwinsetup() {
 #  None
 #######################################
 function run() {
-  sudo su - -c "$*" ${TEST_USER} 2>/dev/null
+  local args
+  # Build properly quoted argument string without trailing space
+  if [[ $# -gt 0 ]]; then
+    args=$(printf '%q ' "$@")
+    args=${args% }  # Remove trailing space
+  else
+    args=""
+  fi
+  sudo --preserve-env=WSL2 su - -c "${args}" "${TEST_USER}" 2>/dev/null
 }
 
 #######################################

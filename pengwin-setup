@@ -8,7 +8,6 @@ fi
 
 SetupDir="${ScriptDir}/pengwin-setup.d"
 export SetupDir
-export VERSION="1.2a"
 
 # shellcheck source=pengwin-setup.d/common.sh
 source "${SetupDir}"/common.sh "$@"
@@ -169,11 +168,12 @@ function install_menu() {
   local menu_choice=$(
 
     menu --title "pengwin-setup" "${DIALOG_TYPE}" "\nHand-curated add-ons [ENTER to confirm]:" 0 0 0  \
+      "AIUTILS" "Install AI tools and assistants" ${OFF}  \
       "EDITORS" "Install text editors neovim, emacs, or Visual Studio Code${REQUIRES_X}" ${OFF}  \
       "GUI" "Install an X server or various other GUI applications" ${OFF}  \
       "MAINTENANCE" "Various maintenance tasks like home backup" ${OFF}  \
       "PROGRAMMING" "Install various programming languages support" ${OFF}  \
-      "SERVICES" "Enable services support (SystemD, SSH, rc.local)" ${OFF}  \
+      "SERVICES" "Enable services support (systemd, SSH, rc.local)" ${OFF}  \
       "SETTINGS" "Change various settings in Pengwin" ${OFF}  \
       "TOOLS" "Install applications or servers" ${OFF}  \
       "UNINSTALL" "Uninstall applications and packages installed by pengwin-setup" ${OFF}
@@ -189,6 +189,12 @@ function install_menu() {
   fi
 
   local exit_status
+
+  if [[ ${menu_choice} == *"AIUTILS"* ]]; then
+    echo "AIUTILS"
+    bash "${SetupDir}"/ai.sh "$@"
+    exit_status=$?
+  fi
 
   if [[ ${menu_choice} == *"EDITORS"* ]]; then
     echo "EDITORS"
@@ -272,11 +278,15 @@ Commands:
   startmenu                      Regenerate the start menu icons. Implies --noupdate, --noninteractive, and --yes.
 
 Actions to be used after install command:
+  AIUTILS                        AI tools: COPILOT-CLI, COPILOT-VIM.
+
   EDITORS                        Available editors: CODE, EMACS, NEOVIM, MSEDIT.
 
-  GUI                            GUI-related options: CONFIGURE, DESKTOP, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
+  GUI                            GUI-related options: CONFIGURE, DESKTOP, GPU, NLI, GUILIB, HIDPI, TERMINAL, SYNAPTIC, WINTHEME, WSLG.
 
   CONFIGURE                      Configuration options: DISPLAY, STARTMENU, VCXSRV, X410.
+
+  GPU                            GPU settings: GPU_ACCEL_ENABLE, GPU_ACCEL_DISABLE.
 
   DESKTOP                        Desktop environments: XFCE.
 
@@ -292,7 +302,7 @@ Actions to be used after install command:
 
   LAMP                           LAMP MySQL (MariaDB) versions: BUILTIN, 10.6, 10.7, 10.8, 10.9.
 
-  SETTINGS                       System settings: EXPLORER, COLORTOOL, LANGUAGE, SHELLS.
+  SETTINGS                       System settings: EXPLORER, COLORTOOL, LANGUAGE, MOTD, SHELLS.
 
   SHELLS                         Shell options: BASH-RL, CSH, FISH, ZSH.
 

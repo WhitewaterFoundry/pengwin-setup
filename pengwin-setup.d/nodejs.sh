@@ -5,6 +5,9 @@ source "$(dirname "$0")/common.sh" "$@"
 
 declare SKIP_CONFIMATIONS
 
+NODEJS_LATEST_VERSION=25
+NODEJS_LTS_VERSION=24
+NODEJS_WSL1_MAX_VERSION=22
 
 #######################################
 # Install the packaged version of NodeJS from nodesource repos
@@ -13,17 +16,42 @@ declare SKIP_CONFIMATIONS
 #######################################
 # shellcheck disable=SC2155
 function install_nodejs_nodesource() {
-  echo "Installing latest node.js version from NodeSource repository"
-
   local major_vers=${1}
+  local version_type="latest"
+  
+  if [[ "${major_vers}" == "${NODEJS_LTS_VERSION}" ]]; then
+    version_type="LTS"
+  fi
+  
+  echo "Installing ${version_type} node.js version from NodeSource repository"
 
-  curl -fsSL "https://deb.nodesource.com/setup_${major_vers}.x" | sudo -E bash - &&\
-  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\snodejs\s|\s$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  if ! curl -fsSL "https://deb.nodesource.com/setup_${major_vers}.x" | sudo -E bash -; then
+    echo "Failed to setup NodeSource repository"
+    return 1
+  fi
+  
+  local version=$(apt-cache madison nodejs | grep 'nodesource' | head -1 | grep -E "^\s+nodejs\s+.*$major_vers" | cut -d'|' -f2 | sed 's|\s||g')
+  
+  if [[ -z "${version}" ]]; then
+    echo "Failed to find Node.js version ${major_vers} in repository"
+    return 1
+  fi
+  
   install_packages nodejs="${version}"
 }
 
-NODEJS_LATEST_VERSION=25
-NODEJS_LTS_VERSION=24
+# Adjust versions for WSL1 compatibility - modifying these global constants before
+# the menu is intentional so the user sees the correct version numbers in the menu
+# and all installation methods (n, nvm, nodesource) use WSL1-compatible versions
+if is_wsl1; then
+  echo "WSL1 detected: Limiting Node.js versions to ${NODEJS_WSL1_MAX_VERSION}"
+  if [[ ${NODEJS_LATEST_VERSION} -gt ${NODEJS_WSL1_MAX_VERSION} ]]; then
+    NODEJS_LATEST_VERSION=${NODEJS_WSL1_MAX_VERSION}
+  fi
+  if [[ ${NODEJS_LTS_VERSION} -gt ${NODEJS_WSL1_MAX_VERSION} ]]; then
+    NODEJS_LTS_VERSION=${NODEJS_WSL1_MAX_VERSION}
+  fi
+fi
 
 echo "Offering user n / nvm version manager choice"
 menu_choice=$(
@@ -54,27 +82,32 @@ if [[ "$(command -v npm)" == $(wslpath 'C:\')* ]]; then
     exit 1
   fi
 
-  sudo tee "${NPM_WIN_PROFILE}" <<EOF
-#!/bin/bash
+  sudo tee "${NPM_WIN_PROFILE}" <<'EOF'
+#!/bin/sh
 
 # Check if we have Windows Path
-if ( command -v cmd.exe >/dev/null ); then
+if command -v cmd.exe >/dev/null 2>&1; then
 
-  WIN_C_PATH="\$(wslpath 'C:\')"
+  WIN_C_PATH="$(wslpath 'C:\')"
 
-  while [[ true ]]; do
+  while true; do
 
-    WIN_YARN_PATH="\$(dirname "\$(command -v yarn)")"
-    if [[ "\${WIN_YARN_PATH}" == "\${WIN_C_PATH}"* ]]; then
-      export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_YARN_PATH}##")
-    fi
+    WIN_YARN_PATH="$(dirname "$(command -v yarn)")"
+    case "${WIN_YARN_PATH}" in
+      "${WIN_C_PATH}"*)
+        export PATH=$(echo "${PATH}" | sed -e "s#${WIN_YARN_PATH}##")
+        ;;
+    esac
 
-    WIN_NPM_PATH="\$(dirname "\$(command -v npm)")"
-    if [[ "\${WIN_NPM_PATH}" == "\${WIN_C_PATH}"* ]]; then
-      export PATH=\$(echo "\${PATH}" | sed -e "s#\${WIN_NPM_PATH}##")
-    else
-      break
-    fi
+    WIN_NPM_PATH="$(dirname "$(command -v npm)")"
+    case "${WIN_NPM_PATH}" in
+      "${WIN_C_PATH}"*)
+        export PATH=$(echo "${PATH}" | sed -e "s#${WIN_NPM_PATH}##")
+        ;;
+      *)
+        break
+        ;;
+    esac
 
   done
 fi
@@ -91,7 +124,7 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
 
   echo "Installing n, Node.js version manager"
   curl -L https://git.io/n-install -o n-install.sh
-  env SHELL="$(command -v bash)" bash n-install.sh -y #Force the installation to bash
+  env SHELL="$(command -v bash)" bash n-install.sh -y "${NODEJS_LTS_VERSION}"
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -110,8 +143,6 @@ if [[ ${menu_choice} == *"NVERMAN"* ]]; then
   SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
   echo "Defaults secure_path=\"${SUDO_PATH}:${N_PREFIX}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
 
-  echo "Installing latest node.js release"
-  n latest
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -137,7 +168,7 @@ EOF
   sudo mkdir -p /etc/bash_completion.d
   npm completion | sudo tee /etc/bash_completion.d/npm
 
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 elif [[ ${menu_choice} == *"NVM"* ]]; then
   echo "Installing nvm, Node.js version manager"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
@@ -189,12 +220,7 @@ function node
 end
 EOF
 
-  # Add the path for sudo
-  #SUDO_PATH="$(sudo cat /etc/sudoers | grep "secure_path" | sed "s/\(^.*secure_path=\"\)\(.*\)\(\"\)/\2/")"
-  #echo "Defaults secure_path=\"${SUDO_PATH}:${NVM_DIR}/bin\"" | sudo EDITOR='tee ' visudo --quiet --file=/etc/sudoers.d/npm-path
-
-  echo "Installing latest Node.js release"
-  nvm install node --latest-npm
+  nvm install "${NODEJS_LTS_VERSION}" --latest-npm
   exit_status=$?
   if [[ ${exit_status} != 0 ]]; then
     cleantmp
@@ -204,7 +230,7 @@ EOF
   # Add npm to bash completion
   npm completion | sudo tee /etc/bash_completion.d/npm
 
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 elif [[ ${menu_choice} == *"LATEST"* ]]; then
   install_nodejs_nodesource "${NODEJS_LATEST_VERSION}"
   exit_status=$?
@@ -219,7 +245,7 @@ if [[ ${exit_status} != 0 ]]; then
   exit "${exit_status}"
 fi
 
-if (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
+if [[ -z ${SKIP_YARN} ]] && (confirm --title "YARN" --yesno "Would you like to download and install the Yarn package manager? (optional)" 8 80); then
   echo "Installing YARN"
 
   if command -v yarn; then

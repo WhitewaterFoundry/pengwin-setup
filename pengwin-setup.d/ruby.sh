@@ -10,7 +10,7 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   echo "Installing RUBY"
   echo "Installing Ruby dependencies"
 
-  install_packages git-core curl zlib1g-dev build-essential libssl-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
+  install_packages git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev
   createtmp
 
   echo "Getting rbenv"
@@ -18,13 +18,15 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
 
   echo "Configuring rbenv"
   (
-    cd ~/.rbenv && src/configure && make -j 4 -C src
+    cd ~/.rbenv && src/configure && make -j "$(nproc)" -C src
   )
 
   conf_path='/etc/profile.d/ruby.sh'
 
   # shellcheck disable=SC2016
-  echo 'export PATH="${HOME}/.rbenv/bin:${PATH}"' | sudo tee "${conf_path}"
+  echo '#!/bin/sh' | sudo tee "${conf_path}"
+  # shellcheck disable=SC2016
+  echo 'export PATH="${HOME}/.rbenv/bin:${PATH}"' | sudo tee -a "${conf_path}"
   # shellcheck disable=SC2016
   echo 'eval "$(rbenv init -)"' | sudo tee -a "${conf_path}"
 
@@ -49,22 +51,20 @@ if (confirm --title "RUBY" --yesno "Would you like to download and install Ruby 
   echo 'rbenv rehash >/dev/null ^&1' | sudo tee -a "${conf_path_fish}"
 
   echo "Installing Ruby using rbenv"
-  env MAKE_OPTS="-j 4" rbenv install 2.7.2 --verbose
-  rbenv global 2.7.2
+  env MAKE_OPTS="-j $(nproc)" rbenv install 4.0.1 --verbose
+  rbenv global 4.0.1
   echo "Checking ruby version"
   ruby -v
   echo "Installing bundler using gem"
-  gem install bundler -v 2.2.4
+  gem install bundler -v 4.0.6
   echo "Rehashing rbenv"
   rbenv rehash
-
-  bash "${SetupDir}"/jetbrains-support.sh --yes "$@"
 
   unset conf_path
   unset conf_path_fish
   cleantmp
 
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 else
   echo "Skipping RUBY"
 fi
@@ -72,29 +72,13 @@ fi
 if (confirm --title "RAILS" --yesno "Would you like to download and install Rails from RubyGems?" 8 65); then
   echo "Installing RAILS"
 
-  echo "Checking for node"
-  command_check "${HOME}/n/bin/node" "-v"
-  node_check=$?
-  if [ ${node_check} -eq 1 ]; then # double checks if our local nodejs install was just performed but PATH not yet updated
-    echo "node not installed. Offering user nodejs install"
-    if (confirm --title "NODE" --yesno "Ruby on Rails framework requires JavaScript Runtime Environment (Node.js) to manage the features of Rails.\n\nWould you like to download and install NodeJS using n and the npm package manager?" 12 65); then
-      bash "${SetupDir}"/nodejs.sh -y "$@" N
-    else
-      echo "Skipping RAILS"
-      exit 1
-    fi
-  fi
-
-  unset node_check
-  echo "node installed"
-
-  install_packages git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
+  install_packages git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev
   createtmp
-  gem install rails -v 6.1.1
+  gem install rails -v 8.1.2
   rbenv rehash
   cleantmp
 
-  touch "${HOME}"/.should-restart
+  enable_should_restart
 else
   echo "Skipping RAILS"
 fi

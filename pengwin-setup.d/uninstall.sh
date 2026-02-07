@@ -15,6 +15,8 @@ function main() {
     menu --title "Uninstall Menu" "${DIALOG_TYPE}" "Uninstall applications and packages installed by pengwin-setup\n[ENTER to confirm]:" 0 0 0 \
       "ANSIBLE" "Remove Ansible Playbook deployment tools" ${OFF} \
       "AWS" "Remove AWS CLI tools" ${OFF} \
+      "COPILOT-CLI" "Remove GitHub Copilot CLI" ${OFF} \
+      "COPILOT-VIM" "Remove GitHub Copilot for Vim/Neovim" ${OFF} \
       "AZURE" "Remove Azure CLI tools" ${OFF} \
       "BASH-RL" "Remove optimized Bash readline settings" ${OFF} \
       "C++" "Remove Linux C/C++ programming support in Visual Studio and CLion    " ${OFF} \
@@ -25,7 +27,9 @@ function main() {
       "DOTNET" "Remove Microsoft's .NET Core SDK and NuGet (if installed)" ${OFF} \
       "FCITX" "Remove all fcitx improved non-Latin input support" ${OFF} \
       "FISH" "Remove FISH Shell" ${OFF} \
+      "FZF" "Remove command line fuzzy finder" ${OFF} \
       "GO" "Remove Go language" ${OFF} \
+      "GPU" "Remove GPU acceleration settings (re-enable D3D12 acceleration)" ${OFF} \
       "GUILIB" "Remove base GUI application libraries" ${OFF} \
       "HIDPI" "Remove Qt and GTK HiDPI modifications" ${OFF} \
       "HOMEBREW" "Remove the Homebrew package manager" ${OFF} \
@@ -33,9 +37,11 @@ function main() {
       "IBUS" "Remove all ibus improved non-Latin input support" ${OFF} \
       "JAVA" "Remove SDKMan its installed Java SDKs" ${OFF} \
       "JETBRAINS" "Remove JetBrains Toolbox" ${OFF} \
+      "JOOMLA" "Remove Joomla CMS development environment" ${OFF} \
       "KEYCHAIN" "Remove Keychain OpenSSH key manager" ${OFF} \
       "KUBERNETES" "Remove Kubernetes tooling" ${OFF} \
       "LAMP" "Remove LAMP stack" ${OFF} \
+      "LATEX" "Remove TexLive LaTeX packages" ${OFF} \
       "MSEDIT" "Remove Microsoft Edit TUI editor" ${OFF} \
       "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
@@ -48,7 +54,8 @@ function main() {
       "RUST" "Remove Rust and rustup toolchain installer" ${OFF} \
       "STARTMENU" "Remove all Pengwin generated Windows Start Menu shortcuts" ${OFF} \
       "SSH" "Remove SSH server" ${OFF} \
-      "SYSTEMD" "Disable SystemD support" ${OFF} \
+      "SYNAPTIC" "Remove Synaptic package manager" ${OFF} \
+      "SYSTEMD" "Disable systemd support" ${OFF} \
       "TERRAFORM" "Remove Terraform CLI tools" ${OFF} \
       "VCXSRV" "Remove VcXsrv X-server" ${OFF} \
       "VSCODE" "Remove Visual Studio Code for Linux" ${OFF} \
@@ -100,6 +107,16 @@ function main() {
     bash "${UninstallDir}"/colortool.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"COPILOT-CLI"* ]]; then
+    echo "COPILOT-CLI"
+    bash "${UninstallDir}"/copilot-cli.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"COPILOT-VIM"* ]]; then
+    echo "COPILOT-VIM"
+    bash "${UninstallDir}"/copilot-vim.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"DIGITALOCEAN"* ]]; then
     echo "DIGITALOCEAN"
     bash "${UninstallDir}"/doctl.sh "$@"
@@ -125,13 +142,23 @@ function main() {
     bash "${UninstallDir}"/fish.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"FZF"* ]]; then
+    echo "FZF"
+    bash "${UninstallDir}"/fzf.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"GO"* ]]; then
     echo "GO"
     bash "${UninstallDir}"/go.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"GPU"* ]]; then
+    echo "GPU"
+    bash "${UninstallDir}"/gpu-accel.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"GTERM"* ]]; then
-    echo "GO"
+    echo "GTERM"
     bash "${UninstallDir}"/gterm.sh "$@"
   fi
 
@@ -170,6 +197,11 @@ function main() {
     bash "${UninstallDir}"/jetbrains-support.sh "$@"
   fi
 
+  if [[ ${menu_choice} == *"JOOMLA"* ]]; then
+    echo "JOOMLA"
+    bash "${UninstallDir}"/joomla.sh "$@"
+  fi
+
   if [[ ${menu_choice} == *"KEYCHAIN"* ]]; then
     echo "KEYCHAIN"
     bash "${UninstallDir}"/keychain.sh "$@"
@@ -185,14 +217,19 @@ function main() {
     bash "${UninstallDir}"/lamp.sh "$@"
   fi
 
-  if [[ ${menu_choice} == *"NIM"* ]]; then
-    echo "NIM"
-    bash "${UninstallDir}"/nim.sh "$@"
+  if [[ ${menu_choice} == *"LATEX"* ]]; then
+    echo "LATEX"
+    bash "${UninstallDir}"/latex.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"MSEDIT"* ]]; then
     echo "MSEDIT"
     bash "${UninstallDir}"/microsoft-edit.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"NIM"* ]]; then
+    echo "NIM"
+    bash "${UninstallDir}"/nim.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"NODEJS"* ]]; then
@@ -243,6 +280,11 @@ function main() {
   if [[ ${menu_choice} == *"SSH"* ]]; then
     echo "SSH"
     bash "${UninstallDir}"/ssh.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"SYNAPTIC"* ]]; then
+    echo "SYNAPTIC"
+    bash "${UninstallDir}"/synaptic.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"SYSTEMD"* ]]; then
