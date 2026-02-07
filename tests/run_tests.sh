@@ -27,12 +27,14 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./terraform.sh
   #run_test ./awscli.sh
   run_test ./motd_settings.sh
+  run_test ./xdg-user-dirs.sh
   run_test ./kubernetes.sh
   #run_test ./latex.sh
   run_test ./gpu-accel.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
+  run_test ./xdg-user-dirs.sh
   run_test ./latex.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #1
   run_test ./desktop.sh
