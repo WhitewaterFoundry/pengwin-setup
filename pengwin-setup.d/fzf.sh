@@ -16,8 +16,9 @@ if (confirm --title "FZF" --yesno "Would you like to download and install comman
   if [[ -d "${FZF_DIR}/.git" ]]; then
     echo "FZF already installed, updating repository"
     cd "${FZF_DIR}" || exit 1
-    if ! git pull --ff-only; then
-      echo "Failed to update existing FZF repository" >&2
+    if ! git pull --ff-only 2>&1; then
+      echo "Failed to update existing FZF repository. This may be due to local changes or divergent branches." >&2
+      echo "To resolve manually: cd ${FZF_DIR} && git status" >&2
       exit 1
     fi
   else

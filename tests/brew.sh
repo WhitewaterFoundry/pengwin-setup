@@ -26,7 +26,7 @@ function test_uninstall() {
   run_pengwinsetup uninstall HOMEBREW
 
   assertFalse "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
-  assertEquals "Brew was not uninstalled" "0" "$(run brew --version | grep -c 'Homebrew 5')"
+  assertEquals "Brew was still installed after uninstall" "0" "$(run brew --version | grep -c 'Homebrew 5')"
 }
 
 # shellcheck disable=SC1091
