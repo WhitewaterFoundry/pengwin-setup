@@ -113,7 +113,11 @@ function run_pengwinsetup() {
   else
     args=""
   fi
-  sudo --preserve-env=WSL2 su - -c "env WSL2=${WSL2} $(pwd)/run-pengwin-setup.sh ${args}" "${TEST_USER}"
+  # Safely escape WSL2 and script path to avoid breaking quoting in su -c
+  local script_path wsl2_quoted
+  script_path=$(printf '%q' "$(pwd)/run-pengwin-setup.sh")
+  wsl2_quoted=$(printf '%q' "${WSL2}")
+  sudo --preserve-env=WSL2 su - -c "env WSL2=${wsl2_quoted} ${script_path} ${args}" "${TEST_USER}"
 }
 
 #######################################
