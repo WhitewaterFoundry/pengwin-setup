@@ -105,7 +105,7 @@ function run_test() {
 #  None
 #######################################
 function run_pengwinsetup() {
-  sudo --preserve-env=WSL2 su - -c "env WSL2=${WSL2} $(pwd)/run-pengwin-setup.sh $*" "${TEST_USER}"
+  sudo --preserve-env=WSL2 su - -c "env WSL2=${WSL2} $(pwd)/run-pengwin-setup.sh $(printf '%q ' "$@")" "${TEST_USER}"
 }
 
 #######################################
@@ -116,7 +116,7 @@ function run_pengwinsetup() {
 #  None
 #######################################
 function run() {
-  sudo --preserve-env=WSL2 su - -c "$*" "${TEST_USER}" 2>/dev/null
+  sudo --preserve-env=WSL2 su - -c "$(printf '%q ' "$@")" "${TEST_USER}" 2>/dev/null
 }
 
 #######################################

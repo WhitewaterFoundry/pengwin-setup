@@ -2,7 +2,7 @@
 
 source commons.sh
 
-function testMain() {
+function test_main() {
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
   if [[ ${dist} != "x86_64" ]] ; then
@@ -16,7 +16,7 @@ function testMain() {
   assertEquals "Brew was not installed" "1" "$(run brew --version | grep -c 'Homebrew 5')"
 }
 
-function testUninstall() {
+function test_uninstall() {
   # shellcheck disable=SC2155
   local dist="$(uname -m)"
   if [[ ${dist} != "x86_64" ]] ; then
@@ -26,7 +26,6 @@ function testUninstall() {
   run_pengwinsetup uninstall HOMEBREW
 
   assertFalse "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
-  run source /etc/profile.d/brew.sh
   assertEquals "Brew was not uninstalled" "0" "$(run brew --version | grep -c 'Homebrew 5')"
 }
 
