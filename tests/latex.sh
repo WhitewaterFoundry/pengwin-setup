@@ -2,7 +2,7 @@
 
 source commons.sh
 
-function testMain() {
+function test_main() {
   run_pengwinsetup install PROGRAMMING LATEX RECOMMENDED
 
   # Test that at least texlive-latex-recommended is installed (default option)
@@ -18,7 +18,7 @@ function testMain() {
   assertEquals "pdflatex was not installed" "0" "$?"
 }
 
-function testUninstall() {
+function test_uninstall() {
   run_pengwinsetup uninstall LATEX
 
   # Test that all texlive packages are uninstalled
