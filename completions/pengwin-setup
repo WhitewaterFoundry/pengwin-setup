@@ -56,6 +56,9 @@ function _pengwin_setup() { #  By convention, the function name
   UNINSTALL)
     mapfile -t COMPREPLY < <(compgen -W 'ANSIBLE AWS AZURE BASH-RL C++ CASSANDRA COLORTOOL COPILOT-CLI COPILOT-VIM DIGITALOCEAN DOCKER DOTNET FCITX FISH GO GPU GUILIB HIDPI HOMEBREW IBM IBUS JAVA JETBRAINS KEYCHAIN KUBERNETES LAMP MSEDIT NIM NODEJS OPENSTACK POETRY POWERSHELL PYENV RCLOCAL RUBY RUST STARTMENU SSH SYNAPTIC SYSTEMD TERRAFORM VCXSRV VSCODE WINTHEME WSLTTY X410 XFCE' -- "${cur}")
     ;;
+  MAINTENANCE)
+    mapfile -t COMPREPLY < <(compgen -W 'HOMEBACKUP BATCHINSTALL' -- "${cur}")
+    ;;
   *)
     mapfile -t COMPREPLY < <(compgen -W "--debug -d --verbose -v -y --yes --assume-yes --noupdate --norebuildicons -q \
     --quiet --noninteractive -w --whiptail -n --ncurses --dialog --alt --multiple --help \
