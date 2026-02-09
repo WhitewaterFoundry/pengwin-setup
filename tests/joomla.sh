@@ -26,7 +26,7 @@ function test_main() {
 
   # Check if database was created
   local db_exists
-  db_exists=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla';" 2>/dev/null | grep -c joomla)
+  db_exists=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla_db';" 2>/dev/null | grep -c joomla_db)
   assertTrue "Joomla database was not created" "[ ${db_exists} -ge 1 ]"
 
   # Check if database user was created
@@ -53,7 +53,7 @@ function test_uninstall() {
 
   # Database and user should be preserved (user data)
   local db_count
-  db_count=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla';" 2>/dev/null | grep -c joomla || echo 0)
+  db_count=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla_db';" 2>/dev/null | grep -c joomla_db || echo 0)
   assertTrue "Joomla database should be preserved" "[ ${db_count} -ge 1 ]"
 
   local user_count

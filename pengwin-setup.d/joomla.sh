@@ -78,9 +78,9 @@ function install_joomla() {
     
     echo "Setting up Joomla database"
     if ! sudo mysql -u root << EOF
-CREATE DATABASE IF NOT EXISTS joomla;
+CREATE DATABASE IF NOT EXISTS joomla_db;
 CREATE USER IF NOT EXISTS 'joomla'@'localhost' IDENTIFIED BY 'joomla';
-GRANT ALL PRIVILEGES ON joomla.* TO 'joomla'@'localhost';
+GRANT ALL PRIVILEGES ON joomla_db.* TO 'joomla'@'localhost';
 FLUSH PRIVILEGES;
 EOF
     then
@@ -89,13 +89,13 @@ EOF
 
     echo ""
     echo "Joomla ${JOOMLA_VERSION} installation complete!"
-    echo "Database: joomla"
+    echo "Database: joomla_db"
     echo "Database User: joomla"
     echo "Database Password: joomla"
     echo ""
     echo "Opening Joomla installer in browser..."
 
-    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: joomla\nDatabase User: joomla\nDatabase Password: joomla\n\nOpening Joomla installer in browser..." 12 70
+    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: joomla_db\nDatabase User: joomla\nDatabase Password: joomla\n\nOpening Joomla installer in browser..." 12 70
     
     wslview "http://localhost/joomla_root/index.php" 2>/dev/null || echo "Please open http://localhost/joomla_root/index.php in your browser"
 
