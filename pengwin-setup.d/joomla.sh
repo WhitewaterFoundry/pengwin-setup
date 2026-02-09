@@ -95,11 +95,11 @@ EOF
     echo "Database User: joomla"
     echo "Database Password: joomla"
     echo ""
-    echo "The Joomla installer will open in your browser after you close this dialog."
+    echo "Opening Joomla installer in browser..."
 
-    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: ${JOOMLA_DB_NAME}\nDatabase User: joomla\nDatabase Password: joomla\n\nThe Joomla installer will open in your browser after you close this dialog." 12 70
-    
     wslview "http://localhost/joomla_root/index.php" 2>/dev/null || echo "Please open http://localhost/joomla_root/index.php in your browser"
+
+    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: ${JOOMLA_DB_NAME}\nDatabase User: joomla\nDatabase Password: joomla\n\nOpening Joomla installer in browser..." 12 70
 
     cleantmp
 
