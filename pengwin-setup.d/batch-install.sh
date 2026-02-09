@@ -115,14 +115,14 @@ function main() {
   if [[ ${#succeeded[@]} -gt 0 ]]; then
     summary+="Succeeded:\n"
     for entry in "${succeeded[@]}"; do
-      summary+="  ✓ ${entry}\n"
+      summary+="  [OK] ${entry}\n"
     done
   fi
 
   if [[ ${#failed[@]} -gt 0 ]]; then
     summary+="\nFailed:\n"
     for entry in "${failed[@]}"; do
-      summary+="  ✗ ${entry}\n"
+      summary+="  [FAIL] ${entry}\n"
     done
   fi
 
