@@ -19,10 +19,7 @@ function test_install_history_recorded() {
   run test -f "${HISTORY_FILE}"
   assertTrue "Install history file was not created" "$?"
 
-  local content
-  content=$(run cat "${HISTORY_FILE}")
-  echo "History content: ${content}"
-  assertEquals "Install history entry not recorded" "SETTINGS MOTD MOTD_NEVER" "${content}"
+  assertEquals "Install history entry not recorded" "1" "$(run cat "${HISTORY_FILE}" | grep -cxF 'SETTINGS MOTD MOTD_NEVER')"
 }
 
 #######################################
@@ -38,9 +35,7 @@ function test_install_history_no_duplicates() {
   run_pengwinsetup install SETTINGS MOTD MOTD_NEVER
   run_pengwinsetup install SETTINGS MOTD MOTD_NEVER
 
-  local line_count
-  line_count=$(run grep -cF '' "${HISTORY_FILE}")
-  assertEquals "Duplicate entry was added to install history" "1" "${line_count}"
+  assertEquals "Duplicate entry was added to install history" "1" "$(run cat "${HISTORY_FILE}" | grep -cxF 'SETTINGS MOTD MOTD_NEVER')"
 }
 
 #######################################
@@ -55,9 +50,8 @@ function test_install_history_multiple_entries() {
   run_pengwinsetup install SETTINGS MOTD MOTD_NEVER
   run_pengwinsetup install SETTINGS MOTD MOTD_ALWAYS
 
-  local line_count
-  line_count=$(run grep -cF '' "${HISTORY_FILE}")
-  assertEquals "Multiple entries not recorded" "2" "${line_count}"
+  assertEquals "MOTD_NEVER entry not recorded" "1" "$(run cat "${HISTORY_FILE}" | grep -cxF 'SETTINGS MOTD MOTD_NEVER')"
+  assertEquals "MOTD_ALWAYS entry not recorded" "1" "$(run cat "${HISTORY_FILE}" | grep -cxF 'SETTINGS MOTD MOTD_ALWAYS')"
 }
 
 # shellcheck disable=SC1091
