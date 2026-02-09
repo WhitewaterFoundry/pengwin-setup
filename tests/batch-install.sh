@@ -39,7 +39,7 @@ function test_install_history_no_duplicates() {
   run_pengwinsetup install SETTINGS MOTD MOTD_NEVER
 
   local line_count
-  line_count=$(run cat "${HISTORY_FILE}" | wc -l)
+  line_count=$(run grep -cF '' "${HISTORY_FILE}")
   assertEquals "Duplicate entry was added to install history" "1" "${line_count}"
 }
 
@@ -56,7 +56,7 @@ function test_install_history_multiple_entries() {
   run_pengwinsetup install SETTINGS MOTD MOTD_ALWAYS
 
   local line_count
-  line_count=$(run cat "${HISTORY_FILE}" | wc -l)
+  line_count=$(run grep -cF '' "${HISTORY_FILE}")
   assertEquals "Multiple entries not recorded" "2" "${line_count}"
 }
 
