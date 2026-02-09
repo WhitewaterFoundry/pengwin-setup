@@ -7,6 +7,7 @@ declare SetupDir
 declare wHome
 JOOMLA_VERSION="5.2.1"
 JOOMLA_TAG="5.2.1"
+JOOMLA_DB_NAME="joomla_db"
 
 #######################################
 # Install Joomla CMS development environment
@@ -15,6 +16,7 @@ JOOMLA_TAG="5.2.1"
 #   wHome
 #   JOOMLA_VERSION
 #   JOOMLA_TAG
+#   JOOMLA_DB_NAME
 # Arguments:
 #   None
 #######################################
@@ -78,9 +80,9 @@ function install_joomla() {
     
     echo "Setting up Joomla database"
     if ! sudo mysql -u root << EOF
-CREATE DATABASE IF NOT EXISTS joomla_db;
+CREATE DATABASE IF NOT EXISTS ${JOOMLA_DB_NAME};
 CREATE USER IF NOT EXISTS 'joomla'@'localhost' IDENTIFIED BY 'joomla';
-GRANT ALL PRIVILEGES ON joomla_db.* TO 'joomla'@'localhost';
+GRANT ALL PRIVILEGES ON ${JOOMLA_DB_NAME}.* TO 'joomla'@'localhost';
 FLUSH PRIVILEGES;
 EOF
     then
@@ -89,13 +91,13 @@ EOF
 
     echo ""
     echo "Joomla ${JOOMLA_VERSION} installation complete!"
-    echo "Database: joomla_db"
+    echo "Database: ${JOOMLA_DB_NAME}"
     echo "Database User: joomla"
     echo "Database Password: joomla"
     echo ""
-    echo "Opening Joomla installer in browser..."
+    echo "The Joomla installer will open in your browser after you close this dialog."
 
-    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: joomla_db\nDatabase User: joomla\nDatabase Password: joomla\n\nOpening Joomla installer in browser..." 12 70
+    message --title "Joomla ${JOOMLA_VERSION}" --msgbox "Joomla ${JOOMLA_VERSION} installation complete!\n\nDatabase: ${JOOMLA_DB_NAME}\nDatabase User: joomla\nDatabase Password: joomla\n\nThe Joomla installer will open in your browser after you close this dialog." 12 70
     
     wslview "http://localhost/joomla_root/index.php" 2>/dev/null || echo "Please open http://localhost/joomla_root/index.php in your browser"
 
