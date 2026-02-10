@@ -24,6 +24,9 @@ function test_main() {
   assertTrue "CARGO-DIR" "[ -d /home/${TEST_USER}/.cargo ]"
   assertTrue "RUSTUP-DIR" "[ -d /home/${TEST_USER}/.rustup ]"
 
+  # Verify that rustup added .cargo/env sourcing to .profile
+  assertTrue "CARGO-ENV in .profile" "grep -q '\.cargo/env' /home/${TEST_USER}/.profile"
+
   check_script "${installed_script}"
 }
 
@@ -44,6 +47,11 @@ function test_uninstall() {
 
   assertFalse "CARGO-DIR" "[ -d /home/${TEST_USER}/.cargo ]"
   assertFalse "RUSTUP-DIR" "[ -d /home/${TEST_USER}/.rustup ]"
+
+  # Verify that .cargo/env sourcing was removed from .profile
+  if [ -f "/home/${TEST_USER}/.profile" ]; then
+    assertFalse "CARGO-ENV removed from .profile" "grep -q '\.cargo/env' /home/${TEST_USER}/.profile"
+  fi
 }
 
 # shellcheck disable=SC1091
