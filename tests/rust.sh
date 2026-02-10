@@ -25,6 +25,7 @@ function test_main() {
   assertTrue "RUSTUP-DIR" "[ -d /home/${TEST_USER}/.rustup ]"
 
   # Verify that rustup added .cargo/env sourcing to .profile
+  assertTrue "PROFILE exists" "[ -f /home/${TEST_USER}/.profile ]"
   assertTrue "CARGO-ENV in .profile" "grep -q '\.cargo/env' /home/${TEST_USER}/.profile"
 
   check_script "${installed_script}"
