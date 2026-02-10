@@ -4,7 +4,7 @@
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 rust_rgx='^[^#]*\PATH.*/.cargo/bin'
-rust_env='^[^#]*\PATH.*/.cargo/env'
+rust_env='^.*/.cargo/env.*$'
 
 function main() {
 
