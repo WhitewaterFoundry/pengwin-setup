@@ -50,9 +50,9 @@ function test_uninstall() {
   assertFalse "RUSTUP-DIR" "[ -d /home/${TEST_USER}/.rustup ]"
 
   # Verify that .cargo/env sourcing was removed from .profile
-  if [ -f "/home/${TEST_USER}/.profile" ]; then
-    assertFalse "CARGO-ENV removed from .profile" "grep -q '\.cargo/env' /home/${TEST_USER}/.profile"
-  fi
+  # The profile file should still exist, but the cargo/env line should be removed
+  assertTrue "PROFILE still exists after uninstall" "[ -f /home/${TEST_USER}/.profile ]"
+  assertFalse "CARGO-ENV removed from .profile" "grep -q '\.cargo/env' /home/${TEST_USER}/.profile"
 }
 
 # shellcheck disable=SC1091
