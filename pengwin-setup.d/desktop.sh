@@ -90,6 +90,11 @@ function install_xrdp() {
   sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_top_window_bg_color 41004d
   sudo crudini --set /etc/xrdp/xrdp.ini Globals ls_logo_filename /usr/share/images/pengwin-xrdp.bmp
 
+  if is_wsl1; then
+    sudo crudini --del /etc/xrdp/xrdp.ini Xorg
+    install_packages tigervnc-standalone-server
+  fi
+
   # shellcheck disable=SC2155
   local sesman_port=$(echo "${port} - 50" | bc)
 
@@ -222,11 +227,6 @@ Just click on one of them and login with your Pengwin credentials." 15 80
 }
 
 function main() {
-  if [[ -z "${WSL2}" ]]; then
-    message --title "desktop" --msgbox "For now desktop installation is only available in WSL2." 7 60
-    return 1
-  fi
-
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 

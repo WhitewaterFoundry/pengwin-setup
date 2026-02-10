@@ -4,6 +4,7 @@
 source "$(dirname "$0")/uninstall-common.sh" "$@"
 
 rust_rgx='^[^#]*\PATH.*/.cargo/bin'
+rust_env='^[^#]*\PATH.*/.cargo/env'
 
 function main() {
 
@@ -16,7 +17,7 @@ function main() {
   sudo_rem_file "/etc/profile.d/rust.sh"
   sudo_rem_file "/etc/fish/conf.d/rust.sh"
   clean_file "$HOME/.profile" "$rust_rgx"
-
+  clean_file "$HOME/.profile" "$rust_env"
 }
 
 if show_warning "rust" "$@"; then
