@@ -227,11 +227,6 @@ Just click on one of them and login with your Pengwin credentials." 15 80
 }
 
 function main() {
-  if [[ -z "${WSL2}" ]]; then
-    message --title "desktop" --msgbox "For now desktop installation is only available in WSL2." 7 60
-    return 1
-  fi
-
   # shellcheck disable=SC2155,SC2188
   local menu_choice=$(
 
