@@ -26,12 +26,12 @@ function test_main() {
 
   # Check if database was created
   local db_exists
-  db_exists=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla';" 2>/dev/null | grep -c joomla)
+  db_exists=$(sudo mysql -N -B -u root -e "SHOW DATABASES LIKE 'joomla_db';" 2>/dev/null | grep -c joomla_db)
   assertTrue "Joomla database was not created" "[ ${db_exists} -ge 1 ]"
 
   # Check if database user was created
   local user_exists
-  user_exists=$(sudo mysql -u root -e "SELECT User FROM mysql.user WHERE User='joomla';" 2>/dev/null | grep -c joomla)
+  user_exists=$(sudo mysql -N -B -u root -e "SELECT User FROM mysql.user WHERE User='joomla';" 2>/dev/null | grep -c joomla)
   assertTrue "Joomla database user was not created" "[ ${user_exists} -ge 1 ]"
 
 }
@@ -53,11 +53,11 @@ function test_uninstall() {
 
   # Database and user should be preserved (user data)
   local db_count
-  db_count=$(sudo mysql -u root -e "SHOW DATABASES LIKE 'joomla';" 2>/dev/null | grep -c joomla || echo 0)
+  db_count=$(sudo mysql -N -B -u root -e "SHOW DATABASES LIKE 'joomla_db';" 2>/dev/null | grep -c joomla_db || true)
   assertTrue "Joomla database should be preserved" "[ ${db_count} -ge 1 ]"
 
   local user_count
-  user_count=$(sudo mysql -u root -e "SELECT User FROM mysql.user WHERE User='joomla';" 2>/dev/null | grep -c joomla || echo 0)
+  user_count=$(sudo mysql -N -B -u root -e "SELECT User FROM mysql.user WHERE User='joomla';" 2>/dev/null | grep -c joomla || true)
   assertTrue "Joomla database user should be preserved" "[ ${user_count} -ge 1 ]"
 
   # Note: LAMP stack should NOT be removed by Joomla uninstall
