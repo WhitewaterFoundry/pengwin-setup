@@ -18,6 +18,7 @@ function main() {
   sudo_rem_file "/etc/fish/conf.d/rust.sh"
   clean_file "$HOME/.profile" "$rust_rgx"
   clean_file "$HOME/.profile" "$rust_env"
+  clean_file "$HOME/.bashrc" "$rust_env"
 }
 
 if show_warning "rust" "$@"; then
