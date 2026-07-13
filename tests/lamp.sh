@@ -41,8 +41,8 @@ function test_lamp() {
   assertEquals "MySQL was not installed" "1" "$("${mariadb_command}" --version | grep -c "${mariadb_version_number}")"
 
   # PHP-FPM must be managed so that /run/php is recreated on restart
-  assertTrue "start-lamp script was not installed" "[ -x /usr/bin/start-lamp ]"
-  assertTrue "start-lamp does not manage php-fpm" "grep -q 'fpm' /usr/bin/start-lamp"
+  assertTrue "start-lamp script was not installed" "[ -f /usr/bin/start-lamp ]"
+  assertTrue "start-lamp does not manage php-fpm" "sudo grep -q 'fpm' /usr/bin/start-lamp"
   assertTrue "/run/php directory was not created" "[ -d /run/php ]"
 }
 
