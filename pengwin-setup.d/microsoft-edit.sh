@@ -34,7 +34,11 @@ function msedit_install() {
     local archive_name="${asset_url##*/}"
 
     echo "Downloading asset"
-    curl -L "${asset_url}" -o "${archive_name}"
+    if ! curl -fsSL "${asset_url}" -o "${archive_name}"; then
+      echo "Failed to download asset from ${asset_url}"
+      cleantmp
+      return 1
+    fi
 
     echo "Extracting archive"
     case "${archive_name}" in
