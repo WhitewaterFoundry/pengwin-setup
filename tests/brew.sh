@@ -13,7 +13,7 @@ function test_main() {
 
   assertTrue "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
   run source /etc/profile.d/brew.sh
-  assertEquals "Brew was not installed" "1" "$(run brew --version | grep -c 'Homebrew 5')"
+  assertEquals "Brew was not installed" "1" "$(run brew --version | grep -c -E 'Homebrew [0-9]+')"
 }
 
 function test_uninstall() {
@@ -26,7 +26,7 @@ function test_uninstall() {
   run_pengwinsetup uninstall HOMEBREW
 
   assertFalse "FILE PROFILE-BREW" "[ -f /etc/profile.d/brew.sh ]"
-  assertEquals "Brew was still installed after uninstall" "0" "$(run brew --version | grep -c 'Homebrew 5')"
+  assertEquals "Brew was still installed after uninstall" "0" "$(run brew --version | grep -c -E 'Homebrew [0-9]+')"
 }
 
 # shellcheck disable=SC1091

@@ -23,7 +23,7 @@ function msedit_install() {
     echo "Fetching latest release information"
     local asset_url
     asset_url=$(curl -sSL "${EDIT_GITHUB_API_URL}" | \
-      jq -r --arg arch "$arch" '.assets[] | select(.name | test("^edit-.*-" + $arch + "-linux-gnu\\.tar\\.zst$")) | .browser_download_url' | head -n 1)
+      jq -r --arg arch "$arch" '.assets[] | select(.name | test("^edit-.*-" + $arch + "-linux-gnu\\.tar\\.(zst|gz)$")) | .browser_download_url' | head -n 1)
 
     if [[ -z "${asset_url}" ]]; then
       echo "No suitable asset found for ${arch}"
@@ -31,11 +31,21 @@ function msedit_install() {
       return 1
     fi
 
+    local archive_name="${asset_url##*/}"
+
     echo "Downloading asset"
-    curl -L "${asset_url}" -o edit.tar.zst
+    if ! curl -fsSL "${asset_url}" -o "${archive_name}"; then
+      echo "Failed to download asset from ${asset_url}"
+      cleantmp
+      return 1
+    fi
 
     echo "Extracting archive"
-    unzstd -c edit.tar.zst | tar -xf -
+    case "${archive_name}" in
+      *.tar.zst) unzstd -c "${archive_name}" | tar -xf - ;;
+      *.tar.gz) tar -xzf "${archive_name}" ;;
+      *) echo "Unsupported archive format: ${archive_name}"; cleantmp; return 1 ;;
+    esac
 
     local edit_path
     edit_path=$(find . -type f -name edit -perm -111 | head -n 1)
