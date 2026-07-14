@@ -147,16 +147,35 @@ EOF
 
     local mariadb_service
     mariadb_service="mariadb"
-    
+
+    # Determine the php-fpm service name (e.g. php8.4-fpm)
+    local php_fpm_service=""
+    if [[ -n ${php_module_version} ]]; then
+      php_fpm_service="php${php_module_version}-fpm"
+    fi
+
+    # PHP-FPM needs /run/php for its socket. On WSL /run is a tmpfs that is
+    # recreated empty on every restart, so make sure the directory exists.
+    sudo mkdir -p /run/php
+
     # Enable mariadb service if systemd is running
     if is_systemd_running; then
       echo "Systemd detected, enabling mariadb service"
       sudo systemctl enable --now mariadb
+
+      if [[ -n ${php_fpm_service} ]]; then
+        echo "Systemd detected, enabling ${php_fpm_service} service"
+        sudo systemctl enable --now "${php_fpm_service}"
+      fi
     fi
 
     local start_lamp="/usr/bin/start-lamp"
     sudo tee "${start_lamp}" <<EOF
 #!/bin/bash
+
+# PHP-FPM stores its socket in /run/php which lives on a tmpfs that is wiped
+# on every WSL restart. Recreate it before (re)starting the services.
+mkdir -p /run/php
 
 # Check if systemd is running (PID 1)
 if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
@@ -168,8 +187,19 @@ if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
   if ! systemctl is-active --quiet apache2; then
     systemctl start apache2 > /dev/null 2>&1
   fi
+
+  if [ -n "${php_fpm_service}" ] && ! systemctl is-active --quiet ${php_fpm_service}; then
+    systemctl start ${php_fpm_service} > /dev/null 2>&1
+  fi
 else
   # Using traditional init - use service command
+  if [ -n "${php_fpm_service}" ]; then
+    fpm_status=\$(service ${php_fpm_service} status 2>/dev/null)
+    if [[ \${fpm_status} = *"is not running"* ]] || [[ \${fpm_status} = *"is stopped"* ]]; then
+      service ${php_fpm_service} --full-restart > /dev/null 2>&1
+    fi
+  fi
+
   mysql_status=\$(service ${mariadb_service} status)
   if [[ \${mysql_status} = *"is stopped"* ]]; then
     service ${mariadb_service} --full-restart > /dev/null 2>&1
@@ -197,7 +227,7 @@ if ( command -v cmd.exe >/dev/null ); then
   # Check if systemd is running
   if [ "\$(ps -p 1 -o comm= 2>/dev/null)" = "systemd" ]; then
     # Services managed by systemd, only start if not already active
-    if ! systemctl is-active --quiet ${mariadb_service} || ! systemctl is-active --quiet apache2; then
+    if ! systemctl is-active --quiet ${mariadb_service} || ! systemctl is-active --quiet apache2 || { [ -n "${php_fpm_service}" ] && ! systemctl is-active --quiet ${php_fpm_service}; }; then
       sudo ${start_lamp}
     fi
   else
