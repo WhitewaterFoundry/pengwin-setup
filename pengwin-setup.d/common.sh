@@ -36,6 +36,7 @@ fi
 declare -i -x PROGRESS_STATUS
 
 readonly PENGWIN_CONFIG_DIR="${HOME}/.config/pengwin"
+readonly INSTALL_HISTORY_FILE="${PENGWIN_CONFIG_DIR}/install-history.txt"
 
 #######################################
 # Process command line arguments and set corresponding environment variables.
@@ -619,6 +620,31 @@ function enable_should_restart() {
 #######################################
 function setup_pengwin_config() {
   mkdir -p "${PENGWIN_CONFIG_DIR}"
+}
+
+#######################################
+# Records an install command to the install history file.
+# Appends the install arguments to the history file, avoiding duplicates.
+# Globals:
+#   INSTALL_HISTORY_FILE - Path to the install history file
+# Arguments:
+#   Install command arguments (e.g., "GUI TERMINALS TERMINATOR")
+# Returns:
+#   None
+#######################################
+function record_install_history() {
+  local entry="$*"
+
+  if [[ -z "${entry}" ]]; then
+    return
+  fi
+
+  setup_pengwin_config
+
+  # Only add if not already present
+  if [[ ! -f "${INSTALL_HISTORY_FILE}" ]] || ! grep -qxF "${entry}" "${INSTALL_HISTORY_FILE}"; then
+    echo "${entry}" >>"${INSTALL_HISTORY_FILE}"
+  fi
 }
 
 #######################################

@@ -310,6 +310,8 @@ Actions to be used after install command:
 
   CLOUDCLI                       Cloud CLI tools: TERRAFORM, KUBERNETES.
 
+  MAINTENANCE                    Maintenance tasks: HOMEBACKUP, BATCHINSTALL.
+
 Examples:
   pengwin-setup --verbose update                Update packages with detailed output.
   pengwin-setup install GUI HIDPI               Configures HiDPI support without user interaction.
@@ -347,6 +349,11 @@ sudo apt-mark hold pengwin-base pengwin-setup >/dev/null 2>&1
 sudo apt-mark unhold libc6 >/dev/null 2>&1
 
 install_menu "$@"
+
+# Record successful install command to history (skip uninstall commands)
+if [[ ${#CMD_MENU_OPTIONS[*]} -gt 0 && "${CMD_MENU_OPTIONS[0]}" != "UNINSTALL" ]]; then
+  record_install_history "${CMD_MENU_OPTIONS[@]}"
+fi
 
 # Unhold our packages
 echo "Unholding pengwin-base & pengwin-setup"
