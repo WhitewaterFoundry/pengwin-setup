@@ -45,6 +45,7 @@ function main() {
       "MSEDIT" "Remove Microsoft Edit TUI editor" ${OFF} \
       "NIM" "Remove choosenim and any installed Nim components" ${OFF} \
       "NODEJS" "Remove Node.js, npm and Yarn (if installed)" ${OFF} \
+      "OHMYPOSH" "Remove Oh My Posh prompt theme engine" ${OFF} \
       "OPENSTACK" "Remove OpenStack CLI tools" ${OFF} \
       "POETRY" "Remove Poetry" ${OFF} \
       "POWERSHELL" "Remove Powershell for Linux" ${OFF} \
@@ -235,6 +236,11 @@ function main() {
   if [[ ${menu_choice} == *"NODEJS"* ]]; then
     echo "NODEJS"
     bash "${UninstallDir}"/nodejs.sh "$@"
+  fi
+
+  if [[ ${menu_choice} == *"OHMYPOSH"* ]]; then
+    echo "OHMYPOSH"
+    bash "${UninstallDir}"/oh-my-posh.sh "$@"
   fi
 
   if [[ ${menu_choice} == *"OPENSTACK"* ]]; then
