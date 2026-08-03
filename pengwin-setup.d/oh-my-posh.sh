@@ -17,13 +17,28 @@ if (confirm --title "OH MY POSH" --yesno "Would you like to download and install
   fi
 
   echo "Oh My Posh installed to ${local_bin}/oh-my-posh"
-  echo "To use Oh My Posh, add the following to your shell configuration:"
-  echo "  For bash (~/.bashrc):"
-  echo "    eval \"\$(oh-my-posh init bash)\""
-  echo "  For zsh (~/.zshrc):"
-  echo "    eval \"\$(oh-my-posh init zsh)\""
-  echo "  For fish (~/.config/fish/config.fish):"
-  echo "    oh-my-posh init fish | source"
+
+  # Configure bash
+  if [[ -f "${HOME}/.bashrc" && $(grep -c 'oh-my-posh init bash' "${HOME}/.bashrc") == 0 ]]; then
+    echo "" >>"${HOME}/.bashrc"
+    echo "# Oh My Posh" >>"${HOME}/.bashrc"
+    echo "eval \"\$(oh-my-posh init bash)\"" >>"${HOME}/.bashrc"
+  fi
+
+  # Configure zsh
+  if [[ -f "${HOME}/.zshrc" && $(grep -c 'oh-my-posh init zsh' "${HOME}/.zshrc") == 0 ]]; then
+    echo "" >>"${HOME}/.zshrc"
+    echo "# Oh My Posh" >>"${HOME}/.zshrc"
+    echo "eval \"\$(oh-my-posh init zsh)\"" >>"${HOME}/.zshrc"
+  fi
+
+  # Configure fish
+  if [[ -d "${HOME}/.config/fish" && $(grep -c 'oh-my-posh init fish' "${HOME}/.config/fish/config.fish" 2>/dev/null) == 0 ]]; then
+    mkdir -p "${HOME}/.config/fish"
+    echo "" >>"${HOME}/.config/fish/config.fish"
+    echo "# Oh My Posh" >>"${HOME}/.config/fish/config.fish"
+    echo "oh-my-posh init fish | source" >>"${HOME}/.config/fish/config.fish"
+  fi
 else
   echo "Skipping Oh My Posh"
 fi
