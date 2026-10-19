@@ -19,6 +19,7 @@ if [ -z "${CIRCLE_NODE_TOTAL}" ]; then
   run_test ./nodejs_n.sh
   run_test ./fish.sh
   run_test ./fzf.sh
+  run_test ./oh-my-posh.sh
   run_test ./x410.sh
   run_test ./rclocal.sh
   run_test ./dotnet.sh
@@ -34,6 +35,7 @@ elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #0
   run_test ./nodejs_nvm.sh
   run_test ./motd_settings.sh
   run_test ./latex.sh
+  run_test ./oh-my-posh.sh
 elif [[ ${CIRCLE_NODE_INDEX} == $((i++)) ]]; then #1
   run_test ./desktop.sh
   run_test ./lamp.sh "BUILTIN"

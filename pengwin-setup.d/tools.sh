@@ -11,12 +11,13 @@ function main() {
   # shellcheck disable=SC2155,SC2086
   local menu_choice=$(
 
-    menu --title "Tools Menu" "${DIALOG_TYPE}" "Install applications or servers\n[ENTER to confirm]:" 14 87 6 \
+    menu --title "Tools Menu" "${DIALOG_TYPE}" "Install applications or servers\n[ENTER to confirm]:" 16 87 7 \
       "ANSIBLE" "Install tools to deploy Ansible Playbooks" ${OFF} \
       "CLOUDCLI" "Install CLI tools for cloud management (AWS, Azure, Terraform) " ${OFF} \
       "DOCKER" "Install a secure bridge to Docker Desktop" ${OFF} \
       "FZF" "Install command line fuzzy finder" ${OFF} \
       "HOMEBREW" "Install the Homebrew package manager" ${OFF} \
+      "OHMYPOSH" "Install Oh My Posh prompt theme engine" ${OFF} \
       "POWERSHELL" "Install PowerShell for Linux" ${OFF}
 
     # shellcheck disable=SC2188
@@ -56,6 +57,12 @@ function main() {
   if [[ ${menu_choice} == *"HOMEBREW"* ]]; then
     echo "HOMEBREW"
     bash "${SetupDir}"/brew.sh "$@"
+    exit_status=$?
+  fi
+
+  if [[ ${menu_choice} == *"OHMYPOSH"* ]]; then
+    echo "OHMYPOSH"
+    bash "${SetupDir}"/oh-my-posh.sh "$@"
     exit_status=$?
   fi
 
