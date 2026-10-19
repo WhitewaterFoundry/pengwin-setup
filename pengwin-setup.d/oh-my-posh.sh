@@ -33,7 +33,7 @@ if (confirm --title "OH MY POSH" --yesno "Would you like to download and install
 
   # Configure bash
   if [[ -f "${HOME}/.bashrc" ]] &&
-    ! grep -q 'oh-my-posh init bash' "${HOME}/.bashrc"; then
+    ! grep -Eq 'oh-my-posh"? init bash' "${HOME}/.bashrc"; then
     echo "" >>"${HOME}/.bashrc"
     echo "# Oh My Posh" >>"${HOME}/.bashrc"
     echo 'eval "$("$HOME/.local/bin/oh-my-posh" init bash)"' >>"${HOME}/.bashrc"

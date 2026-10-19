@@ -11,7 +11,7 @@ function main() {
 
   echo "Removing Oh My Posh shell configuration..."
   if [[ -f "${HOME}/.bashrc" ]]; then
-    clean_file "${HOME}/.bashrc" '# Oh My Posh|oh-my-posh init bash'
+    clean_file "${HOME}/.bashrc" '# Oh My Posh|oh-my-posh"? init bash'
   fi
 
   if [[ -f "${ZDOTDIR:-$HOME}/.zshrc" ]]; then
