@@ -14,8 +14,8 @@ function main() {
     clean_file "${HOME}/.bashrc" '# Oh My Posh|oh-my-posh init bash'
   fi
 
-  if [[ -f "${HOME}/.zshrc" ]]; then
-    clean_file "${HOME}/.zshrc" '# Oh My Posh|oh-my-posh init zsh'
+  if [[ -f "${ZDOTDIR:-$HOME}/.zshrc" ]]; then
+    clean_file "${ZDOTDIR:-$HOME}/.zshrc" '# Oh My Posh|oh-my-posh init zsh'
   fi
 
   if [[ -f "${HOME}/.config/fish/config.fish" ]]; then

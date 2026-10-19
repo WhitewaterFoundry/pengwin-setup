@@ -6,7 +6,7 @@ source "$(dirname "$0")/common.sh" "$@"
 if (confirm --title "OH MY POSH" --yesno "Would you like to download and install Oh My Posh, a prompt theme engine for any shell?" 8 70); then
   echo "Installing Oh My Posh"
 
-  install_packages curl
+  install_packages curl unzip
 
   local_bin="${HOME}/.local/bin"
   install_script=
@@ -36,15 +36,15 @@ if (confirm --title "OH MY POSH" --yesno "Would you like to download and install
     ! grep -q 'oh-my-posh init bash' "${HOME}/.bashrc"; then
     echo "" >>"${HOME}/.bashrc"
     echo "# Oh My Posh" >>"${HOME}/.bashrc"
-    echo 'eval "$($HOME/.local/bin/oh-my-posh init bash)"' >>"${HOME}/.bashrc"
+    echo 'eval "$("$HOME/.local/bin/oh-my-posh" init bash)"' >>"${HOME}/.bashrc"
   fi
 
   # Configure zsh
-  if [[ -f "${HOME}/.zshrc" ]] &&
-    ! grep -q 'oh-my-posh init zsh' "${HOME}/.zshrc"; then
-    echo "" >>"${HOME}/.zshrc"
-    echo "# Oh My Posh" >>"${HOME}/.zshrc"
-    echo 'eval "$($HOME/.local/bin/oh-my-posh init zsh)"' >>"${HOME}/.zshrc"
+  if [[ -f "${ZDOTDIR:-$HOME}/.zshrc" ]] &&
+    ! grep -q 'oh-my-posh init zsh' "${ZDOTDIR:-$HOME}/.zshrc"; then
+    echo "" >>"${ZDOTDIR:-$HOME}/.zshrc"
+    echo "# Oh My Posh" >>"${ZDOTDIR:-$HOME}/.zshrc"
+    echo 'eval "$($HOME/.local/bin/oh-my-posh init zsh)"' >>"${ZDOTDIR:-$HOME}/.zshrc"
   fi
 
   # Configure fish

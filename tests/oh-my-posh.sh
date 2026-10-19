@@ -3,8 +3,10 @@
 source commons.sh
 
 function setup_shell_configs() {
-  run mkdir -p "${HOME}/.config/fish"
-  run touch "${HOME}/.bashrc" "${HOME}/.zshrc" "${HOME}/.config/fish/config.fish"
+  run mkdir -p "${HOME}/.config/fish" "${HOME}/zsh-config"
+  run touch "${HOME}/.bashrc" "${HOME}/.zshrc" \
+    "${HOME}/zsh-config/.zshrc" "${HOME}/.config/fish/config.fish"
+  run bash -c "echo 'export ZDOTDIR=${HOME}/zsh-config' >> '${HOME}/.profile'"
 }
 
 function test_main() {
@@ -15,8 +17,8 @@ function test_main() {
   assertTrue "oh-my-posh binary not executable" "[ -x ${HOME}/.local/bin/oh-my-posh ]"
   run "${HOME}/.local/bin/oh-my-posh" --version
   assertEquals "oh-my-posh version command failed" "0" "$?"
-  assertEquals "bash init was not configured" "1" "$(run grep -c -F 'eval "$($HOME/.local/bin/oh-my-posh init bash)"' "${HOME}/.bashrc")"
-  assertEquals "zsh init was not configured" "1" "$(run grep -c -F 'eval "$($HOME/.local/bin/oh-my-posh init zsh)"' "${HOME}/.zshrc")"
+  assertEquals "bash init was not configured" "1" "$(run grep -c -F 'eval "$("$HOME/.local/bin/oh-my-posh" init bash)"' "${HOME}/.bashrc")"
+  assertEquals "zsh init was not configured" "1" "$(run grep -c -F 'eval "$($HOME/.local/bin/oh-my-posh init zsh)"' "${HOME}/zsh-config/.zshrc")"
   assertEquals "fish init was not configured" "1" "$(run grep -c -F '$HOME/.local/bin/oh-my-posh init fish | source' "${HOME}/.config/fish/config.fish")"
 }
 
@@ -26,8 +28,8 @@ function test_uninstall() {
   run_pengwinsetup install UNINSTALL OHMYPOSH
 
   assertFalse "oh-my-posh binary still exists" "[ -f ${HOME}/.local/bin/oh-my-posh ]"
-  assertEquals "bash init was not removed" "0" "$(run grep -c -F 'eval "$($HOME/.local/bin/oh-my-posh init bash)"' "${HOME}/.bashrc")"
-  assertEquals "zsh init was not removed" "0" "$(run grep -c -F 'eval "$($HOME/.local/bin/oh-my-posh init zsh)"' "${HOME}/.zshrc")"
+  assertEquals "bash init was not removed" "0" "$(run grep -c -F 'eval "$("$HOME/.local/bin/oh-my-posh" init bash)"' "${HOME}/.bashrc")"
+  assertEquals "zsh init was not removed" "0" "$(run grep -c -F 'eval "$($HOME/.local/bin/oh-my-posh init zsh)"' "${HOME}/zsh-config/.zshrc")"
   assertEquals "fish init was not removed" "0" "$(run grep -c -F '$HOME/.local/bin/oh-my-posh init fish | source' "${HOME}/.config/fish/config.fish")"
 }
 
