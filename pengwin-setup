@@ -153,6 +153,8 @@ function bye_message() {
     message --title "Setup is complete." --msgbox "This window will be closed to apply the changes in the environment.\nPlease start Pengwin again \n\nYou may rerun pengwin-setup any time by typing: $ pengwin-setup\n\nYou may open a browser link to get help any time by typing: $ pengwin-help" 14 80
 
     if [[ ${#CMD_MENU_OPTIONS[*]} == 0 ]]; then #No automated installation
+      # Save shell history before terminating WSL to prevent history loss
+      history -a 2>/dev/null || true
       wsl.exe --terminate "${WSL_DISTRO_NAME:-WLinux}"
     fi
   elif [[ ${should_restart} ]]; then
