@@ -3,6 +3,24 @@
 source commons.sh
 
 #######################################
+# Check shared agent tools remain available
+# Arguments:
+#  None
+#######################################
+function check_agent_tools() {
+  local package tool
+  for package in git gh ripgrep jq curl unzip; do
+    package_installed "${package}"
+    assertTrue "package ${package} is not installed" "$?"
+  done
+
+  for tool in git gh rg jq curl unzip; do
+    run command -v "${tool}"
+    assertTrue "agent tool ${tool} is not available" "$?"
+  done
+}
+
+#######################################
 # Test GitHub Copilot CLI installation in WSL2 mode (binary installer)
 # Arguments:
 #  None
@@ -12,6 +30,8 @@ function test_wsl2_install() {
   export WSL2=1
 
   run_pengwinsetup install AIUTILS COPILOT-CLI
+
+  check_agent_tools
 
   # Check if copilot binary is installed in user's local bin
   assertTrue "copilot binary was not installed" "[ -f /home/${TEST_USER}/.local/bin/copilot ]"
@@ -35,6 +55,8 @@ function test_wsl2_install() {
 function test_wsl2_uninstall() {
   run_pengwinsetup install UNINSTALL COPILOT-CLI
 
+  check_agent_tools
+
   # Check if copilot binary is removed from user's local bin
   assertFalse "copilot binary was not uninstalled" "[ -f /home/${TEST_USER}/.local/bin/copilot ]"
 
@@ -52,6 +74,8 @@ function test_wsl1_install() {
   unset WSL2
 
   run_pengwinsetup install AIUTILS COPILOT-CLI
+
+  check_agent_tools
 
   # Check if PATH configuration file exists
   assertTrue "PATH configuration file not found" "[ -f /etc/profile.d/z-github-copilot.sh ]"
@@ -77,6 +101,8 @@ function test_wsl1_install() {
 #######################################
 function test_wsl1_uninstall() {
   run_pengwinsetup install UNINSTALL COPILOT-CLI
+
+  check_agent_tools
 
   # Check if PATH configuration file is removed
   assertFalse "PATH configuration file still exists" "[ -f /etc/profile.d/z-github-copilot.sh ]"

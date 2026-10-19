@@ -19,6 +19,11 @@ function main() {
 
   if [[ -n ${php_module_version} ]]; then
     sudo a2dismod "php${php_module_version}"
+
+    local php_fpm_service="php${php_module_version}-fpm"
+    if command -v systemctl >/dev/null && systemctl list-unit-files "${php_fpm_service}.service" >/dev/null 2>&1; then
+      sudo systemctl disable --now "${php_fpm_service}" >/dev/null 2>&1 || true
+    fi
   fi
 
   sudo_rem_file "/etc/profile.d/start-lamp.sh"

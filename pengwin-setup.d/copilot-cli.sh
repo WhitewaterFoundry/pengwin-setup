@@ -94,9 +94,6 @@ EOF
 function install_copilot_binary() {
   echo "Installing GitHub Copilot CLI via official installer..."
 
-  # Ensure curl is installed for downloading
-  install_packages curl
-
   # Ensure $HOME/.local/bin exists and is in the PATH
   mkdir -p "${HOME}/.local/bin"
   export PATH="${HOME}/.local/bin:${PATH}"
@@ -157,8 +154,14 @@ EOF
   return 0
 }
 
-if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis installer downloads and runs the official GitHub install script.\n\nWould you like to install GitHub Copilot CLI?" 10 65); then
+if (confirm --title "GitHub Copilot CLI" --yesno "GitHub Copilot CLI is an AI-powered command line tool.\n\nThis installer downloads and runs the official GitHub install script.\n\nIt also installs Git, GitHub CLI (gh), ripgrep (rg), jq, curl and unzip for agent use.\n\nWould you like to install GitHub Copilot CLI?" 14 65); then
   echo "Installing GitHub Copilot CLI"
+
+  echo "Installing tools for GitHub Copilot CLI agents..."
+  if ! install_packages git gh ripgrep jq curl unzip; then
+    echo "ERROR: Failed to install tools for GitHub Copilot CLI agents."
+    exit 1
+  fi
 
   # Use different installation method based on WSL version
   if is_wsl1; then
