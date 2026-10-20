@@ -166,11 +166,15 @@ workflows:
     jobs:
       - shellcheck:
           filters:
+            tags:
+              only: /.*/
             branches:
               only: master
 
       - build:
           filters:
+            tags:
+              only: /.*/
             branches:
               only: master
 
@@ -181,8 +185,10 @@ workflows:
 
       - deploymasterdeb:
           filters:
+            tags:
+              only: /.*/
             branches:
-              only: master
+              ignore: /.*/
           requires:
             #- test
             - build
