@@ -189,7 +189,7 @@ function get_xdg_dir_from_config() {
   local dir_value
 
   # Extract the value for the given XDG constant
-  dir_value=$(grep "^${xdg_const}=" "${user_dirs_file}" 2>/dev/null | cut -d'=' -f2 | tr -d '"')
+  dir_value=$(grep "^${xdg_const}=" "${user_dirs_file}" 2>/dev/null | cut -d'=' -f2- | tr -d '"')
 
   if [[ -z "${dir_value}" ]]; then
     echo ""
@@ -239,6 +239,16 @@ function create_xdg_symlink() {
     fi
   # If directory exists, check if empty and remove
   elif [[ -d "${xdg_path}" ]]; then
+    local canonical_xdg_path
+    local canonical_target_path
+    canonical_xdg_path=$(readlink -f "${xdg_path}" 2>/dev/null || echo "")
+    canonical_target_path=$(readlink -f "${target_path}" 2>/dev/null || echo "")
+    if [[ -n "${canonical_xdg_path}" &&
+      "${canonical_xdg_path}" == "${canonical_target_path}" ]]; then
+      echo "XDG directory is already the Windows target: ${xdg_path}"
+      return 0
+    fi
+
     if [[ -z "$(ls -A "${xdg_path}" 2>/dev/null)" ]]; then
       echo "Removing empty directory: ${xdg_path}"
       rmdir "${xdg_path}"

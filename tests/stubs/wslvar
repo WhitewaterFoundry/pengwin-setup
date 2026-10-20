@@ -4,6 +4,20 @@
 source "$(dirname "$0")/../mocks.sh" "$@"
 
 case "${@}" in
+  '-L')
+    cat <<'EOF'
+Desktop : C:\Users\user\Desktop
+Personal : C:\Users\user\Documents
+{374DE290-123F-4565-9164-39C4925E467B} : C:\Users\user\Downloads
+My Music : C:\Users\user\Music
+My Pictures : C:\Users\user\Pictures
+My Video : C:\Users\user\Videos
+Templates : C:\Users\user\Templates
+PUBLIC : C:\Users\user\Public
+EOF
+    ;;
+  '-S')
+    ;;
   'APPDATA')
     echo 'C:\Users\user\AppData\Roaming'
     ;;

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+count_file="${HOME}/.dialog-call-count"
+count=$(cat "${count_file}" 2>/dev/null || echo 0)
+count=$((count + 1))
+echo "${count}" >"${count_file}"
+
+if [[ "${count}" -le 2 ]]; then
+  exit 0
+fi
+
+exit 1

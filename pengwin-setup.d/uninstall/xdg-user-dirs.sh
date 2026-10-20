@@ -19,7 +19,7 @@ function get_xdg_dir_from_config() {
   local dir_value
 
   # Extract the value for the given XDG constant
-  dir_value=$(grep "^${xdg_const}=" "${user_dirs_file}" 2>/dev/null | cut -d'=' -f2 | tr -d '"')
+  dir_value=$(grep "^${xdg_const}=" "${user_dirs_file}" 2>/dev/null | cut -d'=' -f2- | tr -d '"')
 
   if [[ -z "${dir_value}" ]]; then
     echo ""
@@ -95,8 +95,21 @@ function main() {
     remove_package "xdg-user-dirs"
   else
     echo "Keeping xdg-user-dirs package installed"
+    local restore_failed=0
+    for xdg_const in "${xdg_constants[@]}"; do
+      local xdg_dir_path
+      xdg_dir_path=$(get_xdg_dir_from_config "${user_dirs_file}" "${xdg_const}")
+
+      if [[ -n "${xdg_dir_path}" && ! -d "${xdg_dir_path}" ]]; then
+        if ! mkdir -p "${xdg_dir_path}"; then
+          echo "Could not restore XDG directory: ${xdg_dir_path}"
+          restore_failed=1
+        fi
+      fi
+    done
+
     # Regenerate XDG directories only if keeping the package
-    if command -v xdg-user-dirs-update &>/dev/null; then
+    if [[ "${restore_failed}" == 0 ]] && command -v xdg-user-dirs-update &>/dev/null; then
       echo "Regenerating XDG user directories..."
       xdg-user-dirs-update
     fi
