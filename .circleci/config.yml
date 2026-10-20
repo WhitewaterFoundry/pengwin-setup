@@ -113,6 +113,19 @@ jobs:
       - image: cimg/ruby:2.7
     resource_class: small
     steps:
+      - checkout
+      - run:
+          name: Verify tagged commit is on master
+          command: |
+            if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+              git fetch --unshallow --no-tags origin master
+            else
+              git fetch --no-tags origin master
+            fi
+            if ! git merge-base --is-ancestor "${CIRCLE_SHA1}" FETCH_HEAD; then
+              echo "Tagged commit is not on master; skipping deployment."
+              circleci-agent step halt
+            fi
       - attach_workspace:
           at: /tmp/pkgs
       - run:
@@ -166,11 +179,15 @@ workflows:
     jobs:
       - shellcheck:
           filters:
+            tags:
+              only: /.*/
             branches:
               only: master
 
       - build:
           filters:
+            tags:
+              only: /.*/
             branches:
               only: master
 
@@ -181,8 +198,10 @@ workflows:
 
       - deploymasterdeb:
           filters:
+            tags:
+              only: /.*/
             branches:
-              only: master
+              ignore: /.*/
           requires:
             #- test
             - build
